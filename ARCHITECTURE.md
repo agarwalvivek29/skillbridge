@@ -55,13 +55,22 @@ SkillBridge is a freelance marketplace where trust is enforced by technology, no
 
 | Entity | Proto file | Key fields | Status lifecycle | Events |
 |---|---|---|---|---|
-| `User` | `packages/schema/proto/api/v1/user.proto` | id, wallet_address, email, role | ACTIVE / SUSPENDED | UserCreated |
-| `Gig` | `packages/schema/proto/api/v1/gig.proto` | id, client_id, freelancer_id, title, total_amount, contract_address | DRAFT → OPEN → IN_PROGRESS → COMPLETED / CANCELLED | GigCreated, GigFunded, GigCompleted |
-| `Milestone` | `packages/schema/proto/api/v1/milestone.proto` | id, gig_id, description, amount, criteria, order | PENDING → SUBMITTED → UNDER_REVIEW → APPROVED / REVISION_REQUESTED | MilestoneSubmitted, MilestoneApproved |
-| `Submission` | `packages/schema/proto/api/v1/submission.proto` | id, milestone_id, freelancer_id, repo_url, files[], notes | PENDING → UNDER_REVIEW → APPROVED / REJECTED | SubmissionCreated, SubmissionReviewed |
-| `ReviewReport` | `packages/schema/proto/ai_reviewer/v1/report.proto` | id, submission_id, score, findings[], verdict, model_version | PENDING → COMPLETE | ReviewCompleted |
-| `EscrowContract` | `packages/schema/proto/contracts/v1/escrow.proto` | id, gig_id, chain_address, network, total_amount, released_amount | DEPLOYING → FUNDED → PARTIALLY_RELEASED → SETTLED / DISPUTED | EscrowFunded, FundsReleased |
-| `PortfolioItem` | `packages/schema/proto/api/v1/portfolio.proto` | id, user_id, title, description, files[], external_url, verified_gig_id | — | — |
+| `User` | `api/v1/user.proto` | id, wallet_address, email, role (FREELANCER\|CLIENT\|ADMIN), skills[], hourly_rate_wei | ACTIVE / SUSPENDED | UserCreated |
+| `Gig` | `api/v1/gig.proto` | id, client_id, freelancer_id, title, total_amount, currency (ETH\|USDC), token_address, contract_address, deadline | DRAFT → OPEN → IN_PROGRESS → COMPLETED / CANCELLED | GigCreated, GigFunded, GigCompleted |
+| `Milestone` | `api/v1/milestone.proto` | id, gig_id, description, amount, criteria, order, due_date, revision_count | PENDING → SUBMITTED → UNDER_REVIEW → APPROVED / REVISION_REQUESTED / DISPUTED | MilestoneSubmitted, MilestoneApproved, MilestoneDisputed |
+| `Submission` | `api/v1/submission.proto` | id, milestone_id, freelancer_id, repo_url, files[], revision_number, previous_submission_id | PENDING → UNDER_REVIEW → APPROVED / REJECTED | SubmissionCreated, SubmissionReviewed |
+| `ReviewReport` | `ai_reviewer/v1/report.proto` | id, submission_id, score, findings[], verdict, model_version | PENDING → COMPLETE | ReviewCompleted |
+| `EscrowContract` | `contracts/v1/escrow.proto` | id, gig_id, chain_address, network, total_amount, token_address, platform_fee_basis_points (500=5%), released_amount | DEPLOYING → FUNDED → PARTIALLY_RELEASED → SETTLED / DISPUTED | EscrowFunded, FundsReleased (net_amount + platform_fee_amount) |
+| `PortfolioItem` | `api/v1/portfolio.proto` | id, user_id, title, description, files[], external_url, verified_gig_id | — | — |
+| `AuthNonce` | `api/v1/auth.proto` | wallet_address, nonce, expires_at | ephemeral (deleted post-auth) | — |
+| `Proposal` | `api/v1/proposal.proto` | id, gig_id, freelancer_id, cover_letter, estimated_days | PENDING → ACCEPTED / REJECTED / WITHDRAWN | ProposalSubmitted, ProposalAccepted |
+| `Dispute` | `api/v1/dispute.proto` | id, milestone_id, gig_id, raised_by_user_id, reason, ai_evidence_summary, resolution, freelancer_split_amount | OPEN → DISCUSSION → ARBITRATION → RESOLVED | DisputeRaised, DisputeResolved |
+| `DisputeMessage` | `api/v1/dispute.proto` | id, dispute_id, user_id, content | — | — |
+| `Reputation` | `api/v1/reputation.proto` | id, user_id, wallet_address, gigs_completed, gigs_as_client, total_earned, average_ai_score, dispute_rate_pct, average_rating_x100 | DB cache, synced from chain | — |
+| `Review` | `api/v1/review.proto` | id, gig_id, reviewer_id, reviewee_id, rating (1–5), comment, is_visible | hidden until both submit or 7-day window closes | ReviewSubmitted |
+| `Notification` | `api/v1/notification.proto` | id, user_id, type (14 types), payload_json, read_at | unread (read_at null) → read | — |
+
+> All proto paths are relative to `packages/schema/proto/`. No dual roles — a user is either FREELANCER or CLIENT (or ADMIN).
 
 ## Technology Stack
 
