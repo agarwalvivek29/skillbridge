@@ -12,10 +12,12 @@
   "devDependencies": {
     "@commitlint/cli": "^19.0.0",
     "@commitlint/config-conventional": "^19.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
     "eslint": "^10.0.3",
     "husky": "^9.0.0",
     "lint-staged": "^15.0.0",
-    "prettier": "^3.0.0"
+    "prettier": "^3.8.1"
   },
   "lint-staged": {
     "!(packages/schema/generated/**)*.{ts,tsx,js,jsx}": [
