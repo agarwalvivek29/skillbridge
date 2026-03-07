@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 import betterproto
+import grpclib
 
 
 class EscrowStatus(betterproto.Enum):
