@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     jwt_secret: str
     jwt_expiry_seconds: int = 3600
     api_key: str
-    siwe_domain: str = "skillbridge.xyz"
+    siwe_domain: str = "skillbridge.agarwalvivek.com"
 
     # Blockchain
     base_rpc_url: str = "https://sepolia.base.org"

@@ -16,7 +16,7 @@ from siwe import SiweMessage
 # Deterministic test wallet (never use with real funds)
 _PRIVATE_KEY = "0x4c0883a69102937d6231471b5dbb6e538eba2ef5cf0e6e91a74b5e3e1e3a3c34"
 _WALLET = Account.from_key(_PRIVATE_KEY).address
-_DOMAIN = "skillbridge.xyz"
+_DOMAIN = "skillbridge.agarwalvivek.com"
 
 
 def _build_siwe_message(nonce: str, wallet: str = _WALLET) -> str:
