@@ -1,0 +1,12 @@
+# Foundry compilation artifacts
+out/
+cache/
+
+# Installed Foundry dependencies — run `forge install` to restore
+lib/
+
+# Broadcast/deployment output (contains tx hashes and addresses — gitignore to avoid leaking keys)
+broadcast/
+
+# Local environment — never commit
+.env
