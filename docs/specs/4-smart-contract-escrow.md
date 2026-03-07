@@ -2,7 +2,6 @@
 
 **Issue**: #4
 **Status**: Approved
-**Author**: Claude Code (ao)
 **Date**: 2026-03-07
 **Services Affected**: `services/contracts`, `services/api`
 

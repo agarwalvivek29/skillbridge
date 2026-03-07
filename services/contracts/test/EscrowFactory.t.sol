@@ -113,6 +113,21 @@ contract EscrowFactoryTest is Test {
         factory.createEscrow(CLIENT, CLIENT, address(0), twoMilestones, FEE_BPS);
     }
 
+    function test_createEscrow_revertsOnZeroMilestoneAmount() public {
+        uint256[] memory amounts = new uint256[](2);
+        amounts[0] = 1 ether;
+        amounts[1] = 0;
+        vm.prank(OWNER);
+        vm.expectRevert(EscrowFactory.ZeroMilestoneAmount.selector);
+        factory.createEscrow(CLIENT, FREELANCER, address(0), amounts, FEE_BPS);
+    }
+
+    function test_createEscrow_revertsOnFeeTooHigh() public {
+        vm.prank(OWNER);
+        vm.expectRevert(EscrowFactory.FeeTooHigh.selector);
+        factory.createEscrow(CLIENT, FREELANCER, address(0), twoMilestones, 1001);
+    }
+
     // ─── Paginated Access ─────────────────────────────────────────────────────────
 
     function test_getEscrowCount_returnsCorrectCount() public {

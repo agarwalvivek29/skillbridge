@@ -23,6 +23,10 @@ contract EscrowFactory is IEscrowFactory {
     error ZeroAddress();
     /// @notice Reverts when client and freelancer are the same address
     error ClientEqualsFreelancer();
+    /// @notice Reverts when a milestone amount of zero is provided
+    error ZeroMilestoneAmount();
+    /// @notice Reverts when platformFeeBasisPoints exceeds 1000 (10%)
+    error FeeTooHigh();
 
     // ─── Events ───────────────────────────────────────────────────────────────────
 
@@ -75,6 +79,10 @@ contract EscrowFactory is IEscrowFactory {
         if (freelancer == address(0)) revert ZeroAddress();
         if (client == freelancer) revert ClientEqualsFreelancer();
         if (milestoneAmounts.length == 0) revert InvalidMilestones();
+        for (uint256 i = 0; i < milestoneAmounts.length; i++) {
+            if (milestoneAmounts[i] == 0) revert ZeroMilestoneAmount();
+        }
+        if (platformFeeBasisPoints > 1000) revert FeeTooHigh();
 
         GigEscrow escrow = new GigEscrow(
             client,
