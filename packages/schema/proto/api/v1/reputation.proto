@@ -42,8 +42,12 @@ message GetReputationRequest {
   string user_id = 1;
 }
 
+message GetReputationResponse {
+  Reputation reputation = 1;
+}
+
 // ─── Service ─────────────────────────────────────────────────────────────────
 
 service ReputationService {
-  rpc GetReputation(GetReputationRequest) returns (Reputation);
+  rpc GetReputation(GetReputationRequest) returns (GetReputationResponse);
 }

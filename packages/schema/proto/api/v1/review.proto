@@ -60,9 +60,13 @@ message GetReviewsResponse {
   int32 average_rating_x100 = 2;
 }
 
+message CreateReviewResponse {
+  Review review = 1;
+}
+
 // ─── Service ─────────────────────────────────────────────────────────────────
 
 service ReviewService {
-  rpc CreateReview(CreateReviewRequest) returns (Review);
+  rpc CreateReview(CreateReviewRequest) returns (CreateReviewResponse);
   rpc GetReviews(GetReviewsRequest) returns (GetReviewsResponse);
 }

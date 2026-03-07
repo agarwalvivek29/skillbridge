@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package example.v1;
 
-import "common/v1/errors.proto";
 import "common/v1/pagination.proto";
 import "google/protobuf/timestamp.proto";
 
@@ -135,14 +134,30 @@ message UpdateUserStatusRequest {
   string reason = 3;
 }
 
+message GetUserResponse {
+  UserPublic user = 1;
+}
+
+message CreateUserResponse {
+  UserPublic user = 1;
+}
+
+message UpdateUserResponse {
+  UserPublic user = 1;
+}
+
+message UpdateUserStatusResponse {
+  UserPublic user = 1;
+}
+
 // ─── Service ─────────────────────────────────────────────────────────────────
 
 // UserService defines the RPC contract for the user service.
 // HTTP/gRPC adapters are generated from this definition.
 service UserService {
   rpc GetUsers(GetUsersRequest) returns (GetUsersResponse);
-  rpc GetUser(GetUserRequest) returns (UserPublic);
-  rpc CreateUser(CreateUserRequest) returns (UserPublic);
-  rpc UpdateUser(UpdateUserRequest) returns (UserPublic);
-  rpc UpdateUserStatus(UpdateUserStatusRequest) returns (UserPublic);
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+  rpc UpdateUserStatus(UpdateUserStatusRequest) returns (UpdateUserStatusResponse);
 }

@@ -97,11 +97,23 @@ message RequestRevisionRequest {
   string feedback = 2;
 }
 
+message CreateMilestoneResponse {
+  Milestone milestone = 1;
+}
+
+message ApproveMilestoneResponse {
+  Milestone milestone = 1;
+}
+
+message RequestRevisionResponse {
+  Milestone milestone = 1;
+}
+
 // ─── Service ─────────────────────────────────────────────────────────────────
 
 service MilestoneService {
-  rpc CreateMilestone(CreateMilestoneRequest) returns (Milestone);
+  rpc CreateMilestone(CreateMilestoneRequest) returns (CreateMilestoneResponse);
   rpc GetMilestones(GetMilestonesRequest) returns (GetMilestonesResponse);
-  rpc ApproveMilestone(ApproveMilestoneRequest) returns (Milestone);
-  rpc RequestRevision(RequestRevisionRequest) returns (Milestone);
+  rpc ApproveMilestone(ApproveMilestoneRequest) returns (ApproveMilestoneResponse);
+  rpc RequestRevision(RequestRevisionRequest) returns (RequestRevisionResponse);
 }
