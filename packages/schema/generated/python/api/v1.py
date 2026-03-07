@@ -494,6 +494,31 @@ class RequestRevisionResponse(betterproto.Message):
 
 
 @dataclass
+class ProposalReceivedPayload(betterproto.Message):
+    """NOTIFICATION_TYPE_PROPOSAL_RECEIVED → gig client"""
+
+    gig_id: str = betterproto.string_field(1)
+    proposal_id: str = betterproto.string_field(2)
+    freelancer_id: str = betterproto.string_field(3)
+
+
+@dataclass
+class ProposalAcceptedPayload(betterproto.Message):
+    """NOTIFICATION_TYPE_PROPOSAL_ACCEPTED → freelancer"""
+
+    gig_id: str = betterproto.string_field(1)
+    proposal_id: str = betterproto.string_field(2)
+
+
+@dataclass
+class ProposalRejectedPayload(betterproto.Message):
+    """NOTIFICATION_TYPE_PROPOSAL_REJECTED → freelancer"""
+
+    gig_id: str = betterproto.string_field(1)
+    proposal_id: str = betterproto.string_field(2)
+
+
+@dataclass
 class Notification(betterproto.Message):
     id: str = betterproto.string_field(1)
     user_id: str = betterproto.string_field(2)

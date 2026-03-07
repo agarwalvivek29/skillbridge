@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import Numeric, cast, func, select
+from sqlalchemy import Numeric, Text, cast, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -263,34 +263,26 @@ async def list_gigs(
             pass
 
     if skill:
-        # Skill filtering is done in Python for cross-DB compatibility (JSON vs ARRAY).
-        # Fetch all rows matching the SQL predicates, then filter and paginate in Python.
-        result = await db.execute(
-            select(GigModel)
-            .where(*base_where)
-            .options(selectinload(GigModel.milestones))
-            .order_by(GigModel.created_at.desc())
-        )
-        all_gigs = [
-            g for g in result.scalars().all() if skill in (g.required_skills or [])
-        ]
-        total = len(all_gigs)
-        gigs = all_gigs[offset : offset + page_size]
-    else:
-        count_result = await db.execute(
-            select(func.count()).select_from(GigModel).where(*base_where)
-        )
-        total = count_result.scalar_one()
+        # Cast the JSON column to text and use LIKE to search for the skill value.
+        # JSON arrays are stored as e.g. '["Python", "FastAPI"]' in both PostgreSQL
+        # and SQLite, so searching for '"<skill>"' (with quotes) avoids false positives
+        # from partial matches (e.g. "Java" matching "JavaScript").
+        base_where.append(cast(GigModel.required_skills, Text).like(f'%"{skill}"%'))
 
-        result = await db.execute(
-            select(GigModel)
-            .where(*base_where)
-            .options(selectinload(GigModel.milestones))
-            .order_by(GigModel.created_at.desc())
-            .offset(offset)
-            .limit(page_size)
-        )
-        gigs = list(result.scalars().all())
+    count_result = await db.execute(
+        select(func.count()).select_from(GigModel).where(*base_where)
+    )
+    total = count_result.scalar_one()
+
+    result = await db.execute(
+        select(GigModel)
+        .where(*base_where)
+        .options(selectinload(GigModel.milestones))
+        .order_by(GigModel.created_at.desc())
+        .offset(offset)
+        .limit(page_size)
+    )
+    gigs = list(result.scalars().all())
 
     return gigs, total
 

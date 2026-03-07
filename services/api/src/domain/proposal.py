@@ -130,40 +130,18 @@ async def create_proposal(
     )
     db.add(proposal)
 
-    # Notify the gig client
+    # proposal.id is Python-generated on instantiation — safe to use before flush
     db.add(
         _notification(
             gig.client_id,
             _NOTIF_PROPOSAL_RECEIVED,
             {
                 "gig_id": gig.id,
-                "proposal_id": None,  # filled after flush
+                "proposal_id": proposal.id,
                 "freelancer_id": freelancer_id,
             },
         )
     )
-    await db.flush()
-
-    # Update notification payload with real proposal ID
-    notif_result = await db.execute(
-        select(NotificationModel)
-        .where(
-            NotificationModel.user_id == gig.client_id,
-            NotificationModel.type == _NOTIF_PROPOSAL_RECEIVED,
-        )
-        .order_by(NotificationModel.created_at.desc())
-        .limit(1)
-    )
-    notif = notif_result.scalar_one_or_none()
-    if notif is not None:
-        notif.payload_json = json.dumps(
-            {
-                "gig_id": gig.id,
-                "proposal_id": proposal.id,
-                "freelancer_id": freelancer_id,
-            }
-        )
-
     await db.flush()
     await db.refresh(proposal)
     logger.info(
@@ -243,7 +221,7 @@ async def accept_proposal(
         raise ProposalError("PROPOSAL_NOT_FOUND", f"Proposal {proposal_id} not found")
 
     gig_result = await db.execute(
-        select(GigModel).where(GigModel.id == proposal.gig_id)
+        select(GigModel).where(GigModel.id == proposal.gig_id).with_for_update()
     )
     gig = gig_result.scalar_one_or_none()
     if gig is None:
