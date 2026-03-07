@@ -63,38 +63,43 @@ services/api/
 
 See `.env.example` for all required variables.
 
-| Variable | Description |
-|---|---|
-| `DATABASE_URL` | PostgreSQL connection string |
-| `REDIS_URL` | Redis connection string (for Celery) |
-| `JWT_SECRET` | Min 32 chars — JWT signing key |
-| `JWT_EXPIRY_SECONDS` | Default 3600 |
-| `API_KEY` | Min 16 chars — service-to-service key |
-| `BASE_RPC_URL` | Base L2 RPC endpoint |
+| Variable                 | Description                             |
+| ------------------------ | --------------------------------------- |
+| `DATABASE_URL`           | PostgreSQL connection string            |
+| `REDIS_URL`              | Redis connection string (for Celery)    |
+| `JWT_SECRET`             | Min 32 chars — JWT signing key          |
+| `JWT_EXPIRY_SECONDS`     | Default 3600                            |
+| `API_KEY`                | Min 16 chars — service-to-service key   |
+| `BASE_RPC_URL`           | Base L2 RPC endpoint                    |
 | `ESCROW_FACTORY_ADDRESS` | Deployed EscrowFactory contract address |
-| `AWS_ACCESS_KEY_ID` | S3 access key |
-| `AWS_SECRET_ACCESS_KEY` | S3 secret key |
-| `S3_BUCKET` | S3 bucket name |
+| `AWS_ACCESS_KEY_ID`      | S3 access key                           |
+| `AWS_SECRET_ACCESS_KEY`  | S3 secret key                           |
+| `S3_BUCKET`              | S3 bucket name                          |
 
 ---
 
 ## Interfaces
 
 ### Exposes (REST)
-- `POST /v1/auth/wallet` — SIWE wallet login, returns JWT
-- `POST /v1/auth/email` — email/password login, returns JWT
-- `GET/POST /v1/users` — user CRUD
-- `GET/POST /v1/gigs` — gig CRUD
-- `POST /v1/gigs/:id/milestones` — add milestone to gig
-- `POST /v1/milestones/:id/submissions` — submit work
-- `POST /v1/milestones/:id/approve` — approve milestone + trigger fund release
-- `GET/POST/PUT/DELETE /v1/portfolio` — portfolio item CRUD
-- `GET /health`, `GET /metrics`
+
+- `GET /v1/auth/nonce?wallet_address=<addr>` — generate SIWE nonce (public)
+- `POST /v1/auth/wallet` — SIWE wallet login, returns JWT (public)
+- `POST /v1/auth/email/register` — email registration, returns JWT (public)
+- `POST /v1/auth/email/login` — email/password login, returns JWT (public)
+- `GET/POST /v1/users` — user CRUD (auth required)
+- `GET/POST /v1/gigs` — gig CRUD (auth required)
+- `POST /v1/gigs/:id/milestones` — add milestone to gig (auth required)
+- `POST /v1/milestones/:id/submissions` — submit work (auth required)
+- `POST /v1/milestones/:id/approve` — approve milestone + trigger fund release (auth required)
+- `GET/POST/PUT/DELETE /v1/portfolio` — portfolio item CRUD (auth required)
+- `GET /health`, `GET /metrics` (no auth required)
 
 ### Events Published (to Celery/Redis)
+
 - `review.enqueue` — triggers ai-reviewer when submission created with repo_url
 
 ### Blockchain Calls (outbound)
+
 - `GigEscrow.completeMilestone(index)` on Base L2 — called on milestone approval
 
 ---
@@ -102,6 +107,7 @@ See `.env.example` for all required variables.
 ## Auth Middleware
 
 All routes except `/health` and `/metrics` require authentication:
+
 1. `X-API-Key` — service-to-service (matched against `API_KEY`)
 2. `Authorization: Bearer <jwt>` — user token (verified with `JWT_SECRET`)
 
@@ -138,8 +144,8 @@ Agents may use any available MCP servers, skills, and tools as needed.
 ### MCP Servers in Use
 
 | MCP Server | Purpose | Added by |
-|---|---|---|
-| (none yet) | | |
+| ---------- | ------- | -------- |
+| (none yet) |         |          |
 
 ---
 
