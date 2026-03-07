@@ -10,10 +10,10 @@ option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/gener
 
 enum SubmissionStatus {
   SUBMISSION_STATUS_UNSPECIFIED = 0;
-  SUBMISSION_STATUS_PENDING = 1;
-  SUBMISSION_STATUS_UNDER_REVIEW = 2;
-  SUBMISSION_STATUS_APPROVED = 3;
-  SUBMISSION_STATUS_REJECTED = 4;
+  SUBMISSION_STATUS_PENDING = 1;       // submitted, waiting for review job to start
+  SUBMISSION_STATUS_UNDER_REVIEW = 2;  // AI review in progress
+  SUBMISSION_STATUS_APPROVED = 3;      // passed AI review or manually approved
+  SUBMISSION_STATUS_REJECTED = 4;      // failed AI review or manually rejected
 }
 
 // ─── Domain Entity ────────────────────────────────────────────────────────────
@@ -24,12 +24,16 @@ message Submission {
   string freelancer_id = 3;
   // Repository URL (GitHub, GitLab, etc.)
   string repo_url = 4;
-  // S3 keys for uploaded files
+  // S3 keys for uploaded files (screenshots, zips, docs, etc.)
   repeated string file_keys = 5;
   string notes = 6;
   SubmissionStatus status = 7;
-  google.protobuf.Timestamp created_at = 8;
-  google.protobuf.Timestamp updated_at = 9;
+  // 1-indexed. First submission = 1, each resubmission increments.
+  int32 revision_number = 8;
+  // Set if this is a resubmission — points to the prior submission
+  string previous_submission_id = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
 }
 
 // ─── Events ──────────────────────────────────────────────────────────────────
@@ -39,7 +43,8 @@ message SubmissionCreatedEvent {
   string milestone_id = 2;
   string freelancer_id = 3;
   string repo_url = 4;
-  google.protobuf.Timestamp occurred_at = 5;
+  int32 revision_number = 5;
+  google.protobuf.Timestamp occurred_at = 6;
 }
 
 message SubmissionReviewedEvent {
@@ -56,6 +61,8 @@ message CreateSubmissionRequest {
   string repo_url = 2;
   repeated string file_keys = 3;
   string notes = 4;
+  // Set when resubmitting after a revision request
+  string previous_submission_id = 5;
 }
 
 message GetSubmissionRequest {

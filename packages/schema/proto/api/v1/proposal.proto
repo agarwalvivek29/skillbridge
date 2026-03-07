@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/api/v1;apiv1";
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum ProposalStatus {
+  PROPOSAL_STATUS_UNSPECIFIED = 0;
+  PROPOSAL_STATUS_PENDING = 1;   // submitted, awaiting client review
+  PROPOSAL_STATUS_ACCEPTED = 2;  // client selected this freelancer
+  PROPOSAL_STATUS_REJECTED = 3;  // client selected someone else (or gig cancelled)
+  PROPOSAL_STATUS_WITHDRAWN = 4; // freelancer withdrew before decision
+}
+
+// ─── Domain Entity ────────────────────────────────────────────────────────────
+
+message Proposal {
+  string id = 1;
+  string gig_id = 2;
+  string freelancer_id = 3;
+  string cover_letter = 4;
+  // Estimated days to complete the full gig
+  int32 estimated_days = 5;
+  ProposalStatus status = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+}
+
+// ─── Events ──────────────────────────────────────────────────────────────────
+
+message ProposalSubmittedEvent {
+  string proposal_id = 1;
+  string gig_id = 2;
+  string freelancer_id = 3;
+  google.protobuf.Timestamp occurred_at = 4;
+}
+
+message ProposalAcceptedEvent {
+  string proposal_id = 1;
+  string gig_id = 2;
+  string freelancer_id = 3;
+  google.protobuf.Timestamp occurred_at = 4;
+}
+
+// ─── API Shapes ───────────────────────────────────────────────────────────────
+
+message CreateProposalRequest {
+  string gig_id = 1;
+  string cover_letter = 2;
+  int32 estimated_days = 3;
+}
+
+message GetProposalsRequest {
+  string gig_id = 1;
+  common.v1.PaginationRequest pagination = 2;
+}
+
+message GetProposalsResponse {
+  repeated Proposal proposals = 1;
+  common.v1.PaginationMeta pagination = 2;
+}
+
+message AcceptProposalRequest {
+  string proposal_id = 1;
+}
+
+message WithdrawProposalRequest {
+  string proposal_id = 1;
+}
+
+// ─── Service ─────────────────────────────────────────────────────────────────
+
+service ProposalService {
+  rpc CreateProposal(CreateProposalRequest) returns (Proposal);
+  rpc GetProposals(GetProposalsRequest) returns (GetProposalsResponse);
+  rpc AcceptProposal(AcceptProposalRequest) returns (Proposal);
+  rpc WithdrawProposal(WithdrawProposalRequest) returns (Proposal);
+}

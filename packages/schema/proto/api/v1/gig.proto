@@ -11,12 +11,18 @@ option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/gener
 
 enum GigStatus {
   GIG_STATUS_UNSPECIFIED = 0;
-  GIG_STATUS_DRAFT = 1;
-  GIG_STATUS_OPEN = 2;
-  GIG_STATUS_IN_PROGRESS = 3;
-  GIG_STATUS_COMPLETED = 4;
-  GIG_STATUS_CANCELLED = 5;
-  GIG_STATUS_DISPUTED = 6;
+  GIG_STATUS_DRAFT = 1;       // created, not yet funded
+  GIG_STATUS_OPEN = 2;        // funded, accepting proposals
+  GIG_STATUS_IN_PROGRESS = 3; // freelancer assigned, work underway
+  GIG_STATUS_COMPLETED = 4;   // all milestones paid
+  GIG_STATUS_CANCELLED = 5;   // cancelled before completion
+  GIG_STATUS_DISPUTED = 6;    // active dispute on a milestone
+}
+
+enum Currency {
+  CURRENCY_UNSPECIFIED = 0;
+  CURRENCY_ETH = 1;
+  CURRENCY_USDC = 2;
 }
 
 // ─── Domain Entity ────────────────────────────────────────────────────────────
@@ -24,16 +30,24 @@ enum GigStatus {
 message Gig {
   string id = 1;
   string client_id = 2;
-  string freelancer_id = 3;  // empty until a freelancer is selected
+  string freelancer_id = 3;    // empty until a proposal is accepted
   string title = 4;
   string description = 5;
-  // Total budget in wei (on-chain denomination)
-  string total_amount_wei = 6;
-  string contract_address = 7;  // Base L2 escrow contract address
-  GigStatus status = 8;
-  repeated string tags = 9;
-  google.protobuf.Timestamp created_at = 10;
-  google.protobuf.Timestamp updated_at = 11;
+  // Total budget in wei (ETH) or smallest unit (USDC = 6 decimals)
+  string total_amount = 6;
+  Currency currency = 7;
+  // For USDC: the ERC-20 contract address on Base L2.
+  // For ETH: empty (native asset, no contract).
+  string token_address = 8;
+  // Base L2 GigEscrow contract address — set after client funds
+  string contract_address = 9;
+  GigStatus status = 10;
+  repeated string tags = 11;
+  repeated string required_skills = 12;
+  // Optional hard deadline for the full gig
+  google.protobuf.Timestamp deadline = 13;
+  google.protobuf.Timestamp created_at = 14;
+  google.protobuf.Timestamp updated_at = 15;
 }
 
 // ─── Events ──────────────────────────────────────────────────────────────────
@@ -49,8 +63,9 @@ message GigFundedEvent {
   string gig_id = 1;
   string client_id = 2;
   string contract_address = 3;
-  string total_amount_wei = 4;
-  google.protobuf.Timestamp occurred_at = 5;
+  string total_amount = 4;
+  Currency currency = 5;
+  google.protobuf.Timestamp occurred_at = 6;
 }
 
 message GigCompletedEvent {
@@ -65,8 +80,12 @@ message GigCompletedEvent {
 message CreateGigRequest {
   string title = 1;
   string description = 2;
-  string total_amount_wei = 3;
-  repeated string tags = 4;
+  string total_amount = 3;
+  Currency currency = 4;
+  string token_address = 5;  // required if currency = USDC
+  repeated string tags = 6;
+  repeated string required_skills = 7;
+  google.protobuf.Timestamp deadline = 8;
 }
 
 message GetGigRequest {
@@ -78,6 +97,9 @@ message GetGigsRequest {
   GigStatus status_filter = 2;
   string client_id_filter = 3;
   string freelancer_id_filter = 4;
+  Currency currency_filter = 5;
+  // Filter by required skill
+  string skill_filter = 6;
 }
 
 message GetGigsResponse {

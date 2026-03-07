@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/api/v1;apiv1";
+
+// ─── Domain Entity ────────────────────────────────────────────────────────────
+
+// DB cache of on-chain reputation data. One record per user (1:1).
+// Updated whenever a milestone is completed or a dispute is resolved on-chain.
+// Read from here for UI; sync from chain via background job.
+message Reputation {
+  string id = 1;
+  string user_id = 2;
+  // Wallet address this reputation is anchored to on-chain
+  string wallet_address = 3;
+  // Gigs completed as a freelancer (verified on-chain)
+  int32 gigs_completed = 4;
+  // Gigs posted as a client
+  int32 gigs_as_client = 5;
+  // Cumulative earnings in wei/smallest unit (freelancer)
+  string total_earned = 6;
+  // Average AI quality score across all reviewed submissions (0–100)
+  int32 average_ai_score = 7;
+  // Percentage of milestones that resulted in a dispute (0–100)
+  int32 dispute_rate_pct = 8;
+  // Average rating received from counterparties (scaled x100, e.g. 450 = 4.50)
+  int32 average_rating_x100 = 9;
+  // Total number of ratings received
+  int32 rating_count = 10;
+  // When this record was last synced from the on-chain contract
+  google.protobuf.Timestamp last_synced_at = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+}
+
+// ─── API Shapes ───────────────────────────────────────────────────────────────
+
+message GetReputationRequest {
+  string user_id = 1;
+}
+
+// ─── Service ─────────────────────────────────────────────────────────────────
+
+service ReputationService {
+  rpc GetReputation(GetReputationRequest) returns (Reputation);
+}

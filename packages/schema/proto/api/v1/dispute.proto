@@ -1,0 +1,113 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/api/v1;apiv1";
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum DisputeStatus {
+  DISPUTE_STATUS_UNSPECIFIED = 0;
+  DISPUTE_STATUS_OPEN = 1;         // just raised, AI generating evidence
+  DISPUTE_STATUS_DISCUSSION = 2;   // 3-day discussion window open
+  DISPUTE_STATUS_ARBITRATION = 3;  // escalated to community arbitrators
+  DISPUTE_STATUS_RESOLVED = 4;     // decided, contract called
+}
+
+enum DisputeResolution {
+  DISPUTE_RESOLUTION_UNSPECIFIED = 0;
+  DISPUTE_RESOLUTION_PAY_FREELANCER = 1;  // funds released to freelancer
+  DISPUTE_RESOLUTION_REFUND_CLIENT = 2;   // funds returned to client
+  DISPUTE_RESOLUTION_SPLIT = 3;           // partial split (arbitration outcome)
+}
+
+// ─── Domain Entity ────────────────────────────────────────────────────────────
+
+// One dispute per milestone maximum. Raised by either client or freelancer.
+message Dispute {
+  string id = 1;
+  string milestone_id = 2;
+  string gig_id = 3;
+  string raised_by_user_id = 4;
+  string reason = 5;
+  DisputeStatus status = 6;
+  // AI-generated summary of the evidence (set asynchronously after OPEN)
+  string ai_evidence_summary = 7;
+  DisputeResolution resolution = 8;
+  // If SPLIT: how much goes to freelancer (remainder goes to client)
+  string freelancer_split_amount = 9;
+  // TX hash of the on-chain resolution call
+  string resolution_tx_hash = 10;
+  // 3-day discussion window closes at this time
+  google.protobuf.Timestamp discussion_deadline = 11;
+  google.protobuf.Timestamp resolved_at = 12;
+  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp updated_at = 14;
+}
+
+// Messages posted during the discussion window
+message DisputeMessage {
+  string id = 1;
+  string dispute_id = 2;
+  string user_id = 3;
+  string content = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
+// ─── Events ──────────────────────────────────────────────────────────────────
+
+message DisputeRaisedEvent {
+  string dispute_id = 1;
+  string milestone_id = 2;
+  string gig_id = 3;
+  string raised_by_user_id = 4;
+  google.protobuf.Timestamp occurred_at = 5;
+}
+
+message DisputeResolvedEvent {
+  string dispute_id = 1;
+  string milestone_id = 2;
+  DisputeResolution resolution = 3;
+  string resolution_tx_hash = 4;
+  google.protobuf.Timestamp occurred_at = 5;
+}
+
+// ─── API Shapes ───────────────────────────────────────────────────────────────
+
+message RaiseDisputeRequest {
+  string milestone_id = 1;
+  string reason = 2;
+}
+
+message GetDisputeRequest {
+  string id = 1;
+}
+
+message GetDisputeByMilestoneRequest {
+  string milestone_id = 1;
+}
+
+message PostDisputeMessageRequest {
+  string dispute_id = 1;
+  string content = 2;
+}
+
+message GetDisputeMessagesRequest {
+  string dispute_id = 1;
+}
+
+message GetDisputeMessagesResponse {
+  repeated DisputeMessage messages = 1;
+}
+
+// ─── Service ─────────────────────────────────────────────────────────────────
+
+service DisputeService {
+  rpc RaiseDispute(RaiseDisputeRequest) returns (Dispute);
+  rpc GetDispute(GetDisputeRequest) returns (Dispute);
+  rpc GetDisputeByMilestone(GetDisputeByMilestoneRequest) returns (Dispute);
+  rpc PostDisputeMessage(PostDisputeMessageRequest) returns (DisputeMessage);
+  rpc GetDisputeMessages(GetDisputeMessagesRequest) returns (GetDisputeMessagesResponse);
+}

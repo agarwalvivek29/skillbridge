@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/api/v1;apiv1";
+
+// ─── Domain Entity ────────────────────────────────────────────────────────────
+
+// Ephemeral nonce issued for SIWE (Sign-In with Ethereum).
+// Stored in DB keyed by wallet_address, deleted on successful auth.
+message AuthNonce {
+  string wallet_address = 1;
+  string nonce = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+// ─── API Shapes ───────────────────────────────────────────────────────────────
+
+// Step 1: client requests a nonce for a given wallet address
+message GetNonceRequest {
+  string wallet_address = 1;
+}
+
+message GetNonceResponse {
+  string nonce = 1;
+  google.protobuf.Timestamp expires_at = 2;
+}
+
+// Step 2: client signs the nonce and submits signature
+message WalletLoginRequest {
+  string wallet_address = 1;
+  string signature = 2;
+  // The full SIWE message that was signed
+  string message = 3;
+}
+
+message EmailRegisterRequest {
+  string email = 1;
+  string password = 2;
+  string name = 3;
+  // FREELANCER or CLIENT
+  string role = 4;
+}
+
+message EmailLoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  string access_token = 1;
+  string token_type = 2;  // always "Bearer"
+  int64 expires_in = 3;   // seconds
+  string user_id = 4;
+}
+
+// ─── Service ─────────────────────────────────────────────────────────────────
+
+service AuthService {
+  rpc GetNonce(GetNonceRequest) returns (GetNonceResponse);
+  rpc WalletLogin(WalletLoginRequest) returns (AuthResponse);
+  rpc EmailRegister(EmailRegisterRequest) returns (AuthResponse);
+  rpc EmailLogin(EmailLoginRequest) returns (AuthResponse);
+}

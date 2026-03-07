@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/api/v1;apiv1";
+
+// ─── Domain Entity ────────────────────────────────────────────────────────────
+
+// Mutual ratings left after a gig completes.
+// Each gig produces exactly 2 Review records:
+//   - client reviews freelancer
+//   - freelancer reviews client
+// Both are hidden until both parties submit (or the 7-day window closes).
+message Review {
+  string id = 1;
+  string gig_id = 2;
+  // Who is leaving this review
+  string reviewer_id = 3;
+  // Who is being reviewed
+  string reviewee_id = 4;
+  // 1–5 stars
+  int32 rating = 5;
+  // Optional written review (max 500 chars)
+  string comment = 6;
+  // Hidden until both parties submit or window closes
+  bool is_visible = 7;
+  google.protobuf.Timestamp created_at = 8;
+}
+
+// ─── Events ──────────────────────────────────────────────────────────────────
+
+message ReviewSubmittedEvent {
+  string review_id = 1;
+  string gig_id = 2;
+  string reviewer_id = 3;
+  string reviewee_id = 4;
+  int32 rating = 5;
+  google.protobuf.Timestamp occurred_at = 6;
+}
+
+// ─── API Shapes ───────────────────────────────────────────────────────────────
+
+message CreateReviewRequest {
+  string gig_id = 1;
+  // reviewee_id inferred from gig: if caller is client → reviewee is freelancer, and vice versa
+  int32 rating = 2;
+  string comment = 3;
+}
+
+message GetReviewsRequest {
+  // Get all reviews for a given user (as reviewee)
+  string reviewee_id = 1;
+}
+
+message GetReviewsResponse {
+  repeated Review reviews = 1;
+  // Computed average (scaled x100, e.g. 450 = 4.50 stars)
+  int32 average_rating_x100 = 2;
+}
+
+// ─── Service ─────────────────────────────────────────────────────────────────
+
+service ReviewService {
+  rpc CreateReview(CreateReviewRequest) returns (Review);
+  rpc GetReviews(GetReviewsRequest) returns (GetReviewsResponse);
+}

@@ -15,6 +15,7 @@ enum UserStatus {
   USER_STATUS_SUSPENDED = 2;
 }
 
+// Mutually exclusive for now. A user is either a freelancer or a client.
 enum UserRole {
   USER_ROLE_UNSPECIFIED = 0;
   USER_ROLE_FREELANCER = 1;
@@ -33,10 +34,15 @@ message User {
   UserRole role = 6;
   string avatar_url = 7;
   string bio = 8;
-  google.protobuf.Timestamp created_at = 9;
-  google.protobuf.Timestamp updated_at = 10;
+  // Freelancer-only fields (empty for clients)
+  repeated string skills = 9;
+  // Preferred hourly rate in wei (0 = not set)
+  string hourly_rate_wei = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
 }
 
+// Safe public view — excludes password_hash and internal fields
 message UserPublic {
   string id = 1;
   string name = 2;
@@ -44,7 +50,9 @@ message UserPublic {
   UserRole role = 4;
   string avatar_url = 5;
   string bio = 6;
-  google.protobuf.Timestamp created_at = 7;
+  repeated string skills = 7;
+  string hourly_rate_wei = 8;
+  google.protobuf.Timestamp created_at = 9;
 }
 
 // ─── Events ──────────────────────────────────────────────────────────────────
@@ -65,6 +73,15 @@ message CreateUserRequest {
   UserRole role = 4;
 }
 
+message UpdateUserRequest {
+  string id = 1;
+  string name = 2;
+  string avatar_url = 3;
+  string bio = 4;
+  repeated string skills = 5;
+  string hourly_rate_wei = 6;
+}
+
 message GetUserRequest {
   string id = 1;
 }
@@ -72,6 +89,8 @@ message GetUserRequest {
 message GetUsersRequest {
   common.v1.PaginationRequest pagination = 1;
   UserRole role_filter = 2;
+  // Filter by skill (freelancer discovery)
+  string skill_filter = 3;
 }
 
 message GetUsersResponse {
@@ -85,4 +104,5 @@ service UserService {
   rpc CreateUser(CreateUserRequest) returns (UserPublic);
   rpc GetUser(GetUserRequest) returns (UserPublic);
   rpc GetUsers(GetUsersRequest) returns (GetUsersResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UserPublic);
 }

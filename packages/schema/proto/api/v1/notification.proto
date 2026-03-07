@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/api/v1;apiv1";
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum NotificationType {
+  NOTIFICATION_TYPE_UNSPECIFIED = 0;
+  // Gig lifecycle
+  NOTIFICATION_TYPE_GIG_FUNDED = 1;
+  NOTIFICATION_TYPE_GIG_CANCELLED = 2;
+  NOTIFICATION_TYPE_GIG_COMPLETED = 3;
+  // Proposals
+  NOTIFICATION_TYPE_PROPOSAL_RECEIVED = 4;   // → client
+  NOTIFICATION_TYPE_PROPOSAL_ACCEPTED = 5;   // → freelancer
+  NOTIFICATION_TYPE_PROPOSAL_REJECTED = 6;   // → freelancer
+  // Submissions
+  NOTIFICATION_TYPE_SUBMISSION_RECEIVED = 7; // → client
+  NOTIFICATION_TYPE_REVISION_REQUESTED = 8;  // → freelancer
+  // Milestone
+  NOTIFICATION_TYPE_MILESTONE_APPROVED = 9;  // → freelancer
+  NOTIFICATION_TYPE_FUNDS_RELEASED = 10;     // → freelancer
+  // AI review
+  NOTIFICATION_TYPE_REVIEW_COMPLETE = 11;    // → both
+  // Disputes
+  NOTIFICATION_TYPE_DISPUTE_RAISED = 12;     // → both
+  NOTIFICATION_TYPE_DISPUTE_RESOLVED = 13;   // → both
+  // Ratings
+  NOTIFICATION_TYPE_REVIEW_RECEIVED = 14;    // → reviewee
+}
+
+// ─── Domain Entity ────────────────────────────────────────────────────────────
+
+message Notification {
+  string id = 1;
+  string user_id = 2;
+  NotificationType type = 3;
+  // Context-specific data stored as JSON (e.g. gig_id, amount, etc.)
+  // Frontend uses this to render the notification message and deep-link
+  string payload_json = 4;
+  // null = unread
+  google.protobuf.Timestamp read_at = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+// ─── API Shapes ───────────────────────────────────────────────────────────────
+
+message GetNotificationsRequest {
+  string user_id = 1;
+  // If true, return only unread notifications
+  bool unread_only = 2;
+}
+
+message GetNotificationsResponse {
+  repeated Notification notifications = 1;
+  int32 unread_count = 2;
+}
+
+message MarkReadRequest {
+  // Mark a specific notification as read
+  string notification_id = 1;
+}
+
+message MarkAllReadRequest {
+  string user_id = 1;
+}
+
+// ─── Service ─────────────────────────────────────────────────────────────────
+
+service NotificationService {
+  rpc GetNotifications(GetNotificationsRequest) returns (GetNotificationsResponse);
+  rpc MarkRead(MarkReadRequest) returns (Notification);
+  rpc MarkAllRead(MarkAllReadRequest) returns (GetNotificationsResponse);
+}

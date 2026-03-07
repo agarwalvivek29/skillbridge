@@ -10,12 +10,12 @@ option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/gener
 
 enum EscrowStatus {
   ESCROW_STATUS_UNSPECIFIED = 0;
-  ESCROW_STATUS_DEPLOYING = 1;
-  ESCROW_STATUS_FUNDED = 2;
-  ESCROW_STATUS_PARTIALLY_RELEASED = 3;
-  ESCROW_STATUS_SETTLED = 4;
-  ESCROW_STATUS_DISPUTED = 5;
-  ESCROW_STATUS_REFUNDED = 6;
+  ESCROW_STATUS_DEPLOYING = 1;           // contract being deployed
+  ESCROW_STATUS_FUNDED = 2;              // client deposited funds
+  ESCROW_STATUS_PARTIALLY_RELEASED = 3;  // some milestones paid
+  ESCROW_STATUS_SETTLED = 4;             // all milestones paid
+  ESCROW_STATUS_DISPUTED = 5;            // active dispute, funds locked
+  ESCROW_STATUS_REFUNDED = 6;            // cancelled, funds returned to client
 }
 
 // ─── Domain Entity ────────────────────────────────────────────────────────────
@@ -23,20 +23,28 @@ enum EscrowStatus {
 message EscrowContract {
   string id = 1;
   string gig_id = 2;
-  // Contract address on Base L2
+  // Deployed GigEscrow contract address on Base L2
   string chain_address = 3;
-  // Network identifier ("base-mainnet" or "base-sepolia")
+  // "base-mainnet" or "base-sepolia"
   string network = 4;
-  // Total amount locked in wei
-  string total_amount_wei = 5;
-  // Amount released so far in wei
-  string released_amount_wei = 6;
+  // Total amount locked — in wei (ETH) or 6-decimal units (USDC)
+  string total_amount = 5;
+  // Amount released so far
+  string released_amount = 6;
   EscrowStatus status = 7;
+  // ETH: empty string (native asset). USDC: ERC-20 contract address on Base L2.
+  string token_address = 8;
+  // Platform fee in basis points (500 = 5%). Stored in the contract at deploy time.
+  int32 platform_fee_basis_points = 9;
+  // Computed platform fee amount (total_amount * platform_fee_basis_points / 10000)
+  string platform_fee_amount = 10;
+  // Wallet that receives the platform fee on each completeMilestone call
+  string platform_fee_recipient = 11;
   // Transaction hash of the funding tx
-  string funding_tx_hash = 8;
-  google.protobuf.Timestamp created_at = 9;
-  google.protobuf.Timestamp funded_at = 10;
-  google.protobuf.Timestamp settled_at = 11;
+  string funding_tx_hash = 12;
+  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp funded_at = 14;
+  google.protobuf.Timestamp settled_at = 15;
 }
 
 // ─── Events ──────────────────────────────────────────────────────────────────
@@ -45,9 +53,10 @@ message EscrowFundedEvent {
   string escrow_id = 1;
   string gig_id = 2;
   string chain_address = 3;
-  string total_amount_wei = 4;
-  string funding_tx_hash = 5;
-  google.protobuf.Timestamp occurred_at = 6;
+  string total_amount = 4;
+  string token_address = 5;
+  string funding_tx_hash = 6;
+  google.protobuf.Timestamp occurred_at = 7;
 }
 
 message FundsReleasedEvent {
@@ -55,9 +64,11 @@ message FundsReleasedEvent {
   string gig_id = 2;
   string milestone_id = 3;
   string freelancer_address = 4;
-  string amount_wei = 5;
-  string tx_hash = 6;
-  google.protobuf.Timestamp occurred_at = 7;
+  // Amount received by freelancer (after platform fee deduction)
+  string net_amount = 5;
+  string platform_fee_amount = 6;
+  string tx_hash = 7;
+  google.protobuf.Timestamp occurred_at = 8;
 }
 
 // ─── API Shapes ───────────────────────────────────────────────────────────────

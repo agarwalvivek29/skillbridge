@@ -10,12 +10,13 @@ option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/gener
 
 enum MilestoneStatus {
   MILESTONE_STATUS_UNSPECIFIED = 0;
-  MILESTONE_STATUS_PENDING = 1;
-  MILESTONE_STATUS_SUBMITTED = 2;
-  MILESTONE_STATUS_UNDER_REVIEW = 3;
-  MILESTONE_STATUS_APPROVED = 4;
-  MILESTONE_STATUS_REVISION_REQUESTED = 5;
-  MILESTONE_STATUS_PAID = 6;
+  MILESTONE_STATUS_PENDING = 1;            // waiting for freelancer to start
+  MILESTONE_STATUS_SUBMITTED = 2;          // freelancer submitted, awaiting review
+  MILESTONE_STATUS_UNDER_REVIEW = 3;       // AI review in progress
+  MILESTONE_STATUS_APPROVED = 4;           // approved, fund release triggered
+  MILESTONE_STATUS_REVISION_REQUESTED = 5; // client or AI rejected, awaiting resubmission
+  MILESTONE_STATUS_PAID = 6;               // funds released on-chain
+  MILESTONE_STATUS_DISPUTED = 7;           // dispute raised, funds locked
 }
 
 // ─── Domain Entity ────────────────────────────────────────────────────────────
@@ -25,17 +26,21 @@ message Milestone {
   string gig_id = 2;
   string title = 3;
   string description = 4;
-  // Acceptance criteria (markdown or plain text)
+  // Acceptance criteria in markdown — fed directly to the AI reviewer as the evaluation spec
   string acceptance_criteria = 5;
-  // Amount in wei allocated to this milestone
-  string amount_wei = 6;
-  // Order within the gig (1-indexed)
+  // Amount in wei (ETH) or smallest unit (USDC). Must sum to gig.total_amount.
+  string amount = 6;
+  // 1-indexed position within the gig
   int32 order = 7;
   MilestoneStatus status = 8;
-  // Index in the on-chain contract milestones array
+  // Position in the on-chain contract milestones array (0-indexed)
   int32 contract_index = 9;
-  google.protobuf.Timestamp created_at = 10;
-  google.protobuf.Timestamp updated_at = 11;
+  // How many revision cycles have happened on this milestone
+  int32 revision_count = 10;
+  // Optional per-milestone deadline
+  google.protobuf.Timestamp due_date = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
 }
 
 // ─── Events ──────────────────────────────────────────────────────────────────
@@ -51,8 +56,15 @@ message MilestoneApprovedEvent {
   string milestone_id = 1;
   string gig_id = 2;
   string freelancer_id = 3;
-  string amount_wei = 4;
+  string amount = 4;
   google.protobuf.Timestamp occurred_at = 5;
+}
+
+message MilestoneDisputedEvent {
+  string milestone_id = 1;
+  string gig_id = 2;
+  string raised_by_user_id = 3;
+  google.protobuf.Timestamp occurred_at = 4;
 }
 
 // ─── API Shapes ───────────────────────────────────────────────────────────────
@@ -62,8 +74,9 @@ message CreateMilestoneRequest {
   string title = 2;
   string description = 3;
   string acceptance_criteria = 4;
-  string amount_wei = 5;
+  string amount = 5;
   int32 order = 6;
+  google.protobuf.Timestamp due_date = 7;
 }
 
 message GetMilestonesRequest {
