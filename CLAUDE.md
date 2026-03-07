@@ -53,6 +53,7 @@ Before starting any task, you MUST:
 - **Never create a new service manually.** Always use `scripts/new-service.sh`.
 - **Prefer editing existing files over creating new ones.**
 - **Never skip git hooks.** Do not use `--no-verify` or `--no-gpg-sign`.
+- **Never add AI attribution.** Do not add `Co-Authored-By: Claude` or any mention of Claude, Anthropic, or AI tooling in commit messages or PR bodies.
 - **Never commit to `main` directly.** All changes go through a PR on a feature branch.
 - **Never hardcode secrets.** Use `.env` files (gitignored). Update `.env.example` with placeholder values.
 - **Never modify `infra/docker-compose.yml` or AWS configs without explicit human approval.**

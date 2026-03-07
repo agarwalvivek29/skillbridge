@@ -51,7 +51,7 @@ Triggers for an ADR:
 
 ## 4. Conventional Commits
 
-**All commits must follow the Conventional Commits specification.**
+**All commits must follow the Conventional Commits specification. No AI authorship attribution.**
 
 Format: `<type>(<scope>): <description>`
 
@@ -68,6 +68,11 @@ Allowed types:
 Scope is the service or package name (e.g., `feat(auth-service): add JWT refresh endpoint`).
 
 This is enforced by the `commit-msg` git hook. Hooks must **never** be skipped (`--no-verify` is forbidden unless explicitly approved in an ADR).
+
+**No AI attribution in commits or PRs:**
+- Never add `Co-Authored-By: Claude` or any AI model as a co-author in commit messages
+- Never mention Claude, Anthropic, or any AI tool in PR titles, PR bodies, or commit messages
+- Commits and PRs represent the team's work — AI tooling is an implementation detail, not a contributor
 
 ---
 
@@ -256,4 +261,5 @@ When a new service, module, route, or model is created (via `scripts/new-service
 - [ ] `.env.example` updated if new env vars were added
 - [ ] No secrets committed
 - [ ] No scaffold/example/placeholder code remaining in the diff (Rule 14)
+- [ ] No AI attribution (`Co-Authored-By: Claude`) in any commit message or PR body (Rule 4)
 - [ ] `docker compose up` still works
