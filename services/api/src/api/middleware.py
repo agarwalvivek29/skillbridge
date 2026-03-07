@@ -32,7 +32,10 @@ _EXEMPT_PREFIXES = (
 
 # (method, path_prefix) pairs that bypass auth for specific HTTP methods only
 # Used for public read endpoints on otherwise protected resources
-_EXEMPT_METHOD_PREFIXES: tuple[tuple[str, str], ...] = (("GET", "/v1/gigs"),)
+_EXEMPT_METHOD_PREFIXES: tuple[tuple[str, str], ...] = (
+    ("GET", "/v1/gigs"),
+    ("GET", "/v1/portfolio"),
+)
 
 
 class AuthMiddleware(BaseHTTPMiddleware):

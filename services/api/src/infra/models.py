@@ -142,3 +142,33 @@ class MilestoneModel(Base):
     )
 
     gig: Mapped["GigModel"] = relationship("GigModel", back_populates="milestones")
+
+
+class PortfolioItemModel(Base):
+    __tablename__ = "portfolio_items"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+    title: Mapped[str] = mapped_column(Text, nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    # JSON type works in both PostgreSQL and SQLite (test env)
+    file_keys: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    external_url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    tags: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    # If set and the linked gig is COMPLETED, a "Verified Delivery" badge is shown
+    verified_gig_id: Mapped[str | None] = mapped_column(
+        String(36), ForeignKey("gigs.id", ondelete="SET NULL"), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
