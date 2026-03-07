@@ -1,4 +1,4 @@
-name: project
+name: skillbridge
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Local Development Infrastructure
@@ -17,39 +17,55 @@ networks:
     driver: bridge
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Volumes (uncomment as needed)
+# Volumes
 # ─────────────────────────────────────────────────────────────────────────────
 volumes:
-  # postgres-data:
+  postgres-data:
+  redis-data:
   # mongo-data:
-  # redis-data:
   # kafka-data:
   # zookeeper-data:
   # rabbitmq-data:
 
 services:
-
   # ─── PostgreSQL ─────────────────────────────────────────────────────────────
-  # Uncomment to enable. Default credentials — change in .env for shared envs.
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-skillbridge}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ─── Redis ──────────────────────────────────────────────────────────────────
+  # Used for Celery task broker (ai-reviewer) and caching.
   #
-  # postgres:
-  #   image: postgres:17-alpine
-  #   restart: unless-stopped
-  #   environment:
-  #     POSTGRES_USER: ${POSTGRES_USER:-postgres}
-  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-  #     POSTGRES_DB: ${POSTGRES_DB:-app}
-  #   ports:
-  #     - "${POSTGRES_PORT:-5432}:5432"
-  #   volumes:
-  #     - postgres-data:/var/lib/postgresql/data
-  #   networks:
-  #     - app-network
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
-  #     interval: 5s
-  #     timeout: 5s
-  #     retries: 5
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD:-redis}
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis}", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   # ─── MongoDB ────────────────────────────────────────────────────────────────
   #
@@ -68,25 +84,6 @@ services:
   #     - app-network
   #   healthcheck:
   #     test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-  #     interval: 5s
-  #     timeout: 5s
-  #     retries: 5
-
-  # ─── Redis ──────────────────────────────────────────────────────────────────
-  # Used for caching, sessions, and/or as a simple queue.
-  #
-  # redis:
-  #   image: redis:7-alpine
-  #   restart: unless-stopped
-  #   command: redis-server --requirepass ${REDIS_PASSWORD:-redis}
-  #   ports:
-  #     - "${REDIS_PORT:-6379}:6379"
-  #   volumes:
-  #     - redis-data:/data
-  #   networks:
-  #     - app-network
-  #   healthcheck:
-  #     test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis}", "ping"]
   #     interval: 5s
   #     timeout: 5s
   #     retries: 5
@@ -144,30 +141,28 @@ services:
   #     retries: 5
 
   # ─── Application Services ───────────────────────────────────────────────────
-  # Add your application service stubs here.
-  # Run `./scripts/new-service.sh` to scaffold a service — it adds the stub for you.
+
+  # ─── api ────────────────────────────────────────────────────────────────────
+  # Uncomment to enable. Uses Dockerfile.dev for hot-reload.
   #
-  # Always use `Dockerfile.dev` (not `Dockerfile`) for local development.
-  # Dockerfile.dev has hot-reload enabled and is optimized for fast iteration.
-  # Dockerfile is for production builds only.
-  #
-  # Example:
-  # my-service:
+  # api:
   #   build:
-  #     context: ../services/my-service
-  #     dockerfile: Dockerfile.dev     # ← always Dockerfile.dev for local dev
+  #     context: ../services/api
+  #     dockerfile: Dockerfile.dev
   #   restart: unless-stopped
   #   env_file:
-  #     - ../services/my-service/.env
+  #     - ../services/api/.env
   #   environment:
-  #     DATABASE_URL: postgresql://postgres:postgres@postgres:5432/app
+  #     DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/skillbridge
   #   ports:
-  #     - "3001:3000"
+  #     - "${API_PORT:-8000}:8000"
   #   volumes:
-  #     - ../services/my-service/src:/app/src          # hot reload — source
-  #     - ../packages/schema/generated:/schema/generated # schema types read-only
+  #     - ../services/api/src:/app/src              # hot reload
+  #     - ../packages/schema/generated:/schema/generated  # schema types
   #   networks:
   #     - app-network
   #   depends_on:
   #     postgres:
+  #       condition: service_healthy
+  #     redis:
   #       condition: service_healthy

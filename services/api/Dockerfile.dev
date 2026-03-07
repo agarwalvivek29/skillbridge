@@ -1,0 +1,21 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# DEVELOPMENT Dockerfile — api
+#
+# Hot-reload enabled. Used exclusively for local development via docker-compose.
+# For production builds, use Dockerfile.
+#
+# Source code is mounted as a volume — changes are reflected without rebuild.
+# Choose ONE language section and delete the others.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Uses FastAPI dev server (uvicorn --reload under the hood)
+FROM python:3.12-slim AS development
+WORKDIR /app
+RUN pip install uv
+COPY pyproject.toml uv.lock* ./
+RUN uv sync --frozen
+# Source is mounted as a volume
+EXPOSE 8000
+CMD ["uv", "run", "fastapi", "dev", "src/api/main.py", \
+     "--host", "0.0.0.0", "--port", "8000"]
+

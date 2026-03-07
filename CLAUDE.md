@@ -5,27 +5,10 @@
 
 ---
 
-## ⚠️ Bootstrap Check — Read This First
-
-**Before anything else: does `BOOTSTRAP.md` exist in this repository?**
-
-```bash
-ls BOOTSTRAP.md 2>/dev/null && echo "EXISTS" || echo "NOT FOUND"
-```
-
-| Result | What to do |
-|---|---|
-| `EXISTS` | **Stop.** Read `BOOTSTRAP.md` and complete onboarding before any other work. The project is not initialized. |
-| `NOT FOUND` | Continue reading this file. The project is live. |
-
----
-
-<!-- POST-BOOTSTRAP: After completing BOOTSTRAP.md and deleting it, uncomment the block below
-     and delete the ⚠️ Bootstrap Check section above.
-
 ## Project Context
 
 Read these before every session:
+
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** — system overview, service map, data flow, tech stack, constraints
 - **[PRODUCT.md](PRODUCT.md)** — product vision, target users, core features, roadmap
 
@@ -33,8 +16,6 @@ Read these before every session:
 > Tell the human: "Bootstrap was not completed — `ARCHITECTURE.md` and/or `PRODUCT.md` are missing.
 > Please re-run the bootstrap process (restore `BOOTSTRAP.md` from git and follow it) before starting any work."
 > Do not proceed with any task until both files exist.
-
--->
 
 ---
 
@@ -54,15 +35,18 @@ Before starting any task, you MUST:
 ## Workflow Gates
 
 ### Gate 1: Spec Gate
+
 - **Non-trivial features require a spec.** If `docs/specs/[ISSUE-NUMBER]-*.md` does not exist, create it using `docs/specs/TEMPLATE.md` before writing any implementation code.
 - Bug fixes, dependency updates, and documentation changes are exempt.
 
 ### Gate 2: Plan Gate
+
 - **Changes touching more than 2 files or introducing new architecture require an approved plan.**
 - Use `EnterPlanMode` to explore, design, and present your plan. Do not write production code during planning.
 - Exit planning only after the plan is approved by the user.
 
 ### Gate 3: ADR Gate
+
 - **Any architectural decision requires an ADR.** See `docs/adr/README.md` for what triggers an ADR.
 - Create the ADR in `docs/adr/[NNNN]-[title].md` before implementing the decision.
 
@@ -101,6 +85,7 @@ Maintain `.claude/memory/` to preserve context across sessions:
 - Topic files (e.g., `auth.md`, `database.md`) — detailed notes linked from `MEMORY.md`
 
 Write to memory when you discover:
+
 - Stable architectural patterns in this repo
 - Non-obvious conventions or gotchas
 - Important file paths and entry points
@@ -204,12 +189,12 @@ When in doubt: stop, explain what you were about to do, and ask.
 
 ## Quick Reference
 
-| Situation | Action |
-|---|---|
-| Feature request with no spec | Create spec first, then plan |
-| Architectural decision needed | Create ADR before implementing |
-| Task touches >2 files | EnterPlanMode |
-| Unclear requirements | AskUserQuestion — never assume |
-| Potential secret in code | Flag it, do not commit |
-| CI check failing | Fix root cause, never use --no-verify |
-| New service needed | Run `scripts/new-service.sh` |
+| Situation                     | Action                                |
+| ----------------------------- | ------------------------------------- |
+| Feature request with no spec  | Create spec first, then plan          |
+| Architectural decision needed | Create ADR before implementing        |
+| Task touches >2 files         | EnterPlanMode                         |
+| Unclear requirements          | AskUserQuestion — never assume        |
+| Potential secret in code      | Flag it, do not commit                |
+| CI check failing              | Fix root cause, never use --no-verify |
+| New service needed            | Run `scripts/new-service.sh`          |

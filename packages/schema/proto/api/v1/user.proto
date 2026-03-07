@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/api/v1;apiv1";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// User domain — SkillBridge
+//
+// Defines the User entity, auth-related request/response shapes, and events.
+// Used by: services/api (primary), services/web (frontend types)
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum UserStatus {
+  USER_STATUS_UNSPECIFIED = 0;
+  USER_STATUS_PENDING_VERIFICATION = 1;
+  USER_STATUS_ACTIVE = 2;
+  USER_STATUS_INACTIVE = 3;
+  USER_STATUS_BANNED = 4;
+}
+
+enum UserRole {
+  USER_ROLE_UNSPECIFIED = 0;
+  USER_ROLE_MEMBER = 1;
+  USER_ROLE_ADMIN = 2;
+  USER_ROLE_SUPER_ADMIN = 3;
+}
+
+// ─── DB / Domain Entity ───────────────────────────────────────────────────────
+
+// User is the canonical user model.
+// At least one of email or wallet_address must be non-empty.
+message User {
+  string id = 1;
+
+  // Nullable — wallet-only users may not have an email
+  string email = 2;
+
+  string name = 3;
+
+  // Nullable — email-only users may not have a wallet
+  // Stored in EIP-55 checksummed form (mixed case)
+  string wallet_address = 4;
+
+  UserStatus status = 5;
+  UserRole role = 6;
+
+  // password_hash is stored in DB but NEVER included in API responses
+  // Use UserPublic for external-facing responses
+
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+}
+
+// UserPublic is the safe view of User for API responses.
+// Sensitive fields (password_hash, internal flags) are excluded.
+message UserPublic {
+  string id = 1;
+  string email = 2;
+  string name = 3;
+  string wallet_address = 4;
+  UserStatus status = 5;
+  UserRole role = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+// ─── SIWE Auth ────────────────────────────────────────────────────────────────
+
+// GetNonceRequest is the query params for GET /v1/auth/nonce
+message GetNonceRequest {
+  string address = 1;
+}
+
+// GetNonceResponse is returned by GET /v1/auth/nonce
+message GetNonceResponse {
+  string nonce = 1;
+  google.protobuf.Timestamp expires_at = 2;
+}
+
+// WalletLoginRequest is the body for POST /v1/auth/wallet
+message WalletLoginRequest {
+  // Full EIP-4361 SIWE message string
+  string message = 1;
+  // Ethereum signature (0x-prefixed hex)
+  string signature = 2;
+}
+
+// ─── Email Auth ───────────────────────────────────────────────────────────────
+
+// RegisterRequest is the body for POST /v1/auth/register
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
+  string name = 3;
+}
+
+// LoginRequest is the body for POST /v1/auth/login
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+// ─── Auth Response ────────────────────────────────────────────────────────────
+
+// AuthResponse is returned by all successful auth endpoints
+message AuthResponse {
+  string token = 1;
+  UserPublic user = 2;
+}
+
+// ─── Event Payloads ──────────────────────────────────────────────────────────
+
+message UserCreatedEvent {
+  string user_id = 1;
+  string email = 2;
+  string wallet_address = 3;
+  UserRole role = 4;
+  google.protobuf.Timestamp occurred_at = 5;
+}

@@ -7,6 +7,7 @@ ADRs capture significant architectural decisions made in this project, along wit
 ## What is an ADR?
 
 An ADR is a short document that records:
+
 - **The context**: What problem were we solving? What constraints existed?
 - **The decision**: What did we choose to do?
 - **The consequences**: What are the trade-offs? What becomes easier or harder?
@@ -18,6 +19,7 @@ ADRs are written **before** implementing the decision, not after.
 ## When to Write an ADR
 
 Write an ADR when making a decision that:
+
 - Affects more than one service
 - Changes or establishes a data layer (database choice, schema strategy)
 - Changes infrastructure (new AWS service, changing queue broker)
@@ -61,9 +63,10 @@ ADRs are **never deleted**. They are a historical record.
 
 ## Index
 
-| # | Title | Status | Date |
-|---|---|---|---|
-| [0001](./0001-monorepo-structure.md) | Monorepo with per-service isolation | Accepted | 2026-03-06 |
+| #                                    | Title                                                           | Status   | Date       |
+| ------------------------------------ | --------------------------------------------------------------- | -------- | ---------- |
+| [0001](./0001-monorepo-structure.md) | Monorepo with per-service isolation                             | Accepted | 2026-03-06 |
+| [0002](./0002-tech-stack.md)         | Primary tech stack (Python/FastAPI, PostgreSQL, Redis, Base L2) | Accepted | 2026-03-07 |
 
 ---
 
@@ -88,19 +91,24 @@ ADRs are **never deleted**. They are a historical record.
 ## Consequences
 
 ### Positive
+
 - [benefit 1]
 
 ### Negative
+
 - [drawback 1]
 
 ### Neutral
+
 - [trade-off 1]
 
 ## Alternatives Considered
 
 ### Option A: [Name]
+
 [Brief description and why it was rejected]
 
 ### Option B: [Name]
+
 [Brief description and why it was rejected]
 ```
