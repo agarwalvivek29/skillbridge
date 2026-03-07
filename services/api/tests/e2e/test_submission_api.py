@@ -185,6 +185,75 @@ class TestCreateSubmission:
         assert resp.status_code == 422
 
     @pytest.mark.asyncio
+    async def test_http_repo_url_rejected(
+        self, client: AsyncClient, db_session: AsyncSession
+    ):
+        """fix #6: HTTP (non-HTTPS) GitHub URLs must be rejected."""
+        _, fl_token, _, milestone_id = await _setup_in_progress_gig(client, db_session)
+        resp = await client.post(
+            f"/v1/milestones/{milestone_id}/submissions",
+            json={"repo_url": "http://github.com/user/repo"},
+            headers=_auth(fl_token),
+        )
+        assert resp.status_code == 422
+
+    @pytest.mark.asyncio
+    async def test_file_key_without_submissions_prefix_rejected(
+        self, client: AsyncClient, db_session: AsyncSession
+    ):
+        """fix #9: file_keys must start with 'submissions/'."""
+        _, fl_token, _, milestone_id = await _setup_in_progress_gig(client, db_session)
+        resp = await client.post(
+            f"/v1/milestones/{milestone_id}/submissions",
+            json={"file_keys": ["uploads/some-file.zip"]},
+            headers=_auth(fl_token),
+        )
+        assert resp.status_code == 422
+
+    @pytest.mark.asyncio
+    async def test_resubmission_onto_approved_submission_rejected(
+        self, client: AsyncClient, db_session: AsyncSession
+    ):
+        """fix #5: cannot chain a resubmission onto an APPROVED previous submission."""
+        from src.infra.models import SubmissionModel
+
+        with patch("src.domain.submission.enqueue_review"):
+            _, fl_token, _, milestone_id = await _setup_in_progress_gig(
+                client, db_session
+            )
+            first_resp = await client.post(
+                f"/v1/milestones/{milestone_id}/submissions",
+                json={"repo_url": "https://github.com/user/repo"},
+                headers=_auth(fl_token),
+            )
+            assert first_resp.status_code == 201
+            first_id = first_resp.json()["id"]
+
+            # Force first submission to APPROVED and milestone to REVISION_REQUESTED
+            await db_session.execute(
+                sa_update(SubmissionModel)
+                .where(SubmissionModel.id == first_id)
+                .values(status="APPROVED")
+            )
+            await db_session.execute(
+                sa_update(MilestoneModel)
+                .where(MilestoneModel.id == milestone_id)
+                .values(status="REVISION_REQUESTED")
+            )
+            await db_session.commit()
+
+            resp = await client.post(
+                f"/v1/milestones/{milestone_id}/submissions",
+                json={
+                    "repo_url": "https://github.com/user/repo-v2",
+                    "previous_submission_id": first_id,
+                },
+                headers=_auth(fl_token),
+            )
+        assert resp.status_code == 422
+        assert resp.json()["detail"]["code"] == "INVALID_PREVIOUS_SUBMISSION"
+
+    @pytest.mark.asyncio
     async def test_resubmission_increments_revision(
         self, client: AsyncClient, db_session: AsyncSession
     ):
@@ -299,3 +368,35 @@ class TestGetSubmission:
     async def test_get_unauthenticated_returns_401(self, client: AsyncClient):
         resp = await client.get("/v1/submissions/00000000-0000-0000-0000-000000000000")
         assert resp.status_code == 401
+
+    @pytest.mark.asyncio
+    async def test_unrelated_user_cannot_get_submission(
+        self, client: AsyncClient, db_session: AsyncSession
+    ):
+        """fix #4: a user who is neither the gig's client nor freelancer gets 403."""
+        with patch("src.domain.submission.enqueue_review"):
+            _, fl_token, _, milestone_id = await _setup_in_progress_gig(
+                client, db_session
+            )
+            create_resp = await client.post(
+                f"/v1/milestones/{milestone_id}/submissions",
+                json={"repo_url": "https://github.com/user/repo"},
+                headers=_auth(fl_token),
+            )
+        submission_id = create_resp.json()["id"]
+
+        # Register a third user unrelated to the gig
+        third_token, _ = await _register_and_get_token(
+            client,
+            {
+                "email": "third@example.com",
+                "password": "strongPass1",
+                "name": "Third User",
+                "role": "USER_ROLE_CLIENT",
+            },
+        )
+        resp = await client.get(
+            f"/v1/submissions/{submission_id}", headers=_auth(third_token)
+        )
+        assert resp.status_code == 403
+        assert resp.json()["detail"]["code"] == "FORBIDDEN"

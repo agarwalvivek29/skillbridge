@@ -21,12 +21,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.domain.submission import (
     SubmissionValidationError,
     create_submission,
-    get_submission,
+    get_submission_checked,
     list_submissions,
 )
 from src.infra.database import get_db
 from src.infra.models import SubmissionModel
-from src.infra.s3 import S3Error, generate_presigned_upload_url
+from src.infra.s3 import (
+    PRESIGNED_URL_EXPIRY_SECONDS,
+    S3Error,
+    generate_presigned_upload_url,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +38,7 @@ milestone_router = APIRouter(prefix="/v1/milestones", tags=["submissions"])
 submission_router = APIRouter(prefix="/v1/submissions", tags=["submissions"])
 
 _FREELANCER_ROLE = "USER_ROLE_FREELANCER"
+_FILE_KEY_PREFIX = "submissions/"
 
 # ---------------------------------------------------------------------------
 # Pydantic request / response models
@@ -48,17 +53,25 @@ class CreateSubmissionRequest(BaseModel):
 
     @field_validator("repo_url")
     @classmethod
-    def repo_url_must_be_github_or_gitlab(cls, v: Optional[str]) -> Optional[str]:
+    def repo_url_must_be_https_github_or_gitlab(cls, v: Optional[str]) -> Optional[str]:
         if v is None:
             return v
+        # HTTPS only — HTTP is not accepted (fix #6)
         allowed_prefixes = (
             "https://github.com/",
             "https://gitlab.com/",
-            "http://github.com/",
-            "http://gitlab.com/",
         )
         if not any(v.startswith(p) for p in allowed_prefixes):
             raise ValueError("repo_url must be a GitHub or GitLab HTTPS URL")
+        return v
+
+    @field_validator("file_keys")
+    @classmethod
+    def file_key_must_have_submissions_prefix(cls, v: list[str]) -> list[str]:
+        # Prevent clients from referencing arbitrary S3 keys (fix #9)
+        for key in v:
+            if not key.startswith(_FILE_KEY_PREFIX):
+                raise ValueError(f"each file_key must start with '{_FILE_KEY_PREFIX}'")
         return v
 
 
@@ -106,6 +119,8 @@ class UploadUrlRequest(BaseModel):
 class UploadUrlOut(BaseModel):
     upload_url: str
     file_key: str
+    # How long (in seconds) the presigned URL remains valid (fix #8)
+    expires_in_seconds: int
 
 
 # ---------------------------------------------------------------------------
@@ -152,7 +167,9 @@ def _handle_validation_error(exc: SubmissionValidationError) -> HTTPException:
         "FORBIDDEN": 403,
         "GIG_NOT_IN_PROGRESS": 409,
         "MILESTONE_NOT_SUBMITTABLE": 409,
+        "NO_DELIVERABLE": 400,  # fix #1: explicit entry, not relying on fallback
         "PREVIOUS_SUBMISSION_REQUIRED": 422,
+        "INVALID_PREVIOUS_SUBMISSION": 422,
     }
     http_status = status_map.get(exc.code, 400)
     return HTTPException(
@@ -236,9 +253,15 @@ async def get_submission_endpoint(
     request: Request,
     db: AsyncSession = Depends(get_db),
 ) -> SubmissionOut:
-    """Get a single submission by ID. Auth required."""
-    _require_auth(request)
-    submission = await get_submission(db, submission_id)
+    """
+    Get a single submission by ID.
+    Auth required; caller must be the gig's client or assigned freelancer (fix #4).
+    """
+    user_id = _require_auth(request)
+    try:
+        submission = await get_submission_checked(db, submission_id, user_id)
+    except SubmissionValidationError as exc:
+        raise _handle_validation_error(exc)
     if submission is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -275,4 +298,8 @@ async def get_upload_url_endpoint(
             },
         )
 
-    return UploadUrlOut(upload_url=upload_url, file_key=file_key)
+    return UploadUrlOut(
+        upload_url=upload_url,
+        file_key=file_key,
+        expires_in_seconds=PRESIGNED_URL_EXPIRY_SECONDS,
+    )
