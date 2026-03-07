@@ -6,6 +6,8 @@ Uses SQLite in-memory (aiosqlite) — no Docker dependency.
 
 from __future__ import annotations
 
+from typing import Optional
+
 import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -76,17 +78,22 @@ async def _seed_gig(db: AsyncSession, status: str = "COMPLETED") -> GigModel:
     return gig
 
 
-def _make_create_input(**overrides) -> CreatePortfolioItemInput:
-    defaults = dict(
-        title="My Portfolio Item",
-        description="A detailed description of my work",
-        file_keys=["portfolio/file1.pdf"],
-        external_url="https://github.com/example/project",
-        tags=["python", "fastapi"],
-        verified_gig_id=None,
+def _make_create_input(
+    title: str = "My Portfolio Item",
+    description: str = "A detailed description of my work",
+    file_keys: Optional[list[str]] = None,
+    external_url: Optional[str] = "https://github.com/example/project",
+    tags: Optional[list[str]] = None,
+    verified_gig_id: Optional[str] = None,
+) -> CreatePortfolioItemInput:
+    return CreatePortfolioItemInput(
+        title=title,
+        description=description,
+        file_keys=file_keys if file_keys is not None else ["portfolio/file1.pdf"],
+        external_url=external_url,
+        tags=tags if tags is not None else ["python", "fastapi"],
+        verified_gig_id=verified_gig_id,
     )
-    defaults.update(overrides)
-    return CreatePortfolioItemInput(**defaults)
 
 
 # ---------------------------------------------------------------------------
