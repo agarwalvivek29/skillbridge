@@ -152,6 +152,42 @@ Never define a `type`, `interface`, `struct`, `class`, `dataclass`, or `enum` fo
 
 ---
 
+## Feature Change Protocol (Critical)
+
+Any time a feature is added, changed, or removed — whether from a user request, a PR review, or a design decision — you MUST execute this protocol in full before touching any service code:
+
+### Step 1 — Update the proto schema
+- Identify every `.proto` file in `packages/schema/proto/` that is affected by the change (new fields, new messages, renamed fields, new enum values, etc.)
+- Apply all changes to the proto files
+- Run `cd packages/schema && ./scripts/generate.sh` to regenerate bindings
+- Commit proto + generated files before any service code is written
+
+### Step 2 — Update open GitHub issues
+- Review every open issue on `agarwalvivek29/skillbridge`
+- For each issue whose **Acceptance Criteria**, **Technical Notes**, or proto references are now stale due to the feature change, edit the issue body to reflect the updated design
+- Pay special attention to: field renames, new required fields, changed status lifecycles, new notification types, and changed service dependencies
+
+### Step 3 — Create follow-up issues for affected modules
+- If the feature change impacts a service or module that has no open issue tracking the required update, **create a new GitHub issue** covering that update
+- Use the same format as existing issues (Summary, Acceptance Criteria, Technical Notes, Spec)
+- Common triggers for new issues: a new entity added to `proto/` that needs a DB migration, a new event type that `notifications` must handle, a new proto field that the `web` UI must surface, a contract change that `api` must relay
+
+### Step 4 — Update ARCHITECTURE.md
+- If the change affects the Core Domain Model table (new entity, renamed field, changed lifecycle), update `ARCHITECTURE.md` immediately
+- Commit the architecture update in the same commit as the proto change, or in the immediately following commit
+
+### Summary table
+
+| What changed | Proto | Issues | New issues | ARCHITECTURE.md |
+|---|---|---|---|---|
+| New field on existing entity | Update proto | Update issues referencing that entity | If a new DB column is needed | Update domain model table |
+| New entity / message | Add proto file | Update issues that depend on it | Create issue for each service that must implement it | Add row to domain model |
+| Renamed field | Update proto | Update ALL issues using old name | — | Update if field is in the table |
+| New enum value | Update proto | Update issues for features that trigger/consume it | Create notification issue if it's a new notification type | — |
+| Removed feature | Remove/deprecate proto | Close or update affected issues | Create cleanup issues if code already merged | Remove from domain model |
+
+---
+
 ## When Spawned via `ao`
 
 If you were launched by `ao spawn` or `ao start`, you are in **orchestrated mode**. The following rules apply and override the defaults in "Behavior Boundaries" below:
@@ -193,3 +229,4 @@ When in doubt: stop, explain what you were about to do, and ask.
 | Potential secret in code | Flag it, do not commit |
 | CI check failing | Fix root cause, never use --no-verify |
 | New service needed | Run `scripts/new-service.sh` |
+| Feature added / changed / removed | Run Feature Change Protocol: update proto → update issues → create new issues → update ARCHITECTURE.md |
