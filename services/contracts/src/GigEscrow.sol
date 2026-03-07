@@ -33,6 +33,8 @@ contract GigEscrow is IGigEscrow {
     error NoFundsToWithdraw();
     error ETHTransferFailed();
     error ERC20TransferFailed();
+    /// @notice Reverts when ETH is sent directly instead of via deposit()
+    error UseDepositInstead();
 
     // ─── Immutables ───────────────────────────────────────────────────────────────
 
@@ -77,6 +79,7 @@ contract GigEscrow is IGigEscrow {
     ) {
         require(_client != address(0), "GigEscrow: invalid client");
         require(_freelancer != address(0), "GigEscrow: invalid freelancer");
+        require(_client != _freelancer, "GigEscrow: client and freelancer cannot be the same address");
         require(_platformFeeRecipient != address(0), "GigEscrow: invalid fee recipient");
         require(_arbitrator != address(0), "GigEscrow: invalid arbitrator");
         require(amounts.length > 0, "GigEscrow: no milestones");
@@ -184,6 +187,13 @@ contract GigEscrow is IGigEscrow {
     }
 
     /// @inheritdoc IGigEscrow
+    /// @dev PAY_FREELANCER pays the full milestone amount to the freelancer with no
+    ///      platform fee deducted. This is intentional: dispute resolution is an
+    ///      adversarial path initiated by the arbitrator, not a voluntary completion.
+    ///      The platform fee applies only to cooperative completeMilestone() calls.
+    ///      Known limitation: a colluding client+freelancer could game this to avoid
+    ///      the fee. Mitigation: the arbitrator (platform) controls dispute resolution,
+    ///      so self-serving disputes will be rejected at the off-chain review stage.
     function resolveDispute(uint256 index, DisputeResolution resolution, uint256 freelancerSplitAmount)
         external
         onlyArbitrator
@@ -197,11 +207,13 @@ contract GigEscrow is IGigEscrow {
         uint256 clientPay;
 
         if (resolution == DisputeResolution.PAY_FREELANCER) {
+            // Full milestone amount to freelancer; no platform fee — see @dev above
             freelancerPay = amount;
         } else if (resolution == DisputeResolution.REFUND_CLIENT) {
             clientPay = amount;
         } else {
-            // SPLIT
+            // SPLIT: freelancerSplitAmount == 0 is allowed and is equivalent to a
+            // full refund to the client (zero-split is a valid arbitration outcome).
             if (freelancerSplitAmount > amount) revert SplitExceedsMilestone();
             freelancerPay = freelancerSplitAmount;
             clientPay = amount - freelancerSplitAmount;
@@ -231,13 +243,22 @@ contract GigEscrow is IGigEscrow {
     }
 
     /// @inheritdoc IGigEscrow
-    function emergencyWithdraw() external {
+    /// @notice Returns all remaining contract balance to the client.
+    /// @dev Known limitation: this always returns funds to the client, even in cases
+    ///      where the client is the bad actor. Both parties must consent (2-of-2 sign),
+    ///      which means a fraudulent client cannot unilaterally drain the escrow —
+    ///      but once the freelancer has also signed, the client receives everything.
+    ///      For v1 this is acceptable; a future version may split by milestone status.
+    function emergencyWithdraw() external onlyClientOrFreelancer {
         if (!clientSignedEmergency || !freelancerSignedEmergency) revert NotBothSigned();
 
         uint256 bal = getBalance();
         if (bal == 0) revert NoFundsToWithdraw();
 
-        // Return all remaining funds to client (they deposited them)
+        // Reset signatures before transfer to prevent re-entrancy re-execution
+        clientSignedEmergency = false;
+        freelancerSignedEmergency = false;
+
         emit EmergencyWithdrawal(bal);
         _transfer(client, bal);
     }
@@ -284,6 +305,6 @@ contract GigEscrow is IGigEscrow {
 
     /// @dev Direct ETH sends are rejected; use deposit()
     receive() external payable {
-        revert("GigEscrow: use deposit()");
+        revert UseDepositInstead();
     }
 }

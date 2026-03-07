@@ -1,8 +1,5 @@
 # Spec: Smart Contract Escrow on Base L2
 
-> Copy this file to `docs/specs/[ISSUE-NUMBER]-[feature-name].md` and fill it in.
-> The spec must be completed and linked in the GitHub Issue before implementation begins.
-
 **Issue**: #4
 **Status**: Approved
 **Author**: Claude Code (ao)

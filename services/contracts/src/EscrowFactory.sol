@@ -13,13 +13,30 @@ contract EscrowFactory is IEscrowFactory {
     // ─── Errors ───────────────────────────────────────────────────────────────────
 
     error OnlyOwner();
+    error OnlyPendingOwner();
     error InvalidFeeRecipient();
     error InvalidClient();
     error InvalidFreelancer();
+    /// @notice Reverts when milestoneAmounts array is empty
+    error InvalidMilestones();
+    /// @notice Reverts when a required address argument is the zero address
+    error ZeroAddress();
+    /// @notice Reverts when client and freelancer are the same address
+    error ClientEqualsFreelancer();
+
+    // ─── Events ───────────────────────────────────────────────────────────────────
+
+    /// @notice Emitted when ownership transfer is completed
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    /// @notice Emitted when a new ownership transfer is proposed
+    event OwnershipTransferProposed(address indexed currentOwner, address indexed pendingOwner);
 
     // ─── State ────────────────────────────────────────────────────────────────────
 
     address public owner;
+    /// @notice Pending owner for two-step ownership transfer; address(0) when no transfer is in progress
+    address public pendingOwner;
     address public feeRecipient;
 
     address[] private _allEscrows;
@@ -43,15 +60,21 @@ contract EscrowFactory is IEscrowFactory {
     // ─── Factory Function ────────────────────────────────────────────────────────
 
     /// @inheritdoc IEscrowFactory
+    /// @notice Deploy a new GigEscrow for a gig. Callable only by the factory owner.
+    /// @dev Access is restricted to the owner to prevent spam/grief attacks and
+    ///      fake client registrations. The api service calls this on behalf of clients
+    ///      after verifying the gig on-chain.
     function createEscrow(
         address client,
         address freelancer,
         address tokenAddress,
         uint256[] calldata milestoneAmounts,
         uint256 platformFeeBasisPoints
-    ) external returns (address escrowAddress) {
-        if (client == address(0)) revert InvalidClient();
-        if (freelancer == address(0)) revert InvalidFreelancer();
+    ) external onlyOwner returns (address escrowAddress) {
+        if (client == address(0)) revert ZeroAddress();
+        if (freelancer == address(0)) revert ZeroAddress();
+        if (client == freelancer) revert ClientEqualsFreelancer();
+        if (milestoneAmounts.length == 0) revert InvalidMilestones();
 
         GigEscrow escrow = new GigEscrow(
             client,
@@ -66,32 +89,55 @@ contract EscrowFactory is IEscrowFactory {
         escrowAddress = address(escrow);
         _allEscrows.push(escrowAddress);
 
-        uint256 total;
-        for (uint256 i; i < milestoneAmounts.length; ++i) {
-            total += milestoneAmounts[i];
-        }
-
-        emit EscrowCreated(escrowAddress, client, freelancer, tokenAddress, total);
+        emit EscrowCreated(escrowAddress, client, freelancer, tokenAddress, escrow.totalAmount());
     }
 
     // ─── Admin Functions ──────────────────────────────────────────────────────────
 
     /// @inheritdoc IEscrowFactory
+    /// @notice Update the platform fee recipient.
+    /// @dev The new feeRecipient is captured at deploy time for each GigEscrow, so
+    ///      this change affects only escrows created after this call. Existing deployed
+    ///      escrows retain the feeRecipient value set when they were deployed.
     function setFeeRecipient(address newRecipient) external onlyOwner {
         if (newRecipient == address(0)) revert InvalidFeeRecipient();
         emit FeeRecipientUpdated(feeRecipient, newRecipient);
         feeRecipient = newRecipient;
     }
 
-    /// @notice Transfer factory ownership (and arbitrator rights) to a new address
-    function transferOwnership(address newOwner) external onlyOwner {
-        require(newOwner != address(0), "EscrowFactory: invalid new owner");
-        owner = newOwner;
+    /// @notice Propose a new owner. The proposed address must call acceptOwnership() to complete the transfer.
+    /// @dev Two-step transfer prevents loss of ownership due to typos or compromised keys.
+    function proposeOwner(address newOwner) external onlyOwner {
+        if (newOwner == address(0)) revert ZeroAddress();
+        pendingOwner = newOwner;
+        emit OwnershipTransferProposed(owner, newOwner);
+    }
+
+    /// @notice Accept ownership transfer. Must be called by the pendingOwner.
+    function acceptOwnership() external {
+        if (msg.sender != pendingOwner) revert OnlyPendingOwner();
+        address previous = owner;
+        owner = pendingOwner;
+        pendingOwner = address(0);
+        emit OwnershipTransferred(previous, owner);
     }
 
     // ─── View Functions ───────────────────────────────────────────────────────────
 
+    /// @notice Number of escrows deployed by this factory
+    function getEscrowCount() external view returns (uint256) {
+        return _allEscrows.length;
+    }
+
+    /// @notice Get the escrow address at a specific index (for paginated access)
+    function getEscrow(uint256 index) external view returns (address) {
+        require(index < _allEscrows.length, "EscrowFactory: index out of bounds");
+        return _allEscrows[index];
+    }
+
     /// @inheritdoc IEscrowFactory
+    /// @notice WARNING: unbounded — will revert at scale due to block gas limit.
+    ///         Use getEscrowCount() + getEscrow(index) for production pagination.
     function getAllEscrows() external view returns (address[] memory) {
         return _allEscrows;
     }

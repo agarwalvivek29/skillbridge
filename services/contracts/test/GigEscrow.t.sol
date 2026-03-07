@@ -386,6 +386,7 @@ contract GigEscrowTest is Test {
         vm.prank(CLIENT);
         escrow.signEmergencyWithdrawal();
 
+        vm.prank(CLIENT);
         vm.expectRevert(GigEscrow.NotBothSigned.selector);
         escrow.emergencyWithdraw();
     }
@@ -405,6 +406,7 @@ contract GigEscrowTest is Test {
         vm.expectEmit(false, false, false, true);
         emit IGigEscrow.EmergencyWithdrawal(bal);
 
+        vm.prank(CLIENT);
         escrow.emergencyWithdraw();
 
         assertEq(CLIENT.balance - clientBefore, 3 ether);
@@ -427,6 +429,7 @@ contract GigEscrowTest is Test {
         vm.prank(FREELANCER);
         escrow.signEmergencyWithdrawal();
 
+        vm.prank(CLIENT);
         vm.expectRevert(GigEscrow.NoFundsToWithdraw.selector);
         escrow.emergencyWithdraw();
     }
@@ -543,5 +546,104 @@ contract GigEscrowTest is Test {
 
         // All funds should be distributed (no balance left)
         assertEq(address(e).balance, 0, "escrow should be empty after all milestones");
+    }
+
+    // ─── emergencyWithdraw — access control ──────────────────────────────────────
+
+    function test_emergencyWithdraw_revertsForStranger() public {
+        _fundETH(escrow);
+        vm.prank(CLIENT);
+        escrow.signEmergencyWithdrawal();
+        vm.prank(FREELANCER);
+        escrow.signEmergencyWithdrawal();
+
+        vm.prank(STRANGER);
+        vm.expectRevert(GigEscrow.OnlyClientOrFreelancer.selector);
+        escrow.emergencyWithdraw();
+    }
+
+    function test_emergencyWithdraw_resetsSignedFlags() public {
+        _fundETH(escrow);
+        vm.prank(CLIENT);
+        escrow.signEmergencyWithdrawal();
+        vm.prank(FREELANCER);
+        escrow.signEmergencyWithdrawal();
+
+        vm.prank(CLIENT);
+        escrow.emergencyWithdraw();
+
+        // Flags must be reset after execution
+        assertFalse(escrow.clientSignedEmergency());
+        assertFalse(escrow.freelancerSignedEmergency());
+    }
+
+    // ─── M4: Partial-balance emergency withdrawal ─────────────────────────────────
+
+    /// @dev Fund escrow → complete milestone 0 → emergency withdraw → assert only
+    ///      remaining balance (milestone 1 funds) is returned to client
+    function test_emergencyWithdraw_partialBalance() public {
+        // Both milestones: 1 ether + 2 ether = 3 ether total
+        _fundETH(escrow);
+
+        // Complete milestone 0 (releases 1 ether minus fee)
+        vm.prank(CLIENT);
+        escrow.completeMilestone(0);
+
+        // Remaining balance = 2 ether (milestone 1 untouched)
+        uint256 remaining = escrow.getBalance();
+        assertEq(remaining, 2 ether);
+
+        uint256 clientBefore = CLIENT.balance;
+
+        vm.prank(CLIENT);
+        escrow.signEmergencyWithdrawal();
+        vm.prank(FREELANCER);
+        escrow.signEmergencyWithdrawal();
+
+        vm.prank(CLIENT);
+        escrow.emergencyWithdraw();
+
+        // Client receives exactly the remaining balance, not the original total
+        assertEq(CLIENT.balance - clientBefore, 2 ether);
+        assertEq(address(escrow).balance, 0);
+    }
+
+    // ─── m3: completeMilestone reverts on DISPUTED / RESOLVED state ───────────────
+
+    function test_completeMilestone_revertsOnDisputedMilestone() public {
+        _fundETH(escrow);
+
+        // Raise dispute on milestone 0
+        vm.prank(CLIENT);
+        escrow.raiseDispute(0);
+
+        // completeMilestone should revert because status is DISPUTED not PENDING
+        vm.prank(CLIENT);
+        vm.expectRevert(GigEscrow.MilestoneNotPending.selector);
+        escrow.completeMilestone(0);
+    }
+
+    function test_completeMilestone_revertsOnResolvedMilestone() public {
+        _fundETH(escrow);
+
+        // Dispute then resolve milestone 0
+        vm.prank(CLIENT);
+        escrow.raiseDispute(0);
+        vm.prank(ARBITRATOR);
+        escrow.resolveDispute(0, IGigEscrow.DisputeResolution.REFUND_CLIENT, 0);
+
+        // completeMilestone should revert because status is RESOLVED not PENDING
+        vm.prank(CLIENT);
+        vm.expectRevert(GigEscrow.MilestoneNotPending.selector);
+        escrow.completeMilestone(0);
+    }
+
+    // ─── m5: client != freelancer in constructor ──────────────────────────────────
+
+    function test_constructor_revertsClientEqualsFreelancer() public {
+        uint256[] memory amounts = new uint256[](1);
+        amounts[0] = 1 ether;
+        vm.expectRevert("GigEscrow: client and freelancer cannot be the same address");
+        new GigEscrow(CLIENT, CLIENT, address(0), amounts, FEE_BPS, FEE_RECIPIENT, ARBITRATOR);
     }
 }
