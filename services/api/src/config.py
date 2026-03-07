@@ -43,6 +43,16 @@ class Settings(BaseSettings):
     aws_secret_access_key: str = ""
     aws_region: str = "us-east-1"
     s3_bucket: str = "skillbridge-dev"
+    s3_presigned_url_expiry_seconds: int = 300
+
+    @field_validator("s3_bucket")
+    @classmethod
+    def s3_bucket_required_in_production(cls, v: str) -> str:
+        import os
+
+        if os.getenv("APP_ENV", "development") == "production" and not v:
+            raise ValueError("s3_bucket must be set in production")
+        return v
 
     @field_validator("jwt_secret")
     @classmethod
