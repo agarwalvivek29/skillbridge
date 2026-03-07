@@ -1,0 +1,6 @@
+# Foundry compilation artifacts (rebuilt on forge build)
+out/
+cache/
+
+# Local environment
+.env
