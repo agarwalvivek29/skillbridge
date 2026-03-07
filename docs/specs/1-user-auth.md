@@ -47,7 +47,7 @@ Without this feature no other authenticated endpoint can be built or tested.
 ## Acceptance Criteria
 
 - [ ] `GET /v1/auth/nonce?wallet_address=<addr>` returns `{nonce, expires_at}` and stores `AuthNonce` in DB with 10-minute TTL
-- [ ] `POST /v1/auth/wallet` verifies SIWE signature via `eth_account`, deletes `AuthNonce`, upserts `User`, returns `AuthResponse`
+- [ ] `POST /v1/auth/wallet` verifies SIWE signature via `siwe.SiweMessage.verify` (EIP-4361), deletes `AuthNonce`, upserts `User`, returns `AuthResponse`
 - [ ] `POST /v1/auth/email/register` creates user with bcrypt-hashed password, returns `AuthResponse`
 - [ ] `POST /v1/auth/email/login` verifies bcrypt hash, returns `AuthResponse`
 - [ ] All four endpoints return `AuthResponse` shape: `{access_token, token_type: "Bearer", expires_in, user_id}`
@@ -73,7 +73,7 @@ Browser / Client
     │       ← {nonce, expires_at}
     │
     ├── POST /v1/auth/wallet {wallet_address, signature, message}
-    │       → eth_account.verify SIWE message + signature
+    │       → siwe.SiweMessage.verify (EIP-4361)
     │       → DB: DELETE auth_nonces WHERE wallet_address=...
     │       → DB: UPSERT users (wallet_address)
     │       ← AuthResponse {access_token, ...}
@@ -155,7 +155,7 @@ New Python packages required:
 - `alembic` — DB migrations
 - `python-jose[cryptography]` — JWT encode/decode
 - `bcrypt` — bcrypt password hashing (replaces passlib[bcrypt]; passlib incompatible with bcrypt>=4.0)
-- `eth-account` — SIWE / EIP-191 signature verification
+- `siwe` — SIWE / EIP-4361 signature verification
 - `pydantic-settings` — config from env
 - `httpx` — async HTTP client (tests)
 - `pytest-asyncio` — async test support

@@ -106,7 +106,8 @@ See `.env.example` for all required variables.
 
 ## Auth Middleware
 
-All routes except `/health` and `/metrics` require authentication:
+All routes except the following prefixes require authentication:
+`/health`, `/metrics`, `/v1/auth/`, `/docs`, `/redoc`, `/openapi.json`
 
 1. `X-API-Key` — service-to-service (matched against `API_KEY`)
 2. `Authorization: Bearer <jwt>` — user token (verified with `JWT_SECRET`)
