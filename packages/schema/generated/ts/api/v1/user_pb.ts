@@ -29,7 +29,7 @@ import type { Message } from "@bufbuild/protobuf";
 export const file_api_v1_user: GenFile =
   /*@__PURE__*/
   fileDesc(
-    "ChFhcGkvdjEvdXNlci5wcm90bxIGYXBpLnYxIrUCCgRVc2VyEgoKAmlkGAEgASgJEg0KBWVtYWlsGAIgASgJEgwKBG5hbWUYAyABKAkSFgoOd2FsbGV0X2FkZHJlc3MYBCABKAkSIgoGc3RhdHVzGAUgASgOMhIuYXBpLnYxLlVzZXJTdGF0dXMSHgoEcm9sZRgGIAEoDjIQLmFwaS52MS5Vc2VyUm9sZRISCgphdmF0YXJfdXJsGAcgASgJEgsKA2JpbxgIIAEoCRIOCgZza2lsbHMYCSADKAkSFwoPaG91cmx5X3JhdGVfd2VpGAogASgJEi4KCmNyZWF0ZWRfYXQYCyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYDCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wItgBCgpVc2VyUHVibGljEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSFgoOd2FsbGV0X2FkZHJlc3MYAyABKAkSHgoEcm9sZRgEIAEoDjIQLmFwaS52MS5Vc2VyUm9sZRISCgphdmF0YXJfdXJsGAUgASgJEgsKA2JpbxgGIAEoCRIOCgZza2lsbHMYByADKAkSFwoPaG91cmx5X3JhdGVfd2VpGAggASgJEi4KCmNyZWF0ZWRfYXQYCSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIoMBChBVc2VyQ3JlYXRlZEV2ZW50Eg8KB3VzZXJfaWQYASABKAkSDQoFZW1haWwYAiABKAkSHgoEcm9sZRgDIAEoDjIQLmFwaS52MS5Vc2VyUm9sZRIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiaAoRQ3JlYXRlVXNlclJlcXVlc3QSDQoFZW1haWwYASABKAkSDAoEbmFtZRgCIAEoCRIWCg53YWxsZXRfYWRkcmVzcxgDIAEoCRIeCgRyb2xlGAQgASgOMhAuYXBpLnYxLlVzZXJSb2xlIncKEVVwZGF0ZVVzZXJSZXF1ZXN0EgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSEgoKYXZhdGFyX3VybBgDIAEoCRILCgNiaW8YBCABKAkSDgoGc2tpbGxzGAUgAygJEhcKD2hvdXJseV9yYXRlX3dlaRgGIAEoCSIcCg5HZXRVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCSKAAQoPR2V0VXNlcnNSZXF1ZXN0EjAKCnBhZ2luYXRpb24YASABKAsyHC5jb21tb24udjEuUGFnaW5hdGlvblJlcXVlc3QSJQoLcm9sZV9maWx0ZXIYAiABKA4yEC5hcGkudjEuVXNlclJvbGUSFAoMc2tpbGxfZmlsdGVyGAMgASgJImQKEEdldFVzZXJzUmVzcG9uc2USIQoFdXNlcnMYASADKAsyEi5hcGkudjEuVXNlclB1YmxpYxItCgpwYWdpbmF0aW9uGAIgASgLMhkuY29tbW9uLnYxLlBhZ2luYXRpb25NZXRhKlwKClVzZXJTdGF0dXMSGwoXVVNFUl9TVEFUVVNfVU5TUEVDSUZJRUQQABIWChJVU0VSX1NUQVRVU19BQ1RJVkUQARIZChVVU0VSX1NUQVRVU19TVVNQRU5ERUQQAipqCghVc2VyUm9sZRIZChVVU0VSX1JPTEVfVU5TUEVDSUZJRUQQABIYChRVU0VSX1JPTEVfRlJFRUxBTkNFUhABEhQKEFVTRVJfUk9MRV9DTElFTlQQAhITCg9VU0VSX1JPTEVfQURNSU4QAzL9AQoLVXNlclNlcnZpY2USOwoKQ3JlYXRlVXNlchIZLmFwaS52MS5DcmVhdGVVc2VyUmVxdWVzdBoSLmFwaS52MS5Vc2VyUHVibGljEjUKB0dldFVzZXISFi5hcGkudjEuR2V0VXNlclJlcXVlc3QaEi5hcGkudjEuVXNlclB1YmxpYxI9CghHZXRVc2VycxIXLmFwaS52MS5HZXRVc2Vyc1JlcXVlc3QaGC5hcGkudjEuR2V0VXNlcnNSZXNwb25zZRI7CgpVcGRhdGVVc2VyEhkuYXBpLnYxLlVwZGF0ZVVzZXJSZXF1ZXN0GhIuYXBpLnYxLlVzZXJQdWJsaWNCoQEKCmNvbS5hcGkudjFCCVVzZXJQcm90b1ABWk9naXRodWIuY29tL2FnYXJ3YWx2aXZlazI5L3NraWxsYnJpZGdlL3BhY2thZ2VzL3NjaGVtYS9nZW5lcmF0ZWQvZ28vYXBpL3YxO2FwaXYxogIDQVhYqgIGQXBpLlYxygIGQXBpXFYx4gISQXBpXFYxXEdQQk1ldGFkYXRh6gIHQXBpOjpWMWIGcHJvdG8z",
+    "ChFhcGkvdjEvdXNlci5wcm90bxIGYXBpLnYxIrUCCgRVc2VyEgoKAmlkGAEgASgJEg0KBWVtYWlsGAIgASgJEgwKBG5hbWUYAyABKAkSFgoOd2FsbGV0X2FkZHJlc3MYBCABKAkSIgoGc3RhdHVzGAUgASgOMhIuYXBpLnYxLlVzZXJTdGF0dXMSHgoEcm9sZRgGIAEoDjIQLmFwaS52MS5Vc2VyUm9sZRISCgphdmF0YXJfdXJsGAcgASgJEgsKA2JpbxgIIAEoCRIOCgZza2lsbHMYCSADKAkSFwoPaG91cmx5X3JhdGVfd2VpGAogASgJEi4KCmNyZWF0ZWRfYXQYCyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYDCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wItgBCgpVc2VyUHVibGljEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSFgoOd2FsbGV0X2FkZHJlc3MYAyABKAkSHgoEcm9sZRgEIAEoDjIQLmFwaS52MS5Vc2VyUm9sZRISCgphdmF0YXJfdXJsGAUgASgJEgsKA2JpbxgGIAEoCRIOCgZza2lsbHMYByADKAkSFwoPaG91cmx5X3JhdGVfd2VpGAggASgJEi4KCmNyZWF0ZWRfYXQYCSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIoMBChBVc2VyQ3JlYXRlZEV2ZW50Eg8KB3VzZXJfaWQYASABKAkSDQoFZW1haWwYAiABKAkSHgoEcm9sZRgDIAEoDjIQLmFwaS52MS5Vc2VyUm9sZRIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiaAoRQ3JlYXRlVXNlclJlcXVlc3QSDQoFZW1haWwYASABKAkSDAoEbmFtZRgCIAEoCRIWCg53YWxsZXRfYWRkcmVzcxgDIAEoCRIeCgRyb2xlGAQgASgOMhAuYXBpLnYxLlVzZXJSb2xlIncKEVVwZGF0ZVVzZXJSZXF1ZXN0EgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSEgoKYXZhdGFyX3VybBgDIAEoCRILCgNiaW8YBCABKAkSDgoGc2tpbGxzGAUgAygJEhcKD2hvdXJseV9yYXRlX3dlaRgGIAEoCSIcCg5HZXRVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCSKAAQoPR2V0VXNlcnNSZXF1ZXN0EjAKCnBhZ2luYXRpb24YASABKAsyHC5jb21tb24udjEuUGFnaW5hdGlvblJlcXVlc3QSJQoLcm9sZV9maWx0ZXIYAiABKA4yEC5hcGkudjEuVXNlclJvbGUSFAoMc2tpbGxfZmlsdGVyGAMgASgJImQKEEdldFVzZXJzUmVzcG9uc2USIQoFdXNlcnMYASADKAsyEi5hcGkudjEuVXNlclB1YmxpYxItCgpwYWdpbmF0aW9uGAIgASgLMhkuY29tbW9uLnYxLlBhZ2luYXRpb25NZXRhIjYKEkNyZWF0ZVVzZXJSZXNwb25zZRIgCgR1c2VyGAEgASgLMhIuYXBpLnYxLlVzZXJQdWJsaWMiMwoPR2V0VXNlclJlc3BvbnNlEiAKBHVzZXIYASABKAsyEi5hcGkudjEuVXNlclB1YmxpYyI2ChJVcGRhdGVVc2VyUmVzcG9uc2USIAoEdXNlchgBIAEoCzISLmFwaS52MS5Vc2VyUHVibGljKlwKClVzZXJTdGF0dXMSGwoXVVNFUl9TVEFUVVNfVU5TUEVDSUZJRUQQABIWChJVU0VSX1NUQVRVU19BQ1RJVkUQARIZChVVU0VSX1NUQVRVU19TVVNQRU5ERUQQAipqCghVc2VyUm9sZRIZChVVU0VSX1JPTEVfVU5TUEVDSUZJRUQQABIYChRVU0VSX1JPTEVfRlJFRUxBTkNFUhABEhQKEFVTRVJfUk9MRV9DTElFTlQQAhITCg9VU0VSX1JPTEVfQURNSU4QAzKSAgoLVXNlclNlcnZpY2USQwoKQ3JlYXRlVXNlchIZLmFwaS52MS5DcmVhdGVVc2VyUmVxdWVzdBoaLmFwaS52MS5DcmVhdGVVc2VyUmVzcG9uc2USOgoHR2V0VXNlchIWLmFwaS52MS5HZXRVc2VyUmVxdWVzdBoXLmFwaS52MS5HZXRVc2VyUmVzcG9uc2USPQoIR2V0VXNlcnMSFy5hcGkudjEuR2V0VXNlcnNSZXF1ZXN0GhguYXBpLnYxLkdldFVzZXJzUmVzcG9uc2USQwoKVXBkYXRlVXNlchIZLmFwaS52MS5VcGRhdGVVc2VyUmVxdWVzdBoaLmFwaS52MS5VcGRhdGVVc2VyUmVzcG9uc2VCoQEKCmNvbS5hcGkudjFCCVVzZXJQcm90b1ABWk9naXRodWIuY29tL2FnYXJ3YWx2aXZlazI5L3NraWxsYnJpZGdlL3BhY2thZ2VzL3NjaGVtYS9nZW5lcmF0ZWQvZ28vYXBpL3YxO2FwaXYxogIDQVhYqgIGQXBpLlYxygIGQXBpXFYx4gISQXBpXFYxXEdQQk1ldGFkYXRh6gIHQXBpOjpWMWIGcHJvdG8z",
     [file_common_v1_pagination, file_google_protobuf_timestamp],
   );
 
@@ -351,6 +351,60 @@ export const GetUsersResponseSchema: GenMessage<GetUsersResponse> =
   messageDesc(file_api_v1_user, 7);
 
 /**
+ * @generated from message api.v1.CreateUserResponse
+ */
+export type CreateUserResponse = Message<"api.v1.CreateUserResponse"> & {
+  /**
+   * @generated from field: api.v1.UserPublic user = 1;
+   */
+  user?: UserPublic;
+};
+
+/**
+ * Describes the message api.v1.CreateUserResponse.
+ * Use `create(CreateUserResponseSchema)` to create a new message.
+ */
+export const CreateUserResponseSchema: GenMessage<CreateUserResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_user, 8);
+
+/**
+ * @generated from message api.v1.GetUserResponse
+ */
+export type GetUserResponse = Message<"api.v1.GetUserResponse"> & {
+  /**
+   * @generated from field: api.v1.UserPublic user = 1;
+   */
+  user?: UserPublic;
+};
+
+/**
+ * Describes the message api.v1.GetUserResponse.
+ * Use `create(GetUserResponseSchema)` to create a new message.
+ */
+export const GetUserResponseSchema: GenMessage<GetUserResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_user, 9);
+
+/**
+ * @generated from message api.v1.UpdateUserResponse
+ */
+export type UpdateUserResponse = Message<"api.v1.UpdateUserResponse"> & {
+  /**
+   * @generated from field: api.v1.UserPublic user = 1;
+   */
+  user?: UserPublic;
+};
+
+/**
+ * Describes the message api.v1.UpdateUserResponse.
+ * Use `create(UpdateUserResponseSchema)` to create a new message.
+ */
+export const UpdateUserResponseSchema: GenMessage<UpdateUserResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_user, 10);
+
+/**
  * @generated from enum api.v1.UserStatus
  */
 export enum UserStatus {
@@ -421,7 +475,7 @@ export const UserService: GenService<{
   createUser: {
     methodKind: "unary";
     input: typeof CreateUserRequestSchema;
-    output: typeof UserPublicSchema;
+    output: typeof CreateUserResponseSchema;
   };
   /**
    * @generated from rpc api.v1.UserService.GetUser
@@ -429,7 +483,7 @@ export const UserService: GenService<{
   getUser: {
     methodKind: "unary";
     input: typeof GetUserRequestSchema;
-    output: typeof UserPublicSchema;
+    output: typeof GetUserResponseSchema;
   };
   /**
    * @generated from rpc api.v1.UserService.GetUsers
@@ -445,6 +499,6 @@ export const UserService: GenService<{
   updateUser: {
     methodKind: "unary";
     input: typeof UpdateUserRequestSchema;
-    output: typeof UserPublicSchema;
+    output: typeof UpdateUserResponseSchema;
   };
 }> = /*@__PURE__*/ serviceDesc(file_api_v1_user, 0);

@@ -30,9 +30,9 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthServiceClient interface {
 	GetNonce(ctx context.Context, in *GetNonceRequest, opts ...grpc.CallOption) (*GetNonceResponse, error)
-	WalletLogin(ctx context.Context, in *WalletLoginRequest, opts ...grpc.CallOption) (*AuthResponse, error)
-	EmailRegister(ctx context.Context, in *EmailRegisterRequest, opts ...grpc.CallOption) (*AuthResponse, error)
-	EmailLogin(ctx context.Context, in *EmailLoginRequest, opts ...grpc.CallOption) (*AuthResponse, error)
+	WalletLogin(ctx context.Context, in *WalletLoginRequest, opts ...grpc.CallOption) (*WalletLoginResponse, error)
+	EmailRegister(ctx context.Context, in *EmailRegisterRequest, opts ...grpc.CallOption) (*EmailRegisterResponse, error)
+	EmailLogin(ctx context.Context, in *EmailLoginRequest, opts ...grpc.CallOption) (*EmailLoginResponse, error)
 }
 
 type authServiceClient struct {
@@ -53,9 +53,9 @@ func (c *authServiceClient) GetNonce(ctx context.Context, in *GetNonceRequest, o
 	return out, nil
 }
 
-func (c *authServiceClient) WalletLogin(ctx context.Context, in *WalletLoginRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
+func (c *authServiceClient) WalletLogin(ctx context.Context, in *WalletLoginRequest, opts ...grpc.CallOption) (*WalletLoginResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AuthResponse)
+	out := new(WalletLoginResponse)
 	err := c.cc.Invoke(ctx, AuthService_WalletLogin_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -63,9 +63,9 @@ func (c *authServiceClient) WalletLogin(ctx context.Context, in *WalletLoginRequ
 	return out, nil
 }
 
-func (c *authServiceClient) EmailRegister(ctx context.Context, in *EmailRegisterRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
+func (c *authServiceClient) EmailRegister(ctx context.Context, in *EmailRegisterRequest, opts ...grpc.CallOption) (*EmailRegisterResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AuthResponse)
+	out := new(EmailRegisterResponse)
 	err := c.cc.Invoke(ctx, AuthService_EmailRegister_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -73,9 +73,9 @@ func (c *authServiceClient) EmailRegister(ctx context.Context, in *EmailRegister
 	return out, nil
 }
 
-func (c *authServiceClient) EmailLogin(ctx context.Context, in *EmailLoginRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
+func (c *authServiceClient) EmailLogin(ctx context.Context, in *EmailLoginRequest, opts ...grpc.CallOption) (*EmailLoginResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AuthResponse)
+	out := new(EmailLoginResponse)
 	err := c.cc.Invoke(ctx, AuthService_EmailLogin_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -88,9 +88,9 @@ func (c *authServiceClient) EmailLogin(ctx context.Context, in *EmailLoginReques
 // for forward compatibility
 type AuthServiceServer interface {
 	GetNonce(context.Context, *GetNonceRequest) (*GetNonceResponse, error)
-	WalletLogin(context.Context, *WalletLoginRequest) (*AuthResponse, error)
-	EmailRegister(context.Context, *EmailRegisterRequest) (*AuthResponse, error)
-	EmailLogin(context.Context, *EmailLoginRequest) (*AuthResponse, error)
+	WalletLogin(context.Context, *WalletLoginRequest) (*WalletLoginResponse, error)
+	EmailRegister(context.Context, *EmailRegisterRequest) (*EmailRegisterResponse, error)
+	EmailLogin(context.Context, *EmailLoginRequest) (*EmailLoginResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -101,13 +101,13 @@ type UnimplementedAuthServiceServer struct {
 func (UnimplementedAuthServiceServer) GetNonce(context.Context, *GetNonceRequest) (*GetNonceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNonce not implemented")
 }
-func (UnimplementedAuthServiceServer) WalletLogin(context.Context, *WalletLoginRequest) (*AuthResponse, error) {
+func (UnimplementedAuthServiceServer) WalletLogin(context.Context, *WalletLoginRequest) (*WalletLoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WalletLogin not implemented")
 }
-func (UnimplementedAuthServiceServer) EmailRegister(context.Context, *EmailRegisterRequest) (*AuthResponse, error) {
+func (UnimplementedAuthServiceServer) EmailRegister(context.Context, *EmailRegisterRequest) (*EmailRegisterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EmailRegister not implemented")
 }
-func (UnimplementedAuthServiceServer) EmailLogin(context.Context, *EmailLoginRequest) (*AuthResponse, error) {
+func (UnimplementedAuthServiceServer) EmailLogin(context.Context, *EmailLoginRequest) (*EmailLoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EmailLogin not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}

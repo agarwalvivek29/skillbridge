@@ -30,10 +30,10 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DisputeServiceClient interface {
-	RaiseDispute(ctx context.Context, in *RaiseDisputeRequest, opts ...grpc.CallOption) (*Dispute, error)
-	GetDispute(ctx context.Context, in *GetDisputeRequest, opts ...grpc.CallOption) (*Dispute, error)
-	GetDisputeByMilestone(ctx context.Context, in *GetDisputeByMilestoneRequest, opts ...grpc.CallOption) (*Dispute, error)
-	PostDisputeMessage(ctx context.Context, in *PostDisputeMessageRequest, opts ...grpc.CallOption) (*DisputeMessage, error)
+	RaiseDispute(ctx context.Context, in *RaiseDisputeRequest, opts ...grpc.CallOption) (*RaiseDisputeResponse, error)
+	GetDispute(ctx context.Context, in *GetDisputeRequest, opts ...grpc.CallOption) (*GetDisputeResponse, error)
+	GetDisputeByMilestone(ctx context.Context, in *GetDisputeByMilestoneRequest, opts ...grpc.CallOption) (*GetDisputeByMilestoneResponse, error)
+	PostDisputeMessage(ctx context.Context, in *PostDisputeMessageRequest, opts ...grpc.CallOption) (*PostDisputeMessageResponse, error)
 	GetDisputeMessages(ctx context.Context, in *GetDisputeMessagesRequest, opts ...grpc.CallOption) (*GetDisputeMessagesResponse, error)
 }
 
@@ -45,9 +45,9 @@ func NewDisputeServiceClient(cc grpc.ClientConnInterface) DisputeServiceClient {
 	return &disputeServiceClient{cc}
 }
 
-func (c *disputeServiceClient) RaiseDispute(ctx context.Context, in *RaiseDisputeRequest, opts ...grpc.CallOption) (*Dispute, error) {
+func (c *disputeServiceClient) RaiseDispute(ctx context.Context, in *RaiseDisputeRequest, opts ...grpc.CallOption) (*RaiseDisputeResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Dispute)
+	out := new(RaiseDisputeResponse)
 	err := c.cc.Invoke(ctx, DisputeService_RaiseDispute_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -55,9 +55,9 @@ func (c *disputeServiceClient) RaiseDispute(ctx context.Context, in *RaiseDisput
 	return out, nil
 }
 
-func (c *disputeServiceClient) GetDispute(ctx context.Context, in *GetDisputeRequest, opts ...grpc.CallOption) (*Dispute, error) {
+func (c *disputeServiceClient) GetDispute(ctx context.Context, in *GetDisputeRequest, opts ...grpc.CallOption) (*GetDisputeResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Dispute)
+	out := new(GetDisputeResponse)
 	err := c.cc.Invoke(ctx, DisputeService_GetDispute_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -65,9 +65,9 @@ func (c *disputeServiceClient) GetDispute(ctx context.Context, in *GetDisputeReq
 	return out, nil
 }
 
-func (c *disputeServiceClient) GetDisputeByMilestone(ctx context.Context, in *GetDisputeByMilestoneRequest, opts ...grpc.CallOption) (*Dispute, error) {
+func (c *disputeServiceClient) GetDisputeByMilestone(ctx context.Context, in *GetDisputeByMilestoneRequest, opts ...grpc.CallOption) (*GetDisputeByMilestoneResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Dispute)
+	out := new(GetDisputeByMilestoneResponse)
 	err := c.cc.Invoke(ctx, DisputeService_GetDisputeByMilestone_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -75,9 +75,9 @@ func (c *disputeServiceClient) GetDisputeByMilestone(ctx context.Context, in *Ge
 	return out, nil
 }
 
-func (c *disputeServiceClient) PostDisputeMessage(ctx context.Context, in *PostDisputeMessageRequest, opts ...grpc.CallOption) (*DisputeMessage, error) {
+func (c *disputeServiceClient) PostDisputeMessage(ctx context.Context, in *PostDisputeMessageRequest, opts ...grpc.CallOption) (*PostDisputeMessageResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DisputeMessage)
+	out := new(PostDisputeMessageResponse)
 	err := c.cc.Invoke(ctx, DisputeService_PostDisputeMessage_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -99,10 +99,10 @@ func (c *disputeServiceClient) GetDisputeMessages(ctx context.Context, in *GetDi
 // All implementations must embed UnimplementedDisputeServiceServer
 // for forward compatibility
 type DisputeServiceServer interface {
-	RaiseDispute(context.Context, *RaiseDisputeRequest) (*Dispute, error)
-	GetDispute(context.Context, *GetDisputeRequest) (*Dispute, error)
-	GetDisputeByMilestone(context.Context, *GetDisputeByMilestoneRequest) (*Dispute, error)
-	PostDisputeMessage(context.Context, *PostDisputeMessageRequest) (*DisputeMessage, error)
+	RaiseDispute(context.Context, *RaiseDisputeRequest) (*RaiseDisputeResponse, error)
+	GetDispute(context.Context, *GetDisputeRequest) (*GetDisputeResponse, error)
+	GetDisputeByMilestone(context.Context, *GetDisputeByMilestoneRequest) (*GetDisputeByMilestoneResponse, error)
+	PostDisputeMessage(context.Context, *PostDisputeMessageRequest) (*PostDisputeMessageResponse, error)
 	GetDisputeMessages(context.Context, *GetDisputeMessagesRequest) (*GetDisputeMessagesResponse, error)
 	mustEmbedUnimplementedDisputeServiceServer()
 }
@@ -111,16 +111,16 @@ type DisputeServiceServer interface {
 type UnimplementedDisputeServiceServer struct {
 }
 
-func (UnimplementedDisputeServiceServer) RaiseDispute(context.Context, *RaiseDisputeRequest) (*Dispute, error) {
+func (UnimplementedDisputeServiceServer) RaiseDispute(context.Context, *RaiseDisputeRequest) (*RaiseDisputeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RaiseDispute not implemented")
 }
-func (UnimplementedDisputeServiceServer) GetDispute(context.Context, *GetDisputeRequest) (*Dispute, error) {
+func (UnimplementedDisputeServiceServer) GetDispute(context.Context, *GetDisputeRequest) (*GetDisputeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDispute not implemented")
 }
-func (UnimplementedDisputeServiceServer) GetDisputeByMilestone(context.Context, *GetDisputeByMilestoneRequest) (*Dispute, error) {
+func (UnimplementedDisputeServiceServer) GetDisputeByMilestone(context.Context, *GetDisputeByMilestoneRequest) (*GetDisputeByMilestoneResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDisputeByMilestone not implemented")
 }
-func (UnimplementedDisputeServiceServer) PostDisputeMessage(context.Context, *PostDisputeMessageRequest) (*DisputeMessage, error) {
+func (UnimplementedDisputeServiceServer) PostDisputeMessage(context.Context, *PostDisputeMessageRequest) (*PostDisputeMessageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostDisputeMessage not implemented")
 }
 func (UnimplementedDisputeServiceServer) GetDisputeMessages(context.Context, *GetDisputeMessagesRequest) (*GetDisputeMessagesResponse, error) {

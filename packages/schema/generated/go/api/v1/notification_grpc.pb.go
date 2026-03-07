@@ -29,8 +29,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NotificationServiceClient interface {
 	GetNotifications(ctx context.Context, in *GetNotificationsRequest, opts ...grpc.CallOption) (*GetNotificationsResponse, error)
-	MarkRead(ctx context.Context, in *MarkReadRequest, opts ...grpc.CallOption) (*Notification, error)
-	MarkAllRead(ctx context.Context, in *MarkAllReadRequest, opts ...grpc.CallOption) (*GetNotificationsResponse, error)
+	MarkRead(ctx context.Context, in *MarkReadRequest, opts ...grpc.CallOption) (*MarkReadResponse, error)
+	MarkAllRead(ctx context.Context, in *MarkAllReadRequest, opts ...grpc.CallOption) (*MarkAllReadResponse, error)
 }
 
 type notificationServiceClient struct {
@@ -51,9 +51,9 @@ func (c *notificationServiceClient) GetNotifications(ctx context.Context, in *Ge
 	return out, nil
 }
 
-func (c *notificationServiceClient) MarkRead(ctx context.Context, in *MarkReadRequest, opts ...grpc.CallOption) (*Notification, error) {
+func (c *notificationServiceClient) MarkRead(ctx context.Context, in *MarkReadRequest, opts ...grpc.CallOption) (*MarkReadResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Notification)
+	out := new(MarkReadResponse)
 	err := c.cc.Invoke(ctx, NotificationService_MarkRead_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -61,9 +61,9 @@ func (c *notificationServiceClient) MarkRead(ctx context.Context, in *MarkReadRe
 	return out, nil
 }
 
-func (c *notificationServiceClient) MarkAllRead(ctx context.Context, in *MarkAllReadRequest, opts ...grpc.CallOption) (*GetNotificationsResponse, error) {
+func (c *notificationServiceClient) MarkAllRead(ctx context.Context, in *MarkAllReadRequest, opts ...grpc.CallOption) (*MarkAllReadResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetNotificationsResponse)
+	out := new(MarkAllReadResponse)
 	err := c.cc.Invoke(ctx, NotificationService_MarkAllRead_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -76,8 +76,8 @@ func (c *notificationServiceClient) MarkAllRead(ctx context.Context, in *MarkAll
 // for forward compatibility
 type NotificationServiceServer interface {
 	GetNotifications(context.Context, *GetNotificationsRequest) (*GetNotificationsResponse, error)
-	MarkRead(context.Context, *MarkReadRequest) (*Notification, error)
-	MarkAllRead(context.Context, *MarkAllReadRequest) (*GetNotificationsResponse, error)
+	MarkRead(context.Context, *MarkReadRequest) (*MarkReadResponse, error)
+	MarkAllRead(context.Context, *MarkAllReadRequest) (*MarkAllReadResponse, error)
 	mustEmbedUnimplementedNotificationServiceServer()
 }
 
@@ -88,10 +88,10 @@ type UnimplementedNotificationServiceServer struct {
 func (UnimplementedNotificationServiceServer) GetNotifications(context.Context, *GetNotificationsRequest) (*GetNotificationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNotifications not implemented")
 }
-func (UnimplementedNotificationServiceServer) MarkRead(context.Context, *MarkReadRequest) (*Notification, error) {
+func (UnimplementedNotificationServiceServer) MarkRead(context.Context, *MarkReadRequest) (*MarkReadResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MarkRead not implemented")
 }
-func (UnimplementedNotificationServiceServer) MarkAllRead(context.Context, *MarkAllReadRequest) (*GetNotificationsResponse, error) {
+func (UnimplementedNotificationServiceServer) MarkAllRead(context.Context, *MarkAllReadRequest) (*MarkAllReadResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MarkAllRead not implemented")
 }
 func (UnimplementedNotificationServiceServer) mustEmbedUnimplementedNotificationServiceServer() {}

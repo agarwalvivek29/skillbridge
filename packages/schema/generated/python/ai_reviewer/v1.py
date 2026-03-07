@@ -83,13 +83,20 @@ class GetReviewReportRequest(betterproto.Message):
     submission_id: str = betterproto.string_field(1)
 
 
+@dataclass
+class GetReviewReportResponse(betterproto.Message):
+    report: "ReviewReport" = betterproto.message_field(1)
+
+
 class ReviewServiceStub(betterproto.ServiceStub):
-    async def get_review_report(self, *, submission_id: str = "") -> ReviewReport:
+    async def get_review_report(
+        self, *, submission_id: str = ""
+    ) -> GetReviewReportResponse:
         request = GetReviewReportRequest()
         request.submission_id = submission_id
 
         return await self._unary_unary(
             "/ai_reviewer.v1.ReviewService/GetReviewReport",
             request,
-            ReviewReport,
+            GetReviewReportResponse,
         )

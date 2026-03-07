@@ -24,7 +24,7 @@ import type { Message } from "@bufbuild/protobuf";
 export const file_api_v1_milestone: GenFile =
   /*@__PURE__*/
   fileDesc(
-    "ChZhcGkvdjEvbWlsZXN0b25lLnByb3RvEgZhcGkudjEi7gIKCU1pbGVzdG9uZRIKCgJpZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSDQoFdGl0bGUYAyABKAkSEwoLZGVzY3JpcHRpb24YBCABKAkSGwoTYWNjZXB0YW5jZV9jcml0ZXJpYRgFIAEoCRIOCgZhbW91bnQYBiABKAkSDQoFb3JkZXIYByABKAUSJwoGc3RhdHVzGAggASgOMhcuYXBpLnYxLk1pbGVzdG9uZVN0YXR1cxIWCg5jb250cmFjdF9pbmRleBgJIAEoBRIWCg5yZXZpc2lvbl9jb3VudBgKIAEoBRIsCghkdWVfZGF0ZRgLIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY3JlYXRlZF9hdBgMIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKdXBkYXRlZF9hdBgNIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAihwEKF01pbGVzdG9uZVN1Ym1pdHRlZEV2ZW50EhQKDG1pbGVzdG9uZV9pZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSFQoNZnJlZWxhbmNlcl9pZBgDIAEoCRIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAilgEKFk1pbGVzdG9uZUFwcHJvdmVkRXZlbnQSFAoMbWlsZXN0b25lX2lkGAEgASgJEg4KBmdpZ19pZBgCIAEoCRIVCg1mcmVlbGFuY2VyX2lkGAMgASgJEg4KBmFtb3VudBgEIAEoCRIvCgtvY2N1cnJlZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiigEKFk1pbGVzdG9uZURpc3B1dGVkRXZlbnQSFAoMbWlsZXN0b25lX2lkGAEgASgJEg4KBmdpZ19pZBgCIAEoCRIZChFyYWlzZWRfYnlfdXNlcl9pZBgDIAEoCRIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAitgEKFkNyZWF0ZU1pbGVzdG9uZVJlcXVlc3QSDgoGZ2lnX2lkGAEgASgJEg0KBXRpdGxlGAIgASgJEhMKC2Rlc2NyaXB0aW9uGAMgASgJEhsKE2FjY2VwdGFuY2VfY3JpdGVyaWEYBCABKAkSDgoGYW1vdW50GAUgASgJEg0KBW9yZGVyGAYgASgFEiwKCGR1ZV9kYXRlGAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCImChRHZXRNaWxlc3RvbmVzUmVxdWVzdBIOCgZnaWdfaWQYASABKAkiPgoVR2V0TWlsZXN0b25lc1Jlc3BvbnNlEiUKCm1pbGVzdG9uZXMYASADKAsyES5hcGkudjEuTWlsZXN0b25lIj4KF0FwcHJvdmVNaWxlc3RvbmVSZXF1ZXN0EhQKDG1pbGVzdG9uZV9pZBgBIAEoCRINCgVub3RlcxgCIAEoCSJAChZSZXF1ZXN0UmV2aXNpb25SZXF1ZXN0EhQKDG1pbGVzdG9uZV9pZBgBIAEoCRIQCghmZWVkYmFjaxgCIAEoCSqWAgoPTWlsZXN0b25lU3RhdHVzEiAKHE1JTEVTVE9ORV9TVEFUVVNfVU5TUEVDSUZJRUQQABIcChhNSUxFU1RPTkVfU1RBVFVTX1BFTkRJTkcQARIeChpNSUxFU1RPTkVfU1RBVFVTX1NVQk1JVFRFRBACEiEKHU1JTEVTVE9ORV9TVEFUVVNfVU5ERVJfUkVWSUVXEAMSHQoZTUlMRVNUT05FX1NUQVRVU19BUFBST1ZFRBAEEicKI01JTEVTVE9ORV9TVEFUVVNfUkVWSVNJT05fUkVRVUVTVEVEEAUSGQoVTUlMRVNUT05FX1NUQVRVU19QQUlEEAYSHQoZTUlMRVNUT05FX1NUQVRVU19ESVNQVVRFRBAHMrQCChBNaWxlc3RvbmVTZXJ2aWNlEkQKD0NyZWF0ZU1pbGVzdG9uZRIeLmFwaS52MS5DcmVhdGVNaWxlc3RvbmVSZXF1ZXN0GhEuYXBpLnYxLk1pbGVzdG9uZRJMCg1HZXRNaWxlc3RvbmVzEhwuYXBpLnYxLkdldE1pbGVzdG9uZXNSZXF1ZXN0Gh0uYXBpLnYxLkdldE1pbGVzdG9uZXNSZXNwb25zZRJGChBBcHByb3ZlTWlsZXN0b25lEh8uYXBpLnYxLkFwcHJvdmVNaWxlc3RvbmVSZXF1ZXN0GhEuYXBpLnYxLk1pbGVzdG9uZRJECg9SZXF1ZXN0UmV2aXNpb24SHi5hcGkudjEuUmVxdWVzdFJldmlzaW9uUmVxdWVzdBoRLmFwaS52MS5NaWxlc3RvbmVCpgEKCmNvbS5hcGkudjFCDk1pbGVzdG9uZVByb3RvUAFaT2dpdGh1Yi5jb20vYWdhcndhbHZpdmVrMjkvc2tpbGxicmlkZ2UvcGFja2FnZXMvc2NoZW1hL2dlbmVyYXRlZC9nby9hcGkvdjE7YXBpdjGiAgNBWFiqAgZBcGkuVjHKAgZBcGlcVjHiAhJBcGlcVjFcR1BCTWV0YWRhdGHqAgdBcGk6OlYxYgZwcm90bzM",
+    "ChZhcGkvdjEvbWlsZXN0b25lLnByb3RvEgZhcGkudjEi7gIKCU1pbGVzdG9uZRIKCgJpZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSDQoFdGl0bGUYAyABKAkSEwoLZGVzY3JpcHRpb24YBCABKAkSGwoTYWNjZXB0YW5jZV9jcml0ZXJpYRgFIAEoCRIOCgZhbW91bnQYBiABKAkSDQoFb3JkZXIYByABKAUSJwoGc3RhdHVzGAggASgOMhcuYXBpLnYxLk1pbGVzdG9uZVN0YXR1cxIWCg5jb250cmFjdF9pbmRleBgJIAEoBRIWCg5yZXZpc2lvbl9jb3VudBgKIAEoBRIsCghkdWVfZGF0ZRgLIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY3JlYXRlZF9hdBgMIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKdXBkYXRlZF9hdBgNIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAihwEKF01pbGVzdG9uZVN1Ym1pdHRlZEV2ZW50EhQKDG1pbGVzdG9uZV9pZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSFQoNZnJlZWxhbmNlcl9pZBgDIAEoCRIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAilgEKFk1pbGVzdG9uZUFwcHJvdmVkRXZlbnQSFAoMbWlsZXN0b25lX2lkGAEgASgJEg4KBmdpZ19pZBgCIAEoCRIVCg1mcmVlbGFuY2VyX2lkGAMgASgJEg4KBmFtb3VudBgEIAEoCRIvCgtvY2N1cnJlZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiigEKFk1pbGVzdG9uZURpc3B1dGVkRXZlbnQSFAoMbWlsZXN0b25lX2lkGAEgASgJEg4KBmdpZ19pZBgCIAEoCRIZChFyYWlzZWRfYnlfdXNlcl9pZBgDIAEoCRIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAitgEKFkNyZWF0ZU1pbGVzdG9uZVJlcXVlc3QSDgoGZ2lnX2lkGAEgASgJEg0KBXRpdGxlGAIgASgJEhMKC2Rlc2NyaXB0aW9uGAMgASgJEhsKE2FjY2VwdGFuY2VfY3JpdGVyaWEYBCABKAkSDgoGYW1vdW50GAUgASgJEg0KBW9yZGVyGAYgASgFEiwKCGR1ZV9kYXRlGAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCImChRHZXRNaWxlc3RvbmVzUmVxdWVzdBIOCgZnaWdfaWQYASABKAkiPgoVR2V0TWlsZXN0b25lc1Jlc3BvbnNlEiUKCm1pbGVzdG9uZXMYASADKAsyES5hcGkudjEuTWlsZXN0b25lIj4KF0FwcHJvdmVNaWxlc3RvbmVSZXF1ZXN0EhQKDG1pbGVzdG9uZV9pZBgBIAEoCRINCgVub3RlcxgCIAEoCSJAChZSZXF1ZXN0UmV2aXNpb25SZXF1ZXN0EhQKDG1pbGVzdG9uZV9pZBgBIAEoCRIQCghmZWVkYmFjaxgCIAEoCSI/ChdDcmVhdGVNaWxlc3RvbmVSZXNwb25zZRIkCgltaWxlc3RvbmUYASABKAsyES5hcGkudjEuTWlsZXN0b25lIkAKGEFwcHJvdmVNaWxlc3RvbmVSZXNwb25zZRIkCgltaWxlc3RvbmUYASABKAsyES5hcGkudjEuTWlsZXN0b25lIj8KF1JlcXVlc3RSZXZpc2lvblJlc3BvbnNlEiQKCW1pbGVzdG9uZRgBIAEoCzIRLmFwaS52MS5NaWxlc3RvbmUqlgIKD01pbGVzdG9uZVN0YXR1cxIgChxNSUxFU1RPTkVfU1RBVFVTX1VOU1BFQ0lGSUVEEAASHAoYTUlMRVNUT05FX1NUQVRVU19QRU5ESU5HEAESHgoaTUlMRVNUT05FX1NUQVRVU19TVUJNSVRURUQQAhIhCh1NSUxFU1RPTkVfU1RBVFVTX1VOREVSX1JFVklFVxADEh0KGU1JTEVTVE9ORV9TVEFUVVNfQVBQUk9WRUQQBBInCiNNSUxFU1RPTkVfU1RBVFVTX1JFVklTSU9OX1JFUVVFU1RFRBAFEhkKFU1JTEVTVE9ORV9TVEFUVVNfUEFJRBAGEh0KGU1JTEVTVE9ORV9TVEFUVVNfRElTUFVURUQQBzLfAgoQTWlsZXN0b25lU2VydmljZRJSCg9DcmVhdGVNaWxlc3RvbmUSHi5hcGkudjEuQ3JlYXRlTWlsZXN0b25lUmVxdWVzdBofLmFwaS52MS5DcmVhdGVNaWxlc3RvbmVSZXNwb25zZRJMCg1HZXRNaWxlc3RvbmVzEhwuYXBpLnYxLkdldE1pbGVzdG9uZXNSZXF1ZXN0Gh0uYXBpLnYxLkdldE1pbGVzdG9uZXNSZXNwb25zZRJVChBBcHByb3ZlTWlsZXN0b25lEh8uYXBpLnYxLkFwcHJvdmVNaWxlc3RvbmVSZXF1ZXN0GiAuYXBpLnYxLkFwcHJvdmVNaWxlc3RvbmVSZXNwb25zZRJSCg9SZXF1ZXN0UmV2aXNpb24SHi5hcGkudjEuUmVxdWVzdFJldmlzaW9uUmVxdWVzdBofLmFwaS52MS5SZXF1ZXN0UmV2aXNpb25SZXNwb25zZUKmAQoKY29tLmFwaS52MUIOTWlsZXN0b25lUHJvdG9QAVpPZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2FwaS92MTthcGl2MaICA0FYWKoCBkFwaS5WMcoCBkFwaVxWMeICEkFwaVxWMVxHUEJNZXRhZGF0YeoCB0FwaTo6VjFiBnByb3RvMw",
     [file_google_protobuf_timestamp],
   );
 
@@ -359,6 +359,63 @@ export const RequestRevisionRequestSchema: GenMessage<RequestRevisionRequest> =
   messageDesc(file_api_v1_milestone, 8);
 
 /**
+ * @generated from message api.v1.CreateMilestoneResponse
+ */
+export type CreateMilestoneResponse =
+  Message<"api.v1.CreateMilestoneResponse"> & {
+    /**
+     * @generated from field: api.v1.Milestone milestone = 1;
+     */
+    milestone?: Milestone;
+  };
+
+/**
+ * Describes the message api.v1.CreateMilestoneResponse.
+ * Use `create(CreateMilestoneResponseSchema)` to create a new message.
+ */
+export const CreateMilestoneResponseSchema: GenMessage<CreateMilestoneResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_milestone, 9);
+
+/**
+ * @generated from message api.v1.ApproveMilestoneResponse
+ */
+export type ApproveMilestoneResponse =
+  Message<"api.v1.ApproveMilestoneResponse"> & {
+    /**
+     * @generated from field: api.v1.Milestone milestone = 1;
+     */
+    milestone?: Milestone;
+  };
+
+/**
+ * Describes the message api.v1.ApproveMilestoneResponse.
+ * Use `create(ApproveMilestoneResponseSchema)` to create a new message.
+ */
+export const ApproveMilestoneResponseSchema: GenMessage<ApproveMilestoneResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_milestone, 10);
+
+/**
+ * @generated from message api.v1.RequestRevisionResponse
+ */
+export type RequestRevisionResponse =
+  Message<"api.v1.RequestRevisionResponse"> & {
+    /**
+     * @generated from field: api.v1.Milestone milestone = 1;
+     */
+    milestone?: Milestone;
+  };
+
+/**
+ * Describes the message api.v1.RequestRevisionResponse.
+ * Use `create(RequestRevisionResponseSchema)` to create a new message.
+ */
+export const RequestRevisionResponseSchema: GenMessage<RequestRevisionResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_milestone, 11);
+
+/**
  * @generated from enum api.v1.MilestoneStatus
  */
 export enum MilestoneStatus {
@@ -434,7 +491,7 @@ export const MilestoneService: GenService<{
   createMilestone: {
     methodKind: "unary";
     input: typeof CreateMilestoneRequestSchema;
-    output: typeof MilestoneSchema;
+    output: typeof CreateMilestoneResponseSchema;
   };
   /**
    * @generated from rpc api.v1.MilestoneService.GetMilestones
@@ -450,7 +507,7 @@ export const MilestoneService: GenService<{
   approveMilestone: {
     methodKind: "unary";
     input: typeof ApproveMilestoneRequestSchema;
-    output: typeof MilestoneSchema;
+    output: typeof ApproveMilestoneResponseSchema;
   };
   /**
    * @generated from rpc api.v1.MilestoneService.RequestRevision
@@ -458,6 +515,6 @@ export const MilestoneService: GenService<{
   requestRevision: {
     methodKind: "unary";
     input: typeof RequestRevisionRequestSchema;
-    output: typeof MilestoneSchema;
+    output: typeof RequestRevisionResponseSchema;
   };
 }> = /*@__PURE__*/ serviceDesc(file_api_v1_milestone, 0);

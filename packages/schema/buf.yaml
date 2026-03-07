@@ -13,7 +13,7 @@ modules:
 # Proto linting: enforces Google's API style guide
 lint:
   use:
-    - DEFAULT
+    - STANDARD
   # Allow enums without a UNSPECIFIED=0 value in common utility protos
   except:
     - ENUM_ZERO_VALUE_SUFFIX

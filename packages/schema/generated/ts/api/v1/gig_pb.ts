@@ -29,7 +29,7 @@ import type { Message } from "@bufbuild/protobuf";
 export const file_api_v1_gig: GenFile =
   /*@__PURE__*/
   fileDesc(
-    "ChBhcGkvdjEvZ2lnLnByb3RvEgZhcGkudjEiogMKA0dpZxIKCgJpZBgBIAEoCRIRCgljbGllbnRfaWQYAiABKAkSFQoNZnJlZWxhbmNlcl9pZBgDIAEoCRINCgV0aXRsZRgEIAEoCRITCgtkZXNjcmlwdGlvbhgFIAEoCRIUCgx0b3RhbF9hbW91bnQYBiABKAkSIgoIY3VycmVuY3kYByABKA4yEC5hcGkudjEuQ3VycmVuY3kSFQoNdG9rZW5fYWRkcmVzcxgIIAEoCRIYChBjb250cmFjdF9hZGRyZXNzGAkgASgJEiEKBnN0YXR1cxgKIAEoDjIRLmFwaS52MS5HaWdTdGF0dXMSDAoEdGFncxgLIAMoCRIXCg9yZXF1aXJlZF9za2lsbHMYDCADKAkSLAoIZGVhZGxpbmUYDSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCmNyZWF0ZWRfYXQYDiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYDyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wInQKD0dpZ0NyZWF0ZWRFdmVudBIOCgZnaWdfaWQYASABKAkSEQoJY2xpZW50X2lkGAIgASgJEg0KBXRpdGxlGAMgASgJEi8KC29jY3VycmVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCK4AQoOR2lnRnVuZGVkRXZlbnQSDgoGZ2lnX2lkGAEgASgJEhEKCWNsaWVudF9pZBgCIAEoCRIYChBjb250cmFjdF9hZGRyZXNzGAMgASgJEhQKDHRvdGFsX2Ftb3VudBgEIAEoCRIiCghjdXJyZW5jeRgFIAEoDjIQLmFwaS52MS5DdXJyZW5jeRIvCgtvY2N1cnJlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAifgoRR2lnQ29tcGxldGVkRXZlbnQSDgoGZ2lnX2lkGAEgASgJEhEKCWNsaWVudF9pZBgCIAEoCRIVCg1mcmVlbGFuY2VyX2lkGAMgASgJEi8KC29jY3VycmVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCLcAQoQQ3JlYXRlR2lnUmVxdWVzdBINCgV0aXRsZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRIUCgx0b3RhbF9hbW91bnQYAyABKAkSIgoIY3VycmVuY3kYBCABKA4yEC5hcGkudjEuQ3VycmVuY3kSFQoNdG9rZW5fYWRkcmVzcxgFIAEoCRIMCgR0YWdzGAYgAygJEhcKD3JlcXVpcmVkX3NraWxscxgHIAMoCRIsCghkZWFkbGluZRgIIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiGwoNR2V0R2lnUmVxdWVzdBIKCgJpZBgBIAEoCSLlAQoOR2V0R2lnc1JlcXVlc3QSMAoKcGFnaW5hdGlvbhgBIAEoCzIcLmNvbW1vbi52MS5QYWdpbmF0aW9uUmVxdWVzdBIoCg1zdGF0dXNfZmlsdGVyGAIgASgOMhEuYXBpLnYxLkdpZ1N0YXR1cxIYChBjbGllbnRfaWRfZmlsdGVyGAMgASgJEhwKFGZyZWVsYW5jZXJfaWRfZmlsdGVyGAQgASgJEikKD2N1cnJlbmN5X2ZpbHRlchgFIAEoDjIQLmFwaS52MS5DdXJyZW5jeRIUCgxza2lsbF9maWx0ZXIYBiABKAkiWwoPR2V0R2lnc1Jlc3BvbnNlEhkKBGdpZ3MYASADKAsyCy5hcGkudjEuR2lnEi0KCnBhZ2luYXRpb24YAiABKAsyGS5jb21tb24udjEuUGFnaW5hdGlvbk1ldGEiQAoXQXNzaWduRnJlZWxhbmNlclJlcXVlc3QSDgoGZ2lnX2lkGAEgASgJEhUKDWZyZWVsYW5jZXJfaWQYAiABKAkquwEKCUdpZ1N0YXR1cxIaChZHSUdfU1RBVFVTX1VOU1BFQ0lGSUVEEAASFAoQR0lHX1NUQVRVU19EUkFGVBABEhMKD0dJR19TVEFUVVNfT1BFThACEhoKFkdJR19TVEFUVVNfSU5fUFJPR1JFU1MQAxIYChRHSUdfU1RBVFVTX0NPTVBMRVRFRBAEEhgKFEdJR19TVEFUVVNfQ0FOQ0VMTEVEEAUSFwoTR0lHX1NUQVRVU19ESVNQVVRFRBAGKkkKCEN1cnJlbmN5EhgKFENVUlJFTkNZX1VOU1BFQ0lGSUVEEAASEAoMQ1VSUkVOQ1lfRVRIEAESEQoNQ1VSUkVOQ1lfVVNEQxACMuwBCgpHaWdTZXJ2aWNlEjIKCUNyZWF0ZUdpZxIYLmFwaS52MS5DcmVhdGVHaWdSZXF1ZXN0GgsuYXBpLnYxLkdpZxIsCgZHZXRHaWcSFS5hcGkudjEuR2V0R2lnUmVxdWVzdBoLLmFwaS52MS5HaWcSOgoHR2V0R2lncxIWLmFwaS52MS5HZXRHaWdzUmVxdWVzdBoXLmFwaS52MS5HZXRHaWdzUmVzcG9uc2USQAoQQXNzaWduRnJlZWxhbmNlchIfLmFwaS52MS5Bc3NpZ25GcmVlbGFuY2VyUmVxdWVzdBoLLmFwaS52MS5HaWdCoAEKCmNvbS5hcGkudjFCCEdpZ1Byb3RvUAFaT2dpdGh1Yi5jb20vYWdhcndhbHZpdmVrMjkvc2tpbGxicmlkZ2UvcGFja2FnZXMvc2NoZW1hL2dlbmVyYXRlZC9nby9hcGkvdjE7YXBpdjGiAgNBWFiqAgZBcGkuVjHKAgZBcGlcVjHiAhJBcGlcVjFcR1BCTWV0YWRhdGHqAgdBcGk6OlYxYgZwcm90bzM",
+    "ChBhcGkvdjEvZ2lnLnByb3RvEgZhcGkudjEiogMKA0dpZxIKCgJpZBgBIAEoCRIRCgljbGllbnRfaWQYAiABKAkSFQoNZnJlZWxhbmNlcl9pZBgDIAEoCRINCgV0aXRsZRgEIAEoCRITCgtkZXNjcmlwdGlvbhgFIAEoCRIUCgx0b3RhbF9hbW91bnQYBiABKAkSIgoIY3VycmVuY3kYByABKA4yEC5hcGkudjEuQ3VycmVuY3kSFQoNdG9rZW5fYWRkcmVzcxgIIAEoCRIYChBjb250cmFjdF9hZGRyZXNzGAkgASgJEiEKBnN0YXR1cxgKIAEoDjIRLmFwaS52MS5HaWdTdGF0dXMSDAoEdGFncxgLIAMoCRIXCg9yZXF1aXJlZF9za2lsbHMYDCADKAkSLAoIZGVhZGxpbmUYDSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCmNyZWF0ZWRfYXQYDiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYDyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wInQKD0dpZ0NyZWF0ZWRFdmVudBIOCgZnaWdfaWQYASABKAkSEQoJY2xpZW50X2lkGAIgASgJEg0KBXRpdGxlGAMgASgJEi8KC29jY3VycmVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCK4AQoOR2lnRnVuZGVkRXZlbnQSDgoGZ2lnX2lkGAEgASgJEhEKCWNsaWVudF9pZBgCIAEoCRIYChBjb250cmFjdF9hZGRyZXNzGAMgASgJEhQKDHRvdGFsX2Ftb3VudBgEIAEoCRIiCghjdXJyZW5jeRgFIAEoDjIQLmFwaS52MS5DdXJyZW5jeRIvCgtvY2N1cnJlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAifgoRR2lnQ29tcGxldGVkRXZlbnQSDgoGZ2lnX2lkGAEgASgJEhEKCWNsaWVudF9pZBgCIAEoCRIVCg1mcmVlbGFuY2VyX2lkGAMgASgJEi8KC29jY3VycmVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCLcAQoQQ3JlYXRlR2lnUmVxdWVzdBINCgV0aXRsZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRIUCgx0b3RhbF9hbW91bnQYAyABKAkSIgoIY3VycmVuY3kYBCABKA4yEC5hcGkudjEuQ3VycmVuY3kSFQoNdG9rZW5fYWRkcmVzcxgFIAEoCRIMCgR0YWdzGAYgAygJEhcKD3JlcXVpcmVkX3NraWxscxgHIAMoCRIsCghkZWFkbGluZRgIIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiGwoNR2V0R2lnUmVxdWVzdBIKCgJpZBgBIAEoCSLlAQoOR2V0R2lnc1JlcXVlc3QSMAoKcGFnaW5hdGlvbhgBIAEoCzIcLmNvbW1vbi52MS5QYWdpbmF0aW9uUmVxdWVzdBIoCg1zdGF0dXNfZmlsdGVyGAIgASgOMhEuYXBpLnYxLkdpZ1N0YXR1cxIYChBjbGllbnRfaWRfZmlsdGVyGAMgASgJEhwKFGZyZWVsYW5jZXJfaWRfZmlsdGVyGAQgASgJEikKD2N1cnJlbmN5X2ZpbHRlchgFIAEoDjIQLmFwaS52MS5DdXJyZW5jeRIUCgxza2lsbF9maWx0ZXIYBiABKAkiWwoPR2V0R2lnc1Jlc3BvbnNlEhkKBGdpZ3MYASADKAsyCy5hcGkudjEuR2lnEi0KCnBhZ2luYXRpb24YAiABKAsyGS5jb21tb24udjEuUGFnaW5hdGlvbk1ldGEiQAoXQXNzaWduRnJlZWxhbmNlclJlcXVlc3QSDgoGZ2lnX2lkGAEgASgJEhUKDWZyZWVsYW5jZXJfaWQYAiABKAkiLQoRQ3JlYXRlR2lnUmVzcG9uc2USGAoDZ2lnGAEgASgLMgsuYXBpLnYxLkdpZyIqCg5HZXRHaWdSZXNwb25zZRIYCgNnaWcYASABKAsyCy5hcGkudjEuR2lnIjQKGEFzc2lnbkZyZWVsYW5jZXJSZXNwb25zZRIYCgNnaWcYASABKAsyCy5hcGkudjEuR2lnKrsBCglHaWdTdGF0dXMSGgoWR0lHX1NUQVRVU19VTlNQRUNJRklFRBAAEhQKEEdJR19TVEFUVVNfRFJBRlQQARITCg9HSUdfU1RBVFVTX09QRU4QAhIaChZHSUdfU1RBVFVTX0lOX1BST0dSRVNTEAMSGAoUR0lHX1NUQVRVU19DT01QTEVURUQQBBIYChRHSUdfU1RBVFVTX0NBTkNFTExFRBAFEhcKE0dJR19TVEFUVVNfRElTUFVURUQQBipJCghDdXJyZW5jeRIYChRDVVJSRU5DWV9VTlNQRUNJRklFRBAAEhAKDENVUlJFTkNZX0VUSBABEhEKDUNVUlJFTkNZX1VTREMQAjKaAgoKR2lnU2VydmljZRJACglDcmVhdGVHaWcSGC5hcGkudjEuQ3JlYXRlR2lnUmVxdWVzdBoZLmFwaS52MS5DcmVhdGVHaWdSZXNwb25zZRI3CgZHZXRHaWcSFS5hcGkudjEuR2V0R2lnUmVxdWVzdBoWLmFwaS52MS5HZXRHaWdSZXNwb25zZRI6CgdHZXRHaWdzEhYuYXBpLnYxLkdldEdpZ3NSZXF1ZXN0GhcuYXBpLnYxLkdldEdpZ3NSZXNwb25zZRJVChBBc3NpZ25GcmVlbGFuY2VyEh8uYXBpLnYxLkFzc2lnbkZyZWVsYW5jZXJSZXF1ZXN0GiAuYXBpLnYxLkFzc2lnbkZyZWVsYW5jZXJSZXNwb25zZUKgAQoKY29tLmFwaS52MUIIR2lnUHJvdG9QAVpPZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2FwaS92MTthcGl2MaICA0FYWKoCBkFwaS5WMcoCBkFwaVxWMeICEkFwaVxWMVxHUEJNZXRhZGF0YeoCB0FwaTo6VjFiBnByb3RvMw",
     [file_common_v1_pagination, file_google_protobuf_timestamp],
   );
 
@@ -407,6 +407,61 @@ export const AssignFreelancerRequestSchema: GenMessage<AssignFreelancerRequest> 
   messageDesc(file_api_v1_gig, 8);
 
 /**
+ * @generated from message api.v1.CreateGigResponse
+ */
+export type CreateGigResponse = Message<"api.v1.CreateGigResponse"> & {
+  /**
+   * @generated from field: api.v1.Gig gig = 1;
+   */
+  gig?: Gig;
+};
+
+/**
+ * Describes the message api.v1.CreateGigResponse.
+ * Use `create(CreateGigResponseSchema)` to create a new message.
+ */
+export const CreateGigResponseSchema: GenMessage<CreateGigResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_gig, 9);
+
+/**
+ * @generated from message api.v1.GetGigResponse
+ */
+export type GetGigResponse = Message<"api.v1.GetGigResponse"> & {
+  /**
+   * @generated from field: api.v1.Gig gig = 1;
+   */
+  gig?: Gig;
+};
+
+/**
+ * Describes the message api.v1.GetGigResponse.
+ * Use `create(GetGigResponseSchema)` to create a new message.
+ */
+export const GetGigResponseSchema: GenMessage<GetGigResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_gig, 10);
+
+/**
+ * @generated from message api.v1.AssignFreelancerResponse
+ */
+export type AssignFreelancerResponse =
+  Message<"api.v1.AssignFreelancerResponse"> & {
+    /**
+     * @generated from field: api.v1.Gig gig = 1;
+     */
+    gig?: Gig;
+  };
+
+/**
+ * Describes the message api.v1.AssignFreelancerResponse.
+ * Use `create(AssignFreelancerResponseSchema)` to create a new message.
+ */
+export const AssignFreelancerResponseSchema: GenMessage<AssignFreelancerResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_gig, 11);
+
+/**
  * @generated from enum api.v1.GigStatus
  */
 export enum GigStatus {
@@ -502,7 +557,7 @@ export const GigService: GenService<{
   createGig: {
     methodKind: "unary";
     input: typeof CreateGigRequestSchema;
-    output: typeof GigSchema;
+    output: typeof CreateGigResponseSchema;
   };
   /**
    * @generated from rpc api.v1.GigService.GetGig
@@ -510,7 +565,7 @@ export const GigService: GenService<{
   getGig: {
     methodKind: "unary";
     input: typeof GetGigRequestSchema;
-    output: typeof GigSchema;
+    output: typeof GetGigResponseSchema;
   };
   /**
    * @generated from rpc api.v1.GigService.GetGigs
@@ -526,6 +581,6 @@ export const GigService: GenService<{
   assignFreelancer: {
     methodKind: "unary";
     input: typeof AssignFreelancerRequestSchema;
-    output: typeof GigSchema;
+    output: typeof AssignFreelancerResponseSchema;
   };
 }> = /*@__PURE__*/ serviceDesc(file_api_v1_gig, 0);

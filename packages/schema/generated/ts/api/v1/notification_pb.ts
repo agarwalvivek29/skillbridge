@@ -24,7 +24,7 @@ import type { Message } from "@bufbuild/protobuf";
 export const file_api_v1_notification: GenFile =
   /*@__PURE__*/
   fileDesc(
-    "ChlhcGkvdjEvbm90aWZpY2F0aW9uLnByb3RvEgZhcGkudjEixgEKDE5vdGlmaWNhdGlvbhIKCgJpZBgBIAEoCRIPCgd1c2VyX2lkGAIgASgJEiYKBHR5cGUYAyABKA4yGC5hcGkudjEuTm90aWZpY2F0aW9uVHlwZRIUCgxwYXlsb2FkX2pzb24YBCABKAkSKwoHcmVhZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY3JlYXRlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiPwoXR2V0Tm90aWZpY2F0aW9uc1JlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCRITCgt1bnJlYWRfb25seRgCIAEoCCJdChhHZXROb3RpZmljYXRpb25zUmVzcG9uc2USKwoNbm90aWZpY2F0aW9ucxgBIAMoCzIULmFwaS52MS5Ob3RpZmljYXRpb24SFAoMdW5yZWFkX2NvdW50GAIgASgFIioKD01hcmtSZWFkUmVxdWVzdBIXCg9ub3RpZmljYXRpb25faWQYASABKAkiJQoSTWFya0FsbFJlYWRSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkq3QQKEE5vdGlmaWNhdGlvblR5cGUSIQodTk9USUZJQ0FUSU9OX1RZUEVfVU5TUEVDSUZJRUQQABIgChxOT1RJRklDQVRJT05fVFlQRV9HSUdfRlVOREVEEAESIwofTk9USUZJQ0FUSU9OX1RZUEVfR0lHX0NBTkNFTExFRBACEiMKH05PVElGSUNBVElPTl9UWVBFX0dJR19DT01QTEVURUQQAxInCiNOT1RJRklDQVRJT05fVFlQRV9QUk9QT1NBTF9SRUNFSVZFRBAEEicKI05PVElGSUNBVElPTl9UWVBFX1BST1BPU0FMX0FDQ0VQVEVEEAUSJwojTk9USUZJQ0FUSU9OX1RZUEVfUFJPUE9TQUxfUkVKRUNURUQQBhIpCiVOT1RJRklDQVRJT05fVFlQRV9TVUJNSVNTSU9OX1JFQ0VJVkVEEAcSKAokTk9USUZJQ0FUSU9OX1RZUEVfUkVWSVNJT05fUkVRVUVTVEVEEAgSKAokTk9USUZJQ0FUSU9OX1RZUEVfTUlMRVNUT05FX0FQUFJPVkVEEAkSJAogTk9USUZJQ0FUSU9OX1RZUEVfRlVORFNfUkVMRUFTRUQQChIlCiFOT1RJRklDQVRJT05fVFlQRV9SRVZJRVdfQ09NUExFVEUQCxIkCiBOT1RJRklDQVRJT05fVFlQRV9ESVNQVVRFX1JBSVNFRBAMEiYKIk5PVElGSUNBVElPTl9UWVBFX0RJU1BVVEVfUkVTT0xWRUQQDRIlCiFOT1RJRklDQVRJT05fVFlQRV9SRVZJRVdfUkVDRUlWRUQQDjL0AQoTTm90aWZpY2F0aW9uU2VydmljZRJVChBHZXROb3RpZmljYXRpb25zEh8uYXBpLnYxLkdldE5vdGlmaWNhdGlvbnNSZXF1ZXN0GiAuYXBpLnYxLkdldE5vdGlmaWNhdGlvbnNSZXNwb25zZRI5CghNYXJrUmVhZBIXLmFwaS52MS5NYXJrUmVhZFJlcXVlc3QaFC5hcGkudjEuTm90aWZpY2F0aW9uEksKC01hcmtBbGxSZWFkEhouYXBpLnYxLk1hcmtBbGxSZWFkUmVxdWVzdBogLmFwaS52MS5HZXROb3RpZmljYXRpb25zUmVzcG9uc2VCqQEKCmNvbS5hcGkudjFCEU5vdGlmaWNhdGlvblByb3RvUAFaT2dpdGh1Yi5jb20vYWdhcndhbHZpdmVrMjkvc2tpbGxicmlkZ2UvcGFja2FnZXMvc2NoZW1hL2dlbmVyYXRlZC9nby9hcGkvdjE7YXBpdjGiAgNBWFiqAgZBcGkuVjHKAgZBcGlcVjHiAhJBcGlcVjFcR1BCTWV0YWRhdGHqAgdBcGk6OlYxYgZwcm90bzM",
+    "ChlhcGkvdjEvbm90aWZpY2F0aW9uLnByb3RvEgZhcGkudjEixgEKDE5vdGlmaWNhdGlvbhIKCgJpZBgBIAEoCRIPCgd1c2VyX2lkGAIgASgJEiYKBHR5cGUYAyABKA4yGC5hcGkudjEuTm90aWZpY2F0aW9uVHlwZRIUCgxwYXlsb2FkX2pzb24YBCABKAkSKwoHcmVhZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY3JlYXRlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiPwoXR2V0Tm90aWZpY2F0aW9uc1JlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCRITCgt1bnJlYWRfb25seRgCIAEoCCJdChhHZXROb3RpZmljYXRpb25zUmVzcG9uc2USKwoNbm90aWZpY2F0aW9ucxgBIAMoCzIULmFwaS52MS5Ob3RpZmljYXRpb24SFAoMdW5yZWFkX2NvdW50GAIgASgFIioKD01hcmtSZWFkUmVxdWVzdBIXCg9ub3RpZmljYXRpb25faWQYASABKAkiJQoSTWFya0FsbFJlYWRSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkiPgoQTWFya1JlYWRSZXNwb25zZRIqCgxub3RpZmljYXRpb24YASABKAsyFC5hcGkudjEuTm90aWZpY2F0aW9uIlgKE01hcmtBbGxSZWFkUmVzcG9uc2USKwoNbm90aWZpY2F0aW9ucxgBIAMoCzIULmFwaS52MS5Ob3RpZmljYXRpb24SFAoMdW5yZWFkX2NvdW50GAIgASgFKt0EChBOb3RpZmljYXRpb25UeXBlEiEKHU5PVElGSUNBVElPTl9UWVBFX1VOU1BFQ0lGSUVEEAASIAocTk9USUZJQ0FUSU9OX1RZUEVfR0lHX0ZVTkRFRBABEiMKH05PVElGSUNBVElPTl9UWVBFX0dJR19DQU5DRUxMRUQQAhIjCh9OT1RJRklDQVRJT05fVFlQRV9HSUdfQ09NUExFVEVEEAMSJwojTk9USUZJQ0FUSU9OX1RZUEVfUFJPUE9TQUxfUkVDRUlWRUQQBBInCiNOT1RJRklDQVRJT05fVFlQRV9QUk9QT1NBTF9BQ0NFUFRFRBAFEicKI05PVElGSUNBVElPTl9UWVBFX1BST1BPU0FMX1JFSkVDVEVEEAYSKQolTk9USUZJQ0FUSU9OX1RZUEVfU1VCTUlTU0lPTl9SRUNFSVZFRBAHEigKJE5PVElGSUNBVElPTl9UWVBFX1JFVklTSU9OX1JFUVVFU1RFRBAIEigKJE5PVElGSUNBVElPTl9UWVBFX01JTEVTVE9ORV9BUFBST1ZFRBAJEiQKIE5PVElGSUNBVElPTl9UWVBFX0ZVTkRTX1JFTEVBU0VEEAoSJQohTk9USUZJQ0FUSU9OX1RZUEVfUkVWSUVXX0NPTVBMRVRFEAsSJAogTk9USUZJQ0FUSU9OX1RZUEVfRElTUFVURV9SQUlTRUQQDBImCiJOT1RJRklDQVRJT05fVFlQRV9ESVNQVVRFX1JFU09MVkVEEA0SJQohTk9USUZJQ0FUSU9OX1RZUEVfUkVWSUVXX1JFQ0VJVkVEEA4y8wEKE05vdGlmaWNhdGlvblNlcnZpY2USVQoQR2V0Tm90aWZpY2F0aW9ucxIfLmFwaS52MS5HZXROb3RpZmljYXRpb25zUmVxdWVzdBogLmFwaS52MS5HZXROb3RpZmljYXRpb25zUmVzcG9uc2USPQoITWFya1JlYWQSFy5hcGkudjEuTWFya1JlYWRSZXF1ZXN0GhguYXBpLnYxLk1hcmtSZWFkUmVzcG9uc2USRgoLTWFya0FsbFJlYWQSGi5hcGkudjEuTWFya0FsbFJlYWRSZXF1ZXN0GhsuYXBpLnYxLk1hcmtBbGxSZWFkUmVzcG9uc2VCqQEKCmNvbS5hcGkudjFCEU5vdGlmaWNhdGlvblByb3RvUAFaT2dpdGh1Yi5jb20vYWdhcndhbHZpdmVrMjkvc2tpbGxicmlkZ2UvcGFja2FnZXMvc2NoZW1hL2dlbmVyYXRlZC9nby9hcGkvdjE7YXBpdjGiAgNBWFiqAgZBcGkuVjHKAgZBcGlcVjHiAhJBcGlcVjFcR1BCTWV0YWRhdGHqAgdBcGk6OlYxYgZwcm90bzM",
     [file_google_protobuf_timestamp],
   );
 
@@ -163,6 +163,47 @@ export type MarkAllReadRequest = Message<"api.v1.MarkAllReadRequest"> & {
 export const MarkAllReadRequestSchema: GenMessage<MarkAllReadRequest> =
   /*@__PURE__*/
   messageDesc(file_api_v1_notification, 4);
+
+/**
+ * @generated from message api.v1.MarkReadResponse
+ */
+export type MarkReadResponse = Message<"api.v1.MarkReadResponse"> & {
+  /**
+   * @generated from field: api.v1.Notification notification = 1;
+   */
+  notification?: Notification;
+};
+
+/**
+ * Describes the message api.v1.MarkReadResponse.
+ * Use `create(MarkReadResponseSchema)` to create a new message.
+ */
+export const MarkReadResponseSchema: GenMessage<MarkReadResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_notification, 5);
+
+/**
+ * @generated from message api.v1.MarkAllReadResponse
+ */
+export type MarkAllReadResponse = Message<"api.v1.MarkAllReadResponse"> & {
+  /**
+   * @generated from field: repeated api.v1.Notification notifications = 1;
+   */
+  notifications: Notification[];
+
+  /**
+   * @generated from field: int32 unread_count = 2;
+   */
+  unreadCount: number;
+};
+
+/**
+ * Describes the message api.v1.MarkAllReadResponse.
+ * Use `create(MarkAllReadResponseSchema)` to create a new message.
+ */
+export const MarkAllReadResponseSchema: GenMessage<MarkAllReadResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_notification, 6);
 
 /**
  * @generated from enum api.v1.NotificationType
@@ -305,7 +346,7 @@ export const NotificationService: GenService<{
   markRead: {
     methodKind: "unary";
     input: typeof MarkReadRequestSchema;
-    output: typeof NotificationSchema;
+    output: typeof MarkReadResponseSchema;
   };
   /**
    * @generated from rpc api.v1.NotificationService.MarkAllRead
@@ -313,6 +354,6 @@ export const NotificationService: GenService<{
   markAllRead: {
     methodKind: "unary";
     input: typeof MarkAllReadRequestSchema;
-    output: typeof GetNotificationsResponseSchema;
+    output: typeof MarkAllReadResponseSchema;
   };
 }> = /*@__PURE__*/ serviceDesc(file_api_v1_notification, 0);

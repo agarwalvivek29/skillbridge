@@ -22,7 +22,7 @@ import type { Message } from "@bufbuild/protobuf";
 export const file_api_v1_portfolio: GenFile =
   /*@__PURE__*/
   fileDesc(
-    "ChZhcGkvdjEvcG9ydGZvbGlvLnByb3RvEgZhcGkudjEigAIKDVBvcnRmb2xpb0l0ZW0SCgoCaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCRINCgV0aXRsZRgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRIRCglmaWxlX2tleXMYBSADKAkSFAoMZXh0ZXJuYWxfdXJsGAYgASgJEgwKBHRhZ3MYByADKAkSFwoPdmVyaWZpZWRfZ2lnX2lkGAggASgJEi4KCmNyZWF0ZWRfYXQYCSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYCiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIpABChpDcmVhdGVQb3J0Zm9saW9JdGVtUmVxdWVzdBINCgV0aXRsZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRIRCglmaWxlX2tleXMYAyADKAkSFAoMZXh0ZXJuYWxfdXJsGAQgASgJEgwKBHRhZ3MYBSADKAkSFwoPdmVyaWZpZWRfZ2lnX2lkGAYgASgJIoMBChpVcGRhdGVQb3J0Zm9saW9JdGVtUmVxdWVzdBIKCgJpZBgBIAEoCRINCgV0aXRsZRgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCRIRCglmaWxlX2tleXMYBCADKAkSFAoMZXh0ZXJuYWxfdXJsGAUgASgJEgwKBHRhZ3MYBiADKAkiKwoYR2V0UG9ydGZvbGlvSXRlbXNSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkiQQoZR2V0UG9ydGZvbGlvSXRlbXNSZXNwb25zZRIkCgVpdGVtcxgBIAMoCzIVLmFwaS52MS5Qb3J0Zm9saW9JdGVtIigKGkRlbGV0ZVBvcnRmb2xpb0l0ZW1SZXF1ZXN0EgoKAmlkGAEgASgJMuICChBQb3J0Zm9saW9TZXJ2aWNlElAKE0NyZWF0ZVBvcnRmb2xpb0l0ZW0SIi5hcGkudjEuQ3JlYXRlUG9ydGZvbGlvSXRlbVJlcXVlc3QaFS5hcGkudjEuUG9ydGZvbGlvSXRlbRJQChNVcGRhdGVQb3J0Zm9saW9JdGVtEiIuYXBpLnYxLlVwZGF0ZVBvcnRmb2xpb0l0ZW1SZXF1ZXN0GhUuYXBpLnYxLlBvcnRmb2xpb0l0ZW0SWAoRR2V0UG9ydGZvbGlvSXRlbXMSIC5hcGkudjEuR2V0UG9ydGZvbGlvSXRlbXNSZXF1ZXN0GiEuYXBpLnYxLkdldFBvcnRmb2xpb0l0ZW1zUmVzcG9uc2USUAoTRGVsZXRlUG9ydGZvbGlvSXRlbRIiLmFwaS52MS5EZWxldGVQb3J0Zm9saW9JdGVtUmVxdWVzdBoVLmFwaS52MS5Qb3J0Zm9saW9JdGVtQqYBCgpjb20uYXBpLnYxQg5Qb3J0Zm9saW9Qcm90b1ABWk9naXRodWIuY29tL2FnYXJ3YWx2aXZlazI5L3NraWxsYnJpZGdlL3BhY2thZ2VzL3NjaGVtYS9nZW5lcmF0ZWQvZ28vYXBpL3YxO2FwaXYxogIDQVhYqgIGQXBpLlYxygIGQXBpXFYx4gISQXBpXFYxXEdQQk1ldGFkYXRh6gIHQXBpOjpWMWIGcHJvdG8z",
+    "ChZhcGkvdjEvcG9ydGZvbGlvLnByb3RvEgZhcGkudjEigAIKDVBvcnRmb2xpb0l0ZW0SCgoCaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCRINCgV0aXRsZRgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRIRCglmaWxlX2tleXMYBSADKAkSFAoMZXh0ZXJuYWxfdXJsGAYgASgJEgwKBHRhZ3MYByADKAkSFwoPdmVyaWZpZWRfZ2lnX2lkGAggASgJEi4KCmNyZWF0ZWRfYXQYCSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYCiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIpABChpDcmVhdGVQb3J0Zm9saW9JdGVtUmVxdWVzdBINCgV0aXRsZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRIRCglmaWxlX2tleXMYAyADKAkSFAoMZXh0ZXJuYWxfdXJsGAQgASgJEgwKBHRhZ3MYBSADKAkSFwoPdmVyaWZpZWRfZ2lnX2lkGAYgASgJIoMBChpVcGRhdGVQb3J0Zm9saW9JdGVtUmVxdWVzdBIKCgJpZBgBIAEoCRINCgV0aXRsZRgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCRIRCglmaWxlX2tleXMYBCADKAkSFAoMZXh0ZXJuYWxfdXJsGAUgASgJEgwKBHRhZ3MYBiADKAkiKwoYR2V0UG9ydGZvbGlvSXRlbXNSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkiQQoZR2V0UG9ydGZvbGlvSXRlbXNSZXNwb25zZRIkCgVpdGVtcxgBIAMoCzIVLmFwaS52MS5Qb3J0Zm9saW9JdGVtIigKGkRlbGV0ZVBvcnRmb2xpb0l0ZW1SZXF1ZXN0EgoKAmlkGAEgASgJIkIKG0NyZWF0ZVBvcnRmb2xpb0l0ZW1SZXNwb25zZRIjCgRpdGVtGAEgASgLMhUuYXBpLnYxLlBvcnRmb2xpb0l0ZW0iQgobVXBkYXRlUG9ydGZvbGlvSXRlbVJlc3BvbnNlEiMKBGl0ZW0YASABKAsyFS5hcGkudjEuUG9ydGZvbGlvSXRlbSJCChtEZWxldGVQb3J0Zm9saW9JdGVtUmVzcG9uc2USIwoEaXRlbRgBIAEoCzIVLmFwaS52MS5Qb3J0Zm9saW9JdGVtMowDChBQb3J0Zm9saW9TZXJ2aWNlEl4KE0NyZWF0ZVBvcnRmb2xpb0l0ZW0SIi5hcGkudjEuQ3JlYXRlUG9ydGZvbGlvSXRlbVJlcXVlc3QaIy5hcGkudjEuQ3JlYXRlUG9ydGZvbGlvSXRlbVJlc3BvbnNlEl4KE1VwZGF0ZVBvcnRmb2xpb0l0ZW0SIi5hcGkudjEuVXBkYXRlUG9ydGZvbGlvSXRlbVJlcXVlc3QaIy5hcGkudjEuVXBkYXRlUG9ydGZvbGlvSXRlbVJlc3BvbnNlElgKEUdldFBvcnRmb2xpb0l0ZW1zEiAuYXBpLnYxLkdldFBvcnRmb2xpb0l0ZW1zUmVxdWVzdBohLmFwaS52MS5HZXRQb3J0Zm9saW9JdGVtc1Jlc3BvbnNlEl4KE0RlbGV0ZVBvcnRmb2xpb0l0ZW0SIi5hcGkudjEuRGVsZXRlUG9ydGZvbGlvSXRlbVJlcXVlc3QaIy5hcGkudjEuRGVsZXRlUG9ydGZvbGlvSXRlbVJlc3BvbnNlQqYBCgpjb20uYXBpLnYxQg5Qb3J0Zm9saW9Qcm90b1ABWk9naXRodWIuY29tL2FnYXJ3YWx2aXZlazI5L3NraWxsYnJpZGdlL3BhY2thZ2VzL3NjaGVtYS9nZW5lcmF0ZWQvZ28vYXBpL3YxO2FwaXYxogIDQVhYqgIGQXBpLlYxygIGQXBpXFYx4gISQXBpXFYxXEdQQk1ldGFkYXRh6gIHQXBpOjpWMWIGcHJvdG8z",
     [file_google_protobuf_timestamp],
   );
 
@@ -243,6 +243,63 @@ export const DeletePortfolioItemRequestSchema: GenMessage<DeletePortfolioItemReq
   messageDesc(file_api_v1_portfolio, 5);
 
 /**
+ * @generated from message api.v1.CreatePortfolioItemResponse
+ */
+export type CreatePortfolioItemResponse =
+  Message<"api.v1.CreatePortfolioItemResponse"> & {
+    /**
+     * @generated from field: api.v1.PortfolioItem item = 1;
+     */
+    item?: PortfolioItem;
+  };
+
+/**
+ * Describes the message api.v1.CreatePortfolioItemResponse.
+ * Use `create(CreatePortfolioItemResponseSchema)` to create a new message.
+ */
+export const CreatePortfolioItemResponseSchema: GenMessage<CreatePortfolioItemResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_portfolio, 6);
+
+/**
+ * @generated from message api.v1.UpdatePortfolioItemResponse
+ */
+export type UpdatePortfolioItemResponse =
+  Message<"api.v1.UpdatePortfolioItemResponse"> & {
+    /**
+     * @generated from field: api.v1.PortfolioItem item = 1;
+     */
+    item?: PortfolioItem;
+  };
+
+/**
+ * Describes the message api.v1.UpdatePortfolioItemResponse.
+ * Use `create(UpdatePortfolioItemResponseSchema)` to create a new message.
+ */
+export const UpdatePortfolioItemResponseSchema: GenMessage<UpdatePortfolioItemResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_portfolio, 7);
+
+/**
+ * @generated from message api.v1.DeletePortfolioItemResponse
+ */
+export type DeletePortfolioItemResponse =
+  Message<"api.v1.DeletePortfolioItemResponse"> & {
+    /**
+     * @generated from field: api.v1.PortfolioItem item = 1;
+     */
+    item?: PortfolioItem;
+  };
+
+/**
+ * Describes the message api.v1.DeletePortfolioItemResponse.
+ * Use `create(DeletePortfolioItemResponseSchema)` to create a new message.
+ */
+export const DeletePortfolioItemResponseSchema: GenMessage<DeletePortfolioItemResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_portfolio, 8);
+
+/**
  * @generated from service api.v1.PortfolioService
  */
 export const PortfolioService: GenService<{
@@ -252,7 +309,7 @@ export const PortfolioService: GenService<{
   createPortfolioItem: {
     methodKind: "unary";
     input: typeof CreatePortfolioItemRequestSchema;
-    output: typeof PortfolioItemSchema;
+    output: typeof CreatePortfolioItemResponseSchema;
   };
   /**
    * @generated from rpc api.v1.PortfolioService.UpdatePortfolioItem
@@ -260,7 +317,7 @@ export const PortfolioService: GenService<{
   updatePortfolioItem: {
     methodKind: "unary";
     input: typeof UpdatePortfolioItemRequestSchema;
-    output: typeof PortfolioItemSchema;
+    output: typeof UpdatePortfolioItemResponseSchema;
   };
   /**
    * @generated from rpc api.v1.PortfolioService.GetPortfolioItems
@@ -276,6 +333,6 @@ export const PortfolioService: GenService<{
   deletePortfolioItem: {
     methodKind: "unary";
     input: typeof DeletePortfolioItemRequestSchema;
-    output: typeof PortfolioItemSchema;
+    output: typeof DeletePortfolioItemResponseSchema;
   };
 }> = /*@__PURE__*/ serviceDesc(file_api_v1_portfolio, 0);

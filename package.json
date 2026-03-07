@@ -1,6 +1,7 @@
 {
   "name": "skillbridge",
   "private": true,
+  "type": "module",
   "scripts": {
     "prepare": "husky",
     "lint": "pnpm -r run lint",

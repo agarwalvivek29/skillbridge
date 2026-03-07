@@ -69,10 +69,19 @@ message MarkAllReadRequest {
   string user_id = 1;
 }
 
+message MarkReadResponse {
+  Notification notification = 1;
+}
+
+message MarkAllReadResponse {
+  repeated Notification notifications = 1;
+  int32 unread_count = 2;
+}
+
 // ─── Service ─────────────────────────────────────────────────────────────────
 
 service NotificationService {
   rpc GetNotifications(GetNotificationsRequest) returns (GetNotificationsResponse);
-  rpc MarkRead(MarkReadRequest) returns (Notification);
-  rpc MarkAllRead(MarkAllReadRequest) returns (GetNotificationsResponse);
+  rpc MarkRead(MarkReadRequest) returns (MarkReadResponse);
+  rpc MarkAllRead(MarkAllReadRequest) returns (MarkAllReadResponse);
 }

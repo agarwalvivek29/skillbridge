@@ -169,6 +169,21 @@ class AuthResponse(betterproto.Message):
 
 
 @dataclass
+class WalletLoginResponse(betterproto.Message):
+    auth: "AuthResponse" = betterproto.message_field(1)
+
+
+@dataclass
+class EmailRegisterResponse(betterproto.Message):
+    auth: "AuthResponse" = betterproto.message_field(1)
+
+
+@dataclass
+class EmailLoginResponse(betterproto.Message):
+    auth: "AuthResponse" = betterproto.message_field(1)
+
+
+@dataclass
 class Dispute(betterproto.Message):
     """
     One dispute per milestone maximum. Raised by either client or freelancer.
@@ -253,6 +268,26 @@ class GetDisputeMessagesRequest(betterproto.Message):
 @dataclass
 class GetDisputeMessagesResponse(betterproto.Message):
     messages: List["DisputeMessage"] = betterproto.message_field(1)
+
+
+@dataclass
+class RaiseDisputeResponse(betterproto.Message):
+    dispute: "Dispute" = betterproto.message_field(1)
+
+
+@dataclass
+class GetDisputeResponse(betterproto.Message):
+    dispute: "Dispute" = betterproto.message_field(1)
+
+
+@dataclass
+class GetDisputeByMilestoneResponse(betterproto.Message):
+    dispute: "Dispute" = betterproto.message_field(1)
+
+
+@dataclass
+class PostDisputeMessageResponse(betterproto.Message):
+    message: "DisputeMessage" = betterproto.message_field(1)
 
 
 @dataclass
@@ -346,6 +381,21 @@ class AssignFreelancerRequest(betterproto.Message):
 
 
 @dataclass
+class CreateGigResponse(betterproto.Message):
+    gig: "Gig" = betterproto.message_field(1)
+
+
+@dataclass
+class GetGigResponse(betterproto.Message):
+    gig: "Gig" = betterproto.message_field(1)
+
+
+@dataclass
+class AssignFreelancerResponse(betterproto.Message):
+    gig: "Gig" = betterproto.message_field(1)
+
+
+@dataclass
 class Milestone(betterproto.Message):
     id: str = betterproto.string_field(1)
     gig_id: str = betterproto.string_field(2)
@@ -428,6 +478,21 @@ class RequestRevisionRequest(betterproto.Message):
 
 
 @dataclass
+class CreateMilestoneResponse(betterproto.Message):
+    milestone: "Milestone" = betterproto.message_field(1)
+
+
+@dataclass
+class ApproveMilestoneResponse(betterproto.Message):
+    milestone: "Milestone" = betterproto.message_field(1)
+
+
+@dataclass
+class RequestRevisionResponse(betterproto.Message):
+    milestone: "Milestone" = betterproto.message_field(1)
+
+
+@dataclass
 class Notification(betterproto.Message):
     id: str = betterproto.string_field(1)
     user_id: str = betterproto.string_field(2)
@@ -462,6 +527,17 @@ class MarkReadRequest(betterproto.Message):
 @dataclass
 class MarkAllReadRequest(betterproto.Message):
     user_id: str = betterproto.string_field(1)
+
+
+@dataclass
+class MarkReadResponse(betterproto.Message):
+    notification: "Notification" = betterproto.message_field(1)
+
+
+@dataclass
+class MarkAllReadResponse(betterproto.Message):
+    notifications: List["Notification"] = betterproto.message_field(1)
+    unread_count: int = betterproto.int32_field(2)
 
 
 @dataclass
@@ -516,6 +592,21 @@ class GetPortfolioItemsResponse(betterproto.Message):
 @dataclass
 class DeletePortfolioItemRequest(betterproto.Message):
     id: str = betterproto.string_field(1)
+
+
+@dataclass
+class CreatePortfolioItemResponse(betterproto.Message):
+    item: "PortfolioItem" = betterproto.message_field(1)
+
+
+@dataclass
+class UpdatePortfolioItemResponse(betterproto.Message):
+    item: "PortfolioItem" = betterproto.message_field(1)
+
+
+@dataclass
+class DeletePortfolioItemResponse(betterproto.Message):
+    item: "PortfolioItem" = betterproto.message_field(1)
 
 
 @dataclass
@@ -577,6 +668,21 @@ class WithdrawProposalRequest(betterproto.Message):
 
 
 @dataclass
+class CreateProposalResponse(betterproto.Message):
+    proposal: "Proposal" = betterproto.message_field(1)
+
+
+@dataclass
+class AcceptProposalResponse(betterproto.Message):
+    proposal: "Proposal" = betterproto.message_field(1)
+
+
+@dataclass
+class WithdrawProposalResponse(betterproto.Message):
+    proposal: "Proposal" = betterproto.message_field(1)
+
+
+@dataclass
 class Reputation(betterproto.Message):
     """
     DB cache of on-chain reputation data. One record per user (1:1). Updated
@@ -611,6 +717,11 @@ class Reputation(betterproto.Message):
 @dataclass
 class GetReputationRequest(betterproto.Message):
     user_id: str = betterproto.string_field(1)
+
+
+@dataclass
+class GetReputationResponse(betterproto.Message):
+    reputation: "Reputation" = betterproto.message_field(1)
 
 
 @dataclass
@@ -666,6 +777,11 @@ class GetReviewsResponse(betterproto.Message):
     reviews: List["Review"] = betterproto.message_field(1)
     # Computed average (scaled x100, e.g. 450 = 4.50 stars)
     average_rating_x100: int = betterproto.int32_field(2)
+
+
+@dataclass
+class CreateReviewResponse(betterproto.Message):
+    review: "Review" = betterproto.message_field(1)
 
 
 @dataclass
@@ -728,6 +844,16 @@ class GetSubmissionsRequest(betterproto.Message):
 @dataclass
 class GetSubmissionsResponse(betterproto.Message):
     submissions: List["Submission"] = betterproto.message_field(1)
+
+
+@dataclass
+class CreateSubmissionResponse(betterproto.Message):
+    submission: "Submission" = betterproto.message_field(1)
+
+
+@dataclass
+class GetSubmissionResponse(betterproto.Message):
+    submission: "Submission" = betterproto.message_field(1)
 
 
 @dataclass
@@ -808,6 +934,21 @@ class GetUsersResponse(betterproto.Message):
     pagination: v1.PaginationMeta = betterproto.message_field(2)
 
 
+@dataclass
+class CreateUserResponse(betterproto.Message):
+    user: "UserPublic" = betterproto.message_field(1)
+
+
+@dataclass
+class GetUserResponse(betterproto.Message):
+    user: "UserPublic" = betterproto.message_field(1)
+
+
+@dataclass
+class UpdateUserResponse(betterproto.Message):
+    user: "UserPublic" = betterproto.message_field(1)
+
+
 class AuthServiceStub(betterproto.ServiceStub):
     async def get_nonce(self, *, wallet_address: str = "") -> GetNonceResponse:
         request = GetNonceRequest()
@@ -821,7 +962,7 @@ class AuthServiceStub(betterproto.ServiceStub):
 
     async def wallet_login(
         self, *, wallet_address: str = "", signature: str = "", message: str = ""
-    ) -> AuthResponse:
+    ) -> WalletLoginResponse:
         request = WalletLoginRequest()
         request.wallet_address = wallet_address
         request.signature = signature
@@ -830,12 +971,12 @@ class AuthServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.AuthService/WalletLogin",
             request,
-            AuthResponse,
+            WalletLoginResponse,
         )
 
     async def email_register(
         self, *, email: str = "", password: str = "", name: str = "", role: str = ""
-    ) -> AuthResponse:
+    ) -> EmailRegisterResponse:
         request = EmailRegisterRequest()
         request.email = email
         request.password = password
@@ -845,10 +986,12 @@ class AuthServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.AuthService/EmailRegister",
             request,
-            AuthResponse,
+            EmailRegisterResponse,
         )
 
-    async def email_login(self, *, email: str = "", password: str = "") -> AuthResponse:
+    async def email_login(
+        self, *, email: str = "", password: str = ""
+    ) -> EmailLoginResponse:
         request = EmailLoginRequest()
         request.email = email
         request.password = password
@@ -856,14 +999,14 @@ class AuthServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.AuthService/EmailLogin",
             request,
-            AuthResponse,
+            EmailLoginResponse,
         )
 
 
 class DisputeServiceStub(betterproto.ServiceStub):
     async def raise_dispute(
         self, *, milestone_id: str = "", reason: str = ""
-    ) -> Dispute:
+    ) -> RaiseDisputeResponse:
         request = RaiseDisputeRequest()
         request.milestone_id = milestone_id
         request.reason = reason
@@ -871,32 +1014,34 @@ class DisputeServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.DisputeService/RaiseDispute",
             request,
-            Dispute,
+            RaiseDisputeResponse,
         )
 
-    async def get_dispute(self, *, id: str = "") -> Dispute:
+    async def get_dispute(self, *, id: str = "") -> GetDisputeResponse:
         request = GetDisputeRequest()
         request.id = id
 
         return await self._unary_unary(
             "/api.v1.DisputeService/GetDispute",
             request,
-            Dispute,
+            GetDisputeResponse,
         )
 
-    async def get_dispute_by_milestone(self, *, milestone_id: str = "") -> Dispute:
+    async def get_dispute_by_milestone(
+        self, *, milestone_id: str = ""
+    ) -> GetDisputeByMilestoneResponse:
         request = GetDisputeByMilestoneRequest()
         request.milestone_id = milestone_id
 
         return await self._unary_unary(
             "/api.v1.DisputeService/GetDisputeByMilestone",
             request,
-            Dispute,
+            GetDisputeByMilestoneResponse,
         )
 
     async def post_dispute_message(
         self, *, dispute_id: str = "", content: str = ""
-    ) -> DisputeMessage:
+    ) -> PostDisputeMessageResponse:
         request = PostDisputeMessageRequest()
         request.dispute_id = dispute_id
         request.content = content
@@ -904,7 +1049,7 @@ class DisputeServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.DisputeService/PostDisputeMessage",
             request,
-            DisputeMessage,
+            PostDisputeMessageResponse,
         )
 
     async def get_dispute_messages(
@@ -932,7 +1077,7 @@ class GigServiceStub(betterproto.ServiceStub):
         tags: List[str] = [],
         required_skills: List[str] = [],
         deadline: Optional[datetime] = None,
-    ) -> Gig:
+    ) -> CreateGigResponse:
         request = CreateGigRequest()
         request.title = title
         request.description = description
@@ -947,17 +1092,17 @@ class GigServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.GigService/CreateGig",
             request,
-            Gig,
+            CreateGigResponse,
         )
 
-    async def get_gig(self, *, id: str = "") -> Gig:
+    async def get_gig(self, *, id: str = "") -> GetGigResponse:
         request = GetGigRequest()
         request.id = id
 
         return await self._unary_unary(
             "/api.v1.GigService/GetGig",
             request,
-            Gig,
+            GetGigResponse,
         )
 
     async def get_gigs(
@@ -987,7 +1132,7 @@ class GigServiceStub(betterproto.ServiceStub):
 
     async def assign_freelancer(
         self, *, gig_id: str = "", freelancer_id: str = ""
-    ) -> Gig:
+    ) -> AssignFreelancerResponse:
         request = AssignFreelancerRequest()
         request.gig_id = gig_id
         request.freelancer_id = freelancer_id
@@ -995,7 +1140,7 @@ class GigServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.GigService/AssignFreelancer",
             request,
-            Gig,
+            AssignFreelancerResponse,
         )
 
 
@@ -1010,7 +1155,7 @@ class MilestoneServiceStub(betterproto.ServiceStub):
         amount: str = "",
         order: int = 0,
         due_date: Optional[datetime] = None,
-    ) -> Milestone:
+    ) -> CreateMilestoneResponse:
         request = CreateMilestoneRequest()
         request.gig_id = gig_id
         request.title = title
@@ -1024,7 +1169,7 @@ class MilestoneServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.MilestoneService/CreateMilestone",
             request,
-            Milestone,
+            CreateMilestoneResponse,
         )
 
     async def get_milestones(self, *, gig_id: str = "") -> GetMilestonesResponse:
@@ -1039,7 +1184,7 @@ class MilestoneServiceStub(betterproto.ServiceStub):
 
     async def approve_milestone(
         self, *, milestone_id: str = "", notes: str = ""
-    ) -> Milestone:
+    ) -> ApproveMilestoneResponse:
         request = ApproveMilestoneRequest()
         request.milestone_id = milestone_id
         request.notes = notes
@@ -1047,12 +1192,12 @@ class MilestoneServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.MilestoneService/ApproveMilestone",
             request,
-            Milestone,
+            ApproveMilestoneResponse,
         )
 
     async def request_revision(
         self, *, milestone_id: str = "", feedback: str = ""
-    ) -> Milestone:
+    ) -> RequestRevisionResponse:
         request = RequestRevisionRequest()
         request.milestone_id = milestone_id
         request.feedback = feedback
@@ -1060,7 +1205,7 @@ class MilestoneServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.MilestoneService/RequestRevision",
             request,
-            Milestone,
+            RequestRevisionResponse,
         )
 
 
@@ -1078,24 +1223,24 @@ class NotificationServiceStub(betterproto.ServiceStub):
             GetNotificationsResponse,
         )
 
-    async def mark_read(self, *, notification_id: str = "") -> Notification:
+    async def mark_read(self, *, notification_id: str = "") -> MarkReadResponse:
         request = MarkReadRequest()
         request.notification_id = notification_id
 
         return await self._unary_unary(
             "/api.v1.NotificationService/MarkRead",
             request,
-            Notification,
+            MarkReadResponse,
         )
 
-    async def mark_all_read(self, *, user_id: str = "") -> GetNotificationsResponse:
+    async def mark_all_read(self, *, user_id: str = "") -> MarkAllReadResponse:
         request = MarkAllReadRequest()
         request.user_id = user_id
 
         return await self._unary_unary(
             "/api.v1.NotificationService/MarkAllRead",
             request,
-            GetNotificationsResponse,
+            MarkAllReadResponse,
         )
 
 
@@ -1109,7 +1254,7 @@ class PortfolioServiceStub(betterproto.ServiceStub):
         external_url: str = "",
         tags: List[str] = [],
         verified_gig_id: str = "",
-    ) -> PortfolioItem:
+    ) -> CreatePortfolioItemResponse:
         request = CreatePortfolioItemRequest()
         request.title = title
         request.description = description
@@ -1121,7 +1266,7 @@ class PortfolioServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.PortfolioService/CreatePortfolioItem",
             request,
-            PortfolioItem,
+            CreatePortfolioItemResponse,
         )
 
     async def update_portfolio_item(
@@ -1133,7 +1278,7 @@ class PortfolioServiceStub(betterproto.ServiceStub):
         file_keys: List[str] = [],
         external_url: str = "",
         tags: List[str] = [],
-    ) -> PortfolioItem:
+    ) -> UpdatePortfolioItemResponse:
         request = UpdatePortfolioItemRequest()
         request.id = id
         request.title = title
@@ -1145,7 +1290,7 @@ class PortfolioServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.PortfolioService/UpdatePortfolioItem",
             request,
-            PortfolioItem,
+            UpdatePortfolioItemResponse,
         )
 
     async def get_portfolio_items(
@@ -1160,21 +1305,23 @@ class PortfolioServiceStub(betterproto.ServiceStub):
             GetPortfolioItemsResponse,
         )
 
-    async def delete_portfolio_item(self, *, id: str = "") -> PortfolioItem:
+    async def delete_portfolio_item(
+        self, *, id: str = ""
+    ) -> DeletePortfolioItemResponse:
         request = DeletePortfolioItemRequest()
         request.id = id
 
         return await self._unary_unary(
             "/api.v1.PortfolioService/DeletePortfolioItem",
             request,
-            PortfolioItem,
+            DeletePortfolioItemResponse,
         )
 
 
 class ProposalServiceStub(betterproto.ServiceStub):
     async def create_proposal(
         self, *, gig_id: str = "", cover_letter: str = "", estimated_days: int = 0
-    ) -> Proposal:
+    ) -> CreateProposalResponse:
         request = CreateProposalRequest()
         request.gig_id = gig_id
         request.cover_letter = cover_letter
@@ -1183,7 +1330,7 @@ class ProposalServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.ProposalService/CreateProposal",
             request,
-            Proposal,
+            CreateProposalResponse,
         )
 
     async def get_proposals(
@@ -1200,43 +1347,45 @@ class ProposalServiceStub(betterproto.ServiceStub):
             GetProposalsResponse,
         )
 
-    async def accept_proposal(self, *, proposal_id: str = "") -> Proposal:
+    async def accept_proposal(self, *, proposal_id: str = "") -> AcceptProposalResponse:
         request = AcceptProposalRequest()
         request.proposal_id = proposal_id
 
         return await self._unary_unary(
             "/api.v1.ProposalService/AcceptProposal",
             request,
-            Proposal,
+            AcceptProposalResponse,
         )
 
-    async def withdraw_proposal(self, *, proposal_id: str = "") -> Proposal:
+    async def withdraw_proposal(
+        self, *, proposal_id: str = ""
+    ) -> WithdrawProposalResponse:
         request = WithdrawProposalRequest()
         request.proposal_id = proposal_id
 
         return await self._unary_unary(
             "/api.v1.ProposalService/WithdrawProposal",
             request,
-            Proposal,
+            WithdrawProposalResponse,
         )
 
 
 class ReputationServiceStub(betterproto.ServiceStub):
-    async def get_reputation(self, *, user_id: str = "") -> Reputation:
+    async def get_reputation(self, *, user_id: str = "") -> GetReputationResponse:
         request = GetReputationRequest()
         request.user_id = user_id
 
         return await self._unary_unary(
             "/api.v1.ReputationService/GetReputation",
             request,
-            Reputation,
+            GetReputationResponse,
         )
 
 
 class ReviewServiceStub(betterproto.ServiceStub):
     async def create_review(
         self, *, gig_id: str = "", rating: int = 0, comment: str = ""
-    ) -> Review:
+    ) -> CreateReviewResponse:
         request = CreateReviewRequest()
         request.gig_id = gig_id
         request.rating = rating
@@ -1245,7 +1394,7 @@ class ReviewServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.ReviewService/CreateReview",
             request,
-            Review,
+            CreateReviewResponse,
         )
 
     async def get_reviews(self, *, reviewee_id: str = "") -> GetReviewsResponse:
@@ -1268,7 +1417,7 @@ class SubmissionServiceStub(betterproto.ServiceStub):
         file_keys: List[str] = [],
         notes: str = "",
         previous_submission_id: str = "",
-    ) -> Submission:
+    ) -> CreateSubmissionResponse:
         request = CreateSubmissionRequest()
         request.milestone_id = milestone_id
         request.repo_url = repo_url
@@ -1279,17 +1428,17 @@ class SubmissionServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.SubmissionService/CreateSubmission",
             request,
-            Submission,
+            CreateSubmissionResponse,
         )
 
-    async def get_submission(self, *, id: str = "") -> Submission:
+    async def get_submission(self, *, id: str = "") -> GetSubmissionResponse:
         request = GetSubmissionRequest()
         request.id = id
 
         return await self._unary_unary(
             "/api.v1.SubmissionService/GetSubmission",
             request,
-            Submission,
+            GetSubmissionResponse,
         )
 
     async def get_submissions(
@@ -1313,7 +1462,7 @@ class UserServiceStub(betterproto.ServiceStub):
         name: str = "",
         wallet_address: str = "",
         role: "UserRole" = 0,
-    ) -> UserPublic:
+    ) -> CreateUserResponse:
         request = CreateUserRequest()
         request.email = email
         request.name = name
@@ -1323,17 +1472,17 @@ class UserServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.UserService/CreateUser",
             request,
-            UserPublic,
+            CreateUserResponse,
         )
 
-    async def get_user(self, *, id: str = "") -> UserPublic:
+    async def get_user(self, *, id: str = "") -> GetUserResponse:
         request = GetUserRequest()
         request.id = id
 
         return await self._unary_unary(
             "/api.v1.UserService/GetUser",
             request,
-            UserPublic,
+            GetUserResponse,
         )
 
     async def get_users(
@@ -1364,7 +1513,7 @@ class UserServiceStub(betterproto.ServiceStub):
         bio: str = "",
         skills: List[str] = [],
         hourly_rate_wei: str = "",
-    ) -> UserPublic:
+    ) -> UpdateUserResponse:
         request = UpdateUserRequest()
         request.id = id
         request.name = name
@@ -1376,5 +1525,5 @@ class UserServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/api.v1.UserService/UpdateUser",
             request,
-            UserPublic,
+            UpdateUserResponse,
         )

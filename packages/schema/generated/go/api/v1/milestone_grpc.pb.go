@@ -29,10 +29,10 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MilestoneServiceClient interface {
-	CreateMilestone(ctx context.Context, in *CreateMilestoneRequest, opts ...grpc.CallOption) (*Milestone, error)
+	CreateMilestone(ctx context.Context, in *CreateMilestoneRequest, opts ...grpc.CallOption) (*CreateMilestoneResponse, error)
 	GetMilestones(ctx context.Context, in *GetMilestonesRequest, opts ...grpc.CallOption) (*GetMilestonesResponse, error)
-	ApproveMilestone(ctx context.Context, in *ApproveMilestoneRequest, opts ...grpc.CallOption) (*Milestone, error)
-	RequestRevision(ctx context.Context, in *RequestRevisionRequest, opts ...grpc.CallOption) (*Milestone, error)
+	ApproveMilestone(ctx context.Context, in *ApproveMilestoneRequest, opts ...grpc.CallOption) (*ApproveMilestoneResponse, error)
+	RequestRevision(ctx context.Context, in *RequestRevisionRequest, opts ...grpc.CallOption) (*RequestRevisionResponse, error)
 }
 
 type milestoneServiceClient struct {
@@ -43,9 +43,9 @@ func NewMilestoneServiceClient(cc grpc.ClientConnInterface) MilestoneServiceClie
 	return &milestoneServiceClient{cc}
 }
 
-func (c *milestoneServiceClient) CreateMilestone(ctx context.Context, in *CreateMilestoneRequest, opts ...grpc.CallOption) (*Milestone, error) {
+func (c *milestoneServiceClient) CreateMilestone(ctx context.Context, in *CreateMilestoneRequest, opts ...grpc.CallOption) (*CreateMilestoneResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Milestone)
+	out := new(CreateMilestoneResponse)
 	err := c.cc.Invoke(ctx, MilestoneService_CreateMilestone_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -63,9 +63,9 @@ func (c *milestoneServiceClient) GetMilestones(ctx context.Context, in *GetMiles
 	return out, nil
 }
 
-func (c *milestoneServiceClient) ApproveMilestone(ctx context.Context, in *ApproveMilestoneRequest, opts ...grpc.CallOption) (*Milestone, error) {
+func (c *milestoneServiceClient) ApproveMilestone(ctx context.Context, in *ApproveMilestoneRequest, opts ...grpc.CallOption) (*ApproveMilestoneResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Milestone)
+	out := new(ApproveMilestoneResponse)
 	err := c.cc.Invoke(ctx, MilestoneService_ApproveMilestone_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -73,9 +73,9 @@ func (c *milestoneServiceClient) ApproveMilestone(ctx context.Context, in *Appro
 	return out, nil
 }
 
-func (c *milestoneServiceClient) RequestRevision(ctx context.Context, in *RequestRevisionRequest, opts ...grpc.CallOption) (*Milestone, error) {
+func (c *milestoneServiceClient) RequestRevision(ctx context.Context, in *RequestRevisionRequest, opts ...grpc.CallOption) (*RequestRevisionResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Milestone)
+	out := new(RequestRevisionResponse)
 	err := c.cc.Invoke(ctx, MilestoneService_RequestRevision_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -87,10 +87,10 @@ func (c *milestoneServiceClient) RequestRevision(ctx context.Context, in *Reques
 // All implementations must embed UnimplementedMilestoneServiceServer
 // for forward compatibility
 type MilestoneServiceServer interface {
-	CreateMilestone(context.Context, *CreateMilestoneRequest) (*Milestone, error)
+	CreateMilestone(context.Context, *CreateMilestoneRequest) (*CreateMilestoneResponse, error)
 	GetMilestones(context.Context, *GetMilestonesRequest) (*GetMilestonesResponse, error)
-	ApproveMilestone(context.Context, *ApproveMilestoneRequest) (*Milestone, error)
-	RequestRevision(context.Context, *RequestRevisionRequest) (*Milestone, error)
+	ApproveMilestone(context.Context, *ApproveMilestoneRequest) (*ApproveMilestoneResponse, error)
+	RequestRevision(context.Context, *RequestRevisionRequest) (*RequestRevisionResponse, error)
 	mustEmbedUnimplementedMilestoneServiceServer()
 }
 
@@ -98,16 +98,16 @@ type MilestoneServiceServer interface {
 type UnimplementedMilestoneServiceServer struct {
 }
 
-func (UnimplementedMilestoneServiceServer) CreateMilestone(context.Context, *CreateMilestoneRequest) (*Milestone, error) {
+func (UnimplementedMilestoneServiceServer) CreateMilestone(context.Context, *CreateMilestoneRequest) (*CreateMilestoneResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateMilestone not implemented")
 }
 func (UnimplementedMilestoneServiceServer) GetMilestones(context.Context, *GetMilestonesRequest) (*GetMilestonesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMilestones not implemented")
 }
-func (UnimplementedMilestoneServiceServer) ApproveMilestone(context.Context, *ApproveMilestoneRequest) (*Milestone, error) {
+func (UnimplementedMilestoneServiceServer) ApproveMilestone(context.Context, *ApproveMilestoneRequest) (*ApproveMilestoneResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApproveMilestone not implemented")
 }
-func (UnimplementedMilestoneServiceServer) RequestRevision(context.Context, *RequestRevisionRequest) (*Milestone, error) {
+func (UnimplementedMilestoneServiceServer) RequestRevision(context.Context, *RequestRevisionRequest) (*RequestRevisionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RequestRevision not implemented")
 }
 func (UnimplementedMilestoneServiceServer) mustEmbedUnimplementedMilestoneServiceServer() {}

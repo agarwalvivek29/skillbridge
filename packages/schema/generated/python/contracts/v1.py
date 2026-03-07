@@ -83,15 +83,25 @@ class ReleaseMilestoneFundsRequest(betterproto.Message):
     contract_milestone_index: int = betterproto.int32_field(3)
 
 
+@dataclass
+class GetEscrowResponse(betterproto.Message):
+    escrow: "EscrowContract" = betterproto.message_field(1)
+
+
+@dataclass
+class ReleaseMilestoneFundsResponse(betterproto.Message):
+    escrow: "EscrowContract" = betterproto.message_field(1)
+
+
 class EscrowServiceStub(betterproto.ServiceStub):
-    async def get_escrow(self, *, gig_id: str = "") -> EscrowContract:
+    async def get_escrow(self, *, gig_id: str = "") -> GetEscrowResponse:
         request = GetEscrowRequest()
         request.gig_id = gig_id
 
         return await self._unary_unary(
             "/contracts.v1.EscrowService/GetEscrow",
             request,
-            EscrowContract,
+            GetEscrowResponse,
         )
 
     async def release_milestone_funds(
@@ -100,7 +110,7 @@ class EscrowServiceStub(betterproto.ServiceStub):
         gig_id: str = "",
         milestone_id: str = "",
         contract_milestone_index: int = 0,
-    ) -> EscrowContract:
+    ) -> ReleaseMilestoneFundsResponse:
         request = ReleaseMilestoneFundsRequest()
         request.gig_id = gig_id
         request.milestone_id = milestone_id
@@ -109,5 +119,5 @@ class EscrowServiceStub(betterproto.ServiceStub):
         return await self._unary_unary(
             "/contracts.v1.EscrowService/ReleaseMilestoneFunds",
             request,
-            EscrowContract,
+            ReleaseMilestoneFundsResponse,
         )

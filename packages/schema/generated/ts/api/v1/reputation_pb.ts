@@ -22,7 +22,7 @@ import type { Message } from "@bufbuild/protobuf";
 export const file_api_v1_reputation: GenFile =
   /*@__PURE__*/
   fileDesc(
-    "ChdhcGkvdjEvcmVwdXRhdGlvbi5wcm90bxIGYXBpLnYxIoIDCgpSZXB1dGF0aW9uEgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSFgoOd2FsbGV0X2FkZHJlc3MYAyABKAkSFgoOZ2lnc19jb21wbGV0ZWQYBCABKAUSFgoOZ2lnc19hc19jbGllbnQYBSABKAUSFAoMdG90YWxfZWFybmVkGAYgASgJEhgKEGF2ZXJhZ2VfYWlfc2NvcmUYByABKAUSGAoQZGlzcHV0ZV9yYXRlX3BjdBgIIAEoBRIbChNhdmVyYWdlX3JhdGluZ194MTAwGAkgASgFEhQKDHJhdGluZ19jb3VudBgKIAEoBRIyCg5sYXN0X3N5bmNlZF9hdBgLIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY3JlYXRlZF9hdBgMIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKdXBkYXRlZF9hdBgNIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiJwoUR2V0UmVwdXRhdGlvblJlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCTJWChFSZXB1dGF0aW9uU2VydmljZRJBCg1HZXRSZXB1dGF0aW9uEhwuYXBpLnYxLkdldFJlcHV0YXRpb25SZXF1ZXN0GhIuYXBpLnYxLlJlcHV0YXRpb25CpwEKCmNvbS5hcGkudjFCD1JlcHV0YXRpb25Qcm90b1ABWk9naXRodWIuY29tL2FnYXJ3YWx2aXZlazI5L3NraWxsYnJpZGdlL3BhY2thZ2VzL3NjaGVtYS9nZW5lcmF0ZWQvZ28vYXBpL3YxO2FwaXYxogIDQVhYqgIGQXBpLlYxygIGQXBpXFYx4gISQXBpXFYxXEdQQk1ldGFkYXRh6gIHQXBpOjpWMWIGcHJvdG8z",
+    "ChdhcGkvdjEvcmVwdXRhdGlvbi5wcm90bxIGYXBpLnYxIoIDCgpSZXB1dGF0aW9uEgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSFgoOd2FsbGV0X2FkZHJlc3MYAyABKAkSFgoOZ2lnc19jb21wbGV0ZWQYBCABKAUSFgoOZ2lnc19hc19jbGllbnQYBSABKAUSFAoMdG90YWxfZWFybmVkGAYgASgJEhgKEGF2ZXJhZ2VfYWlfc2NvcmUYByABKAUSGAoQZGlzcHV0ZV9yYXRlX3BjdBgIIAEoBRIbChNhdmVyYWdlX3JhdGluZ194MTAwGAkgASgFEhQKDHJhdGluZ19jb3VudBgKIAEoBRIyCg5sYXN0X3N5bmNlZF9hdBgLIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY3JlYXRlZF9hdBgMIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKdXBkYXRlZF9hdBgNIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiJwoUR2V0UmVwdXRhdGlvblJlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCSI/ChVHZXRSZXB1dGF0aW9uUmVzcG9uc2USJgoKcmVwdXRhdGlvbhgBIAEoCzISLmFwaS52MS5SZXB1dGF0aW9uMmEKEVJlcHV0YXRpb25TZXJ2aWNlEkwKDUdldFJlcHV0YXRpb24SHC5hcGkudjEuR2V0UmVwdXRhdGlvblJlcXVlc3QaHS5hcGkudjEuR2V0UmVwdXRhdGlvblJlc3BvbnNlQqcBCgpjb20uYXBpLnYxQg9SZXB1dGF0aW9uUHJvdG9QAVpPZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2FwaS92MTthcGl2MaICA0FYWKoCBkFwaS5WMcoCBkFwaVxWMeICEkFwaVxWMVxHUEJNZXRhZGF0YeoCB0FwaTo6VjFiBnByb3RvMw",
     [file_google_protobuf_timestamp],
   );
 
@@ -145,6 +145,24 @@ export const GetReputationRequestSchema: GenMessage<GetReputationRequest> =
   messageDesc(file_api_v1_reputation, 1);
 
 /**
+ * @generated from message api.v1.GetReputationResponse
+ */
+export type GetReputationResponse = Message<"api.v1.GetReputationResponse"> & {
+  /**
+   * @generated from field: api.v1.Reputation reputation = 1;
+   */
+  reputation?: Reputation;
+};
+
+/**
+ * Describes the message api.v1.GetReputationResponse.
+ * Use `create(GetReputationResponseSchema)` to create a new message.
+ */
+export const GetReputationResponseSchema: GenMessage<GetReputationResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_reputation, 2);
+
+/**
  * @generated from service api.v1.ReputationService
  */
 export const ReputationService: GenService<{
@@ -154,6 +172,6 @@ export const ReputationService: GenService<{
   getReputation: {
     methodKind: "unary";
     input: typeof GetReputationRequestSchema;
-    output: typeof ReputationSchema;
+    output: typeof GetReputationResponseSchema;
   };
 }> = /*@__PURE__*/ serviceDesc(file_api_v1_reputation, 0);

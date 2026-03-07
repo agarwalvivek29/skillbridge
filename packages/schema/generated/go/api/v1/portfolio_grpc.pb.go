@@ -29,10 +29,10 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PortfolioServiceClient interface {
-	CreatePortfolioItem(ctx context.Context, in *CreatePortfolioItemRequest, opts ...grpc.CallOption) (*PortfolioItem, error)
-	UpdatePortfolioItem(ctx context.Context, in *UpdatePortfolioItemRequest, opts ...grpc.CallOption) (*PortfolioItem, error)
+	CreatePortfolioItem(ctx context.Context, in *CreatePortfolioItemRequest, opts ...grpc.CallOption) (*CreatePortfolioItemResponse, error)
+	UpdatePortfolioItem(ctx context.Context, in *UpdatePortfolioItemRequest, opts ...grpc.CallOption) (*UpdatePortfolioItemResponse, error)
 	GetPortfolioItems(ctx context.Context, in *GetPortfolioItemsRequest, opts ...grpc.CallOption) (*GetPortfolioItemsResponse, error)
-	DeletePortfolioItem(ctx context.Context, in *DeletePortfolioItemRequest, opts ...grpc.CallOption) (*PortfolioItem, error)
+	DeletePortfolioItem(ctx context.Context, in *DeletePortfolioItemRequest, opts ...grpc.CallOption) (*DeletePortfolioItemResponse, error)
 }
 
 type portfolioServiceClient struct {
@@ -43,9 +43,9 @@ func NewPortfolioServiceClient(cc grpc.ClientConnInterface) PortfolioServiceClie
 	return &portfolioServiceClient{cc}
 }
 
-func (c *portfolioServiceClient) CreatePortfolioItem(ctx context.Context, in *CreatePortfolioItemRequest, opts ...grpc.CallOption) (*PortfolioItem, error) {
+func (c *portfolioServiceClient) CreatePortfolioItem(ctx context.Context, in *CreatePortfolioItemRequest, opts ...grpc.CallOption) (*CreatePortfolioItemResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PortfolioItem)
+	out := new(CreatePortfolioItemResponse)
 	err := c.cc.Invoke(ctx, PortfolioService_CreatePortfolioItem_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -53,9 +53,9 @@ func (c *portfolioServiceClient) CreatePortfolioItem(ctx context.Context, in *Cr
 	return out, nil
 }
 
-func (c *portfolioServiceClient) UpdatePortfolioItem(ctx context.Context, in *UpdatePortfolioItemRequest, opts ...grpc.CallOption) (*PortfolioItem, error) {
+func (c *portfolioServiceClient) UpdatePortfolioItem(ctx context.Context, in *UpdatePortfolioItemRequest, opts ...grpc.CallOption) (*UpdatePortfolioItemResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PortfolioItem)
+	out := new(UpdatePortfolioItemResponse)
 	err := c.cc.Invoke(ctx, PortfolioService_UpdatePortfolioItem_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -73,9 +73,9 @@ func (c *portfolioServiceClient) GetPortfolioItems(ctx context.Context, in *GetP
 	return out, nil
 }
 
-func (c *portfolioServiceClient) DeletePortfolioItem(ctx context.Context, in *DeletePortfolioItemRequest, opts ...grpc.CallOption) (*PortfolioItem, error) {
+func (c *portfolioServiceClient) DeletePortfolioItem(ctx context.Context, in *DeletePortfolioItemRequest, opts ...grpc.CallOption) (*DeletePortfolioItemResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PortfolioItem)
+	out := new(DeletePortfolioItemResponse)
 	err := c.cc.Invoke(ctx, PortfolioService_DeletePortfolioItem_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -87,10 +87,10 @@ func (c *portfolioServiceClient) DeletePortfolioItem(ctx context.Context, in *De
 // All implementations must embed UnimplementedPortfolioServiceServer
 // for forward compatibility
 type PortfolioServiceServer interface {
-	CreatePortfolioItem(context.Context, *CreatePortfolioItemRequest) (*PortfolioItem, error)
-	UpdatePortfolioItem(context.Context, *UpdatePortfolioItemRequest) (*PortfolioItem, error)
+	CreatePortfolioItem(context.Context, *CreatePortfolioItemRequest) (*CreatePortfolioItemResponse, error)
+	UpdatePortfolioItem(context.Context, *UpdatePortfolioItemRequest) (*UpdatePortfolioItemResponse, error)
 	GetPortfolioItems(context.Context, *GetPortfolioItemsRequest) (*GetPortfolioItemsResponse, error)
-	DeletePortfolioItem(context.Context, *DeletePortfolioItemRequest) (*PortfolioItem, error)
+	DeletePortfolioItem(context.Context, *DeletePortfolioItemRequest) (*DeletePortfolioItemResponse, error)
 	mustEmbedUnimplementedPortfolioServiceServer()
 }
 
@@ -98,16 +98,16 @@ type PortfolioServiceServer interface {
 type UnimplementedPortfolioServiceServer struct {
 }
 
-func (UnimplementedPortfolioServiceServer) CreatePortfolioItem(context.Context, *CreatePortfolioItemRequest) (*PortfolioItem, error) {
+func (UnimplementedPortfolioServiceServer) CreatePortfolioItem(context.Context, *CreatePortfolioItemRequest) (*CreatePortfolioItemResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePortfolioItem not implemented")
 }
-func (UnimplementedPortfolioServiceServer) UpdatePortfolioItem(context.Context, *UpdatePortfolioItemRequest) (*PortfolioItem, error) {
+func (UnimplementedPortfolioServiceServer) UpdatePortfolioItem(context.Context, *UpdatePortfolioItemRequest) (*UpdatePortfolioItemResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePortfolioItem not implemented")
 }
 func (UnimplementedPortfolioServiceServer) GetPortfolioItems(context.Context, *GetPortfolioItemsRequest) (*GetPortfolioItemsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPortfolioItems not implemented")
 }
-func (UnimplementedPortfolioServiceServer) DeletePortfolioItem(context.Context, *DeletePortfolioItemRequest) (*PortfolioItem, error) {
+func (UnimplementedPortfolioServiceServer) DeletePortfolioItem(context.Context, *DeletePortfolioItemRequest) (*DeletePortfolioItemResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeletePortfolioItem not implemented")
 }
 func (UnimplementedPortfolioServiceServer) mustEmbedUnimplementedPortfolioServiceServer() {}

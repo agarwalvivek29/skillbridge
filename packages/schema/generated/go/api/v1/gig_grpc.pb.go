@@ -29,10 +29,10 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type GigServiceClient interface {
-	CreateGig(ctx context.Context, in *CreateGigRequest, opts ...grpc.CallOption) (*Gig, error)
-	GetGig(ctx context.Context, in *GetGigRequest, opts ...grpc.CallOption) (*Gig, error)
+	CreateGig(ctx context.Context, in *CreateGigRequest, opts ...grpc.CallOption) (*CreateGigResponse, error)
+	GetGig(ctx context.Context, in *GetGigRequest, opts ...grpc.CallOption) (*GetGigResponse, error)
 	GetGigs(ctx context.Context, in *GetGigsRequest, opts ...grpc.CallOption) (*GetGigsResponse, error)
-	AssignFreelancer(ctx context.Context, in *AssignFreelancerRequest, opts ...grpc.CallOption) (*Gig, error)
+	AssignFreelancer(ctx context.Context, in *AssignFreelancerRequest, opts ...grpc.CallOption) (*AssignFreelancerResponse, error)
 }
 
 type gigServiceClient struct {
@@ -43,9 +43,9 @@ func NewGigServiceClient(cc grpc.ClientConnInterface) GigServiceClient {
 	return &gigServiceClient{cc}
 }
 
-func (c *gigServiceClient) CreateGig(ctx context.Context, in *CreateGigRequest, opts ...grpc.CallOption) (*Gig, error) {
+func (c *gigServiceClient) CreateGig(ctx context.Context, in *CreateGigRequest, opts ...grpc.CallOption) (*CreateGigResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Gig)
+	out := new(CreateGigResponse)
 	err := c.cc.Invoke(ctx, GigService_CreateGig_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -53,9 +53,9 @@ func (c *gigServiceClient) CreateGig(ctx context.Context, in *CreateGigRequest, 
 	return out, nil
 }
 
-func (c *gigServiceClient) GetGig(ctx context.Context, in *GetGigRequest, opts ...grpc.CallOption) (*Gig, error) {
+func (c *gigServiceClient) GetGig(ctx context.Context, in *GetGigRequest, opts ...grpc.CallOption) (*GetGigResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Gig)
+	out := new(GetGigResponse)
 	err := c.cc.Invoke(ctx, GigService_GetGig_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -73,9 +73,9 @@ func (c *gigServiceClient) GetGigs(ctx context.Context, in *GetGigsRequest, opts
 	return out, nil
 }
 
-func (c *gigServiceClient) AssignFreelancer(ctx context.Context, in *AssignFreelancerRequest, opts ...grpc.CallOption) (*Gig, error) {
+func (c *gigServiceClient) AssignFreelancer(ctx context.Context, in *AssignFreelancerRequest, opts ...grpc.CallOption) (*AssignFreelancerResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Gig)
+	out := new(AssignFreelancerResponse)
 	err := c.cc.Invoke(ctx, GigService_AssignFreelancer_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -87,10 +87,10 @@ func (c *gigServiceClient) AssignFreelancer(ctx context.Context, in *AssignFreel
 // All implementations must embed UnimplementedGigServiceServer
 // for forward compatibility
 type GigServiceServer interface {
-	CreateGig(context.Context, *CreateGigRequest) (*Gig, error)
-	GetGig(context.Context, *GetGigRequest) (*Gig, error)
+	CreateGig(context.Context, *CreateGigRequest) (*CreateGigResponse, error)
+	GetGig(context.Context, *GetGigRequest) (*GetGigResponse, error)
 	GetGigs(context.Context, *GetGigsRequest) (*GetGigsResponse, error)
-	AssignFreelancer(context.Context, *AssignFreelancerRequest) (*Gig, error)
+	AssignFreelancer(context.Context, *AssignFreelancerRequest) (*AssignFreelancerResponse, error)
 	mustEmbedUnimplementedGigServiceServer()
 }
 
@@ -98,16 +98,16 @@ type GigServiceServer interface {
 type UnimplementedGigServiceServer struct {
 }
 
-func (UnimplementedGigServiceServer) CreateGig(context.Context, *CreateGigRequest) (*Gig, error) {
+func (UnimplementedGigServiceServer) CreateGig(context.Context, *CreateGigRequest) (*CreateGigResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateGig not implemented")
 }
-func (UnimplementedGigServiceServer) GetGig(context.Context, *GetGigRequest) (*Gig, error) {
+func (UnimplementedGigServiceServer) GetGig(context.Context, *GetGigRequest) (*GetGigResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGig not implemented")
 }
 func (UnimplementedGigServiceServer) GetGigs(context.Context, *GetGigsRequest) (*GetGigsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGigs not implemented")
 }
-func (UnimplementedGigServiceServer) AssignFreelancer(context.Context, *AssignFreelancerRequest) (*Gig, error) {
+func (UnimplementedGigServiceServer) AssignFreelancer(context.Context, *AssignFreelancerRequest) (*AssignFreelancerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AssignFreelancer not implemented")
 }
 func (UnimplementedGigServiceServer) mustEmbedUnimplementedGigServiceServer() {}

@@ -29,10 +29,10 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProposalServiceClient interface {
-	CreateProposal(ctx context.Context, in *CreateProposalRequest, opts ...grpc.CallOption) (*Proposal, error)
+	CreateProposal(ctx context.Context, in *CreateProposalRequest, opts ...grpc.CallOption) (*CreateProposalResponse, error)
 	GetProposals(ctx context.Context, in *GetProposalsRequest, opts ...grpc.CallOption) (*GetProposalsResponse, error)
-	AcceptProposal(ctx context.Context, in *AcceptProposalRequest, opts ...grpc.CallOption) (*Proposal, error)
-	WithdrawProposal(ctx context.Context, in *WithdrawProposalRequest, opts ...grpc.CallOption) (*Proposal, error)
+	AcceptProposal(ctx context.Context, in *AcceptProposalRequest, opts ...grpc.CallOption) (*AcceptProposalResponse, error)
+	WithdrawProposal(ctx context.Context, in *WithdrawProposalRequest, opts ...grpc.CallOption) (*WithdrawProposalResponse, error)
 }
 
 type proposalServiceClient struct {
@@ -43,9 +43,9 @@ func NewProposalServiceClient(cc grpc.ClientConnInterface) ProposalServiceClient
 	return &proposalServiceClient{cc}
 }
 
-func (c *proposalServiceClient) CreateProposal(ctx context.Context, in *CreateProposalRequest, opts ...grpc.CallOption) (*Proposal, error) {
+func (c *proposalServiceClient) CreateProposal(ctx context.Context, in *CreateProposalRequest, opts ...grpc.CallOption) (*CreateProposalResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Proposal)
+	out := new(CreateProposalResponse)
 	err := c.cc.Invoke(ctx, ProposalService_CreateProposal_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -63,9 +63,9 @@ func (c *proposalServiceClient) GetProposals(ctx context.Context, in *GetProposa
 	return out, nil
 }
 
-func (c *proposalServiceClient) AcceptProposal(ctx context.Context, in *AcceptProposalRequest, opts ...grpc.CallOption) (*Proposal, error) {
+func (c *proposalServiceClient) AcceptProposal(ctx context.Context, in *AcceptProposalRequest, opts ...grpc.CallOption) (*AcceptProposalResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Proposal)
+	out := new(AcceptProposalResponse)
 	err := c.cc.Invoke(ctx, ProposalService_AcceptProposal_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -73,9 +73,9 @@ func (c *proposalServiceClient) AcceptProposal(ctx context.Context, in *AcceptPr
 	return out, nil
 }
 
-func (c *proposalServiceClient) WithdrawProposal(ctx context.Context, in *WithdrawProposalRequest, opts ...grpc.CallOption) (*Proposal, error) {
+func (c *proposalServiceClient) WithdrawProposal(ctx context.Context, in *WithdrawProposalRequest, opts ...grpc.CallOption) (*WithdrawProposalResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Proposal)
+	out := new(WithdrawProposalResponse)
 	err := c.cc.Invoke(ctx, ProposalService_WithdrawProposal_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -87,10 +87,10 @@ func (c *proposalServiceClient) WithdrawProposal(ctx context.Context, in *Withdr
 // All implementations must embed UnimplementedProposalServiceServer
 // for forward compatibility
 type ProposalServiceServer interface {
-	CreateProposal(context.Context, *CreateProposalRequest) (*Proposal, error)
+	CreateProposal(context.Context, *CreateProposalRequest) (*CreateProposalResponse, error)
 	GetProposals(context.Context, *GetProposalsRequest) (*GetProposalsResponse, error)
-	AcceptProposal(context.Context, *AcceptProposalRequest) (*Proposal, error)
-	WithdrawProposal(context.Context, *WithdrawProposalRequest) (*Proposal, error)
+	AcceptProposal(context.Context, *AcceptProposalRequest) (*AcceptProposalResponse, error)
+	WithdrawProposal(context.Context, *WithdrawProposalRequest) (*WithdrawProposalResponse, error)
 	mustEmbedUnimplementedProposalServiceServer()
 }
 
@@ -98,16 +98,16 @@ type ProposalServiceServer interface {
 type UnimplementedProposalServiceServer struct {
 }
 
-func (UnimplementedProposalServiceServer) CreateProposal(context.Context, *CreateProposalRequest) (*Proposal, error) {
+func (UnimplementedProposalServiceServer) CreateProposal(context.Context, *CreateProposalRequest) (*CreateProposalResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProposal not implemented")
 }
 func (UnimplementedProposalServiceServer) GetProposals(context.Context, *GetProposalsRequest) (*GetProposalsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProposals not implemented")
 }
-func (UnimplementedProposalServiceServer) AcceptProposal(context.Context, *AcceptProposalRequest) (*Proposal, error) {
+func (UnimplementedProposalServiceServer) AcceptProposal(context.Context, *AcceptProposalRequest) (*AcceptProposalResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AcceptProposal not implemented")
 }
-func (UnimplementedProposalServiceServer) WithdrawProposal(context.Context, *WithdrawProposalRequest) (*Proposal, error) {
+func (UnimplementedProposalServiceServer) WithdrawProposal(context.Context, *WithdrawProposalRequest) (*WithdrawProposalResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WithdrawProposal not implemented")
 }
 func (UnimplementedProposalServiceServer) mustEmbedUnimplementedProposalServiceServer() {}

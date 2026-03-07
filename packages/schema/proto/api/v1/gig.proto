@@ -112,11 +112,23 @@ message AssignFreelancerRequest {
   string freelancer_id = 2;
 }
 
+message CreateGigResponse {
+  Gig gig = 1;
+}
+
+message GetGigResponse {
+  Gig gig = 1;
+}
+
+message AssignFreelancerResponse {
+  Gig gig = 1;
+}
+
 // ─── Service ─────────────────────────────────────────────────────────────────
 
 service GigService {
-  rpc CreateGig(CreateGigRequest) returns (Gig);
-  rpc GetGig(GetGigRequest) returns (Gig);
+  rpc CreateGig(CreateGigRequest) returns (CreateGigResponse);
+  rpc GetGig(GetGigRequest) returns (GetGigResponse);
   rpc GetGigs(GetGigsRequest) returns (GetGigsResponse);
-  rpc AssignFreelancer(AssignFreelancerRequest) returns (Gig);
+  rpc AssignFreelancer(AssignFreelancerRequest) returns (AssignFreelancerResponse);
 }

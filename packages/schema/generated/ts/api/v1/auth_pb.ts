@@ -22,7 +22,7 @@ import type { Message } from "@bufbuild/protobuf";
 export const file_api_v1_auth: GenFile =
   /*@__PURE__*/
   fileDesc(
-    "ChFhcGkvdjEvYXV0aC5wcm90bxIGYXBpLnYxImIKCUF1dGhOb25jZRIWCg53YWxsZXRfYWRkcmVzcxgBIAEoCRINCgVub25jZRgCIAEoCRIuCgpleHBpcmVzX2F0GAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCIpCg9HZXROb25jZVJlcXVlc3QSFgoOd2FsbGV0X2FkZHJlc3MYASABKAkiUQoQR2V0Tm9uY2VSZXNwb25zZRINCgVub25jZRgBIAEoCRIuCgpleHBpcmVzX2F0GAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCJQChJXYWxsZXRMb2dpblJlcXVlc3QSFgoOd2FsbGV0X2FkZHJlc3MYASABKAkSEQoJc2lnbmF0dXJlGAIgASgJEg8KB21lc3NhZ2UYAyABKAkiUwoURW1haWxSZWdpc3RlclJlcXVlc3QSDQoFZW1haWwYASABKAkSEAoIcGFzc3dvcmQYAiABKAkSDAoEbmFtZRgDIAEoCRIMCgRyb2xlGAQgASgJIjQKEUVtYWlsTG9naW5SZXF1ZXN0Eg0KBWVtYWlsGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIl0KDEF1dGhSZXNwb25zZRIUCgxhY2Nlc3NfdG9rZW4YASABKAkSEgoKdG9rZW5fdHlwZRgCIAEoCRISCgpleHBpcmVzX2luGAMgASgDEg8KB3VzZXJfaWQYBCABKAkykQIKC0F1dGhTZXJ2aWNlEj0KCEdldE5vbmNlEhcuYXBpLnYxLkdldE5vbmNlUmVxdWVzdBoYLmFwaS52MS5HZXROb25jZVJlc3BvbnNlEj8KC1dhbGxldExvZ2luEhouYXBpLnYxLldhbGxldExvZ2luUmVxdWVzdBoULmFwaS52MS5BdXRoUmVzcG9uc2USQwoNRW1haWxSZWdpc3RlchIcLmFwaS52MS5FbWFpbFJlZ2lzdGVyUmVxdWVzdBoULmFwaS52MS5BdXRoUmVzcG9uc2USPQoKRW1haWxMb2dpbhIZLmFwaS52MS5FbWFpbExvZ2luUmVxdWVzdBoULmFwaS52MS5BdXRoUmVzcG9uc2VCoQEKCmNvbS5hcGkudjFCCUF1dGhQcm90b1ABWk9naXRodWIuY29tL2FnYXJ3YWx2aXZlazI5L3NraWxsYnJpZGdlL3BhY2thZ2VzL3NjaGVtYS9nZW5lcmF0ZWQvZ28vYXBpL3YxO2FwaXYxogIDQVhYqgIGQXBpLlYxygIGQXBpXFYx4gISQXBpXFYxXEdQQk1ldGFkYXRh6gIHQXBpOjpWMWIGcHJvdG8z",
+    "ChFhcGkvdjEvYXV0aC5wcm90bxIGYXBpLnYxImIKCUF1dGhOb25jZRIWCg53YWxsZXRfYWRkcmVzcxgBIAEoCRINCgVub25jZRgCIAEoCRIuCgpleHBpcmVzX2F0GAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCIpCg9HZXROb25jZVJlcXVlc3QSFgoOd2FsbGV0X2FkZHJlc3MYASABKAkiUQoQR2V0Tm9uY2VSZXNwb25zZRINCgVub25jZRgBIAEoCRIuCgpleHBpcmVzX2F0GAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCJQChJXYWxsZXRMb2dpblJlcXVlc3QSFgoOd2FsbGV0X2FkZHJlc3MYASABKAkSEQoJc2lnbmF0dXJlGAIgASgJEg8KB21lc3NhZ2UYAyABKAkiUwoURW1haWxSZWdpc3RlclJlcXVlc3QSDQoFZW1haWwYASABKAkSEAoIcGFzc3dvcmQYAiABKAkSDAoEbmFtZRgDIAEoCRIMCgRyb2xlGAQgASgJIjQKEUVtYWlsTG9naW5SZXF1ZXN0Eg0KBWVtYWlsGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIl0KDEF1dGhSZXNwb25zZRIUCgxhY2Nlc3NfdG9rZW4YASABKAkSEgoKdG9rZW5fdHlwZRgCIAEoCRISCgpleHBpcmVzX2luGAMgASgDEg8KB3VzZXJfaWQYBCABKAkiOQoTV2FsbGV0TG9naW5SZXNwb25zZRIiCgRhdXRoGAEgASgLMhQuYXBpLnYxLkF1dGhSZXNwb25zZSI7ChVFbWFpbFJlZ2lzdGVyUmVzcG9uc2USIgoEYXV0aBgBIAEoCzIULmFwaS52MS5BdXRoUmVzcG9uc2UiOAoSRW1haWxMb2dpblJlc3BvbnNlEiIKBGF1dGgYASABKAsyFC5hcGkudjEuQXV0aFJlc3BvbnNlMqcCCgtBdXRoU2VydmljZRI9CghHZXROb25jZRIXLmFwaS52MS5HZXROb25jZVJlcXVlc3QaGC5hcGkudjEuR2V0Tm9uY2VSZXNwb25zZRJGCgtXYWxsZXRMb2dpbhIaLmFwaS52MS5XYWxsZXRMb2dpblJlcXVlc3QaGy5hcGkudjEuV2FsbGV0TG9naW5SZXNwb25zZRJMCg1FbWFpbFJlZ2lzdGVyEhwuYXBpLnYxLkVtYWlsUmVnaXN0ZXJSZXF1ZXN0Gh0uYXBpLnYxLkVtYWlsUmVnaXN0ZXJSZXNwb25zZRJDCgpFbWFpbExvZ2luEhkuYXBpLnYxLkVtYWlsTG9naW5SZXF1ZXN0GhouYXBpLnYxLkVtYWlsTG9naW5SZXNwb25zZUKhAQoKY29tLmFwaS52MUIJQXV0aFByb3RvUAFaT2dpdGh1Yi5jb20vYWdhcndhbHZpdmVrMjkvc2tpbGxicmlkZ2UvcGFja2FnZXMvc2NoZW1hL2dlbmVyYXRlZC9nby9hcGkvdjE7YXBpdjGiAgNBWFiqAgZBcGkuVjHKAgZBcGlcVjHiAhJBcGlcVjFcR1BCTWV0YWRhdGHqAgdBcGk6OlYxYgZwcm90bzM",
     [file_google_protobuf_timestamp],
   );
 
@@ -228,6 +228,60 @@ export const AuthResponseSchema: GenMessage<AuthResponse> =
   messageDesc(file_api_v1_auth, 6);
 
 /**
+ * @generated from message api.v1.WalletLoginResponse
+ */
+export type WalletLoginResponse = Message<"api.v1.WalletLoginResponse"> & {
+  /**
+   * @generated from field: api.v1.AuthResponse auth = 1;
+   */
+  auth?: AuthResponse;
+};
+
+/**
+ * Describes the message api.v1.WalletLoginResponse.
+ * Use `create(WalletLoginResponseSchema)` to create a new message.
+ */
+export const WalletLoginResponseSchema: GenMessage<WalletLoginResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_auth, 7);
+
+/**
+ * @generated from message api.v1.EmailRegisterResponse
+ */
+export type EmailRegisterResponse = Message<"api.v1.EmailRegisterResponse"> & {
+  /**
+   * @generated from field: api.v1.AuthResponse auth = 1;
+   */
+  auth?: AuthResponse;
+};
+
+/**
+ * Describes the message api.v1.EmailRegisterResponse.
+ * Use `create(EmailRegisterResponseSchema)` to create a new message.
+ */
+export const EmailRegisterResponseSchema: GenMessage<EmailRegisterResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_auth, 8);
+
+/**
+ * @generated from message api.v1.EmailLoginResponse
+ */
+export type EmailLoginResponse = Message<"api.v1.EmailLoginResponse"> & {
+  /**
+   * @generated from field: api.v1.AuthResponse auth = 1;
+   */
+  auth?: AuthResponse;
+};
+
+/**
+ * Describes the message api.v1.EmailLoginResponse.
+ * Use `create(EmailLoginResponseSchema)` to create a new message.
+ */
+export const EmailLoginResponseSchema: GenMessage<EmailLoginResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_auth, 9);
+
+/**
  * @generated from service api.v1.AuthService
  */
 export const AuthService: GenService<{
@@ -245,7 +299,7 @@ export const AuthService: GenService<{
   walletLogin: {
     methodKind: "unary";
     input: typeof WalletLoginRequestSchema;
-    output: typeof AuthResponseSchema;
+    output: typeof WalletLoginResponseSchema;
   };
   /**
    * @generated from rpc api.v1.AuthService.EmailRegister
@@ -253,7 +307,7 @@ export const AuthService: GenService<{
   emailRegister: {
     methodKind: "unary";
     input: typeof EmailRegisterRequestSchema;
-    output: typeof AuthResponseSchema;
+    output: typeof EmailRegisterResponseSchema;
   };
   /**
    * @generated from rpc api.v1.AuthService.EmailLogin
@@ -261,6 +315,6 @@ export const AuthService: GenService<{
   emailLogin: {
     methodKind: "unary";
     input: typeof EmailLoginRequestSchema;
-    output: typeof AuthResponseSchema;
+    output: typeof EmailLoginResponseSchema;
   };
 }> = /*@__PURE__*/ serviceDesc(file_api_v1_auth, 0);

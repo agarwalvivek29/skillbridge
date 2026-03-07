@@ -98,11 +98,23 @@ message GetUsersResponse {
   common.v1.PaginationMeta pagination = 2;
 }
 
+message CreateUserResponse {
+  UserPublic user = 1;
+}
+
+message GetUserResponse {
+  UserPublic user = 1;
+}
+
+message UpdateUserResponse {
+  UserPublic user = 1;
+}
+
 // ─── Service ─────────────────────────────────────────────────────────────────
 
 service UserService {
-  rpc CreateUser(CreateUserRequest) returns (UserPublic);
-  rpc GetUser(GetUserRequest) returns (UserPublic);
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
   rpc GetUsers(GetUsersRequest) returns (GetUsersResponse);
-  rpc UpdateUser(UpdateUserRequest) returns (UserPublic);
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
 }

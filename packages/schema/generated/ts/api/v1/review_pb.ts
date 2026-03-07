@@ -22,7 +22,7 @@ import type { Message } from "@bufbuild/protobuf";
 export const file_api_v1_review: GenFile =
   /*@__PURE__*/
   fileDesc(
-    "ChNhcGkvdjEvcmV2aWV3LnByb3RvEgZhcGkudjEiswEKBlJldmlldxIKCgJpZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSEwoLcmV2aWV3ZXJfaWQYAyABKAkSEwoLcmV2aWV3ZWVfaWQYBCABKAkSDgoGcmF0aW5nGAUgASgFEg8KB2NvbW1lbnQYBiABKAkSEgoKaXNfdmlzaWJsZRgHIAEoCBIuCgpjcmVhdGVkX2F0GAggASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKkAQoUUmV2aWV3U3VibWl0dGVkRXZlbnQSEQoJcmV2aWV3X2lkGAEgASgJEg4KBmdpZ19pZBgCIAEoCRITCgtyZXZpZXdlcl9pZBgDIAEoCRITCgtyZXZpZXdlZV9pZBgEIAEoCRIOCgZyYXRpbmcYBSABKAUSLwoLb2NjdXJyZWRfYXQYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIkYKE0NyZWF0ZVJldmlld1JlcXVlc3QSDgoGZ2lnX2lkGAEgASgJEg4KBnJhdGluZxgCIAEoBRIPCgdjb21tZW50GAMgASgJIigKEUdldFJldmlld3NSZXF1ZXN0EhMKC3Jldmlld2VlX2lkGAEgASgJIlIKEkdldFJldmlld3NSZXNwb25zZRIfCgdyZXZpZXdzGAEgAygLMg4uYXBpLnYxLlJldmlldxIbChNhdmVyYWdlX3JhdGluZ194MTAwGAIgASgFMpEBCg1SZXZpZXdTZXJ2aWNlEjsKDENyZWF0ZVJldmlldxIbLmFwaS52MS5DcmVhdGVSZXZpZXdSZXF1ZXN0Gg4uYXBpLnYxLlJldmlldxJDCgpHZXRSZXZpZXdzEhkuYXBpLnYxLkdldFJldmlld3NSZXF1ZXN0GhouYXBpLnYxLkdldFJldmlld3NSZXNwb25zZUKjAQoKY29tLmFwaS52MUILUmV2aWV3UHJvdG9QAVpPZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2FwaS92MTthcGl2MaICA0FYWKoCBkFwaS5WMcoCBkFwaVxWMeICEkFwaVxWMVxHUEJNZXRhZGF0YeoCB0FwaTo6VjFiBnByb3RvMw",
+    "ChNhcGkvdjEvcmV2aWV3LnByb3RvEgZhcGkudjEiswEKBlJldmlldxIKCgJpZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSEwoLcmV2aWV3ZXJfaWQYAyABKAkSEwoLcmV2aWV3ZWVfaWQYBCABKAkSDgoGcmF0aW5nGAUgASgFEg8KB2NvbW1lbnQYBiABKAkSEgoKaXNfdmlzaWJsZRgHIAEoCBIuCgpjcmVhdGVkX2F0GAggASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKkAQoUUmV2aWV3U3VibWl0dGVkRXZlbnQSEQoJcmV2aWV3X2lkGAEgASgJEg4KBmdpZ19pZBgCIAEoCRITCgtyZXZpZXdlcl9pZBgDIAEoCRITCgtyZXZpZXdlZV9pZBgEIAEoCRIOCgZyYXRpbmcYBSABKAUSLwoLb2NjdXJyZWRfYXQYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIkYKE0NyZWF0ZVJldmlld1JlcXVlc3QSDgoGZ2lnX2lkGAEgASgJEg4KBnJhdGluZxgCIAEoBRIPCgdjb21tZW50GAMgASgJIigKEUdldFJldmlld3NSZXF1ZXN0EhMKC3Jldmlld2VlX2lkGAEgASgJIlIKEkdldFJldmlld3NSZXNwb25zZRIfCgdyZXZpZXdzGAEgAygLMg4uYXBpLnYxLlJldmlldxIbChNhdmVyYWdlX3JhdGluZ194MTAwGAIgASgFIjYKFENyZWF0ZVJldmlld1Jlc3BvbnNlEh4KBnJldmlldxgBIAEoCzIOLmFwaS52MS5SZXZpZXcynwEKDVJldmlld1NlcnZpY2USSQoMQ3JlYXRlUmV2aWV3EhsuYXBpLnYxLkNyZWF0ZVJldmlld1JlcXVlc3QaHC5hcGkudjEuQ3JlYXRlUmV2aWV3UmVzcG9uc2USQwoKR2V0UmV2aWV3cxIZLmFwaS52MS5HZXRSZXZpZXdzUmVxdWVzdBoaLmFwaS52MS5HZXRSZXZpZXdzUmVzcG9uc2VCowEKCmNvbS5hcGkudjFCC1Jldmlld1Byb3RvUAFaT2dpdGh1Yi5jb20vYWdhcndhbHZpdmVrMjkvc2tpbGxicmlkZ2UvcGFja2FnZXMvc2NoZW1hL2dlbmVyYXRlZC9nby9hcGkvdjE7YXBpdjGiAgNBWFiqAgZBcGkuVjHKAgZBcGlcVjHiAhJBcGlcVjFcR1BCTWV0YWRhdGHqAgdBcGk6OlYxYgZwcm90bzM",
     [file_google_protobuf_timestamp],
   );
 
@@ -214,6 +214,24 @@ export const GetReviewsResponseSchema: GenMessage<GetReviewsResponse> =
   messageDesc(file_api_v1_review, 4);
 
 /**
+ * @generated from message api.v1.CreateReviewResponse
+ */
+export type CreateReviewResponse = Message<"api.v1.CreateReviewResponse"> & {
+  /**
+   * @generated from field: api.v1.Review review = 1;
+   */
+  review?: Review;
+};
+
+/**
+ * Describes the message api.v1.CreateReviewResponse.
+ * Use `create(CreateReviewResponseSchema)` to create a new message.
+ */
+export const CreateReviewResponseSchema: GenMessage<CreateReviewResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_review, 5);
+
+/**
  * @generated from service api.v1.ReviewService
  */
 export const ReviewService: GenService<{
@@ -223,7 +241,7 @@ export const ReviewService: GenService<{
   createReview: {
     methodKind: "unary";
     input: typeof CreateReviewRequestSchema;
-    output: typeof ReviewSchema;
+    output: typeof CreateReviewResponseSchema;
   };
   /**
    * @generated from rpc api.v1.ReviewService.GetReviews

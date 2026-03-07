@@ -102,12 +102,28 @@ message GetDisputeMessagesResponse {
   repeated DisputeMessage messages = 1;
 }
 
+message RaiseDisputeResponse {
+  Dispute dispute = 1;
+}
+
+message GetDisputeResponse {
+  Dispute dispute = 1;
+}
+
+message GetDisputeByMilestoneResponse {
+  Dispute dispute = 1;
+}
+
+message PostDisputeMessageResponse {
+  DisputeMessage message = 1;
+}
+
 // ─── Service ─────────────────────────────────────────────────────────────────
 
 service DisputeService {
-  rpc RaiseDispute(RaiseDisputeRequest) returns (Dispute);
-  rpc GetDispute(GetDisputeRequest) returns (Dispute);
-  rpc GetDisputeByMilestone(GetDisputeByMilestoneRequest) returns (Dispute);
-  rpc PostDisputeMessage(PostDisputeMessageRequest) returns (DisputeMessage);
+  rpc RaiseDispute(RaiseDisputeRequest) returns (RaiseDisputeResponse);
+  rpc GetDispute(GetDisputeRequest) returns (GetDisputeResponse);
+  rpc GetDisputeByMilestone(GetDisputeByMilestoneRequest) returns (GetDisputeByMilestoneResponse);
+  rpc PostDisputeMessage(PostDisputeMessageRequest) returns (PostDisputeMessageResponse);
   rpc GetDisputeMessages(GetDisputeMessagesRequest) returns (GetDisputeMessagesResponse);
 }

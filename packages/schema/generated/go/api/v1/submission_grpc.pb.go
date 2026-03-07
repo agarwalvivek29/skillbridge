@@ -28,8 +28,8 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SubmissionServiceClient interface {
-	CreateSubmission(ctx context.Context, in *CreateSubmissionRequest, opts ...grpc.CallOption) (*Submission, error)
-	GetSubmission(ctx context.Context, in *GetSubmissionRequest, opts ...grpc.CallOption) (*Submission, error)
+	CreateSubmission(ctx context.Context, in *CreateSubmissionRequest, opts ...grpc.CallOption) (*CreateSubmissionResponse, error)
+	GetSubmission(ctx context.Context, in *GetSubmissionRequest, opts ...grpc.CallOption) (*GetSubmissionResponse, error)
 	GetSubmissions(ctx context.Context, in *GetSubmissionsRequest, opts ...grpc.CallOption) (*GetSubmissionsResponse, error)
 }
 
@@ -41,9 +41,9 @@ func NewSubmissionServiceClient(cc grpc.ClientConnInterface) SubmissionServiceCl
 	return &submissionServiceClient{cc}
 }
 
-func (c *submissionServiceClient) CreateSubmission(ctx context.Context, in *CreateSubmissionRequest, opts ...grpc.CallOption) (*Submission, error) {
+func (c *submissionServiceClient) CreateSubmission(ctx context.Context, in *CreateSubmissionRequest, opts ...grpc.CallOption) (*CreateSubmissionResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Submission)
+	out := new(CreateSubmissionResponse)
 	err := c.cc.Invoke(ctx, SubmissionService_CreateSubmission_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -51,9 +51,9 @@ func (c *submissionServiceClient) CreateSubmission(ctx context.Context, in *Crea
 	return out, nil
 }
 
-func (c *submissionServiceClient) GetSubmission(ctx context.Context, in *GetSubmissionRequest, opts ...grpc.CallOption) (*Submission, error) {
+func (c *submissionServiceClient) GetSubmission(ctx context.Context, in *GetSubmissionRequest, opts ...grpc.CallOption) (*GetSubmissionResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Submission)
+	out := new(GetSubmissionResponse)
 	err := c.cc.Invoke(ctx, SubmissionService_GetSubmission_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -75,8 +75,8 @@ func (c *submissionServiceClient) GetSubmissions(ctx context.Context, in *GetSub
 // All implementations must embed UnimplementedSubmissionServiceServer
 // for forward compatibility
 type SubmissionServiceServer interface {
-	CreateSubmission(context.Context, *CreateSubmissionRequest) (*Submission, error)
-	GetSubmission(context.Context, *GetSubmissionRequest) (*Submission, error)
+	CreateSubmission(context.Context, *CreateSubmissionRequest) (*CreateSubmissionResponse, error)
+	GetSubmission(context.Context, *GetSubmissionRequest) (*GetSubmissionResponse, error)
 	GetSubmissions(context.Context, *GetSubmissionsRequest) (*GetSubmissionsResponse, error)
 	mustEmbedUnimplementedSubmissionServiceServer()
 }
@@ -85,10 +85,10 @@ type SubmissionServiceServer interface {
 type UnimplementedSubmissionServiceServer struct {
 }
 
-func (UnimplementedSubmissionServiceServer) CreateSubmission(context.Context, *CreateSubmissionRequest) (*Submission, error) {
+func (UnimplementedSubmissionServiceServer) CreateSubmission(context.Context, *CreateSubmissionRequest) (*CreateSubmissionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateSubmission not implemented")
 }
-func (UnimplementedSubmissionServiceServer) GetSubmission(context.Context, *GetSubmissionRequest) (*Submission, error) {
+func (UnimplementedSubmissionServiceServer) GetSubmission(context.Context, *GetSubmissionRequest) (*GetSubmissionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSubmission not implemented")
 }
 func (UnimplementedSubmissionServiceServer) GetSubmissions(context.Context, *GetSubmissionsRequest) (*GetSubmissionsResponse, error) {

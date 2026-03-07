@@ -24,7 +24,7 @@ import type { Message } from "@bufbuild/protobuf";
 export const file_api_v1_dispute: GenFile =
   /*@__PURE__*/
   fileDesc(
-    "ChRhcGkvdjEvZGlzcHV0ZS5wcm90bxIGYXBpLnYxIuADCgdEaXNwdXRlEgoKAmlkGAEgASgJEhQKDG1pbGVzdG9uZV9pZBgCIAEoCRIOCgZnaWdfaWQYAyABKAkSGQoRcmFpc2VkX2J5X3VzZXJfaWQYBCABKAkSDgoGcmVhc29uGAUgASgJEiUKBnN0YXR1cxgGIAEoDjIVLmFwaS52MS5EaXNwdXRlU3RhdHVzEhsKE2FpX2V2aWRlbmNlX3N1bW1hcnkYByABKAkSLQoKcmVzb2x1dGlvbhgIIAEoDjIZLmFwaS52MS5EaXNwdXRlUmVzb2x1dGlvbhIfChdmcmVlbGFuY2VyX3NwbGl0X2Ftb3VudBgJIAEoCRIaChJyZXNvbHV0aW9uX3R4X2hhc2gYCiABKAkSNwoTZGlzY3Vzc2lvbl9kZWFkbGluZRgLIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLcmVzb2x2ZWRfYXQYDCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCmNyZWF0ZWRfYXQYDSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYDiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIoIBCg5EaXNwdXRlTWVzc2FnZRIKCgJpZBgBIAEoCRISCgpkaXNwdXRlX2lkGAIgASgJEg8KB3VzZXJfaWQYAyABKAkSDwoHY29udGVudBgEIAEoCRIuCgpjcmVhdGVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKaAQoSRGlzcHV0ZVJhaXNlZEV2ZW50EhIKCmRpc3B1dGVfaWQYASABKAkSFAoMbWlsZXN0b25lX2lkGAIgASgJEg4KBmdpZ19pZBgDIAEoCRIZChFyYWlzZWRfYnlfdXNlcl9pZBgEIAEoCRIvCgtvY2N1cnJlZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAivAEKFERpc3B1dGVSZXNvbHZlZEV2ZW50EhIKCmRpc3B1dGVfaWQYASABKAkSFAoMbWlsZXN0b25lX2lkGAIgASgJEi0KCnJlc29sdXRpb24YAyABKA4yGS5hcGkudjEuRGlzcHV0ZVJlc29sdXRpb24SGgoScmVzb2x1dGlvbl90eF9oYXNoGAQgASgJEi8KC29jY3VycmVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCI7ChNSYWlzZURpc3B1dGVSZXF1ZXN0EhQKDG1pbGVzdG9uZV9pZBgBIAEoCRIOCgZyZWFzb24YAiABKAkiHwoRR2V0RGlzcHV0ZVJlcXVlc3QSCgoCaWQYASABKAkiNAocR2V0RGlzcHV0ZUJ5TWlsZXN0b25lUmVxdWVzdBIUCgxtaWxlc3RvbmVfaWQYASABKAkiQAoZUG9zdERpc3B1dGVNZXNzYWdlUmVxdWVzdBISCgpkaXNwdXRlX2lkGAEgASgJEg8KB2NvbnRlbnQYAiABKAkiLwoZR2V0RGlzcHV0ZU1lc3NhZ2VzUmVxdWVzdBISCgpkaXNwdXRlX2lkGAEgASgJIkYKGkdldERpc3B1dGVNZXNzYWdlc1Jlc3BvbnNlEigKCG1lc3NhZ2VzGAEgAygLMhYuYXBpLnYxLkRpc3B1dGVNZXNzYWdlKqQBCg1EaXNwdXRlU3RhdHVzEh4KGkRJU1BVVEVfU1RBVFVTX1VOU1BFQ0lGSUVEEAASFwoTRElTUFVURV9TVEFUVVNfT1BFThABEh0KGURJU1BVVEVfU1RBVFVTX0RJU0NVU1NJT04QAhIeChpESVNQVVRFX1NUQVRVU19BUkJJVFJBVElPThADEhsKF0RJU1BVVEVfU1RBVFVTX1JFU09MVkVEEAQqogEKEURpc3B1dGVSZXNvbHV0aW9uEiIKHkRJU1BVVEVfUkVTT0xVVElPTl9VTlNQRUNJRklFRBAAEiUKIURJU1BVVEVfUkVTT0xVVElPTl9QQVlfRlJFRUxBTkNFUhABEiQKIERJU1BVVEVfUkVTT0xVVElPTl9SRUZVTkRfQ0xJRU5UEAISHAoYRElTUFVURV9SRVNPTFVUSU9OX1NQTElUEAMyhgMKDkRpc3B1dGVTZXJ2aWNlEjwKDFJhaXNlRGlzcHV0ZRIbLmFwaS52MS5SYWlzZURpc3B1dGVSZXF1ZXN0Gg8uYXBpLnYxLkRpc3B1dGUSOAoKR2V0RGlzcHV0ZRIZLmFwaS52MS5HZXREaXNwdXRlUmVxdWVzdBoPLmFwaS52MS5EaXNwdXRlEk4KFUdldERpc3B1dGVCeU1pbGVzdG9uZRIkLmFwaS52MS5HZXREaXNwdXRlQnlNaWxlc3RvbmVSZXF1ZXN0Gg8uYXBpLnYxLkRpc3B1dGUSTwoSUG9zdERpc3B1dGVNZXNzYWdlEiEuYXBpLnYxLlBvc3REaXNwdXRlTWVzc2FnZVJlcXVlc3QaFi5hcGkudjEuRGlzcHV0ZU1lc3NhZ2USWwoSR2V0RGlzcHV0ZU1lc3NhZ2VzEiEuYXBpLnYxLkdldERpc3B1dGVNZXNzYWdlc1JlcXVlc3QaIi5hcGkudjEuR2V0RGlzcHV0ZU1lc3NhZ2VzUmVzcG9uc2VCpAEKCmNvbS5hcGkudjFCDERpc3B1dGVQcm90b1ABWk9naXRodWIuY29tL2FnYXJ3YWx2aXZlazI5L3NraWxsYnJpZGdlL3BhY2thZ2VzL3NjaGVtYS9nZW5lcmF0ZWQvZ28vYXBpL3YxO2FwaXYxogIDQVhYqgIGQXBpLlYxygIGQXBpXFYx4gISQXBpXFYxXEdQQk1ldGFkYXRh6gIHQXBpOjpWMWIGcHJvdG8z",
+    "ChRhcGkvdjEvZGlzcHV0ZS5wcm90bxIGYXBpLnYxIuADCgdEaXNwdXRlEgoKAmlkGAEgASgJEhQKDG1pbGVzdG9uZV9pZBgCIAEoCRIOCgZnaWdfaWQYAyABKAkSGQoRcmFpc2VkX2J5X3VzZXJfaWQYBCABKAkSDgoGcmVhc29uGAUgASgJEiUKBnN0YXR1cxgGIAEoDjIVLmFwaS52MS5EaXNwdXRlU3RhdHVzEhsKE2FpX2V2aWRlbmNlX3N1bW1hcnkYByABKAkSLQoKcmVzb2x1dGlvbhgIIAEoDjIZLmFwaS52MS5EaXNwdXRlUmVzb2x1dGlvbhIfChdmcmVlbGFuY2VyX3NwbGl0X2Ftb3VudBgJIAEoCRIaChJyZXNvbHV0aW9uX3R4X2hhc2gYCiABKAkSNwoTZGlzY3Vzc2lvbl9kZWFkbGluZRgLIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLcmVzb2x2ZWRfYXQYDCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCmNyZWF0ZWRfYXQYDSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYDiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIoIBCg5EaXNwdXRlTWVzc2FnZRIKCgJpZBgBIAEoCRISCgpkaXNwdXRlX2lkGAIgASgJEg8KB3VzZXJfaWQYAyABKAkSDwoHY29udGVudBgEIAEoCRIuCgpjcmVhdGVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKaAQoSRGlzcHV0ZVJhaXNlZEV2ZW50EhIKCmRpc3B1dGVfaWQYASABKAkSFAoMbWlsZXN0b25lX2lkGAIgASgJEg4KBmdpZ19pZBgDIAEoCRIZChFyYWlzZWRfYnlfdXNlcl9pZBgEIAEoCRIvCgtvY2N1cnJlZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAivAEKFERpc3B1dGVSZXNvbHZlZEV2ZW50EhIKCmRpc3B1dGVfaWQYASABKAkSFAoMbWlsZXN0b25lX2lkGAIgASgJEi0KCnJlc29sdXRpb24YAyABKA4yGS5hcGkudjEuRGlzcHV0ZVJlc29sdXRpb24SGgoScmVzb2x1dGlvbl90eF9oYXNoGAQgASgJEi8KC29jY3VycmVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCI7ChNSYWlzZURpc3B1dGVSZXF1ZXN0EhQKDG1pbGVzdG9uZV9pZBgBIAEoCRIOCgZyZWFzb24YAiABKAkiHwoRR2V0RGlzcHV0ZVJlcXVlc3QSCgoCaWQYASABKAkiNAocR2V0RGlzcHV0ZUJ5TWlsZXN0b25lUmVxdWVzdBIUCgxtaWxlc3RvbmVfaWQYASABKAkiQAoZUG9zdERpc3B1dGVNZXNzYWdlUmVxdWVzdBISCgpkaXNwdXRlX2lkGAEgASgJEg8KB2NvbnRlbnQYAiABKAkiLwoZR2V0RGlzcHV0ZU1lc3NhZ2VzUmVxdWVzdBISCgpkaXNwdXRlX2lkGAEgASgJIkYKGkdldERpc3B1dGVNZXNzYWdlc1Jlc3BvbnNlEigKCG1lc3NhZ2VzGAEgAygLMhYuYXBpLnYxLkRpc3B1dGVNZXNzYWdlIjgKFFJhaXNlRGlzcHV0ZVJlc3BvbnNlEiAKB2Rpc3B1dGUYASABKAsyDy5hcGkudjEuRGlzcHV0ZSI2ChJHZXREaXNwdXRlUmVzcG9uc2USIAoHZGlzcHV0ZRgBIAEoCzIPLmFwaS52MS5EaXNwdXRlIkEKHUdldERpc3B1dGVCeU1pbGVzdG9uZVJlc3BvbnNlEiAKB2Rpc3B1dGUYASABKAsyDy5hcGkudjEuRGlzcHV0ZSJFChpQb3N0RGlzcHV0ZU1lc3NhZ2VSZXNwb25zZRInCgdtZXNzYWdlGAEgASgLMhYuYXBpLnYxLkRpc3B1dGVNZXNzYWdlKqQBCg1EaXNwdXRlU3RhdHVzEh4KGkRJU1BVVEVfU1RBVFVTX1VOU1BFQ0lGSUVEEAASFwoTRElTUFVURV9TVEFUVVNfT1BFThABEh0KGURJU1BVVEVfU1RBVFVTX0RJU0NVU1NJT04QAhIeChpESVNQVVRFX1NUQVRVU19BUkJJVFJBVElPThADEhsKF0RJU1BVVEVfU1RBVFVTX1JFU09MVkVEEAQqogEKEURpc3B1dGVSZXNvbHV0aW9uEiIKHkRJU1BVVEVfUkVTT0xVVElPTl9VTlNQRUNJRklFRBAAEiUKIURJU1BVVEVfUkVTT0xVVElPTl9QQVlfRlJFRUxBTkNFUhABEiQKIERJU1BVVEVfUkVTT0xVVElPTl9SRUZVTkRfQ0xJRU5UEAISHAoYRElTUFVURV9SRVNPTFVUSU9OX1NQTElUEAMywAMKDkRpc3B1dGVTZXJ2aWNlEkkKDFJhaXNlRGlzcHV0ZRIbLmFwaS52MS5SYWlzZURpc3B1dGVSZXF1ZXN0GhwuYXBpLnYxLlJhaXNlRGlzcHV0ZVJlc3BvbnNlEkMKCkdldERpc3B1dGUSGS5hcGkudjEuR2V0RGlzcHV0ZVJlcXVlc3QaGi5hcGkudjEuR2V0RGlzcHV0ZVJlc3BvbnNlEmQKFUdldERpc3B1dGVCeU1pbGVzdG9uZRIkLmFwaS52MS5HZXREaXNwdXRlQnlNaWxlc3RvbmVSZXF1ZXN0GiUuYXBpLnYxLkdldERpc3B1dGVCeU1pbGVzdG9uZVJlc3BvbnNlElsKElBvc3REaXNwdXRlTWVzc2FnZRIhLmFwaS52MS5Qb3N0RGlzcHV0ZU1lc3NhZ2VSZXF1ZXN0GiIuYXBpLnYxLlBvc3REaXNwdXRlTWVzc2FnZVJlc3BvbnNlElsKEkdldERpc3B1dGVNZXNzYWdlcxIhLmFwaS52MS5HZXREaXNwdXRlTWVzc2FnZXNSZXF1ZXN0GiIuYXBpLnYxLkdldERpc3B1dGVNZXNzYWdlc1Jlc3BvbnNlQqQBCgpjb20uYXBpLnYxQgxEaXNwdXRlUHJvdG9QAVpPZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2FwaS92MTthcGl2MaICA0FYWKoCBkFwaS5WMcoCBkFwaVxWMeICEkFwaVxWMVxHUEJNZXRhZGF0YeoCB0FwaTo6VjFiBnByb3RvMw",
     [file_google_protobuf_timestamp],
   );
 
@@ -360,6 +360,80 @@ export const GetDisputeMessagesResponseSchema: GenMessage<GetDisputeMessagesResp
   messageDesc(file_api_v1_dispute, 9);
 
 /**
+ * @generated from message api.v1.RaiseDisputeResponse
+ */
+export type RaiseDisputeResponse = Message<"api.v1.RaiseDisputeResponse"> & {
+  /**
+   * @generated from field: api.v1.Dispute dispute = 1;
+   */
+  dispute?: Dispute;
+};
+
+/**
+ * Describes the message api.v1.RaiseDisputeResponse.
+ * Use `create(RaiseDisputeResponseSchema)` to create a new message.
+ */
+export const RaiseDisputeResponseSchema: GenMessage<RaiseDisputeResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_dispute, 10);
+
+/**
+ * @generated from message api.v1.GetDisputeResponse
+ */
+export type GetDisputeResponse = Message<"api.v1.GetDisputeResponse"> & {
+  /**
+   * @generated from field: api.v1.Dispute dispute = 1;
+   */
+  dispute?: Dispute;
+};
+
+/**
+ * Describes the message api.v1.GetDisputeResponse.
+ * Use `create(GetDisputeResponseSchema)` to create a new message.
+ */
+export const GetDisputeResponseSchema: GenMessage<GetDisputeResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_dispute, 11);
+
+/**
+ * @generated from message api.v1.GetDisputeByMilestoneResponse
+ */
+export type GetDisputeByMilestoneResponse =
+  Message<"api.v1.GetDisputeByMilestoneResponse"> & {
+    /**
+     * @generated from field: api.v1.Dispute dispute = 1;
+     */
+    dispute?: Dispute;
+  };
+
+/**
+ * Describes the message api.v1.GetDisputeByMilestoneResponse.
+ * Use `create(GetDisputeByMilestoneResponseSchema)` to create a new message.
+ */
+export const GetDisputeByMilestoneResponseSchema: GenMessage<GetDisputeByMilestoneResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_dispute, 12);
+
+/**
+ * @generated from message api.v1.PostDisputeMessageResponse
+ */
+export type PostDisputeMessageResponse =
+  Message<"api.v1.PostDisputeMessageResponse"> & {
+    /**
+     * @generated from field: api.v1.DisputeMessage message = 1;
+     */
+    message?: DisputeMessage;
+  };
+
+/**
+ * Describes the message api.v1.PostDisputeMessageResponse.
+ * Use `create(PostDisputeMessageResponseSchema)` to create a new message.
+ */
+export const PostDisputeMessageResponseSchema: GenMessage<PostDisputeMessageResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_dispute, 13);
+
+/**
  * @generated from enum api.v1.DisputeStatus
  */
 export enum DisputeStatus {
@@ -452,7 +526,7 @@ export const DisputeService: GenService<{
   raiseDispute: {
     methodKind: "unary";
     input: typeof RaiseDisputeRequestSchema;
-    output: typeof DisputeSchema;
+    output: typeof RaiseDisputeResponseSchema;
   };
   /**
    * @generated from rpc api.v1.DisputeService.GetDispute
@@ -460,7 +534,7 @@ export const DisputeService: GenService<{
   getDispute: {
     methodKind: "unary";
     input: typeof GetDisputeRequestSchema;
-    output: typeof DisputeSchema;
+    output: typeof GetDisputeResponseSchema;
   };
   /**
    * @generated from rpc api.v1.DisputeService.GetDisputeByMilestone
@@ -468,7 +542,7 @@ export const DisputeService: GenService<{
   getDisputeByMilestone: {
     methodKind: "unary";
     input: typeof GetDisputeByMilestoneRequestSchema;
-    output: typeof DisputeSchema;
+    output: typeof GetDisputeByMilestoneResponseSchema;
   };
   /**
    * @generated from rpc api.v1.DisputeService.PostDisputeMessage
@@ -476,7 +550,7 @@ export const DisputeService: GenService<{
   postDisputeMessage: {
     methodKind: "unary";
     input: typeof PostDisputeMessageRequestSchema;
-    output: typeof DisputeMessageSchema;
+    output: typeof PostDisputeMessageResponseSchema;
   };
   /**
    * @generated from rpc api.v1.DisputeService.GetDisputeMessages

@@ -26,7 +26,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ReviewServiceClient interface {
-	GetReviewReport(ctx context.Context, in *GetReviewReportRequest, opts ...grpc.CallOption) (*ReviewReport, error)
+	GetReviewReport(ctx context.Context, in *GetReviewReportRequest, opts ...grpc.CallOption) (*GetReviewReportResponse, error)
 }
 
 type reviewServiceClient struct {
@@ -37,9 +37,9 @@ func NewReviewServiceClient(cc grpc.ClientConnInterface) ReviewServiceClient {
 	return &reviewServiceClient{cc}
 }
 
-func (c *reviewServiceClient) GetReviewReport(ctx context.Context, in *GetReviewReportRequest, opts ...grpc.CallOption) (*ReviewReport, error) {
+func (c *reviewServiceClient) GetReviewReport(ctx context.Context, in *GetReviewReportRequest, opts ...grpc.CallOption) (*GetReviewReportResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ReviewReport)
+	out := new(GetReviewReportResponse)
 	err := c.cc.Invoke(ctx, ReviewService_GetReviewReport_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (c *reviewServiceClient) GetReviewReport(ctx context.Context, in *GetReview
 // All implementations must embed UnimplementedReviewServiceServer
 // for forward compatibility
 type ReviewServiceServer interface {
-	GetReviewReport(context.Context, *GetReviewReportRequest) (*ReviewReport, error)
+	GetReviewReport(context.Context, *GetReviewReportRequest) (*GetReviewReportResponse, error)
 	mustEmbedUnimplementedReviewServiceServer()
 }
 
@@ -59,7 +59,7 @@ type ReviewServiceServer interface {
 type UnimplementedReviewServiceServer struct {
 }
 
-func (UnimplementedReviewServiceServer) GetReviewReport(context.Context, *GetReviewReportRequest) (*ReviewReport, error) {
+func (UnimplementedReviewServiceServer) GetReviewReport(context.Context, *GetReviewReportRequest) (*GetReviewReportResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetReviewReport not implemented")
 }
 func (UnimplementedReviewServiceServer) mustEmbedUnimplementedReviewServiceServer() {}

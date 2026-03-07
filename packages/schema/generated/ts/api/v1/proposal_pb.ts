@@ -29,7 +29,7 @@ import type { Message } from "@bufbuild/protobuf";
 export const file_api_v1_proposal: GenFile =
   /*@__PURE__*/
   fileDesc(
-    "ChVhcGkvdjEvcHJvcG9zYWwucHJvdG8SBmFwaS52MSLzAQoIUHJvcG9zYWwSCgoCaWQYASABKAkSDgoGZ2lnX2lkGAIgASgJEhUKDWZyZWVsYW5jZXJfaWQYAyABKAkSFAoMY292ZXJfbGV0dGVyGAQgASgJEhYKDmVzdGltYXRlZF9kYXlzGAUgASgFEiYKBnN0YXR1cxgGIAEoDjIWLmFwaS52MS5Qcm9wb3NhbFN0YXR1cxIuCgpjcmVhdGVkX2F0GAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgp1cGRhdGVkX2F0GAggASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKFAQoWUHJvcG9zYWxTdWJtaXR0ZWRFdmVudBITCgtwcm9wb3NhbF9pZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSFQoNZnJlZWxhbmNlcl9pZBgDIAEoCRIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAihAEKFVByb3Bvc2FsQWNjZXB0ZWRFdmVudBITCgtwcm9wb3NhbF9pZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSFQoNZnJlZWxhbmNlcl9pZBgDIAEoCRIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiVQoVQ3JlYXRlUHJvcG9zYWxSZXF1ZXN0Eg4KBmdpZ19pZBgBIAEoCRIUCgxjb3Zlcl9sZXR0ZXIYAiABKAkSFgoOZXN0aW1hdGVkX2RheXMYAyABKAUiVwoTR2V0UHJvcG9zYWxzUmVxdWVzdBIOCgZnaWdfaWQYASABKAkSMAoKcGFnaW5hdGlvbhgCIAEoCzIcLmNvbW1vbi52MS5QYWdpbmF0aW9uUmVxdWVzdCJqChRHZXRQcm9wb3NhbHNSZXNwb25zZRIjCglwcm9wb3NhbHMYASADKAsyEC5hcGkudjEuUHJvcG9zYWwSLQoKcGFnaW5hdGlvbhgCIAEoCzIZLmNvbW1vbi52MS5QYWdpbmF0aW9uTWV0YSIsChVBY2NlcHRQcm9wb3NhbFJlcXVlc3QSEwoLcHJvcG9zYWxfaWQYASABKAkiLgoXV2l0aGRyYXdQcm9wb3NhbFJlcXVlc3QSEwoLcHJvcG9zYWxfaWQYASABKAkqqQEKDlByb3Bvc2FsU3RhdHVzEh8KG1BST1BPU0FMX1NUQVRVU19VTlNQRUNJRklFRBAAEhsKF1BST1BPU0FMX1NUQVRVU19QRU5ESU5HEAESHAoYUFJPUE9TQUxfU1RBVFVTX0FDQ0VQVEVEEAISHAoYUFJPUE9TQUxfU1RBVFVTX1JFSkVDVEVEEAMSHQoZUFJPUE9TQUxfU1RBVFVTX1dJVEhEUkFXThAEMqkCCg9Qcm9wb3NhbFNlcnZpY2USQQoOQ3JlYXRlUHJvcG9zYWwSHS5hcGkudjEuQ3JlYXRlUHJvcG9zYWxSZXF1ZXN0GhAuYXBpLnYxLlByb3Bvc2FsEkkKDEdldFByb3Bvc2FscxIbLmFwaS52MS5HZXRQcm9wb3NhbHNSZXF1ZXN0GhwuYXBpLnYxLkdldFByb3Bvc2Fsc1Jlc3BvbnNlEkEKDkFjY2VwdFByb3Bvc2FsEh0uYXBpLnYxLkFjY2VwdFByb3Bvc2FsUmVxdWVzdBoQLmFwaS52MS5Qcm9wb3NhbBJFChBXaXRoZHJhd1Byb3Bvc2FsEh8uYXBpLnYxLldpdGhkcmF3UHJvcG9zYWxSZXF1ZXN0GhAuYXBpLnYxLlByb3Bvc2FsQqUBCgpjb20uYXBpLnYxQg1Qcm9wb3NhbFByb3RvUAFaT2dpdGh1Yi5jb20vYWdhcndhbHZpdmVrMjkvc2tpbGxicmlkZ2UvcGFja2FnZXMvc2NoZW1hL2dlbmVyYXRlZC9nby9hcGkvdjE7YXBpdjGiAgNBWFiqAgZBcGkuVjHKAgZBcGlcVjHiAhJBcGlcVjFcR1BCTWV0YWRhdGHqAgdBcGk6OlYxYgZwcm90bzM",
+    "ChVhcGkvdjEvcHJvcG9zYWwucHJvdG8SBmFwaS52MSLzAQoIUHJvcG9zYWwSCgoCaWQYASABKAkSDgoGZ2lnX2lkGAIgASgJEhUKDWZyZWVsYW5jZXJfaWQYAyABKAkSFAoMY292ZXJfbGV0dGVyGAQgASgJEhYKDmVzdGltYXRlZF9kYXlzGAUgASgFEiYKBnN0YXR1cxgGIAEoDjIWLmFwaS52MS5Qcm9wb3NhbFN0YXR1cxIuCgpjcmVhdGVkX2F0GAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgp1cGRhdGVkX2F0GAggASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKFAQoWUHJvcG9zYWxTdWJtaXR0ZWRFdmVudBITCgtwcm9wb3NhbF9pZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSFQoNZnJlZWxhbmNlcl9pZBgDIAEoCRIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAihAEKFVByb3Bvc2FsQWNjZXB0ZWRFdmVudBITCgtwcm9wb3NhbF9pZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSFQoNZnJlZWxhbmNlcl9pZBgDIAEoCRIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiVQoVQ3JlYXRlUHJvcG9zYWxSZXF1ZXN0Eg4KBmdpZ19pZBgBIAEoCRIUCgxjb3Zlcl9sZXR0ZXIYAiABKAkSFgoOZXN0aW1hdGVkX2RheXMYAyABKAUiVwoTR2V0UHJvcG9zYWxzUmVxdWVzdBIOCgZnaWdfaWQYASABKAkSMAoKcGFnaW5hdGlvbhgCIAEoCzIcLmNvbW1vbi52MS5QYWdpbmF0aW9uUmVxdWVzdCJqChRHZXRQcm9wb3NhbHNSZXNwb25zZRIjCglwcm9wb3NhbHMYASADKAsyEC5hcGkudjEuUHJvcG9zYWwSLQoKcGFnaW5hdGlvbhgCIAEoCzIZLmNvbW1vbi52MS5QYWdpbmF0aW9uTWV0YSIsChVBY2NlcHRQcm9wb3NhbFJlcXVlc3QSEwoLcHJvcG9zYWxfaWQYASABKAkiLgoXV2l0aGRyYXdQcm9wb3NhbFJlcXVlc3QSEwoLcHJvcG9zYWxfaWQYASABKAkiPAoWQ3JlYXRlUHJvcG9zYWxSZXNwb25zZRIiCghwcm9wb3NhbBgBIAEoCzIQLmFwaS52MS5Qcm9wb3NhbCI8ChZBY2NlcHRQcm9wb3NhbFJlc3BvbnNlEiIKCHByb3Bvc2FsGAEgASgLMhAuYXBpLnYxLlByb3Bvc2FsIj4KGFdpdGhkcmF3UHJvcG9zYWxSZXNwb25zZRIiCghwcm9wb3NhbBgBIAEoCzIQLmFwaS52MS5Qcm9wb3NhbCqpAQoOUHJvcG9zYWxTdGF0dXMSHwobUFJPUE9TQUxfU1RBVFVTX1VOU1BFQ0lGSUVEEAASGwoXUFJPUE9TQUxfU1RBVFVTX1BFTkRJTkcQARIcChhQUk9QT1NBTF9TVEFUVVNfQUNDRVBURUQQAhIcChhQUk9QT1NBTF9TVEFUVVNfUkVKRUNURUQQAxIdChlQUk9QT1NBTF9TVEFUVVNfV0lUSERSQVdOEAQy1QIKD1Byb3Bvc2FsU2VydmljZRJPCg5DcmVhdGVQcm9wb3NhbBIdLmFwaS52MS5DcmVhdGVQcm9wb3NhbFJlcXVlc3QaHi5hcGkudjEuQ3JlYXRlUHJvcG9zYWxSZXNwb25zZRJJCgxHZXRQcm9wb3NhbHMSGy5hcGkudjEuR2V0UHJvcG9zYWxzUmVxdWVzdBocLmFwaS52MS5HZXRQcm9wb3NhbHNSZXNwb25zZRJPCg5BY2NlcHRQcm9wb3NhbBIdLmFwaS52MS5BY2NlcHRQcm9wb3NhbFJlcXVlc3QaHi5hcGkudjEuQWNjZXB0UHJvcG9zYWxSZXNwb25zZRJVChBXaXRoZHJhd1Byb3Bvc2FsEh8uYXBpLnYxLldpdGhkcmF3UHJvcG9zYWxSZXF1ZXN0GiAuYXBpLnYxLldpdGhkcmF3UHJvcG9zYWxSZXNwb25zZUKlAQoKY29tLmFwaS52MUINUHJvcG9zYWxQcm90b1ABWk9naXRodWIuY29tL2FnYXJ3YWx2aXZlazI5L3NraWxsYnJpZGdlL3BhY2thZ2VzL3NjaGVtYS9nZW5lcmF0ZWQvZ28vYXBpL3YxO2FwaXYxogIDQVhYqgIGQXBpLlYxygIGQXBpXFYx4gISQXBpXFYxXEdQQk1ldGFkYXRh6gIHQXBpOjpWMWIGcHJvdG8z",
     [file_common_v1_pagination, file_google_protobuf_timestamp],
   );
 
@@ -267,6 +267,63 @@ export const WithdrawProposalRequestSchema: GenMessage<WithdrawProposalRequest> 
   messageDesc(file_api_v1_proposal, 7);
 
 /**
+ * @generated from message api.v1.CreateProposalResponse
+ */
+export type CreateProposalResponse =
+  Message<"api.v1.CreateProposalResponse"> & {
+    /**
+     * @generated from field: api.v1.Proposal proposal = 1;
+     */
+    proposal?: Proposal;
+  };
+
+/**
+ * Describes the message api.v1.CreateProposalResponse.
+ * Use `create(CreateProposalResponseSchema)` to create a new message.
+ */
+export const CreateProposalResponseSchema: GenMessage<CreateProposalResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_proposal, 8);
+
+/**
+ * @generated from message api.v1.AcceptProposalResponse
+ */
+export type AcceptProposalResponse =
+  Message<"api.v1.AcceptProposalResponse"> & {
+    /**
+     * @generated from field: api.v1.Proposal proposal = 1;
+     */
+    proposal?: Proposal;
+  };
+
+/**
+ * Describes the message api.v1.AcceptProposalResponse.
+ * Use `create(AcceptProposalResponseSchema)` to create a new message.
+ */
+export const AcceptProposalResponseSchema: GenMessage<AcceptProposalResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_proposal, 9);
+
+/**
+ * @generated from message api.v1.WithdrawProposalResponse
+ */
+export type WithdrawProposalResponse =
+  Message<"api.v1.WithdrawProposalResponse"> & {
+    /**
+     * @generated from field: api.v1.Proposal proposal = 1;
+     */
+    proposal?: Proposal;
+  };
+
+/**
+ * Describes the message api.v1.WithdrawProposalResponse.
+ * Use `create(WithdrawProposalResponseSchema)` to create a new message.
+ */
+export const WithdrawProposalResponseSchema: GenMessage<WithdrawProposalResponse> =
+  /*@__PURE__*/
+  messageDesc(file_api_v1_proposal, 10);
+
+/**
  * @generated from enum api.v1.ProposalStatus
  */
 export enum ProposalStatus {
@@ -321,7 +378,7 @@ export const ProposalService: GenService<{
   createProposal: {
     methodKind: "unary";
     input: typeof CreateProposalRequestSchema;
-    output: typeof ProposalSchema;
+    output: typeof CreateProposalResponseSchema;
   };
   /**
    * @generated from rpc api.v1.ProposalService.GetProposals
@@ -337,7 +394,7 @@ export const ProposalService: GenService<{
   acceptProposal: {
     methodKind: "unary";
     input: typeof AcceptProposalRequestSchema;
-    output: typeof ProposalSchema;
+    output: typeof AcceptProposalResponseSchema;
   };
   /**
    * @generated from rpc api.v1.ProposalService.WithdrawProposal
@@ -345,6 +402,6 @@ export const ProposalService: GenService<{
   withdrawProposal: {
     methodKind: "unary";
     input: typeof WithdrawProposalRequestSchema;
-    output: typeof ProposalSchema;
+    output: typeof WithdrawProposalResponseSchema;
   };
 }> = /*@__PURE__*/ serviceDesc(file_api_v1_proposal, 0);

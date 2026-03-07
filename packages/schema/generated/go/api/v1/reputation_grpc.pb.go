@@ -26,7 +26,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ReputationServiceClient interface {
-	GetReputation(ctx context.Context, in *GetReputationRequest, opts ...grpc.CallOption) (*Reputation, error)
+	GetReputation(ctx context.Context, in *GetReputationRequest, opts ...grpc.CallOption) (*GetReputationResponse, error)
 }
 
 type reputationServiceClient struct {
@@ -37,9 +37,9 @@ func NewReputationServiceClient(cc grpc.ClientConnInterface) ReputationServiceCl
 	return &reputationServiceClient{cc}
 }
 
-func (c *reputationServiceClient) GetReputation(ctx context.Context, in *GetReputationRequest, opts ...grpc.CallOption) (*Reputation, error) {
+func (c *reputationServiceClient) GetReputation(ctx context.Context, in *GetReputationRequest, opts ...grpc.CallOption) (*GetReputationResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Reputation)
+	out := new(GetReputationResponse)
 	err := c.cc.Invoke(ctx, ReputationService_GetReputation_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (c *reputationServiceClient) GetReputation(ctx context.Context, in *GetRepu
 // All implementations must embed UnimplementedReputationServiceServer
 // for forward compatibility
 type ReputationServiceServer interface {
-	GetReputation(context.Context, *GetReputationRequest) (*Reputation, error)
+	GetReputation(context.Context, *GetReputationRequest) (*GetReputationResponse, error)
 	mustEmbedUnimplementedReputationServiceServer()
 }
 
@@ -59,7 +59,7 @@ type ReputationServiceServer interface {
 type UnimplementedReputationServiceServer struct {
 }
 
-func (UnimplementedReputationServiceServer) GetReputation(context.Context, *GetReputationRequest) (*Reputation, error) {
+func (UnimplementedReputationServiceServer) GetReputation(context.Context, *GetReputationRequest) (*GetReputationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetReputation not implemented")
 }
 func (UnimplementedReputationServiceServer) mustEmbedUnimplementedReputationServiceServer() {}

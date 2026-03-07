@@ -27,8 +27,8 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type EscrowServiceClient interface {
-	GetEscrow(ctx context.Context, in *GetEscrowRequest, opts ...grpc.CallOption) (*EscrowContract, error)
-	ReleaseMilestoneFunds(ctx context.Context, in *ReleaseMilestoneFundsRequest, opts ...grpc.CallOption) (*EscrowContract, error)
+	GetEscrow(ctx context.Context, in *GetEscrowRequest, opts ...grpc.CallOption) (*GetEscrowResponse, error)
+	ReleaseMilestoneFunds(ctx context.Context, in *ReleaseMilestoneFundsRequest, opts ...grpc.CallOption) (*ReleaseMilestoneFundsResponse, error)
 }
 
 type escrowServiceClient struct {
@@ -39,9 +39,9 @@ func NewEscrowServiceClient(cc grpc.ClientConnInterface) EscrowServiceClient {
 	return &escrowServiceClient{cc}
 }
 
-func (c *escrowServiceClient) GetEscrow(ctx context.Context, in *GetEscrowRequest, opts ...grpc.CallOption) (*EscrowContract, error) {
+func (c *escrowServiceClient) GetEscrow(ctx context.Context, in *GetEscrowRequest, opts ...grpc.CallOption) (*GetEscrowResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(EscrowContract)
+	out := new(GetEscrowResponse)
 	err := c.cc.Invoke(ctx, EscrowService_GetEscrow_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -49,9 +49,9 @@ func (c *escrowServiceClient) GetEscrow(ctx context.Context, in *GetEscrowReques
 	return out, nil
 }
 
-func (c *escrowServiceClient) ReleaseMilestoneFunds(ctx context.Context, in *ReleaseMilestoneFundsRequest, opts ...grpc.CallOption) (*EscrowContract, error) {
+func (c *escrowServiceClient) ReleaseMilestoneFunds(ctx context.Context, in *ReleaseMilestoneFundsRequest, opts ...grpc.CallOption) (*ReleaseMilestoneFundsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(EscrowContract)
+	out := new(ReleaseMilestoneFundsResponse)
 	err := c.cc.Invoke(ctx, EscrowService_ReleaseMilestoneFunds_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -63,8 +63,8 @@ func (c *escrowServiceClient) ReleaseMilestoneFunds(ctx context.Context, in *Rel
 // All implementations must embed UnimplementedEscrowServiceServer
 // for forward compatibility
 type EscrowServiceServer interface {
-	GetEscrow(context.Context, *GetEscrowRequest) (*EscrowContract, error)
-	ReleaseMilestoneFunds(context.Context, *ReleaseMilestoneFundsRequest) (*EscrowContract, error)
+	GetEscrow(context.Context, *GetEscrowRequest) (*GetEscrowResponse, error)
+	ReleaseMilestoneFunds(context.Context, *ReleaseMilestoneFundsRequest) (*ReleaseMilestoneFundsResponse, error)
 	mustEmbedUnimplementedEscrowServiceServer()
 }
 
@@ -72,10 +72,10 @@ type EscrowServiceServer interface {
 type UnimplementedEscrowServiceServer struct {
 }
 
-func (UnimplementedEscrowServiceServer) GetEscrow(context.Context, *GetEscrowRequest) (*EscrowContract, error) {
+func (UnimplementedEscrowServiceServer) GetEscrow(context.Context, *GetEscrowRequest) (*GetEscrowResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetEscrow not implemented")
 }
-func (UnimplementedEscrowServiceServer) ReleaseMilestoneFunds(context.Context, *ReleaseMilestoneFundsRequest) (*EscrowContract, error) {
+func (UnimplementedEscrowServiceServer) ReleaseMilestoneFunds(context.Context, *ReleaseMilestoneFundsRequest) (*ReleaseMilestoneFundsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReleaseMilestoneFunds not implemented")
 }
 func (UnimplementedEscrowServiceServer) mustEmbedUnimplementedEscrowServiceServer() {}

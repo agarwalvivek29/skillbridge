@@ -56,11 +56,23 @@ message AuthResponse {
   string user_id = 4;
 }
 
+message WalletLoginResponse {
+  AuthResponse auth = 1;
+}
+
+message EmailRegisterResponse {
+  AuthResponse auth = 1;
+}
+
+message EmailLoginResponse {
+  AuthResponse auth = 1;
+}
+
 // ─── Service ─────────────────────────────────────────────────────────────────
 
 service AuthService {
   rpc GetNonce(GetNonceRequest) returns (GetNonceResponse);
-  rpc WalletLogin(WalletLoginRequest) returns (AuthResponse);
-  rpc EmailRegister(EmailRegisterRequest) returns (AuthResponse);
-  rpc EmailLogin(EmailLoginRequest) returns (AuthResponse);
+  rpc WalletLogin(WalletLoginRequest) returns (WalletLoginResponse);
+  rpc EmailRegister(EmailRegisterRequest) returns (EmailRegisterResponse);
+  rpc EmailLogin(EmailLoginRequest) returns (EmailLoginResponse);
 }
