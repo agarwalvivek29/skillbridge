@@ -65,9 +65,9 @@ jobs:
           version: latest
       - run: uv python install 3.12
       - name: Run ruff linter
-        run: uvx ruff check services/ packages/
+        run: uvx ruff check services/ packages/ --exclude packages/schema/generated/
       - name: Run ruff formatter check
-        run: uvx ruff format --check services/ packages/
+        run: uvx ruff format --check services/ packages/ --exclude packages/schema/generated/
       - name: Run mypy type checker
         run: |
           for service_dir in services/*/; do
