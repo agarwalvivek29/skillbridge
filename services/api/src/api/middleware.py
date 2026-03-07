@@ -20,7 +20,7 @@ from src.domain.auth import decode_access_token
 
 logger = logging.getLogger(__name__)
 
-# Paths that bypass auth entirely
+# Paths that bypass auth entirely (all methods)
 _EXEMPT_PREFIXES = (
     "/health",
     "/metrics",
@@ -30,6 +30,10 @@ _EXEMPT_PREFIXES = (
     "/openapi.json",
 )
 
+# (method, path_prefix) pairs that bypass auth for specific HTTP methods only
+# Used for public read endpoints on otherwise protected resources
+_EXEMPT_METHOD_PREFIXES: tuple[tuple[str, str], ...] = (("GET", "/v1/gigs"),)
+
 
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(
@@ -37,9 +41,15 @@ class AuthMiddleware(BaseHTTPMiddleware):
     ) -> Response:
         path = request.url.path
 
-        # Exempt paths
+        # Exempt paths (all methods)
         for prefix in _EXEMPT_PREFIXES:
             if path.startswith(prefix):
+                return await call_next(request)
+
+        # Exempt method+path combinations (public read endpoints)
+        method = request.method.upper()
+        for exempt_method, exempt_prefix in _EXEMPT_METHOD_PREFIXES:
+            if method == exempt_method and path.startswith(exempt_prefix):
                 return await call_next(request)
 
         # --- API Key auth ---
