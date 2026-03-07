@@ -4,15 +4,34 @@ e2e tests for all four auth endpoints.
 Runs against in-memory SQLite via conftest.py fixture.
 """
 
+from datetime import datetime, timezone
+
 import pytest
 from eth_account import Account
 from eth_account.messages import encode_defunct
 from httpx import AsyncClient
+from siwe import SiweMessage
 
 
 # Deterministic test wallet (never use with real funds)
 _PRIVATE_KEY = "0x4c0883a69102937d6231471b5dbb6e538eba2ef5cf0e6e91a74b5e3e1e3a3c34"
 _WALLET = Account.from_key(_PRIVATE_KEY).address
+_DOMAIN = "skillbridge.xyz"
+
+
+def _build_siwe_message(nonce: str, wallet: str = _WALLET) -> str:
+    """Construct a fully-compliant EIP-4361 SIWE message string."""
+    msg = SiweMessage(
+        domain=_DOMAIN,
+        address=wallet,
+        statement="Sign in to SkillBridge",
+        uri=f"https://{_DOMAIN}",
+        version="1",
+        chain_id=1,
+        nonce=nonce,
+        issued_at=datetime.now(timezone.utc).isoformat(),
+    )
+    return msg.prepare_message()
 
 
 def _sign(private_key: str, message: str) -> str:
@@ -35,6 +54,16 @@ class TestInfraEndpoints:
     @pytest.mark.asyncio
     async def test_metrics_no_auth_required(self, client: AsyncClient):
         resp = await client.get("/metrics")
+        assert resp.status_code == 200
+
+    @pytest.mark.asyncio
+    async def test_docs_no_auth_required(self, client: AsyncClient):
+        resp = await client.get("/docs")
+        assert resp.status_code == 200
+
+    @pytest.mark.asyncio
+    async def test_redoc_no_auth_required(self, client: AsyncClient):
+        resp = await client.get("/redoc")
         assert resp.status_code == 200
 
 
@@ -77,8 +106,8 @@ class TestWalletLogin:
         r = await client.get(f"/v1/auth/nonce?wallet_address={_WALLET}")
         nonce = r.json()["nonce"]
 
-        # Step 2: sign and login
-        message = f"Sign in to SkillBridge\nNonce: {nonce}"
+        # Step 2: build a valid EIP-4361 SIWE message, sign and login
+        message = _build_siwe_message(nonce)
         sig = _sign(_PRIVATE_KEY, message)
         resp = await client.post(
             "/v1/auth/wallet",
@@ -93,7 +122,7 @@ class TestWalletLogin:
 
     @pytest.mark.asyncio
     async def test_rejects_expired_or_missing_nonce(self, client: AsyncClient):
-        message = "Sign in to SkillBridge\nNonce: fakeNonce"
+        message = _build_siwe_message("fakeNonce12345678901234567890123")
         sig = _sign(_PRIVATE_KEY, message)
         resp = await client.post(
             "/v1/auth/wallet",
@@ -105,7 +134,7 @@ class TestWalletLogin:
     async def test_nonce_deleted_after_use(self, client: AsyncClient):
         r = await client.get(f"/v1/auth/nonce?wallet_address={_WALLET}")
         nonce = r.json()["nonce"]
-        message = f"Sign in to SkillBridge\nNonce: {nonce}"
+        message = _build_siwe_message(nonce)
         sig = _sign(_PRIVATE_KEY, message)
 
         # First use succeeds
@@ -126,7 +155,7 @@ class TestWalletLogin:
     async def test_rejects_wrong_signature(self, client: AsyncClient):
         r = await client.get(f"/v1/auth/nonce?wallet_address={_WALLET}")
         nonce = r.json()["nonce"]
-        message = f"Sign in to SkillBridge\nNonce: {nonce}"
+        message = _build_siwe_message(nonce)
 
         # Sign with a different key
         other_key = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
@@ -262,9 +291,6 @@ class TestAuthMiddleware:
     @pytest.mark.asyncio
     async def test_protected_route_requires_token(self, client: AsyncClient):
         # Any non-exempt route should return 401 without a token.
-        # Using /docs as a canary — it's not in the exempt list.
-        # Actually /docs is a FastAPI built-in that may or may not be protected.
-        # Use a non-existent protected path instead.
         resp = await client.get("/v1/users")
         assert resp.status_code in (401, 404)  # 401 if middleware fires before routing
 
@@ -294,3 +320,47 @@ class TestAuthMiddleware:
             "/v1/users", headers={"X-API-Key": "test-api-key-minimum-16-chars"}
         )
         assert resp.status_code != 401
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Expired nonce e2e test
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+class TestExpiredNonce:
+    @pytest.mark.asyncio
+    async def test_expired_db_nonce_returns_401(
+        self, client: AsyncClient, db_session
+    ) -> None:
+        """
+        Creates a nonce via the API, then manually sets expires_at to the past
+        in the DB and verifies that wallet login returns 401.
+        """
+        from datetime import timedelta
+
+        from sqlalchemy import update
+
+        from src.infra.models import AuthNonceModel
+
+        # Step 1: request a nonce
+        r = await client.get(f"/v1/auth/nonce?wallet_address={_WALLET}")
+        assert r.status_code == 200
+        nonce = r.json()["nonce"]
+
+        # Step 2: backdate the nonce in the DB
+        await db_session.execute(
+            update(AuthNonceModel)
+            .where(AuthNonceModel.wallet_address == _WALLET.lower())
+            .values(expires_at=datetime.now(timezone.utc) - timedelta(minutes=5))
+        )
+        await db_session.commit()
+
+        # Step 3: attempt wallet login with the expired nonce
+        message = _build_siwe_message(nonce)
+        sig = _sign(_PRIVATE_KEY, message)
+        resp = await client.post(
+            "/v1/auth/wallet",
+            json={"wallet_address": _WALLET, "signature": sig, "message": message},
+        )
+        assert resp.status_code == 401
+        assert resp.json()["detail"]["code"] == "NONCE_INVALID_OR_EXPIRED"

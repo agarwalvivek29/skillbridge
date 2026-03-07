@@ -7,10 +7,13 @@ from datetime import timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel, EmailStr, field_validator
+from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.domain import auth as auth_domain
 from src.infra.database import get_db
+from src.infra.models import AuthNonceModel
 
 router = APIRouter(prefix="/v1/auth", tags=["auth"])
 
@@ -97,7 +100,13 @@ async def wallet_login(
     db: AsyncSession = Depends(get_db),
 ) -> AuthResponse:
     """Step 2 of SIWE: verify signature, delete nonce, upsert user, issue JWT."""
-    nonce_record = await auth_domain.consume_nonce(db, body.wallet_address)
+    # Fetch nonce record WITHOUT consuming it yet — consume only after sig is verified
+    result = await db.execute(
+        select(AuthNonceModel).where(
+            AuthNonceModel.wallet_address == body.wallet_address.lower()
+        )
+    )
+    nonce_record = result.scalar_one_or_none()
     if nonce_record is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -107,6 +116,7 @@ async def wallet_login(
             },
         )
 
+    # Verify signature BEFORE consuming the nonce (prevents DoS nonce-burning)
     valid = auth_domain.verify_siwe_signature(
         wallet_address=body.wallet_address,
         message=body.message,
@@ -119,6 +129,18 @@ async def wallet_login(
             detail={
                 "code": "INVALID_SIGNATURE",
                 "message": "Signature verification failed",
+            },
+        )
+
+    # Signature is valid — now consume (delete) the nonce
+    consumed = await auth_domain.consume_nonce(db, body.wallet_address)
+    if consumed is None:
+        # Expired between the fetch and now (edge case)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "code": "NONCE_INVALID_OR_EXPIRED",
+                "message": "Nonce expired. Request a new nonce.",
             },
         )
 
@@ -146,13 +168,23 @@ async def email_register(
         )
 
     password_hash = auth_domain.hash_password(body.password)
-    user = await auth_domain.create_user_email(
-        db=db,
-        email=body.email,
-        name=body.name,
-        password_hash=password_hash,
-        role=body.role,
-    )
+    try:
+        user = await auth_domain.create_user_email(
+            db=db,
+            email=body.email,
+            name=body.name,
+            password_hash=password_hash,
+            role=body.role,
+        )
+    except IntegrityError:
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "code": "EMAIL_TAKEN",
+                "message": "A user with this email already exists",
+            },
+        )
     token, expires_in = auth_domain.create_access_token(user.id, user.role)
     return AuthResponse(access_token=token, expires_in=expires_in, user_id=user.id)
 

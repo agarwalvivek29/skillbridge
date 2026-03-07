@@ -21,7 +21,14 @@ from src.domain.auth import decode_access_token
 logger = logging.getLogger(__name__)
 
 # Paths that bypass auth entirely
-_EXEMPT_PREFIXES = ("/health", "/metrics", "/v1/auth/")
+_EXEMPT_PREFIXES = (
+    "/health",
+    "/metrics",
+    "/v1/auth/",
+    "/docs",
+    "/redoc",
+    "/openapi.json",
+)
 
 
 class AuthMiddleware(BaseHTTPMiddleware):

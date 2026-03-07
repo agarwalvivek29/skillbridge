@@ -154,7 +154,7 @@ New Python packages required:
 - `asyncpg` — async PostgreSQL driver
 - `alembic` — DB migrations
 - `python-jose[cryptography]` — JWT encode/decode
-- `passlib[bcrypt]` — bcrypt password hashing
+- `bcrypt` — bcrypt password hashing (replaces passlib[bcrypt]; passlib incompatible with bcrypt>=4.0)
 - `eth-account` — SIWE / EIP-191 signature verification
 - `pydantic-settings` — config from env
 - `httpx` — async HTTP client (tests)
@@ -228,3 +228,15 @@ New Python packages required:
 - Related ADR: [ADR 0002](../adr/0002-tech-stack.md) — Tech stack (FastAPI, JWT, SIWE)
 - Proto: `packages/schema/proto/api/v1/auth.proto`, `packages/schema/proto/api/v1/user.proto`
 - Issue: #1
+
+---
+
+## Known V1 Limitations
+
+### Default role for wallet users
+
+Wallet login defaults all new users to `USER_ROLE_FREELANCER`. There is no role selection step in the wallet flow (unlike email registration, which accepts a `role` param). This is a known v1 limitation — a follow-up issue should add role selection at wallet onboarding or allow users to upgrade their role post-registration.
+
+### Password hashing library
+
+The implementation uses `bcrypt` directly (via the `bcrypt` PyPI package) rather than `passlib[bcrypt]` as originally noted in the dependencies list. The `bcrypt` package is the underlying C extension and is equivalent in security. The `passlib` wrapper was removed because its latest version is incompatible with `bcrypt >= 4.0`. The spec dependency list has been updated to reflect `bcrypt>=4.0.0`.

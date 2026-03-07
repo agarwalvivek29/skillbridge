@@ -8,9 +8,9 @@ import string
 from datetime import datetime, timedelta, timezone
 
 import bcrypt as _bcrypt
-from eth_account import Account
-from eth_account.messages import encode_defunct
 from jose import jwt
+from siwe import SiweMessage
+from siwe import DomainMismatch, ExpiredMessage, InvalidSignature, NonceMismatch
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -84,16 +84,18 @@ async def create_nonce(db: AsyncSession, wallet_address: str) -> AuthNonceModel:
     """
     Generate a fresh nonce for the given wallet address and upsert it.
     Any previous nonce for this wallet is overwritten.
+    Wallet address is normalised to lowercase before storage.
     """
+    normalised = wallet_address.lower()
     nonce = _generate_nonce()
     expires_at = datetime.now(timezone.utc) + timedelta(minutes=_NONCE_TTL_MINUTES)
 
     # Upsert: delete existing then insert fresh
     await db.execute(
-        delete(AuthNonceModel).where(AuthNonceModel.wallet_address == wallet_address)
+        delete(AuthNonceModel).where(AuthNonceModel.wallet_address == normalised)
     )
     record = AuthNonceModel(
-        wallet_address=wallet_address,
+        wallet_address=normalised,
         nonce=nonce,
         expires_at=expires_at,
     )
@@ -106,9 +108,11 @@ async def consume_nonce(db: AsyncSession, wallet_address: str) -> AuthNonceModel
     """
     Retrieve the nonce for wallet_address and delete it atomically.
     Returns None if no nonce exists or if it has expired.
+    Wallet address is normalised to lowercase before lookup.
     """
+    normalised = wallet_address.lower()
     result = await db.execute(
-        select(AuthNonceModel).where(AuthNonceModel.wallet_address == wallet_address)
+        select(AuthNonceModel).where(AuthNonceModel.wallet_address == normalised)
     )
     record = result.scalar_one_or_none()
     if record is None:
@@ -128,6 +132,8 @@ async def consume_nonce(db: AsyncSession, wallet_address: str) -> AuthNonceModel
 # SIWE verification
 # ---------------------------------------------------------------------------
 
+_SIWE_DOMAIN = "skillbridge.xyz"
+
 
 def verify_siwe_signature(
     wallet_address: str,
@@ -136,21 +142,34 @@ def verify_siwe_signature(
     expected_nonce: str,
 ) -> bool:
     """
-    Verify a SIWE (EIP-191) signature.
+    Verify a SIWE (EIP-4361) message and signature.
 
-    Returns True only if:
-    - The signature was produced by wallet_address
-    - The signed message contains expected_nonce
+    Uses the `siwe` package for full EIP-4361 compliance:
+    - Parses the structured SIWE message
+    - Verifies the cryptographic signature
+    - Checks domain matches _SIWE_DOMAIN
+    - Checks nonce matches expected_nonce
+
+    Returns True only if all checks pass; False on any failure.
     """
     try:
-        msg = encode_defunct(text=message)
-        recovered = Account.recover_message(msg, signature=signature)
-        if recovered.lower() != wallet_address.lower():
-            return False
-        if expected_nonce not in message:
+        siwe_msg = SiweMessage.from_message(message=message)
+        siwe_msg.verify(
+            signature=signature,
+            domain=_SIWE_DOMAIN,
+            nonce=expected_nonce,
+        )
+        # Extra check: recovered address must match the claimed wallet
+        if siwe_msg.address.lower() != wallet_address.lower():
             return False
         return True
-    except Exception:  # noqa: BLE001
+    except (
+        InvalidSignature,
+        DomainMismatch,
+        NonceMismatch,
+        ExpiredMessage,
+        Exception,  # noqa: BLE001 — catch all siwe parse errors
+    ):
         return False
 
 
@@ -190,6 +209,7 @@ async def upsert_wallet_user(db: AsyncSession, wallet_address: str) -> UserModel
     """
     Find or create a user for the given wallet address.
     On first login the display name defaults to the truncated wallet address.
+    New wallet users default to FREELANCER role (v1 limitation — see spec).
     """
     user = await get_user_by_wallet(db, wallet_address)
     if user is None:
