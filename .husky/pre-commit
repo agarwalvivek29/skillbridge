@@ -1,8 +1,4 @@
-#!/usr/bin/env sh
 # pre-commit hook — runs before each commit
 # Enforces: lint and format checks on staged files
 
-. "$(dirname "$0")/_/husky.sh"
-
-# Run lint-staged to check only staged files
 npx lint-staged
