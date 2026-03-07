@@ -14,6 +14,7 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
 from src.api.auth import router as auth_router
+from src.api.gig import router as gig_router
 from src.api.middleware import AuthMiddleware
 
 logging.basicConfig(level=logging.INFO)
@@ -31,6 +32,7 @@ app.add_middleware(AuthMiddleware)
 
 # ── Routers ──────────────────────────────────────────────────────────────────
 app.include_router(auth_router)
+app.include_router(gig_router)
 
 
 # ── Infrastructure routes (exempt from auth) ──────────────────────────────────
