@@ -119,6 +119,7 @@ When modifying a service:
 - [ ] E2E tests written for new API endpoints (`tests/e2e/`)
 - [ ] `.env.example` updated if new env vars added
 - [ ] `AGENTS.md` updated if service behavior or architecture changed
+- [ ] All scaffold/example/placeholder code removed from the diff (see Rule 14 in `docs/CORE_RULES.md`)
 - [ ] All commits follow `type(scope): description` format
 
 ---

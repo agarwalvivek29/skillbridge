@@ -213,6 +213,35 @@ CI runs tests and enforces that coverage does not decrease. PRs that add feature
 
 ---
 
+## 14. No Example or Placeholder Data in Production Code
+
+**Scaffolded example content must be removed before any code ships.**
+
+When a new service, module, route, or model is created (via `scripts/new-service.sh`, a framework generator, or manually), it often contains boilerplate: sample model instances, `hello world` endpoints, demo seed records, or TODO stubs left by the generator. All of this must be deleted before the first commit that contains real feature code.
+
+**Must be removed:**
+- Sample model instances left by generators (e.g. `user = User(id=1, name="Alice")`)
+- Demo or scaffold routes (e.g. `GET /example`, `GET /hello`, `POST /demo`)
+- Scaffold comments: `# TODO: replace with your logic`, `// Example usage:`, `/* Remove before shipping */`
+- Hardcoded test credentials or placeholder tokens in source files (outside `.env.example`)
+- Seed scripts that insert fake records into the DB — unless they live in `tests/fixtures/` and are explicitly test-only
+- Unused imports or variables introduced solely by the scaffold
+
+**Allowed to stay:**
+- `.env.example` placeholder values (required by Rule 9)
+- `tests/fixtures/` files used exclusively by automated tests
+- `docs/specs/TEMPLATE.md` and other template/doc files
+
+**When this applies:**
+- Creating a new service via `scripts/new-service.sh`
+- Adding a route/module via a framework generator
+- Copying an existing file as a starting point — strip all non-applicable example content first
+- Writing scaffold code before real logic — cleanup must be in the same PR, never deferred
+
+**Agents:** scan the full diff before pushing. If any file in the diff contains example, placeholder, or demo content not covered by real implementation, fix it in the same branch before opening the PR.
+
+---
+
 ## Checklist: Before Opening a PR
 
 - [ ] Spec file exists in `docs/specs/` and is linked in the issue
@@ -226,4 +255,5 @@ CI runs tests and enforces that coverage does not decrease. PRs that add feature
 - [ ] Coverage not reduced
 - [ ] `.env.example` updated if new env vars were added
 - [ ] No secrets committed
+- [ ] No scaffold/example/placeholder code remaining in the diff (Rule 14)
 - [ ] `docker compose up` still works
