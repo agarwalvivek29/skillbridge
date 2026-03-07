@@ -57,30 +57,31 @@ SkillBridge locks funds in smart contracts and uses AI to verify deliverable qua
   - Success state: Submission visible to client; milestone status = SUBMITTED
 
 - **Milestone Approval + Auto Fund Release** — client approves; smart contract releases funds: effort M
-  - Trigger: Client clicks "Approve" on a submission (or AI review passes — Phase 2)
+  - Trigger: Client clicks "Approve" on a submission, or AI review passes
   - User experience: Client reviews work, approves; funds arrive in freelancer wallet automatically
   - Background: API calls smart contract `completeMilestone()`; funds transfer on-chain; update DB records
   - Success state: Freelancer wallet balance increases; milestone marked PAID on both dashboards
 
-## v1 Complete (Should Have)
+## Also v1 (Must Have, builds on core flow)
 
 - **Gig Discovery Board** — searchable/filterable list of open funded gigs for freelancers to browse and apply
 - **Application Flow** — freelancer submits proposal with timeline; client accepts one applicant to begin work
-- **Notifications** — in-app + email: submission received, approval, fund release, new applicant
-
-## v2 and Beyond (Could Have)
-
-- **AI Code Review** — automated verification that submission meets acceptance criteria (OpenReview + Claude Sonnet 4.6); AI verdict as payment-release trigger
+- **AI Code Review** — automated verification that submission meets acceptance criteria (Claude Sonnet 4.6); AI verdict as payment-release trigger
 - **Dispute Resolution** — AI evidence summary → 3-day discussion → community arbitration → on-chain vote
 - **On-Chain Reputation Contract** — aggregated AI quality scores, completion history, earnings proof; portable across platforms
 - **Ratings & Reviews** — mutual rating after gig completion
+- **Notifications** — in-app + email: submission received, approval, fund release, new applicant
+
+## Later (post-launch)
+
+- Mobile-native app
+- DAO governance for platform parameters
 
 ## Non-Goals
 
 - This product will not be an employer of record (EOR) or handle payroll compliance (that's Deel's domain)
-- Out of scope for v1: native mobile app (mobile web is acceptable)
-- Out of scope for v1: AI-automated verification (manual client approval in v1; AI is v2)
-- Out of scope for v1: community governance / DAO mechanics
+- Out of scope: native mobile app at launch (mobile web is acceptable)
+- Out of scope: community governance / DAO mechanics at launch
 
 ## Competitive Landscape
 
@@ -106,22 +107,20 @@ SkillBridge locks funds in smart contracts and uses AI to verify deliverable qua
 
 ## Roadmap
 
-### Now (v1 — current focus)
+### v1 (current focus — full product)
 - [ ] User auth (wallet + email)
 - [ ] Freelancer portfolio with verified delivery badges
 - [ ] Gig creation with milestones + acceptance criteria
 - [ ] Smart contract escrow on Base L2
 - [ ] Work submission (repo URL + file upload)
-- [ ] Manual milestone approval + automatic fund release
-
-### Next (v2)
-- [ ] AI code review agent (OpenReview + Claude Sonnet 4.6)
-- [ ] AI-assisted approval flow (AI verdict triggers release)
+- [ ] Milestone approval + automatic fund release (manual OR AI verdict)
 - [ ] Gig discovery board + application flow
-- [ ] Dispute resolution with AI evidence generation
+- [ ] AI code review agent (Claude Sonnet 4.6) as payment-release trigger
+- [ ] Dispute resolution with AI evidence + community arbitration
+- [ ] On-chain reputation contract
+- [ ] Ratings & reviews
+- [ ] Notifications (in-app + email)
 
 ### Later
-- [ ] On-chain reputation contract
-- [ ] Community arbitration
-- [ ] Mobile-optimized experience
+- [ ] Mobile-native app
 - [ ] DAO governance for platform parameters
