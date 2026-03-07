@@ -352,7 +352,7 @@ async def update_gig_endpoint(
     db: AsyncSession = Depends(get_db),
 ) -> GigOut:
     """Update a gig. Auth required; must be gig owner; gig must be in DRAFT."""
-    client_id = _require_auth(request)
+    client_id = _require_client(request)
 
     update_input = UpdateGigInput(
         title=body.title,
@@ -395,7 +395,7 @@ async def delete_gig_endpoint(
     db: AsyncSession = Depends(get_db),
 ) -> None:
     """Delete a gig. Auth required; must be gig owner; gig must be in DRAFT."""
-    client_id = _require_auth(request)
+    client_id = _require_client(request)
 
     try:
         await delete_gig(db, gig_id, client_id)
