@@ -24,6 +24,7 @@ dependencies = [
     "pydantic[email]>=2.0.0",
     "betterproto>=0.3.0",
     "grpclib>=0.4.7",
+    "boto3>=1.34.0",
 ]
 
 [project.optional-dependencies]
