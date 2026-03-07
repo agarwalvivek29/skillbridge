@@ -1,0 +1,16 @@
+# pre-push hook — runs before each push
+# Blocks direct pushes to main or master
+
+BRANCH=$(git symbolic-ref HEAD 2>/dev/null | sed 's|refs/heads/||')
+REMOTE_REF=$(cat /dev/stdin | awk '{print $2}')
+
+if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ] || \
+   [ "$REMOTE_REF" = "refs/heads/main" ] || [ "$REMOTE_REF" = "refs/heads/master" ]; then
+  echo ""
+  echo "ERROR: Direct push to '$BRANCH' is not allowed."
+  echo "All changes must go through a pull request."
+  echo "  1. Create a feature branch: git checkout -b feat/your-feature"
+  echo "  2. Push the branch and open a PR"
+  echo ""
+  exit 1
+fi
