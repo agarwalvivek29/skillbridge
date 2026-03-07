@@ -8,6 +8,7 @@ S3 calls are patched to avoid real AWS interactions.
 from __future__ import annotations
 
 from unittest.mock import patch
+from botocore.exceptions import ClientError as BotocoreClientError
 
 import pytest
 from httpx import AsyncClient
@@ -364,9 +365,13 @@ class TestUploadUrl:
     @pytest.mark.asyncio
     async def test_s3_failure_returns_503(self, client: AsyncClient):
         token = await _register_and_get_token(client, _FREELANCER_PAYLOAD)
+        s3_error = BotocoreClientError(
+            {"Error": {"Code": "NoSuchBucket", "Message": "The bucket does not exist"}},
+            "PutObject",
+        )
         with patch(
             "src.api.portfolio.s3_infra.generate_portfolio_upload_url",
-            side_effect=RuntimeError("S3 unavailable"),
+            side_effect=s3_error,
         ):
             resp = await client.post(
                 "/v1/portfolio/upload-url",

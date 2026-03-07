@@ -3,10 +3,12 @@ api/portfolio.py — Portfolio item endpoints.
 
 Endpoints:
   GET    /v1/portfolio/{user_id}     list portfolio items for a user (public)
-  POST   /v1/portfolio               create portfolio item (auth required, FREELANCER role)
   POST   /v1/portfolio/upload-url    get S3 presigned PUT URL (auth required, FREELANCER role)
+  POST   /v1/portfolio               create portfolio item (auth required, FREELANCER role)
   PUT    /v1/portfolio/{item_id}     update portfolio item (auth required, owner only)
   DELETE /v1/portfolio/{item_id}     delete portfolio item (auth required, owner only)
+
+Note: /upload-url is registered before the generic POST "" to ensure correct routing.
 """
 
 from __future__ import annotations
@@ -15,10 +17,12 @@ import logging
 from datetime import datetime
 from typing import Optional
 
+from botocore.exceptions import ClientError as BotocoreClientError
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.api._roles import ROLE_FREELANCER
 from src.domain.portfolio import (
     CreatePortfolioItemInput,
     PortfolioValidationError,
@@ -35,8 +39,6 @@ from src.infra.models import PortfolioItemModel
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/v1/portfolio", tags=["portfolio"])
-
-_FREELANCER_ROLE = "USER_ROLE_FREELANCER"
 
 # ---------------------------------------------------------------------------
 # Pydantic request / response models
@@ -119,7 +121,7 @@ def _require_freelancer(request: Request) -> str:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={"code": "MISSING_TOKEN", "message": "Authentication required"},
         )
-    if role != _FREELANCER_ROLE:
+    if role != ROLE_FREELANCER:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail={
@@ -155,7 +157,7 @@ def _handle_validation_error(exc: PortfolioValidationError) -> HTTPException:
 
 
 # ---------------------------------------------------------------------------
-# Endpoints
+# Endpoints  (specific routes registered BEFORE parameterised routes)
 # ---------------------------------------------------------------------------
 
 
@@ -167,6 +169,46 @@ async def list_portfolio_items(
     """List portfolio items for a user. Public — no auth required."""
     pairs = await get_portfolio_items(db, user_id)
     return PortfolioListOut(items=[_item_to_out(item, iv) for item, iv in pairs])
+
+
+@router.post("/upload-url", response_model=UploadUrlResponse)
+async def get_upload_url(
+    body: UploadUrlRequest,
+    request: Request,
+) -> UploadUrlResponse:
+    """
+    Generate a presigned S3 PUT URL for direct browser-to-S3 upload.
+    Requires FREELANCER role.
+    """
+    _require_freelancer(request)
+    try:
+        url, key = s3_infra.generate_portfolio_upload_url(body.content_type)
+    except BotocoreClientError as exc:
+        logger.error(
+            "S3 ClientError generating presigned URL: %s %s",
+            exc.response["Error"]["Code"],
+            exc.response["Error"]["Message"],
+        )
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail={
+                "code": "S3_UNAVAILABLE",
+                "message": "File upload service is temporarily unavailable",
+                "field_errors": [],
+            },
+        )
+    except Exception:
+        logger.exception("Unexpected error generating presigned URL")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "code": "INTERNAL_ERROR",
+                "message": "An unexpected error occurred",
+                "field_errors": [],
+            },
+        )
+    logger.info("presigned upload URL generated key=%s", key)
+    return UploadUrlResponse(url=url, key=key)
 
 
 @router.post("", response_model=PortfolioItemOut, status_code=status.HTTP_201_CREATED)
@@ -192,32 +234,6 @@ async def create_portfolio_item_endpoint(
         raise _handle_validation_error(exc)
 
     return _item_to_out(item, is_verified)
-
-
-@router.post("/upload-url", response_model=UploadUrlResponse)
-async def get_upload_url(
-    body: UploadUrlRequest,
-    request: Request,
-) -> UploadUrlResponse:
-    """
-    Generate a presigned S3 PUT URL for direct browser-to-S3 upload.
-    Requires FREELANCER role.
-    """
-    _require_freelancer(request)
-    try:
-        url, key = s3_infra.generate_portfolio_upload_url(body.content_type)
-    except Exception as exc:
-        logger.error("S3 presigned URL generation failed: %s", exc)
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail={
-                "code": "S3_UNAVAILABLE",
-                "message": "File upload service is temporarily unavailable",
-                "field_errors": [],
-            },
-        )
-    logger.info("presigned upload URL generated key=%s", key)
-    return UploadUrlResponse(url=url, key=key)
 
 
 @router.put("/{item_id}", response_model=PortfolioItemOut)

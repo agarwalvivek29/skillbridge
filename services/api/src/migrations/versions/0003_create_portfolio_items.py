@@ -32,16 +32,16 @@ def upgrade() -> None:
         sa.Column("description", sa.Text, nullable=False),
         sa.Column(
             "file_keys",
-            postgresql.ARRAY(sa.Text),
+            postgresql.JSONB,
             nullable=False,
-            server_default="{}",
+            server_default="[]",
         ),
         sa.Column("external_url", sa.Text, nullable=True),
         sa.Column(
             "tags",
-            postgresql.ARRAY(sa.Text),
+            postgresql.JSONB,
             nullable=False,
-            server_default="{}",
+            server_default="[]",
         ),
         sa.Column(
             "verified_gig_id",

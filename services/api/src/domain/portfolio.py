@@ -20,6 +20,8 @@ from src.infra.models import GigModel, PortfolioItemModel
 
 logger = logging.getLogger(__name__)
 
+_GIG_COMPLETED_STATUS = "COMPLETED"
+
 # ---------------------------------------------------------------------------
 # Input DTOs
 # ---------------------------------------------------------------------------
@@ -59,6 +61,27 @@ class PortfolioValidationError(ValueError):
 
 
 # ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+
+async def _compute_is_verified(
+    db: AsyncSession, verified_gig_id: Optional[str]
+) -> bool:
+    """
+    Return True iff verified_gig_id is set and the linked gig's status is COMPLETED.
+    Returns False for None or missing gig IDs without raising.
+    """
+    if not verified_gig_id:
+        return False
+    result = await db.execute(
+        select(GigModel.status).where(GigModel.id == verified_gig_id)
+    )
+    status = result.scalar_one_or_none()
+    return status == _GIG_COMPLETED_STATUS
+
+
+# ---------------------------------------------------------------------------
 # Domain functions
 # ---------------------------------------------------------------------------
 
@@ -74,13 +97,11 @@ async def create_portfolio_item(
     If verified_gig_id is provided, it must reference an existing gig.
     Returns (item, is_verified) where is_verified reflects the gig's current status.
     """
-    gig_status: Optional[str] = None
     if data.verified_gig_id:
-        result = await db.execute(
-            select(GigModel.status).where(GigModel.id == data.verified_gig_id)
+        exists = await db.execute(
+            select(GigModel.id).where(GigModel.id == data.verified_gig_id)
         )
-        gig_status = result.scalar_one_or_none()
-        if gig_status is None:
+        if exists.scalar_one_or_none() is None:
             raise PortfolioValidationError(
                 "GIG_NOT_FOUND",
                 f"Gig {data.verified_gig_id} not found",
@@ -99,7 +120,7 @@ async def create_portfolio_item(
     await db.flush()
     await db.refresh(item)
 
-    is_verified = bool(data.verified_gig_id and gig_status == "COMPLETED")
+    is_verified = await _compute_is_verified(db, item.verified_gig_id)
     logger.info("portfolio item created item_id=%s user_id=%s", item.id, user_id)
     return item, is_verified
 
@@ -113,8 +134,9 @@ async def get_portfolio_items(
 
     Each tuple is (item, is_verified) where is_verified is True iff
     verified_gig_id is set and the linked gig.status == 'COMPLETED'.
+
+    Uses a single bulk query for the badge check to avoid N+1 queries.
     """
-    # Fetch items first
     items_result = await db.execute(
         select(PortfolioItemModel)
         .where(PortfolioItemModel.user_id == user_id)
@@ -125,14 +147,14 @@ async def get_portfolio_items(
     if not items:
         return []
 
-    # Collect gig IDs we need to check
+    # Bulk-fetch completed gig IDs in one query (avoids N+1)
     gig_ids = [i.verified_gig_id for i in items if i.verified_gig_id]
     completed_gig_ids: set[str] = set()
     if gig_ids:
         gigs_result = await db.execute(
             select(GigModel.id)
             .where(GigModel.id.in_(gig_ids))
-            .where(GigModel.status == "COMPLETED")
+            .where(GigModel.status == _GIG_COMPLETED_STATUS)
         )
         completed_gig_ids = {row for row in gigs_result.scalars().all()}
 
@@ -188,15 +210,7 @@ async def update_portfolio_item(
     await db.flush()
     await db.refresh(item)
 
-    # Compute badge status
-    is_verified = False
-    if item.verified_gig_id:
-        gig_result = await db.execute(
-            select(GigModel.status).where(GigModel.id == item.verified_gig_id)
-        )
-        gig_status = gig_result.scalar_one_or_none()
-        is_verified = gig_status == "COMPLETED"
-
+    is_verified = await _compute_is_verified(db, item.verified_gig_id)
     logger.info("portfolio item updated item_id=%s user_id=%s", item.id, user_id)
     return item, is_verified
 

@@ -43,6 +43,6 @@ def generate_portfolio_upload_url(
             "Key": key,
             "ContentType": content_type,
         },
-        ExpiresIn=300,
+        ExpiresIn=settings.s3_presigned_url_expiry_seconds,
     )
     return url, key
