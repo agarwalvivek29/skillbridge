@@ -38,21 +38,12 @@ class Settings(BaseSettings):
     base_rpc_url: str = "https://sepolia.base.org"
     escrow_factory_address: str = ""
 
-    # AWS / S3
-    aws_access_key_id: str = ""
-    aws_secret_access_key: str = ""
+    # AWS / S3 — REQUIRED for file upload functionality
+    aws_access_key_id: str
+    aws_secret_access_key: str
     aws_region: str = "us-east-1"
-    s3_bucket: str = "skillbridge-dev"
+    s3_bucket: str
     s3_presigned_url_expiry_seconds: int = 300
-
-    @field_validator("s3_bucket")
-    @classmethod
-    def s3_bucket_required_in_production(cls, v: str) -> str:
-        import os
-
-        if os.getenv("APP_ENV", "development") == "production" and not v:
-            raise ValueError("s3_bucket must be set in production")
-        return v
 
     @field_validator("jwt_secret")
     @classmethod
@@ -66,6 +57,27 @@ class Settings(BaseSettings):
     def api_key_min_length(cls, v: str) -> str:
         if len(v) < 16:
             raise ValueError("api_key must be at least 16 characters")
+        return v
+
+    @field_validator("aws_access_key_id")
+    @classmethod
+    def aws_access_key_id_required(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("aws_access_key_id must not be empty")
+        return v
+
+    @field_validator("aws_secret_access_key")
+    @classmethod
+    def aws_secret_access_key_required(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("aws_secret_access_key must not be empty")
+        return v
+
+    @field_validator("s3_bucket")
+    @classmethod
+    def s3_bucket_required(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("s3_bucket must not be empty")
         return v
 
 

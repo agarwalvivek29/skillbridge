@@ -6,13 +6,14 @@ Notes:
 - `id` uses plain String (not postgresql.UUID) so the model works with both
   PostgreSQL (production) and SQLite (tests). The Alembic migration creates the
   column as UUID in PostgreSQL.
-- `skills`, `tags`, `required_skills` use JSON (not postgresql.ARRAY) for the same
-  cross-dialect reason. In PostgreSQL JSON maps to JSONB; in SQLite it's stored as text.
-  The Alembic migration uses TEXT[] for the real PostgreSQL columns.
+- `skills`, `tags`, `required_skills`, `file_keys` use JSON (not postgresql.ARRAY) for
+  the same cross-dialect reason. In PostgreSQL JSON maps to JSONB; in SQLite it's stored
+  as text. The Alembic migration uses TEXT[] for the real PostgreSQL columns.
 """
 
 import uuid
 from datetime import datetime
+from typing import Optional
 
 from sqlalchemy import (
     DateTime,
@@ -183,6 +184,41 @@ class PortfolioItemModel(Base):
     )
 
 
+class SubmissionModel(Base):
+    __tablename__ = "submissions"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    milestone_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("milestones.id", ondelete="CASCADE"), nullable=False
+    )
+    freelancer_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id"), nullable=False
+    )
+    repo_url: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    # JSON works in both PostgreSQL and SQLite (test env); migration uses TEXT[]
+    file_keys: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    notes: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    # "PENDING", "UNDER_REVIEW", "APPROVED", "REJECTED"
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="PENDING")
+    # 1-indexed; increments with each resubmission
+    revision_number: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    # Points to the prior submission for resubmissions; null for first submission
+    previous_submission_id: Mapped[Optional[str]] = mapped_column(
+        String(36), ForeignKey("submissions.id"), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+
+
 class ProposalModel(Base):
     __tablename__ = "proposals"
     __table_args__ = (
@@ -227,7 +263,7 @@ class NotificationModel(Base):
     # Context-specific JSON payload for rendering notification message
     payload_json: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
     # null = unread
-    read_at: Mapped[datetime | None] = mapped_column(
+    read_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
     created_at: Mapped[datetime] = mapped_column(

@@ -18,6 +18,8 @@ from src.api.gig import router as gig_router
 from src.api.middleware import AuthMiddleware
 from src.api.portfolio import router as portfolio_router
 from src.api.proposal import router as proposal_router
+from src.api.submission import milestone_router as submission_milestone_router
+from src.api.submission import submission_router
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -37,6 +39,8 @@ app.include_router(auth_router)
 app.include_router(gig_router)
 app.include_router(portfolio_router)
 app.include_router(proposal_router)
+app.include_router(submission_milestone_router)
+app.include_router(submission_router)
 
 
 # ── Infrastructure routes (exempt from auth) ──────────────────────────────────
