@@ -14,7 +14,7 @@ Notes:
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, JSON, String, Text, func
+from sqlalchemy import DateTime, ForeignKey, Integer, JSON, String, Text, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.infra.database import Base
@@ -171,4 +171,56 @@ class PortfolioItemModel(Base):
         nullable=False,
         server_default=func.now(),
         onupdate=func.now(),
+    )
+
+
+class ProposalModel(Base):
+    __tablename__ = "proposals"
+    __table_args__ = (
+        UniqueConstraint("gig_id", "freelancer_id", name="uq_proposal_gig_freelancer"),
+    )
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    gig_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("gigs.id", ondelete="CASCADE"), nullable=False
+    )
+    freelancer_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id"), nullable=False
+    )
+    cover_letter: Mapped[str] = mapped_column(Text, nullable=False)
+    estimated_days: Mapped[int] = mapped_column(Integer, nullable=False)
+    # "PENDING", "ACCEPTED", "REJECTED", "WITHDRAWN"
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="PENDING")
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+
+
+class NotificationModel(Base):
+    __tablename__ = "notifications"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id"), nullable=False
+    )
+    # NotificationType enum name, e.g. "NOTIFICATION_TYPE_PROPOSAL_RECEIVED"
+    type: Mapped[str] = mapped_column(String(64), nullable=False)
+    # Context-specific JSON payload for rendering notification message
+    payload_json: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
+    # null = unread
+    read_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
     )
