@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package contracts.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/contracts/v1;contractsv1";
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum EscrowStatus {
+  ESCROW_STATUS_UNSPECIFIED = 0;
+  ESCROW_STATUS_DEPLOYING = 1;
+  ESCROW_STATUS_FUNDED = 2;
+  ESCROW_STATUS_PARTIALLY_RELEASED = 3;
+  ESCROW_STATUS_SETTLED = 4;
+  ESCROW_STATUS_DISPUTED = 5;
+  ESCROW_STATUS_REFUNDED = 6;
+}
+
+// ─── Domain Entity ────────────────────────────────────────────────────────────
+
+message EscrowContract {
+  string id = 1;
+  string gig_id = 2;
+  // Contract address on Base L2
+  string chain_address = 3;
+  // Network identifier ("base-mainnet" or "base-sepolia")
+  string network = 4;
+  // Total amount locked in wei
+  string total_amount_wei = 5;
+  // Amount released so far in wei
+  string released_amount_wei = 6;
+  EscrowStatus status = 7;
+  // Transaction hash of the funding tx
+  string funding_tx_hash = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp funded_at = 10;
+  google.protobuf.Timestamp settled_at = 11;
+}
+
+// ─── Events ──────────────────────────────────────────────────────────────────
+
+message EscrowFundedEvent {
+  string escrow_id = 1;
+  string gig_id = 2;
+  string chain_address = 3;
+  string total_amount_wei = 4;
+  string funding_tx_hash = 5;
+  google.protobuf.Timestamp occurred_at = 6;
+}
+
+message FundsReleasedEvent {
+  string escrow_id = 1;
+  string gig_id = 2;
+  string milestone_id = 3;
+  string freelancer_address = 4;
+  string amount_wei = 5;
+  string tx_hash = 6;
+  google.protobuf.Timestamp occurred_at = 7;
+}
+
+// ─── API Shapes ───────────────────────────────────────────────────────────────
+
+message GetEscrowRequest {
+  string gig_id = 1;
+}
+
+message ReleaseMilestoneFundsRequest {
+  string gig_id = 1;
+  string milestone_id = 2;
+  int32 contract_milestone_index = 3;
+}
+
+// ─── Service ─────────────────────────────────────────────────────────────────
+
+service EscrowService {
+  rpc GetEscrow(GetEscrowRequest) returns (EscrowContract);
+  rpc ReleaseMilestoneFunds(ReleaseMilestoneFundsRequest) returns (EscrowContract);
+}

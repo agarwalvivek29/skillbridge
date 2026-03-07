@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/api/v1;apiv1";
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum SubmissionStatus {
+  SUBMISSION_STATUS_UNSPECIFIED = 0;
+  SUBMISSION_STATUS_PENDING = 1;
+  SUBMISSION_STATUS_UNDER_REVIEW = 2;
+  SUBMISSION_STATUS_APPROVED = 3;
+  SUBMISSION_STATUS_REJECTED = 4;
+}
+
+// ─── Domain Entity ────────────────────────────────────────────────────────────
+
+message Submission {
+  string id = 1;
+  string milestone_id = 2;
+  string freelancer_id = 3;
+  // Repository URL (GitHub, GitLab, etc.)
+  string repo_url = 4;
+  // S3 keys for uploaded files
+  repeated string file_keys = 5;
+  string notes = 6;
+  SubmissionStatus status = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+// ─── Events ──────────────────────────────────────────────────────────────────
+
+message SubmissionCreatedEvent {
+  string submission_id = 1;
+  string milestone_id = 2;
+  string freelancer_id = 3;
+  string repo_url = 4;
+  google.protobuf.Timestamp occurred_at = 5;
+}
+
+message SubmissionReviewedEvent {
+  string submission_id = 1;
+  string milestone_id = 2;
+  SubmissionStatus verdict = 3;
+  google.protobuf.Timestamp occurred_at = 4;
+}
+
+// ─── API Shapes ───────────────────────────────────────────────────────────────
+
+message CreateSubmissionRequest {
+  string milestone_id = 1;
+  string repo_url = 2;
+  repeated string file_keys = 3;
+  string notes = 4;
+}
+
+message GetSubmissionRequest {
+  string id = 1;
+}
+
+message GetSubmissionsRequest {
+  string milestone_id = 1;
+}
+
+message GetSubmissionsResponse {
+  repeated Submission submissions = 1;
+}
+
+// ─── Service ─────────────────────────────────────────────────────────────────
+
+service SubmissionService {
+  rpc CreateSubmission(CreateSubmissionRequest) returns (Submission);
+  rpc GetSubmission(GetSubmissionRequest) returns (Submission);
+  rpc GetSubmissions(GetSubmissionsRequest) returns (GetSubmissionsResponse);
+}

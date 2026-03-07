@@ -1,21 +1,33 @@
-# [Project Name]
+# SkillBridge
 
-> Replace this with a one-paragraph description of your project.
+> AI-Powered Freelance Platform with Smart Contract Escrow.
+> Freelancers and clients transact with confidence — payment guaranteed by smart contracts on Base L2, quality verified by AI — without platform lock-in or 20% fees.
 
 ---
 
 ## What's in This Repository
 
-This is a full-stack monorepo template with built-in guardrails for controlled, spec-driven, agentic development.
+Full-stack monorepo with spec-driven, agentic development guardrails.
 
 ```
 apps/          Frontend applications (TypeScript)
-services/      Backend microservices (TypeScript, Python, Go, Rust)
-packages/      Shared libraries and utilities
-infra/         Local dev infrastructure (docker-compose) and AWS guidance
+services/      Backend microservices (Python, TypeScript)
+packages/      Shared libraries (schema/proto)
+infra/         Local dev infrastructure (docker-compose)
 docs/          Specs, ADRs, and conventions
 scripts/       Scaffold and utility scripts
 ```
+
+---
+
+## Services
+
+| Service | Language | Responsibility |
+|---|---|---|
+| `web` | TypeScript / Next.js 14 | All UI — gig board, profiles, workspace, wallet |
+| `api` | Python / FastAPI | Users, Gigs, Milestones, Submissions, Portfolio, Disputes |
+| `ai-reviewer` | Python / Celery | Code analysis, requirement parsing, verification reports (Claude Sonnet 4.6) |
+| `contracts` | Solidity | EscrowFactory, GigEscrow on Base L2 |
 
 ---
 
@@ -32,28 +44,39 @@ chmod +x scripts/*.sh
 # 2. Install git hooks
 npm install
 
-# 3. Create your first service
-./scripts/new-service.sh
-
-# 4. Start local infrastructure
+# 3. Start local infrastructure
 docker compose -f infra/docker-compose.yml up -d
+
+# 4. Create a new service
+./scripts/new-service.sh
 ```
 
 **Using agent orchestrator (ao):**
 
 ```bash
-# Configure ao for this project
 cp agent-orchestrator.yaml.example agent-orchestrator.yaml
 # Fill in repo and path, then:
 
-ao init                              # install workspace hooks
-ao start                             # launch dashboard + lifecycle manager
-ao spawn my-project #42              # spawn an agent on a GitHub Issue
-ao batch-spawn my-project #42 #43    # spawn agents in parallel
-ao status                            # watch all sessions
+ao init
+ao start
+ao spawn skillbridge #42
+ao status
 ```
 
-See [docs/ONBOARDING.md](docs/ONBOARDING.md#step-8-set-up-agent-orchestrator-ao--recommended) for full ao setup.
+---
+
+## Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | TypeScript + Next.js 14 + wagmi/viem |
+| Backend | Python + FastAPI |
+| AI Worker | Python + Celery + Claude Sonnet 4.6 |
+| Blockchain | Solidity on Base L2 (Foundry) |
+| Database | PostgreSQL |
+| Queue | Redis + Celery |
+| Storage | AWS S3 |
+| Infra | Docker Compose (local) |
 
 ---
 
@@ -85,23 +108,14 @@ All contributors (human and AI) follow the same rules:
 
 ## Architecture
 
-Key architectural decisions are recorded in [docs/adr/](docs/adr/).
+See [ARCHITECTURE.md](ARCHITECTURE.md) for full system design, data flow, and domain model.
+
+Key architectural decisions in [docs/adr/](docs/adr/):
 
 | ADR | Decision | Status |
 |---|---|---|
 | [0001](docs/adr/0001-monorepo-structure.md) | Monorepo with per-service isolation | Accepted |
-
----
-
-## Stack
-
-| Layer | Technology |
-|---|---|
-| Frontend | TypeScript, [framework] |
-| Backend | TypeScript / Python / Go / Rust |
-| Database | PostgreSQL, MongoDB, Redis |
-| Queues | Kafka, RabbitMQ, Redis |
-| Infra | AWS, Docker Compose |
+| [0002](docs/adr/0002-tech-stack.md) | Core tech stack: FastAPI, Base L2, PostgreSQL, Redis+Celery | Accepted |
 
 ---
 

@@ -64,6 +64,7 @@ ADRs are **never deleted**. They are a historical record.
 | # | Title | Status | Date |
 |---|---|---|---|
 | [0001](./0001-monorepo-structure.md) | Monorepo with per-service isolation | Accepted | 2026-03-06 |
+| [0002](./0002-tech-stack.md) | Core tech stack: FastAPI, Base L2, PostgreSQL, Redis+Celery | Accepted | 2026-03-07 |
 
 ---
 

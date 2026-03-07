@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package ai_reviewer.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/ai_reviewer/v1;aireviewerv1";
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum ReviewVerdict {
+  REVIEW_VERDICT_UNSPECIFIED = 0;
+  REVIEW_VERDICT_PASS = 1;
+  REVIEW_VERDICT_FAIL = 2;
+  REVIEW_VERDICT_NEEDS_REVISION = 3;
+}
+
+enum ReviewStatus {
+  REVIEW_STATUS_UNSPECIFIED = 0;
+  REVIEW_STATUS_PENDING = 1;
+  REVIEW_STATUS_IN_PROGRESS = 2;
+  REVIEW_STATUS_COMPLETE = 3;
+  REVIEW_STATUS_ERROR = 4;
+}
+
+enum FindingSeverity {
+  FINDING_SEVERITY_UNSPECIFIED = 0;
+  FINDING_SEVERITY_INFO = 1;
+  FINDING_SEVERITY_WARNING = 2;
+  FINDING_SEVERITY_ERROR = 3;
+  FINDING_SEVERITY_CRITICAL = 4;
+}
+
+// ─── Domain Entity ────────────────────────────────────────────────────────────
+
+message ReviewFinding {
+  string id = 1;
+  FindingSeverity severity = 2;
+  string category = 3;  // e.g. "missing-feature", "security", "quality", "spec-mismatch"
+  string description = 4;
+  // Optional file reference (path:line)
+  string file_ref = 5;
+  // Suggested fix
+  string suggestion = 6;
+}
+
+message ReviewReport {
+  string id = 1;
+  string submission_id = 2;
+  ReviewStatus status = 3;
+  ReviewVerdict verdict = 4;
+  // Overall quality score 0–100
+  int32 score = 5;
+  // Summary paragraph from the AI
+  string summary = 6;
+  repeated ReviewFinding findings = 7;
+  // Model used for this review
+  string model_version = 8;
+  // Error message if status = ERROR
+  string error_message = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp completed_at = 11;
+}
+
+// ─── Events ──────────────────────────────────────────────────────────────────
+
+message ReviewJobEnqueuedEvent {
+  string submission_id = 1;
+  string milestone_id = 2;
+  google.protobuf.Timestamp occurred_at = 3;
+}
+
+message ReviewCompletedEvent {
+  string report_id = 1;
+  string submission_id = 2;
+  ReviewVerdict verdict = 3;
+  int32 score = 4;
+  google.protobuf.Timestamp occurred_at = 5;
+}
+
+// ─── API Shapes ───────────────────────────────────────────────────────────────
+
+message GetReviewReportRequest {
+  string submission_id = 1;
+}
+
+// ─── Service ─────────────────────────────────────────────────────────────────
+
+service ReviewService {
+  rpc GetReviewReport(GetReviewReportRequest) returns (ReviewReport);
+}

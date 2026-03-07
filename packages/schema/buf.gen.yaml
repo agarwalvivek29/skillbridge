@@ -17,7 +17,7 @@ managed:
   override:
     # Update this to match your actual Go module path
     - file_option: go_package_prefix
-      value: github.com/your-org/your-project/packages/schema/generated/go
+      value: github.com/agarwalvivek29/skillbridge/packages/schema/generated/go
 
 plugins:
   # ─── TypeScript ─────────────────────────────────────────────────────────────
@@ -33,7 +33,7 @@ plugins:
   # ─── Go ─────────────────────────────────────────────────────────────────────
   # protoc-gen-go — message types
   # Output: generated/go/
-  # Usage: import userv1 "github.com/your-org/your-project/packages/schema/generated/go/example/v1"
+  # Usage: import userv1 "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/example/v1"
   - remote: buf.build/protocolbuffers/go:v1.34.2
     out: generated/go
     opt:

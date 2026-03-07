@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/api/v1;apiv1";
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum UserStatus {
+  USER_STATUS_UNSPECIFIED = 0;
+  USER_STATUS_ACTIVE = 1;
+  USER_STATUS_SUSPENDED = 2;
+}
+
+enum UserRole {
+  USER_ROLE_UNSPECIFIED = 0;
+  USER_ROLE_FREELANCER = 1;
+  USER_ROLE_CLIENT = 2;
+  USER_ROLE_ADMIN = 3;
+}
+
+// ─── Domain Entity ────────────────────────────────────────────────────────────
+
+message User {
+  string id = 1;
+  string email = 2;
+  string name = 3;
+  string wallet_address = 4;
+  UserStatus status = 5;
+  UserRole role = 6;
+  string avatar_url = 7;
+  string bio = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+message UserPublic {
+  string id = 1;
+  string name = 2;
+  string wallet_address = 3;
+  UserRole role = 4;
+  string avatar_url = 5;
+  string bio = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+// ─── Events ──────────────────────────────────────────────────────────────────
+
+message UserCreatedEvent {
+  string user_id = 1;
+  string email = 2;
+  UserRole role = 3;
+  google.protobuf.Timestamp occurred_at = 4;
+}
+
+// ─── API Shapes ───────────────────────────────────────────────────────────────
+
+message CreateUserRequest {
+  string email = 1;
+  string name = 2;
+  string wallet_address = 3;
+  UserRole role = 4;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message GetUsersRequest {
+  common.v1.PaginationRequest pagination = 1;
+  UserRole role_filter = 2;
+}
+
+message GetUsersResponse {
+  repeated UserPublic users = 1;
+  common.v1.PaginationMeta pagination = 2;
+}
+
+// ─── Service ─────────────────────────────────────────────────────────────────
+
+service UserService {
+  rpc CreateUser(CreateUserRequest) returns (UserPublic);
+  rpc GetUser(GetUserRequest) returns (UserPublic);
+  rpc GetUsers(GetUsersRequest) returns (GetUsersResponse);
+}

@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/api/v1;apiv1";
+
+// ─── Domain Entity ────────────────────────────────────────────────────────────
+
+message PortfolioItem {
+  string id = 1;
+  string user_id = 2;
+  string title = 3;
+  string description = 4;
+  // S3 keys for uploaded showcase files (screenshots, PDFs, etc.)
+  repeated string file_keys = 5;
+  // External URL (deployed project, GitHub repo, etc.)
+  string external_url = 6;
+  repeated string tags = 7;
+  // If linked to a completed gig, this is set and a "Verified Delivery" badge is shown
+  string verified_gig_id = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+// ─── API Shapes ───────────────────────────────────────────────────────────────
+
+message CreatePortfolioItemRequest {
+  string title = 1;
+  string description = 2;
+  repeated string file_keys = 3;
+  string external_url = 4;
+  repeated string tags = 5;
+  // Optionally link to a completed gig for verification badge
+  string verified_gig_id = 6;
+}
+
+message UpdatePortfolioItemRequest {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  repeated string file_keys = 4;
+  string external_url = 5;
+  repeated string tags = 6;
+}
+
+message GetPortfolioItemsRequest {
+  string user_id = 1;
+}
+
+message GetPortfolioItemsResponse {
+  repeated PortfolioItem items = 1;
+}
+
+message DeletePortfolioItemRequest {
+  string id = 1;
+}
+
+// ─── Service ─────────────────────────────────────────────────────────────────
+
+service PortfolioService {
+  rpc CreatePortfolioItem(CreatePortfolioItemRequest) returns (PortfolioItem);
+  rpc UpdatePortfolioItem(UpdatePortfolioItemRequest) returns (PortfolioItem);
+  rpc GetPortfolioItems(GetPortfolioItemsRequest) returns (GetPortfolioItemsResponse);
+  rpc DeletePortfolioItem(DeletePortfolioItemRequest) returns (PortfolioItem);
+}

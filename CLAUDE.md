@@ -5,24 +5,6 @@
 
 ---
 
-## ⚠️ Bootstrap Check — Read This First
-
-**Before anything else: does `BOOTSTRAP.md` exist in this repository?**
-
-```bash
-ls BOOTSTRAP.md 2>/dev/null && echo "EXISTS" || echo "NOT FOUND"
-```
-
-| Result | What to do |
-|---|---|
-| `EXISTS` | **Stop.** Read `BOOTSTRAP.md` and complete onboarding before any other work. The project is not initialized. |
-| `NOT FOUND` | Continue reading this file. The project is live. |
-
----
-
-<!-- POST-BOOTSTRAP: After completing BOOTSTRAP.md and deleting it, uncomment the block below
-     and delete the ⚠️ Bootstrap Check section above.
-
 ## Project Context
 
 Read these before every session:
@@ -33,8 +15,6 @@ Read these before every session:
 > Tell the human: "Bootstrap was not completed — `ARCHITECTURE.md` and/or `PRODUCT.md` are missing.
 > Please re-run the bootstrap process (restore `BOOTSTRAP.md` from git and follow it) before starting any work."
 > Do not proceed with any task until both files exist.
-
--->
 
 ---
 

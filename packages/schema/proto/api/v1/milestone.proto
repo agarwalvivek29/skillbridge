@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/api/v1;apiv1";
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum MilestoneStatus {
+  MILESTONE_STATUS_UNSPECIFIED = 0;
+  MILESTONE_STATUS_PENDING = 1;
+  MILESTONE_STATUS_SUBMITTED = 2;
+  MILESTONE_STATUS_UNDER_REVIEW = 3;
+  MILESTONE_STATUS_APPROVED = 4;
+  MILESTONE_STATUS_REVISION_REQUESTED = 5;
+  MILESTONE_STATUS_PAID = 6;
+}
+
+// ─── Domain Entity ────────────────────────────────────────────────────────────
+
+message Milestone {
+  string id = 1;
+  string gig_id = 2;
+  string title = 3;
+  string description = 4;
+  // Acceptance criteria (markdown or plain text)
+  string acceptance_criteria = 5;
+  // Amount in wei allocated to this milestone
+  string amount_wei = 6;
+  // Order within the gig (1-indexed)
+  int32 order = 7;
+  MilestoneStatus status = 8;
+  // Index in the on-chain contract milestones array
+  int32 contract_index = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
+
+// ─── Events ──────────────────────────────────────────────────────────────────
+
+message MilestoneSubmittedEvent {
+  string milestone_id = 1;
+  string gig_id = 2;
+  string freelancer_id = 3;
+  google.protobuf.Timestamp occurred_at = 4;
+}
+
+message MilestoneApprovedEvent {
+  string milestone_id = 1;
+  string gig_id = 2;
+  string freelancer_id = 3;
+  string amount_wei = 4;
+  google.protobuf.Timestamp occurred_at = 5;
+}
+
+// ─── API Shapes ───────────────────────────────────────────────────────────────
+
+message CreateMilestoneRequest {
+  string gig_id = 1;
+  string title = 2;
+  string description = 3;
+  string acceptance_criteria = 4;
+  string amount_wei = 5;
+  int32 order = 6;
+}
+
+message GetMilestonesRequest {
+  string gig_id = 1;
+}
+
+message GetMilestonesResponse {
+  repeated Milestone milestones = 1;
+}
+
+message ApproveMilestoneRequest {
+  string milestone_id = 1;
+  string notes = 2;
+}
+
+message RequestRevisionRequest {
+  string milestone_id = 1;
+  string feedback = 2;
+}
+
+// ─── Service ─────────────────────────────────────────────────────────────────
+
+service MilestoneService {
+  rpc CreateMilestone(CreateMilestoneRequest) returns (Milestone);
+  rpc GetMilestones(GetMilestonesRequest) returns (GetMilestonesResponse);
+  rpc ApproveMilestone(ApproveMilestoneRequest) returns (Milestone);
+  rpc RequestRevision(RequestRevisionRequest) returns (Milestone);
+}

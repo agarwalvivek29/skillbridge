@@ -9,9 +9,9 @@ This guide walks through how to take this template and bootstrap a new productio
 ```bash
 # On GitHub: click "Use this template" → "Create a new repository"
 # Or clone directly:
-git clone https://github.com/your-org/template.git my-project
+git clone https://github.com/agarwalvivek29/skillbridge.git skillbridge
 cd my-project
-git remote set-url origin https://github.com/your-org/my-project.git
+git remote set-url origin https://github.com/agarwalvivek29/skillbridge.git
 git push -u origin main
 ```
 

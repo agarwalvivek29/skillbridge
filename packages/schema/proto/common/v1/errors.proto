@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package common.v1;
 
-option go_package = "github.com/your-org/your-project/packages/schema/generated/go/common/v1;commonv1";
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/common/v1;commonv1";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Error types used in all service responses.

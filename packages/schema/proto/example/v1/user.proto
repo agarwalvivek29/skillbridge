@@ -6,7 +6,7 @@ import "common/v1/errors.proto";
 import "common/v1/pagination.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/your-org/your-project/packages/schema/generated/go/example/v1;examplev1";
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/example/v1;examplev1";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Example: User domain — shows the schema-first pattern.

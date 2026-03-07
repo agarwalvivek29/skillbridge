@@ -469,7 +469,7 @@ class UserModel(Base):
 
 **Go (sqlx/GORM example):**
 ```go
-import userv1 "github.com/your-org/your-project/packages/schema/generated/go/example/v1"
+import userv1 "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/example/v1"
 
 type UserRow struct {
     ID     string `db:"id"`

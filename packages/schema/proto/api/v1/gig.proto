@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/api/v1;apiv1";
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum GigStatus {
+  GIG_STATUS_UNSPECIFIED = 0;
+  GIG_STATUS_DRAFT = 1;
+  GIG_STATUS_OPEN = 2;
+  GIG_STATUS_IN_PROGRESS = 3;
+  GIG_STATUS_COMPLETED = 4;
+  GIG_STATUS_CANCELLED = 5;
+  GIG_STATUS_DISPUTED = 6;
+}
+
+// ─── Domain Entity ────────────────────────────────────────────────────────────
+
+message Gig {
+  string id = 1;
+  string client_id = 2;
+  string freelancer_id = 3;  // empty until a freelancer is selected
+  string title = 4;
+  string description = 5;
+  // Total budget in wei (on-chain denomination)
+  string total_amount_wei = 6;
+  string contract_address = 7;  // Base L2 escrow contract address
+  GigStatus status = 8;
+  repeated string tags = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
+
+// ─── Events ──────────────────────────────────────────────────────────────────
+
+message GigCreatedEvent {
+  string gig_id = 1;
+  string client_id = 2;
+  string title = 3;
+  google.protobuf.Timestamp occurred_at = 4;
+}
+
+message GigFundedEvent {
+  string gig_id = 1;
+  string client_id = 2;
+  string contract_address = 3;
+  string total_amount_wei = 4;
+  google.protobuf.Timestamp occurred_at = 5;
+}
+
+message GigCompletedEvent {
+  string gig_id = 1;
+  string client_id = 2;
+  string freelancer_id = 3;
+  google.protobuf.Timestamp occurred_at = 4;
+}
+
+// ─── API Shapes ───────────────────────────────────────────────────────────────
+
+message CreateGigRequest {
+  string title = 1;
+  string description = 2;
+  string total_amount_wei = 3;
+  repeated string tags = 4;
+}
+
+message GetGigRequest {
+  string id = 1;
+}
+
+message GetGigsRequest {
+  common.v1.PaginationRequest pagination = 1;
+  GigStatus status_filter = 2;
+  string client_id_filter = 3;
+  string freelancer_id_filter = 4;
+}
+
+message GetGigsResponse {
+  repeated Gig gigs = 1;
+  common.v1.PaginationMeta pagination = 2;
+}
+
+message AssignFreelancerRequest {
+  string gig_id = 1;
+  string freelancer_id = 2;
+}
+
+// ─── Service ─────────────────────────────────────────────────────────────────
+
+service GigService {
+  rpc CreateGig(CreateGigRequest) returns (Gig);
+  rpc GetGig(GetGigRequest) returns (Gig);
+  rpc GetGigs(GetGigsRequest) returns (GetGigsResponse);
+  rpc AssignFreelancer(AssignFreelancerRequest) returns (Gig);
+}

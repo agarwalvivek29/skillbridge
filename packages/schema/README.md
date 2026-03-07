@@ -85,7 +85,7 @@ package payments.v1;
 import "common/v1/pagination.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/your-org/your-project/packages/schema/generated/go/payments/v1;paymentsv1";
+option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/payments/v1;paymentsv1";
 
 enum PaymentStatus {
   PAYMENT_STATUS_UNSPECIFIED = 0;
@@ -154,8 +154,8 @@ function processUser(user: User): void { ... }
 
 ```go
 import (
-    userv1 "github.com/your-org/your-project/packages/schema/generated/go/example/v1"
-    commonv1 "github.com/your-org/your-project/packages/schema/generated/go/common/v1"
+    userv1 "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/example/v1"
+    commonv1 "github.com/agarwalvivek29/skillbridge/packages/schema/generated/go/common/v1"
 )
 
 // Use generated struct
