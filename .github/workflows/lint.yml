@@ -24,8 +24,6 @@ jobs:
               - 'apps/**/*.ts'
               - 'apps/**/*.tsx'
               - 'services/**/*.ts'
-              - 'packages/**/*.ts'
-              - '!packages/schema/generated/**'
             python:
               - 'services/**/*.py'
               - 'packages/**/*.py'
