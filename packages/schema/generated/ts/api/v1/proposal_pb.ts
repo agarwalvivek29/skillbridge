@@ -2,22 +2,9 @@
 // @generated from file api/v1/proposal.proto (package api.v1, syntax proto3)
 /* eslint-disable */
 
-import type {
-  GenEnum,
-  GenFile,
-  GenMessage,
-  GenService,
-} from "@bufbuild/protobuf/codegenv1";
-import {
-  enumDesc,
-  fileDesc,
-  messageDesc,
-  serviceDesc,
-} from "@bufbuild/protobuf/codegenv1";
-import type {
-  PaginationMeta,
-  PaginationRequest,
-} from "../../common/v1/pagination_pb";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
+import type { PaginationMeta, PaginationRequest } from "../../common/v1/pagination_pb";
 import { file_common_v1_pagination } from "../../common/v1/pagination_pb";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
@@ -26,12 +13,8 @@ import type { Message } from "@bufbuild/protobuf";
 /**
  * Describes the file api/v1/proposal.proto.
  */
-export const file_api_v1_proposal: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    "ChVhcGkvdjEvcHJvcG9zYWwucHJvdG8SBmFwaS52MSLzAQoIUHJvcG9zYWwSCgoCaWQYASABKAkSDgoGZ2lnX2lkGAIgASgJEhUKDWZyZWVsYW5jZXJfaWQYAyABKAkSFAoMY292ZXJfbGV0dGVyGAQgASgJEhYKDmVzdGltYXRlZF9kYXlzGAUgASgFEiYKBnN0YXR1cxgGIAEoDjIWLmFwaS52MS5Qcm9wb3NhbFN0YXR1cxIuCgpjcmVhdGVkX2F0GAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgp1cGRhdGVkX2F0GAggASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKFAQoWUHJvcG9zYWxTdWJtaXR0ZWRFdmVudBITCgtwcm9wb3NhbF9pZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSFQoNZnJlZWxhbmNlcl9pZBgDIAEoCRIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAihAEKFVByb3Bvc2FsQWNjZXB0ZWRFdmVudBITCgtwcm9wb3NhbF9pZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSFQoNZnJlZWxhbmNlcl9pZBgDIAEoCRIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiVQoVQ3JlYXRlUHJvcG9zYWxSZXF1ZXN0Eg4KBmdpZ19pZBgBIAEoCRIUCgxjb3Zlcl9sZXR0ZXIYAiABKAkSFgoOZXN0aW1hdGVkX2RheXMYAyABKAUiVwoTR2V0UHJvcG9zYWxzUmVxdWVzdBIOCgZnaWdfaWQYASABKAkSMAoKcGFnaW5hdGlvbhgCIAEoCzIcLmNvbW1vbi52MS5QYWdpbmF0aW9uUmVxdWVzdCJqChRHZXRQcm9wb3NhbHNSZXNwb25zZRIjCglwcm9wb3NhbHMYASADKAsyEC5hcGkudjEuUHJvcG9zYWwSLQoKcGFnaW5hdGlvbhgCIAEoCzIZLmNvbW1vbi52MS5QYWdpbmF0aW9uTWV0YSIsChVBY2NlcHRQcm9wb3NhbFJlcXVlc3QSEwoLcHJvcG9zYWxfaWQYASABKAkiLgoXV2l0aGRyYXdQcm9wb3NhbFJlcXVlc3QSEwoLcHJvcG9zYWxfaWQYASABKAkiPAoWQ3JlYXRlUHJvcG9zYWxSZXNwb25zZRIiCghwcm9wb3NhbBgBIAEoCzIQLmFwaS52MS5Qcm9wb3NhbCI8ChZBY2NlcHRQcm9wb3NhbFJlc3BvbnNlEiIKCHByb3Bvc2FsGAEgASgLMhAuYXBpLnYxLlByb3Bvc2FsIj4KGFdpdGhkcmF3UHJvcG9zYWxSZXNwb25zZRIiCghwcm9wb3NhbBgBIAEoCzIQLmFwaS52MS5Qcm9wb3NhbCqpAQoOUHJvcG9zYWxTdGF0dXMSHwobUFJPUE9TQUxfU1RBVFVTX1VOU1BFQ0lGSUVEEAASGwoXUFJPUE9TQUxfU1RBVFVTX1BFTkRJTkcQARIcChhQUk9QT1NBTF9TVEFUVVNfQUNDRVBURUQQAhIcChhQUk9QT1NBTF9TVEFUVVNfUkVKRUNURUQQAxIdChlQUk9QT1NBTF9TVEFUVVNfV0lUSERSQVdOEAQy1QIKD1Byb3Bvc2FsU2VydmljZRJPCg5DcmVhdGVQcm9wb3NhbBIdLmFwaS52MS5DcmVhdGVQcm9wb3NhbFJlcXVlc3QaHi5hcGkudjEuQ3JlYXRlUHJvcG9zYWxSZXNwb25zZRJJCgxHZXRQcm9wb3NhbHMSGy5hcGkudjEuR2V0UHJvcG9zYWxzUmVxdWVzdBocLmFwaS52MS5HZXRQcm9wb3NhbHNSZXNwb25zZRJPCg5BY2NlcHRQcm9wb3NhbBIdLmFwaS52MS5BY2NlcHRQcm9wb3NhbFJlcXVlc3QaHi5hcGkudjEuQWNjZXB0UHJvcG9zYWxSZXNwb25zZRJVChBXaXRoZHJhd1Byb3Bvc2FsEh8uYXBpLnYxLldpdGhkcmF3UHJvcG9zYWxSZXF1ZXN0GiAuYXBpLnYxLldpdGhkcmF3UHJvcG9zYWxSZXNwb25zZUKlAQoKY29tLmFwaS52MUINUHJvcG9zYWxQcm90b1ABWk9naXRodWIuY29tL2FnYXJ3YWx2aXZlazI5L3NraWxsYnJpZGdlL3BhY2thZ2VzL3NjaGVtYS9nZW5lcmF0ZWQvZ28vYXBpL3YxO2FwaXYxogIDQVhYqgIGQXBpLlYxygIGQXBpXFYx4gISQXBpXFYxXEdQQk1ldGFkYXRh6gIHQXBpOjpWMWIGcHJvdG8z",
-    [file_common_v1_pagination, file_google_protobuf_timestamp],
-  );
+export const file_api_v1_proposal: GenFile = /*@__PURE__*/
+  fileDesc("ChVhcGkvdjEvcHJvcG9zYWwucHJvdG8SBmFwaS52MSLzAQoIUHJvcG9zYWwSCgoCaWQYASABKAkSDgoGZ2lnX2lkGAIgASgJEhUKDWZyZWVsYW5jZXJfaWQYAyABKAkSFAoMY292ZXJfbGV0dGVyGAQgASgJEhYKDmVzdGltYXRlZF9kYXlzGAUgASgFEiYKBnN0YXR1cxgGIAEoDjIWLmFwaS52MS5Qcm9wb3NhbFN0YXR1cxIuCgpjcmVhdGVkX2F0GAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgp1cGRhdGVkX2F0GAggASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKFAQoWUHJvcG9zYWxTdWJtaXR0ZWRFdmVudBITCgtwcm9wb3NhbF9pZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSFQoNZnJlZWxhbmNlcl9pZBgDIAEoCRIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAihAEKFVByb3Bvc2FsQWNjZXB0ZWRFdmVudBITCgtwcm9wb3NhbF9pZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSFQoNZnJlZWxhbmNlcl9pZBgDIAEoCRIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiVQoVQ3JlYXRlUHJvcG9zYWxSZXF1ZXN0Eg4KBmdpZ19pZBgBIAEoCRIUCgxjb3Zlcl9sZXR0ZXIYAiABKAkSFgoOZXN0aW1hdGVkX2RheXMYAyABKAUiVwoTR2V0UHJvcG9zYWxzUmVxdWVzdBIOCgZnaWdfaWQYASABKAkSMAoKcGFnaW5hdGlvbhgCIAEoCzIcLmNvbW1vbi52MS5QYWdpbmF0aW9uUmVxdWVzdCJqChRHZXRQcm9wb3NhbHNSZXNwb25zZRIjCglwcm9wb3NhbHMYASADKAsyEC5hcGkudjEuUHJvcG9zYWwSLQoKcGFnaW5hdGlvbhgCIAEoCzIZLmNvbW1vbi52MS5QYWdpbmF0aW9uTWV0YSIsChVBY2NlcHRQcm9wb3NhbFJlcXVlc3QSEwoLcHJvcG9zYWxfaWQYASABKAkiLgoXV2l0aGRyYXdQcm9wb3NhbFJlcXVlc3QSEwoLcHJvcG9zYWxfaWQYASABKAkiPAoWQ3JlYXRlUHJvcG9zYWxSZXNwb25zZRIiCghwcm9wb3NhbBgBIAEoCzIQLmFwaS52MS5Qcm9wb3NhbCI8ChZBY2NlcHRQcm9wb3NhbFJlc3BvbnNlEiIKCHByb3Bvc2FsGAEgASgLMhAuYXBpLnYxLlByb3Bvc2FsIj4KGFdpdGhkcmF3UHJvcG9zYWxSZXNwb25zZRIiCghwcm9wb3NhbBgBIAEoCzIQLmFwaS52MS5Qcm9wb3NhbCqpAQoOUHJvcG9zYWxTdGF0dXMSHwobUFJPUE9TQUxfU1RBVFVTX1VOU1BFQ0lGSUVEEAASGwoXUFJPUE9TQUxfU1RBVFVTX1BFTkRJTkcQARIcChhQUk9QT1NBTF9TVEFUVVNfQUNDRVBURUQQAhIcChhQUk9QT1NBTF9TVEFUVVNfUkVKRUNURUQQAxIdChlQUk9QT1NBTF9TVEFUVVNfV0lUSERSQVdOEAQy1QIKD1Byb3Bvc2FsU2VydmljZRJPCg5DcmVhdGVQcm9wb3NhbBIdLmFwaS52MS5DcmVhdGVQcm9wb3NhbFJlcXVlc3QaHi5hcGkudjEuQ3JlYXRlUHJvcG9zYWxSZXNwb25zZRJJCgxHZXRQcm9wb3NhbHMSGy5hcGkudjEuR2V0UHJvcG9zYWxzUmVxdWVzdBocLmFwaS52MS5HZXRQcm9wb3NhbHNSZXNwb25zZRJPCg5BY2NlcHRQcm9wb3NhbBIdLmFwaS52MS5BY2NlcHRQcm9wb3NhbFJlcXVlc3QaHi5hcGkudjEuQWNjZXB0UHJvcG9zYWxSZXNwb25zZRJVChBXaXRoZHJhd1Byb3Bvc2FsEh8uYXBpLnYxLldpdGhkcmF3UHJvcG9zYWxSZXF1ZXN0GiAuYXBpLnYxLldpdGhkcmF3UHJvcG9zYWxSZXNwb25zZUKlAQoKY29tLmFwaS52MUINUHJvcG9zYWxQcm90b1ABWk9naXRodWIuY29tL2FnYXJ3YWx2aXZlazI5L3NraWxsYnJpZGdlL3BhY2thZ2VzL3NjaGVtYS9nZW5lcmF0ZWQvZ28vYXBpL3YxO2FwaXYxogIDQVhYqgIGQXBpLlYxygIGQXBpXFYx4gISQXBpXFYxXEdQQk1ldGFkYXRh6gIHQXBpOjpWMWIGcHJvdG8z", [file_common_v1_pagination, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message api.v1.Proposal
@@ -84,42 +67,39 @@ export type Proposal = Message<"api.v1.Proposal"> & {
  * Describes the message api.v1.Proposal.
  * Use `create(ProposalSchema)` to create a new message.
  */
-export const ProposalSchema: GenMessage<Proposal> =
-  /*@__PURE__*/
+export const ProposalSchema: GenMessage<Proposal> = /*@__PURE__*/
   messageDesc(file_api_v1_proposal, 0);
 
 /**
  * @generated from message api.v1.ProposalSubmittedEvent
  */
-export type ProposalSubmittedEvent =
-  Message<"api.v1.ProposalSubmittedEvent"> & {
-    /**
-     * @generated from field: string proposal_id = 1;
-     */
-    proposalId: string;
+export type ProposalSubmittedEvent = Message<"api.v1.ProposalSubmittedEvent"> & {
+  /**
+   * @generated from field: string proposal_id = 1;
+   */
+  proposalId: string;
 
-    /**
-     * @generated from field: string gig_id = 2;
-     */
-    gigId: string;
+  /**
+   * @generated from field: string gig_id = 2;
+   */
+  gigId: string;
 
-    /**
-     * @generated from field: string freelancer_id = 3;
-     */
-    freelancerId: string;
+  /**
+   * @generated from field: string freelancer_id = 3;
+   */
+  freelancerId: string;
 
-    /**
-     * @generated from field: google.protobuf.Timestamp occurred_at = 4;
-     */
-    occurredAt?: Timestamp;
-  };
+  /**
+   * @generated from field: google.protobuf.Timestamp occurred_at = 4;
+   */
+  occurredAt?: Timestamp;
+};
 
 /**
  * Describes the message api.v1.ProposalSubmittedEvent.
  * Use `create(ProposalSubmittedEventSchema)` to create a new message.
  */
-export const ProposalSubmittedEventSchema: GenMessage<ProposalSubmittedEvent> =
-  /*@__PURE__*/
+export const ProposalSubmittedEventSchema: GenMessage<ProposalSubmittedEvent> = /*@__PURE__*/
   messageDesc(file_api_v1_proposal, 1);
 
 /**
@@ -151,8 +131,7 @@ export type ProposalAcceptedEvent = Message<"api.v1.ProposalAcceptedEvent"> & {
  * Describes the message api.v1.ProposalAcceptedEvent.
  * Use `create(ProposalAcceptedEventSchema)` to create a new message.
  */
-export const ProposalAcceptedEventSchema: GenMessage<ProposalAcceptedEvent> =
-  /*@__PURE__*/
+export const ProposalAcceptedEventSchema: GenMessage<ProposalAcceptedEvent> = /*@__PURE__*/
   messageDesc(file_api_v1_proposal, 2);
 
 /**
@@ -179,8 +158,7 @@ export type CreateProposalRequest = Message<"api.v1.CreateProposalRequest"> & {
  * Describes the message api.v1.CreateProposalRequest.
  * Use `create(CreateProposalRequestSchema)` to create a new message.
  */
-export const CreateProposalRequestSchema: GenMessage<CreateProposalRequest> =
-  /*@__PURE__*/
+export const CreateProposalRequestSchema: GenMessage<CreateProposalRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_proposal, 3);
 
 /**
@@ -202,8 +180,7 @@ export type GetProposalsRequest = Message<"api.v1.GetProposalsRequest"> & {
  * Describes the message api.v1.GetProposalsRequest.
  * Use `create(GetProposalsRequestSchema)` to create a new message.
  */
-export const GetProposalsRequestSchema: GenMessage<GetProposalsRequest> =
-  /*@__PURE__*/
+export const GetProposalsRequestSchema: GenMessage<GetProposalsRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_proposal, 4);
 
 /**
@@ -225,8 +202,7 @@ export type GetProposalsResponse = Message<"api.v1.GetProposalsResponse"> & {
  * Describes the message api.v1.GetProposalsResponse.
  * Use `create(GetProposalsResponseSchema)` to create a new message.
  */
-export const GetProposalsResponseSchema: GenMessage<GetProposalsResponse> =
-  /*@__PURE__*/
+export const GetProposalsResponseSchema: GenMessage<GetProposalsResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_proposal, 5);
 
 /**
@@ -243,84 +219,75 @@ export type AcceptProposalRequest = Message<"api.v1.AcceptProposalRequest"> & {
  * Describes the message api.v1.AcceptProposalRequest.
  * Use `create(AcceptProposalRequestSchema)` to create a new message.
  */
-export const AcceptProposalRequestSchema: GenMessage<AcceptProposalRequest> =
-  /*@__PURE__*/
+export const AcceptProposalRequestSchema: GenMessage<AcceptProposalRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_proposal, 6);
 
 /**
  * @generated from message api.v1.WithdrawProposalRequest
  */
-export type WithdrawProposalRequest =
-  Message<"api.v1.WithdrawProposalRequest"> & {
-    /**
-     * @generated from field: string proposal_id = 1;
-     */
-    proposalId: string;
-  };
+export type WithdrawProposalRequest = Message<"api.v1.WithdrawProposalRequest"> & {
+  /**
+   * @generated from field: string proposal_id = 1;
+   */
+  proposalId: string;
+};
 
 /**
  * Describes the message api.v1.WithdrawProposalRequest.
  * Use `create(WithdrawProposalRequestSchema)` to create a new message.
  */
-export const WithdrawProposalRequestSchema: GenMessage<WithdrawProposalRequest> =
-  /*@__PURE__*/
+export const WithdrawProposalRequestSchema: GenMessage<WithdrawProposalRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_proposal, 7);
 
 /**
  * @generated from message api.v1.CreateProposalResponse
  */
-export type CreateProposalResponse =
-  Message<"api.v1.CreateProposalResponse"> & {
-    /**
-     * @generated from field: api.v1.Proposal proposal = 1;
-     */
-    proposal?: Proposal;
-  };
+export type CreateProposalResponse = Message<"api.v1.CreateProposalResponse"> & {
+  /**
+   * @generated from field: api.v1.Proposal proposal = 1;
+   */
+  proposal?: Proposal;
+};
 
 /**
  * Describes the message api.v1.CreateProposalResponse.
  * Use `create(CreateProposalResponseSchema)` to create a new message.
  */
-export const CreateProposalResponseSchema: GenMessage<CreateProposalResponse> =
-  /*@__PURE__*/
+export const CreateProposalResponseSchema: GenMessage<CreateProposalResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_proposal, 8);
 
 /**
  * @generated from message api.v1.AcceptProposalResponse
  */
-export type AcceptProposalResponse =
-  Message<"api.v1.AcceptProposalResponse"> & {
-    /**
-     * @generated from field: api.v1.Proposal proposal = 1;
-     */
-    proposal?: Proposal;
-  };
+export type AcceptProposalResponse = Message<"api.v1.AcceptProposalResponse"> & {
+  /**
+   * @generated from field: api.v1.Proposal proposal = 1;
+   */
+  proposal?: Proposal;
+};
 
 /**
  * Describes the message api.v1.AcceptProposalResponse.
  * Use `create(AcceptProposalResponseSchema)` to create a new message.
  */
-export const AcceptProposalResponseSchema: GenMessage<AcceptProposalResponse> =
-  /*@__PURE__*/
+export const AcceptProposalResponseSchema: GenMessage<AcceptProposalResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_proposal, 9);
 
 /**
  * @generated from message api.v1.WithdrawProposalResponse
  */
-export type WithdrawProposalResponse =
-  Message<"api.v1.WithdrawProposalResponse"> & {
-    /**
-     * @generated from field: api.v1.Proposal proposal = 1;
-     */
-    proposal?: Proposal;
-  };
+export type WithdrawProposalResponse = Message<"api.v1.WithdrawProposalResponse"> & {
+  /**
+   * @generated from field: api.v1.Proposal proposal = 1;
+   */
+  proposal?: Proposal;
+};
 
 /**
  * Describes the message api.v1.WithdrawProposalResponse.
  * Use `create(WithdrawProposalResponseSchema)` to create a new message.
  */
-export const WithdrawProposalResponseSchema: GenMessage<WithdrawProposalResponse> =
-  /*@__PURE__*/
+export const WithdrawProposalResponseSchema: GenMessage<WithdrawProposalResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_proposal, 10);
 
 /**
@@ -364,8 +331,7 @@ export enum ProposalStatus {
 /**
  * Describes the enum api.v1.ProposalStatus.
  */
-export const ProposalStatusSchema: GenEnum<ProposalStatus> =
-  /*@__PURE__*/
+export const ProposalStatusSchema: GenEnum<ProposalStatus> = /*@__PURE__*/
   enumDesc(file_api_v1_proposal, 0);
 
 /**
@@ -379,7 +345,7 @@ export const ProposalService: GenService<{
     methodKind: "unary";
     input: typeof CreateProposalRequestSchema;
     output: typeof CreateProposalResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.ProposalService.GetProposals
    */
@@ -387,7 +353,7 @@ export const ProposalService: GenService<{
     methodKind: "unary";
     input: typeof GetProposalsRequestSchema;
     output: typeof GetProposalsResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.ProposalService.AcceptProposal
    */
@@ -395,7 +361,7 @@ export const ProposalService: GenService<{
     methodKind: "unary";
     input: typeof AcceptProposalRequestSchema;
     output: typeof AcceptProposalResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.ProposalService.WithdrawProposal
    */
@@ -403,5 +369,7 @@ export const ProposalService: GenService<{
     methodKind: "unary";
     input: typeof WithdrawProposalRequestSchema;
     output: typeof WithdrawProposalResponseSchema;
-  };
-}> = /*@__PURE__*/ serviceDesc(file_api_v1_proposal, 0);
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_api_v1_proposal, 0);
+

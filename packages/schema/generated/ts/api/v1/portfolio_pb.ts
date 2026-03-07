@@ -2,16 +2,8 @@
 // @generated from file api/v1/portfolio.proto (package api.v1, syntax proto3)
 /* eslint-disable */
 
-import type {
-  GenFile,
-  GenMessage,
-  GenService,
-} from "@bufbuild/protobuf/codegenv1";
-import {
-  fileDesc,
-  messageDesc,
-  serviceDesc,
-} from "@bufbuild/protobuf/codegenv1";
+import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
+import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
@@ -19,12 +11,8 @@ import type { Message } from "@bufbuild/protobuf";
 /**
  * Describes the file api/v1/portfolio.proto.
  */
-export const file_api_v1_portfolio: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    "ChZhcGkvdjEvcG9ydGZvbGlvLnByb3RvEgZhcGkudjEigAIKDVBvcnRmb2xpb0l0ZW0SCgoCaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCRINCgV0aXRsZRgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRIRCglmaWxlX2tleXMYBSADKAkSFAoMZXh0ZXJuYWxfdXJsGAYgASgJEgwKBHRhZ3MYByADKAkSFwoPdmVyaWZpZWRfZ2lnX2lkGAggASgJEi4KCmNyZWF0ZWRfYXQYCSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYCiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIpABChpDcmVhdGVQb3J0Zm9saW9JdGVtUmVxdWVzdBINCgV0aXRsZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRIRCglmaWxlX2tleXMYAyADKAkSFAoMZXh0ZXJuYWxfdXJsGAQgASgJEgwKBHRhZ3MYBSADKAkSFwoPdmVyaWZpZWRfZ2lnX2lkGAYgASgJIoMBChpVcGRhdGVQb3J0Zm9saW9JdGVtUmVxdWVzdBIKCgJpZBgBIAEoCRINCgV0aXRsZRgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCRIRCglmaWxlX2tleXMYBCADKAkSFAoMZXh0ZXJuYWxfdXJsGAUgASgJEgwKBHRhZ3MYBiADKAkiKwoYR2V0UG9ydGZvbGlvSXRlbXNSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkiQQoZR2V0UG9ydGZvbGlvSXRlbXNSZXNwb25zZRIkCgVpdGVtcxgBIAMoCzIVLmFwaS52MS5Qb3J0Zm9saW9JdGVtIigKGkRlbGV0ZVBvcnRmb2xpb0l0ZW1SZXF1ZXN0EgoKAmlkGAEgASgJIkIKG0NyZWF0ZVBvcnRmb2xpb0l0ZW1SZXNwb25zZRIjCgRpdGVtGAEgASgLMhUuYXBpLnYxLlBvcnRmb2xpb0l0ZW0iQgobVXBkYXRlUG9ydGZvbGlvSXRlbVJlc3BvbnNlEiMKBGl0ZW0YASABKAsyFS5hcGkudjEuUG9ydGZvbGlvSXRlbSJCChtEZWxldGVQb3J0Zm9saW9JdGVtUmVzcG9uc2USIwoEaXRlbRgBIAEoCzIVLmFwaS52MS5Qb3J0Zm9saW9JdGVtMowDChBQb3J0Zm9saW9TZXJ2aWNlEl4KE0NyZWF0ZVBvcnRmb2xpb0l0ZW0SIi5hcGkudjEuQ3JlYXRlUG9ydGZvbGlvSXRlbVJlcXVlc3QaIy5hcGkudjEuQ3JlYXRlUG9ydGZvbGlvSXRlbVJlc3BvbnNlEl4KE1VwZGF0ZVBvcnRmb2xpb0l0ZW0SIi5hcGkudjEuVXBkYXRlUG9ydGZvbGlvSXRlbVJlcXVlc3QaIy5hcGkudjEuVXBkYXRlUG9ydGZvbGlvSXRlbVJlc3BvbnNlElgKEUdldFBvcnRmb2xpb0l0ZW1zEiAuYXBpLnYxLkdldFBvcnRmb2xpb0l0ZW1zUmVxdWVzdBohLmFwaS52MS5HZXRQb3J0Zm9saW9JdGVtc1Jlc3BvbnNlEl4KE0RlbGV0ZVBvcnRmb2xpb0l0ZW0SIi5hcGkudjEuRGVsZXRlUG9ydGZvbGlvSXRlbVJlcXVlc3QaIy5hcGkudjEuRGVsZXRlUG9ydGZvbGlvSXRlbVJlc3BvbnNlQqYBCgpjb20uYXBpLnYxQg5Qb3J0Zm9saW9Qcm90b1ABWk9naXRodWIuY29tL2FnYXJ3YWx2aXZlazI5L3NraWxsYnJpZGdlL3BhY2thZ2VzL3NjaGVtYS9nZW5lcmF0ZWQvZ28vYXBpL3YxO2FwaXYxogIDQVhYqgIGQXBpLlYxygIGQXBpXFYx4gISQXBpXFYxXEdQQk1ldGFkYXRh6gIHQXBpOjpWMWIGcHJvdG8z",
-    [file_google_protobuf_timestamp],
-  );
+export const file_api_v1_portfolio: GenFile = /*@__PURE__*/
+  fileDesc("ChZhcGkvdjEvcG9ydGZvbGlvLnByb3RvEgZhcGkudjEigAIKDVBvcnRmb2xpb0l0ZW0SCgoCaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCRINCgV0aXRsZRgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRIRCglmaWxlX2tleXMYBSADKAkSFAoMZXh0ZXJuYWxfdXJsGAYgASgJEgwKBHRhZ3MYByADKAkSFwoPdmVyaWZpZWRfZ2lnX2lkGAggASgJEi4KCmNyZWF0ZWRfYXQYCSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYCiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIpABChpDcmVhdGVQb3J0Zm9saW9JdGVtUmVxdWVzdBINCgV0aXRsZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRIRCglmaWxlX2tleXMYAyADKAkSFAoMZXh0ZXJuYWxfdXJsGAQgASgJEgwKBHRhZ3MYBSADKAkSFwoPdmVyaWZpZWRfZ2lnX2lkGAYgASgJIoMBChpVcGRhdGVQb3J0Zm9saW9JdGVtUmVxdWVzdBIKCgJpZBgBIAEoCRINCgV0aXRsZRgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCRIRCglmaWxlX2tleXMYBCADKAkSFAoMZXh0ZXJuYWxfdXJsGAUgASgJEgwKBHRhZ3MYBiADKAkiKwoYR2V0UG9ydGZvbGlvSXRlbXNSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkiQQoZR2V0UG9ydGZvbGlvSXRlbXNSZXNwb25zZRIkCgVpdGVtcxgBIAMoCzIVLmFwaS52MS5Qb3J0Zm9saW9JdGVtIigKGkRlbGV0ZVBvcnRmb2xpb0l0ZW1SZXF1ZXN0EgoKAmlkGAEgASgJIkIKG0NyZWF0ZVBvcnRmb2xpb0l0ZW1SZXNwb25zZRIjCgRpdGVtGAEgASgLMhUuYXBpLnYxLlBvcnRmb2xpb0l0ZW0iQgobVXBkYXRlUG9ydGZvbGlvSXRlbVJlc3BvbnNlEiMKBGl0ZW0YASABKAsyFS5hcGkudjEuUG9ydGZvbGlvSXRlbSJCChtEZWxldGVQb3J0Zm9saW9JdGVtUmVzcG9uc2USIwoEaXRlbRgBIAEoCzIVLmFwaS52MS5Qb3J0Zm9saW9JdGVtMowDChBQb3J0Zm9saW9TZXJ2aWNlEl4KE0NyZWF0ZVBvcnRmb2xpb0l0ZW0SIi5hcGkudjEuQ3JlYXRlUG9ydGZvbGlvSXRlbVJlcXVlc3QaIy5hcGkudjEuQ3JlYXRlUG9ydGZvbGlvSXRlbVJlc3BvbnNlEl4KE1VwZGF0ZVBvcnRmb2xpb0l0ZW0SIi5hcGkudjEuVXBkYXRlUG9ydGZvbGlvSXRlbVJlcXVlc3QaIy5hcGkudjEuVXBkYXRlUG9ydGZvbGlvSXRlbVJlc3BvbnNlElgKEUdldFBvcnRmb2xpb0l0ZW1zEiAuYXBpLnYxLkdldFBvcnRmb2xpb0l0ZW1zUmVxdWVzdBohLmFwaS52MS5HZXRQb3J0Zm9saW9JdGVtc1Jlc3BvbnNlEl4KE0RlbGV0ZVBvcnRmb2xpb0l0ZW0SIi5hcGkudjEuRGVsZXRlUG9ydGZvbGlvSXRlbVJlcXVlc3QaIy5hcGkudjEuRGVsZXRlUG9ydGZvbGlvSXRlbVJlc3BvbnNlQqYBCgpjb20uYXBpLnYxQg5Qb3J0Zm9saW9Qcm90b1ABWk9naXRodWIuY29tL2FnYXJ3YWx2aXZlazI5L3NraWxsYnJpZGdlL3BhY2thZ2VzL3NjaGVtYS9nZW5lcmF0ZWQvZ28vYXBpL3YxO2FwaXYxogIDQVhYqgIGQXBpLlYxygIGQXBpXFYx4gISQXBpXFYxXEdQQk1ldGFkYXRh6gIHQXBpOjpWMWIGcHJvdG8z", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message api.v1.PortfolioItem
@@ -91,212 +79,195 @@ export type PortfolioItem = Message<"api.v1.PortfolioItem"> & {
  * Describes the message api.v1.PortfolioItem.
  * Use `create(PortfolioItemSchema)` to create a new message.
  */
-export const PortfolioItemSchema: GenMessage<PortfolioItem> =
-  /*@__PURE__*/
+export const PortfolioItemSchema: GenMessage<PortfolioItem> = /*@__PURE__*/
   messageDesc(file_api_v1_portfolio, 0);
 
 /**
  * @generated from message api.v1.CreatePortfolioItemRequest
  */
-export type CreatePortfolioItemRequest =
-  Message<"api.v1.CreatePortfolioItemRequest"> & {
-    /**
-     * @generated from field: string title = 1;
-     */
-    title: string;
+export type CreatePortfolioItemRequest = Message<"api.v1.CreatePortfolioItemRequest"> & {
+  /**
+   * @generated from field: string title = 1;
+   */
+  title: string;
 
-    /**
-     * @generated from field: string description = 2;
-     */
-    description: string;
+  /**
+   * @generated from field: string description = 2;
+   */
+  description: string;
 
-    /**
-     * @generated from field: repeated string file_keys = 3;
-     */
-    fileKeys: string[];
+  /**
+   * @generated from field: repeated string file_keys = 3;
+   */
+  fileKeys: string[];
 
-    /**
-     * @generated from field: string external_url = 4;
-     */
-    externalUrl: string;
+  /**
+   * @generated from field: string external_url = 4;
+   */
+  externalUrl: string;
 
-    /**
-     * @generated from field: repeated string tags = 5;
-     */
-    tags: string[];
+  /**
+   * @generated from field: repeated string tags = 5;
+   */
+  tags: string[];
 
-    /**
-     * Optionally link to a completed gig for verification badge
-     *
-     * @generated from field: string verified_gig_id = 6;
-     */
-    verifiedGigId: string;
-  };
+  /**
+   * Optionally link to a completed gig for verification badge
+   *
+   * @generated from field: string verified_gig_id = 6;
+   */
+  verifiedGigId: string;
+};
 
 /**
  * Describes the message api.v1.CreatePortfolioItemRequest.
  * Use `create(CreatePortfolioItemRequestSchema)` to create a new message.
  */
-export const CreatePortfolioItemRequestSchema: GenMessage<CreatePortfolioItemRequest> =
-  /*@__PURE__*/
+export const CreatePortfolioItemRequestSchema: GenMessage<CreatePortfolioItemRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_portfolio, 1);
 
 /**
  * @generated from message api.v1.UpdatePortfolioItemRequest
  */
-export type UpdatePortfolioItemRequest =
-  Message<"api.v1.UpdatePortfolioItemRequest"> & {
-    /**
-     * @generated from field: string id = 1;
-     */
-    id: string;
+export type UpdatePortfolioItemRequest = Message<"api.v1.UpdatePortfolioItemRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
 
-    /**
-     * @generated from field: string title = 2;
-     */
-    title: string;
+  /**
+   * @generated from field: string title = 2;
+   */
+  title: string;
 
-    /**
-     * @generated from field: string description = 3;
-     */
-    description: string;
+  /**
+   * @generated from field: string description = 3;
+   */
+  description: string;
 
-    /**
-     * @generated from field: repeated string file_keys = 4;
-     */
-    fileKeys: string[];
+  /**
+   * @generated from field: repeated string file_keys = 4;
+   */
+  fileKeys: string[];
 
-    /**
-     * @generated from field: string external_url = 5;
-     */
-    externalUrl: string;
+  /**
+   * @generated from field: string external_url = 5;
+   */
+  externalUrl: string;
 
-    /**
-     * @generated from field: repeated string tags = 6;
-     */
-    tags: string[];
-  };
+  /**
+   * @generated from field: repeated string tags = 6;
+   */
+  tags: string[];
+};
 
 /**
  * Describes the message api.v1.UpdatePortfolioItemRequest.
  * Use `create(UpdatePortfolioItemRequestSchema)` to create a new message.
  */
-export const UpdatePortfolioItemRequestSchema: GenMessage<UpdatePortfolioItemRequest> =
-  /*@__PURE__*/
+export const UpdatePortfolioItemRequestSchema: GenMessage<UpdatePortfolioItemRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_portfolio, 2);
 
 /**
  * @generated from message api.v1.GetPortfolioItemsRequest
  */
-export type GetPortfolioItemsRequest =
-  Message<"api.v1.GetPortfolioItemsRequest"> & {
-    /**
-     * @generated from field: string user_id = 1;
-     */
-    userId: string;
-  };
+export type GetPortfolioItemsRequest = Message<"api.v1.GetPortfolioItemsRequest"> & {
+  /**
+   * @generated from field: string user_id = 1;
+   */
+  userId: string;
+};
 
 /**
  * Describes the message api.v1.GetPortfolioItemsRequest.
  * Use `create(GetPortfolioItemsRequestSchema)` to create a new message.
  */
-export const GetPortfolioItemsRequestSchema: GenMessage<GetPortfolioItemsRequest> =
-  /*@__PURE__*/
+export const GetPortfolioItemsRequestSchema: GenMessage<GetPortfolioItemsRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_portfolio, 3);
 
 /**
  * @generated from message api.v1.GetPortfolioItemsResponse
  */
-export type GetPortfolioItemsResponse =
-  Message<"api.v1.GetPortfolioItemsResponse"> & {
-    /**
-     * @generated from field: repeated api.v1.PortfolioItem items = 1;
-     */
-    items: PortfolioItem[];
-  };
+export type GetPortfolioItemsResponse = Message<"api.v1.GetPortfolioItemsResponse"> & {
+  /**
+   * @generated from field: repeated api.v1.PortfolioItem items = 1;
+   */
+  items: PortfolioItem[];
+};
 
 /**
  * Describes the message api.v1.GetPortfolioItemsResponse.
  * Use `create(GetPortfolioItemsResponseSchema)` to create a new message.
  */
-export const GetPortfolioItemsResponseSchema: GenMessage<GetPortfolioItemsResponse> =
-  /*@__PURE__*/
+export const GetPortfolioItemsResponseSchema: GenMessage<GetPortfolioItemsResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_portfolio, 4);
 
 /**
  * @generated from message api.v1.DeletePortfolioItemRequest
  */
-export type DeletePortfolioItemRequest =
-  Message<"api.v1.DeletePortfolioItemRequest"> & {
-    /**
-     * @generated from field: string id = 1;
-     */
-    id: string;
-  };
+export type DeletePortfolioItemRequest = Message<"api.v1.DeletePortfolioItemRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
 
 /**
  * Describes the message api.v1.DeletePortfolioItemRequest.
  * Use `create(DeletePortfolioItemRequestSchema)` to create a new message.
  */
-export const DeletePortfolioItemRequestSchema: GenMessage<DeletePortfolioItemRequest> =
-  /*@__PURE__*/
+export const DeletePortfolioItemRequestSchema: GenMessage<DeletePortfolioItemRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_portfolio, 5);
 
 /**
  * @generated from message api.v1.CreatePortfolioItemResponse
  */
-export type CreatePortfolioItemResponse =
-  Message<"api.v1.CreatePortfolioItemResponse"> & {
-    /**
-     * @generated from field: api.v1.PortfolioItem item = 1;
-     */
-    item?: PortfolioItem;
-  };
+export type CreatePortfolioItemResponse = Message<"api.v1.CreatePortfolioItemResponse"> & {
+  /**
+   * @generated from field: api.v1.PortfolioItem item = 1;
+   */
+  item?: PortfolioItem;
+};
 
 /**
  * Describes the message api.v1.CreatePortfolioItemResponse.
  * Use `create(CreatePortfolioItemResponseSchema)` to create a new message.
  */
-export const CreatePortfolioItemResponseSchema: GenMessage<CreatePortfolioItemResponse> =
-  /*@__PURE__*/
+export const CreatePortfolioItemResponseSchema: GenMessage<CreatePortfolioItemResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_portfolio, 6);
 
 /**
  * @generated from message api.v1.UpdatePortfolioItemResponse
  */
-export type UpdatePortfolioItemResponse =
-  Message<"api.v1.UpdatePortfolioItemResponse"> & {
-    /**
-     * @generated from field: api.v1.PortfolioItem item = 1;
-     */
-    item?: PortfolioItem;
-  };
+export type UpdatePortfolioItemResponse = Message<"api.v1.UpdatePortfolioItemResponse"> & {
+  /**
+   * @generated from field: api.v1.PortfolioItem item = 1;
+   */
+  item?: PortfolioItem;
+};
 
 /**
  * Describes the message api.v1.UpdatePortfolioItemResponse.
  * Use `create(UpdatePortfolioItemResponseSchema)` to create a new message.
  */
-export const UpdatePortfolioItemResponseSchema: GenMessage<UpdatePortfolioItemResponse> =
-  /*@__PURE__*/
+export const UpdatePortfolioItemResponseSchema: GenMessage<UpdatePortfolioItemResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_portfolio, 7);
 
 /**
  * @generated from message api.v1.DeletePortfolioItemResponse
  */
-export type DeletePortfolioItemResponse =
-  Message<"api.v1.DeletePortfolioItemResponse"> & {
-    /**
-     * @generated from field: api.v1.PortfolioItem item = 1;
-     */
-    item?: PortfolioItem;
-  };
+export type DeletePortfolioItemResponse = Message<"api.v1.DeletePortfolioItemResponse"> & {
+  /**
+   * @generated from field: api.v1.PortfolioItem item = 1;
+   */
+  item?: PortfolioItem;
+};
 
 /**
  * Describes the message api.v1.DeletePortfolioItemResponse.
  * Use `create(DeletePortfolioItemResponseSchema)` to create a new message.
  */
-export const DeletePortfolioItemResponseSchema: GenMessage<DeletePortfolioItemResponse> =
-  /*@__PURE__*/
+export const DeletePortfolioItemResponseSchema: GenMessage<DeletePortfolioItemResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_portfolio, 8);
 
 /**
@@ -310,7 +281,7 @@ export const PortfolioService: GenService<{
     methodKind: "unary";
     input: typeof CreatePortfolioItemRequestSchema;
     output: typeof CreatePortfolioItemResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.PortfolioService.UpdatePortfolioItem
    */
@@ -318,7 +289,7 @@ export const PortfolioService: GenService<{
     methodKind: "unary";
     input: typeof UpdatePortfolioItemRequestSchema;
     output: typeof UpdatePortfolioItemResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.PortfolioService.GetPortfolioItems
    */
@@ -326,7 +297,7 @@ export const PortfolioService: GenService<{
     methodKind: "unary";
     input: typeof GetPortfolioItemsRequestSchema;
     output: typeof GetPortfolioItemsResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.PortfolioService.DeletePortfolioItem
    */
@@ -334,5 +305,7 @@ export const PortfolioService: GenService<{
     methodKind: "unary";
     input: typeof DeletePortfolioItemRequestSchema;
     output: typeof DeletePortfolioItemResponseSchema;
-  };
-}> = /*@__PURE__*/ serviceDesc(file_api_v1_portfolio, 0);
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_api_v1_portfolio, 0);
+

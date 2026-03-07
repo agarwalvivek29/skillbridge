@@ -2,18 +2,8 @@
 // @generated from file ai_reviewer/v1/report.proto (package ai_reviewer.v1, syntax proto3)
 /* eslint-disable */
 
-import type {
-  GenEnum,
-  GenFile,
-  GenMessage,
-  GenService,
-} from "@bufbuild/protobuf/codegenv1";
-import {
-  enumDesc,
-  fileDesc,
-  messageDesc,
-  serviceDesc,
-} from "@bufbuild/protobuf/codegenv1";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
@@ -21,12 +11,8 @@ import type { Message } from "@bufbuild/protobuf";
 /**
  * Describes the file ai_reviewer/v1/report.proto.
  */
-export const file_ai_reviewer_v1_report: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    "ChthaV9yZXZpZXdlci92MS9yZXBvcnQucHJvdG8SDmFpX3Jldmlld2VyLnYxIpsBCg1SZXZpZXdGaW5kaW5nEgoKAmlkGAEgASgJEjEKCHNldmVyaXR5GAIgASgOMh8uYWlfcmV2aWV3ZXIudjEuRmluZGluZ1NldmVyaXR5EhAKCGNhdGVnb3J5GAMgASgJEhMKC2Rlc2NyaXB0aW9uGAQgASgJEhAKCGZpbGVfcmVmGAUgASgJEhIKCnN1Z2dlc3Rpb24YBiABKAki8AIKDFJldmlld1JlcG9ydBIKCgJpZBgBIAEoCRIVCg1zdWJtaXNzaW9uX2lkGAIgASgJEiwKBnN0YXR1cxgDIAEoDjIcLmFpX3Jldmlld2VyLnYxLlJldmlld1N0YXR1cxIuCgd2ZXJkaWN0GAQgASgOMh0uYWlfcmV2aWV3ZXIudjEuUmV2aWV3VmVyZGljdBINCgVzY29yZRgFIAEoBRIPCgdzdW1tYXJ5GAYgASgJEi8KCGZpbmRpbmdzGAcgAygLMh0uYWlfcmV2aWV3ZXIudjEuUmV2aWV3RmluZGluZxIVCg1tb2RlbF92ZXJzaW9uGAggASgJEhUKDWVycm9yX21lc3NhZ2UYCSABKAkSLgoKY3JlYXRlZF9hdBgKIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASMAoMY29tcGxldGVkX2F0GAsgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCJ2ChZSZXZpZXdKb2JFbnF1ZXVlZEV2ZW50EhUKDXN1Ym1pc3Npb25faWQYASABKAkSFAoMbWlsZXN0b25lX2lkGAIgASgJEi8KC29jY3VycmVkX2F0GAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKwAQoUUmV2aWV3Q29tcGxldGVkRXZlbnQSEQoJcmVwb3J0X2lkGAEgASgJEhUKDXN1Ym1pc3Npb25faWQYAiABKAkSLgoHdmVyZGljdBgDIAEoDjIdLmFpX3Jldmlld2VyLnYxLlJldmlld1ZlcmRpY3QSDQoFc2NvcmUYBCABKAUSLwoLb2NjdXJyZWRfYXQYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIi8KFkdldFJldmlld1JlcG9ydFJlcXVlc3QSFQoNc3VibWlzc2lvbl9pZBgBIAEoCSJHChdHZXRSZXZpZXdSZXBvcnRSZXNwb25zZRIsCgZyZXBvcnQYASABKAsyHC5haV9yZXZpZXdlci52MS5SZXZpZXdSZXBvcnQqhAEKDVJldmlld1ZlcmRpY3QSHgoaUkVWSUVXX1ZFUkRJQ1RfVU5TUEVDSUZJRUQQABIXChNSRVZJRVdfVkVSRElDVF9QQVNTEAESFwoTUkVWSUVXX1ZFUkRJQ1RfRkFJTBACEiEKHVJFVklFV19WRVJESUNUX05FRURTX1JFVklTSU9OEAMqnAEKDFJldmlld1N0YXR1cxIdChlSRVZJRVdfU1RBVFVTX1VOU1BFQ0lGSUVEEAASGQoVUkVWSUVXX1NUQVRVU19QRU5ESU5HEAESHQoZUkVWSUVXX1NUQVRVU19JTl9QUk9HUkVTUxACEhoKFlJFVklFV19TVEFUVVNfQ09NUExFVEUQAxIXChNSRVZJRVdfU1RBVFVTX0VSUk9SEAQqpwEKD0ZpbmRpbmdTZXZlcml0eRIgChxGSU5ESU5HX1NFVkVSSVRZX1VOU1BFQ0lGSUVEEAASGQoVRklORElOR19TRVZFUklUWV9JTkZPEAESHAoYRklORElOR19TRVZFUklUWV9XQVJOSU5HEAISGgoWRklORElOR19TRVZFUklUWV9FUlJPUhADEh0KGUZJTkRJTkdfU0VWRVJJVFlfQ1JJVElDQUwQBDJzCg1SZXZpZXdTZXJ2aWNlEmIKD0dldFJldmlld1JlcG9ydBImLmFpX3Jldmlld2VyLnYxLkdldFJldmlld1JlcG9ydFJlcXVlc3QaJy5haV9yZXZpZXdlci52MS5HZXRSZXZpZXdSZXBvcnRSZXNwb25zZULXAQoSY29tLmFpX3Jldmlld2VyLnYxQgtSZXBvcnRQcm90b1ABWl9naXRodWIuY29tL2FnYXJ3YWx2aXZlazI5L3NraWxsYnJpZGdlL3BhY2thZ2VzL3NjaGVtYS9nZW5lcmF0ZWQvZ28vYWlfcmV2aWV3ZXIvdjE7YWlfcmV2aWV3ZXJ2MaICA0FYWKoCDUFpUmV2aWV3ZXIuVjHKAg1BaVJldmlld2VyXFYx4gIZQWlSZXZpZXdlclxWMVxHUEJNZXRhZGF0YeoCDkFpUmV2aWV3ZXI6OlYxYgZwcm90bzM",
-    [file_google_protobuf_timestamp],
-  );
+export const file_ai_reviewer_v1_report: GenFile = /*@__PURE__*/
+  fileDesc("ChthaV9yZXZpZXdlci92MS9yZXBvcnQucHJvdG8SDmFpX3Jldmlld2VyLnYxIpsBCg1SZXZpZXdGaW5kaW5nEgoKAmlkGAEgASgJEjEKCHNldmVyaXR5GAIgASgOMh8uYWlfcmV2aWV3ZXIudjEuRmluZGluZ1NldmVyaXR5EhAKCGNhdGVnb3J5GAMgASgJEhMKC2Rlc2NyaXB0aW9uGAQgASgJEhAKCGZpbGVfcmVmGAUgASgJEhIKCnN1Z2dlc3Rpb24YBiABKAki8AIKDFJldmlld1JlcG9ydBIKCgJpZBgBIAEoCRIVCg1zdWJtaXNzaW9uX2lkGAIgASgJEiwKBnN0YXR1cxgDIAEoDjIcLmFpX3Jldmlld2VyLnYxLlJldmlld1N0YXR1cxIuCgd2ZXJkaWN0GAQgASgOMh0uYWlfcmV2aWV3ZXIudjEuUmV2aWV3VmVyZGljdBINCgVzY29yZRgFIAEoBRIPCgdzdW1tYXJ5GAYgASgJEi8KCGZpbmRpbmdzGAcgAygLMh0uYWlfcmV2aWV3ZXIudjEuUmV2aWV3RmluZGluZxIVCg1tb2RlbF92ZXJzaW9uGAggASgJEhUKDWVycm9yX21lc3NhZ2UYCSABKAkSLgoKY3JlYXRlZF9hdBgKIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASMAoMY29tcGxldGVkX2F0GAsgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCJ2ChZSZXZpZXdKb2JFbnF1ZXVlZEV2ZW50EhUKDXN1Ym1pc3Npb25faWQYASABKAkSFAoMbWlsZXN0b25lX2lkGAIgASgJEi8KC29jY3VycmVkX2F0GAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKwAQoUUmV2aWV3Q29tcGxldGVkRXZlbnQSEQoJcmVwb3J0X2lkGAEgASgJEhUKDXN1Ym1pc3Npb25faWQYAiABKAkSLgoHdmVyZGljdBgDIAEoDjIdLmFpX3Jldmlld2VyLnYxLlJldmlld1ZlcmRpY3QSDQoFc2NvcmUYBCABKAUSLwoLb2NjdXJyZWRfYXQYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIi8KFkdldFJldmlld1JlcG9ydFJlcXVlc3QSFQoNc3VibWlzc2lvbl9pZBgBIAEoCSJHChdHZXRSZXZpZXdSZXBvcnRSZXNwb25zZRIsCgZyZXBvcnQYASABKAsyHC5haV9yZXZpZXdlci52MS5SZXZpZXdSZXBvcnQqhAEKDVJldmlld1ZlcmRpY3QSHgoaUkVWSUVXX1ZFUkRJQ1RfVU5TUEVDSUZJRUQQABIXChNSRVZJRVdfVkVSRElDVF9QQVNTEAESFwoTUkVWSUVXX1ZFUkRJQ1RfRkFJTBACEiEKHVJFVklFV19WRVJESUNUX05FRURTX1JFVklTSU9OEAMqnAEKDFJldmlld1N0YXR1cxIdChlSRVZJRVdfU1RBVFVTX1VOU1BFQ0lGSUVEEAASGQoVUkVWSUVXX1NUQVRVU19QRU5ESU5HEAESHQoZUkVWSUVXX1NUQVRVU19JTl9QUk9HUkVTUxACEhoKFlJFVklFV19TVEFUVVNfQ09NUExFVEUQAxIXChNSRVZJRVdfU1RBVFVTX0VSUk9SEAQqpwEKD0ZpbmRpbmdTZXZlcml0eRIgChxGSU5ESU5HX1NFVkVSSVRZX1VOU1BFQ0lGSUVEEAASGQoVRklORElOR19TRVZFUklUWV9JTkZPEAESHAoYRklORElOR19TRVZFUklUWV9XQVJOSU5HEAISGgoWRklORElOR19TRVZFUklUWV9FUlJPUhADEh0KGUZJTkRJTkdfU0VWRVJJVFlfQ1JJVElDQUwQBDJzCg1SZXZpZXdTZXJ2aWNlEmIKD0dldFJldmlld1JlcG9ydBImLmFpX3Jldmlld2VyLnYxLkdldFJldmlld1JlcG9ydFJlcXVlc3QaJy5haV9yZXZpZXdlci52MS5HZXRSZXZpZXdSZXBvcnRSZXNwb25zZULXAQoSY29tLmFpX3Jldmlld2VyLnYxQgtSZXBvcnRQcm90b1ABWl9naXRodWIuY29tL2FnYXJ3YWx2aXZlazI5L3NraWxsYnJpZGdlL3BhY2thZ2VzL3NjaGVtYS9nZW5lcmF0ZWQvZ28vYWlfcmV2aWV3ZXIvdjE7YWlfcmV2aWV3ZXJ2MaICA0FYWKoCDUFpUmV2aWV3ZXIuVjHKAg1BaVJldmlld2VyXFYx4gIZQWlSZXZpZXdlclxWMVxHUEJNZXRhZGF0YeoCDkFpUmV2aWV3ZXI6OlYxYgZwcm90bzM", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message ai_reviewer.v1.ReviewFinding
@@ -73,8 +59,7 @@ export type ReviewFinding = Message<"ai_reviewer.v1.ReviewFinding"> & {
  * Describes the message ai_reviewer.v1.ReviewFinding.
  * Use `create(ReviewFindingSchema)` to create a new message.
  */
-export const ReviewFindingSchema: GenMessage<ReviewFinding> =
-  /*@__PURE__*/
+export const ReviewFindingSchema: GenMessage<ReviewFinding> = /*@__PURE__*/
   messageDesc(file_ai_reviewer_v1_report, 0);
 
 /**
@@ -149,114 +134,105 @@ export type ReviewReport = Message<"ai_reviewer.v1.ReviewReport"> & {
  * Describes the message ai_reviewer.v1.ReviewReport.
  * Use `create(ReviewReportSchema)` to create a new message.
  */
-export const ReviewReportSchema: GenMessage<ReviewReport> =
-  /*@__PURE__*/
+export const ReviewReportSchema: GenMessage<ReviewReport> = /*@__PURE__*/
   messageDesc(file_ai_reviewer_v1_report, 1);
 
 /**
  * @generated from message ai_reviewer.v1.ReviewJobEnqueuedEvent
  */
-export type ReviewJobEnqueuedEvent =
-  Message<"ai_reviewer.v1.ReviewJobEnqueuedEvent"> & {
-    /**
-     * @generated from field: string submission_id = 1;
-     */
-    submissionId: string;
+export type ReviewJobEnqueuedEvent = Message<"ai_reviewer.v1.ReviewJobEnqueuedEvent"> & {
+  /**
+   * @generated from field: string submission_id = 1;
+   */
+  submissionId: string;
 
-    /**
-     * @generated from field: string milestone_id = 2;
-     */
-    milestoneId: string;
+  /**
+   * @generated from field: string milestone_id = 2;
+   */
+  milestoneId: string;
 
-    /**
-     * @generated from field: google.protobuf.Timestamp occurred_at = 3;
-     */
-    occurredAt?: Timestamp;
-  };
+  /**
+   * @generated from field: google.protobuf.Timestamp occurred_at = 3;
+   */
+  occurredAt?: Timestamp;
+};
 
 /**
  * Describes the message ai_reviewer.v1.ReviewJobEnqueuedEvent.
  * Use `create(ReviewJobEnqueuedEventSchema)` to create a new message.
  */
-export const ReviewJobEnqueuedEventSchema: GenMessage<ReviewJobEnqueuedEvent> =
-  /*@__PURE__*/
+export const ReviewJobEnqueuedEventSchema: GenMessage<ReviewJobEnqueuedEvent> = /*@__PURE__*/
   messageDesc(file_ai_reviewer_v1_report, 2);
 
 /**
  * @generated from message ai_reviewer.v1.ReviewCompletedEvent
  */
-export type ReviewCompletedEvent =
-  Message<"ai_reviewer.v1.ReviewCompletedEvent"> & {
-    /**
-     * @generated from field: string report_id = 1;
-     */
-    reportId: string;
+export type ReviewCompletedEvent = Message<"ai_reviewer.v1.ReviewCompletedEvent"> & {
+  /**
+   * @generated from field: string report_id = 1;
+   */
+  reportId: string;
 
-    /**
-     * @generated from field: string submission_id = 2;
-     */
-    submissionId: string;
+  /**
+   * @generated from field: string submission_id = 2;
+   */
+  submissionId: string;
 
-    /**
-     * @generated from field: ai_reviewer.v1.ReviewVerdict verdict = 3;
-     */
-    verdict: ReviewVerdict;
+  /**
+   * @generated from field: ai_reviewer.v1.ReviewVerdict verdict = 3;
+   */
+  verdict: ReviewVerdict;
 
-    /**
-     * @generated from field: int32 score = 4;
-     */
-    score: number;
+  /**
+   * @generated from field: int32 score = 4;
+   */
+  score: number;
 
-    /**
-     * @generated from field: google.protobuf.Timestamp occurred_at = 5;
-     */
-    occurredAt?: Timestamp;
-  };
+  /**
+   * @generated from field: google.protobuf.Timestamp occurred_at = 5;
+   */
+  occurredAt?: Timestamp;
+};
 
 /**
  * Describes the message ai_reviewer.v1.ReviewCompletedEvent.
  * Use `create(ReviewCompletedEventSchema)` to create a new message.
  */
-export const ReviewCompletedEventSchema: GenMessage<ReviewCompletedEvent> =
-  /*@__PURE__*/
+export const ReviewCompletedEventSchema: GenMessage<ReviewCompletedEvent> = /*@__PURE__*/
   messageDesc(file_ai_reviewer_v1_report, 3);
 
 /**
  * @generated from message ai_reviewer.v1.GetReviewReportRequest
  */
-export type GetReviewReportRequest =
-  Message<"ai_reviewer.v1.GetReviewReportRequest"> & {
-    /**
-     * @generated from field: string submission_id = 1;
-     */
-    submissionId: string;
-  };
+export type GetReviewReportRequest = Message<"ai_reviewer.v1.GetReviewReportRequest"> & {
+  /**
+   * @generated from field: string submission_id = 1;
+   */
+  submissionId: string;
+};
 
 /**
  * Describes the message ai_reviewer.v1.GetReviewReportRequest.
  * Use `create(GetReviewReportRequestSchema)` to create a new message.
  */
-export const GetReviewReportRequestSchema: GenMessage<GetReviewReportRequest> =
-  /*@__PURE__*/
+export const GetReviewReportRequestSchema: GenMessage<GetReviewReportRequest> = /*@__PURE__*/
   messageDesc(file_ai_reviewer_v1_report, 4);
 
 /**
  * @generated from message ai_reviewer.v1.GetReviewReportResponse
  */
-export type GetReviewReportResponse =
-  Message<"ai_reviewer.v1.GetReviewReportResponse"> & {
-    /**
-     * @generated from field: ai_reviewer.v1.ReviewReport report = 1;
-     */
-    report?: ReviewReport;
-  };
+export type GetReviewReportResponse = Message<"ai_reviewer.v1.GetReviewReportResponse"> & {
+  /**
+   * @generated from field: ai_reviewer.v1.ReviewReport report = 1;
+   */
+  report?: ReviewReport;
+};
 
 /**
  * Describes the message ai_reviewer.v1.GetReviewReportResponse.
  * Use `create(GetReviewReportResponseSchema)` to create a new message.
  */
-export const GetReviewReportResponseSchema: GenMessage<GetReviewReportResponse> =
-  /*@__PURE__*/
+export const GetReviewReportResponseSchema: GenMessage<GetReviewReportResponse> = /*@__PURE__*/
   messageDesc(file_ai_reviewer_v1_report, 5);
 
 /**
@@ -287,8 +263,7 @@ export enum ReviewVerdict {
 /**
  * Describes the enum ai_reviewer.v1.ReviewVerdict.
  */
-export const ReviewVerdictSchema: GenEnum<ReviewVerdict> =
-  /*@__PURE__*/
+export const ReviewVerdictSchema: GenEnum<ReviewVerdict> = /*@__PURE__*/
   enumDesc(file_ai_reviewer_v1_report, 0);
 
 /**
@@ -324,8 +299,7 @@ export enum ReviewStatus {
 /**
  * Describes the enum ai_reviewer.v1.ReviewStatus.
  */
-export const ReviewStatusSchema: GenEnum<ReviewStatus> =
-  /*@__PURE__*/
+export const ReviewStatusSchema: GenEnum<ReviewStatus> = /*@__PURE__*/
   enumDesc(file_ai_reviewer_v1_report, 1);
 
 /**
@@ -361,8 +335,7 @@ export enum FindingSeverity {
 /**
  * Describes the enum ai_reviewer.v1.FindingSeverity.
  */
-export const FindingSeveritySchema: GenEnum<FindingSeverity> =
-  /*@__PURE__*/
+export const FindingSeveritySchema: GenEnum<FindingSeverity> = /*@__PURE__*/
   enumDesc(file_ai_reviewer_v1_report, 2);
 
 /**
@@ -376,5 +349,7 @@ export const ReviewService: GenService<{
     methodKind: "unary";
     input: typeof GetReviewReportRequestSchema;
     output: typeof GetReviewReportResponseSchema;
-  };
-}> = /*@__PURE__*/ serviceDesc(file_ai_reviewer_v1_report, 0);
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_ai_reviewer_v1_report, 0);
+

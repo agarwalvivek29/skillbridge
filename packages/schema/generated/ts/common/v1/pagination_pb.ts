@@ -2,22 +2,15 @@
 // @generated from file common/v1/pagination.proto (package common.v1, syntax proto3)
 /* eslint-disable */
 
-import type {
-  GenEnum,
-  GenFile,
-  GenMessage,
-} from "@bufbuild/protobuf/codegenv1";
+import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
 import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv1";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file common/v1/pagination.proto.
  */
-export const file_common_v1_pagination: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    "Chpjb21tb24vdjEvcGFnaW5hdGlvbi5wcm90bxIJY29tbW9uLnYxIm8KEVBhZ2luYXRpb25SZXF1ZXN0EgwKBHBhZ2UYASABKAUSEQoJcGFnZV9zaXplGAIgASgFEg8KB3NvcnRfYnkYAyABKAkSKAoKc29ydF9vcmRlchgEIAEoDjIULmNvbW1vbi52MS5Tb3J0T3JkZXIieQoOUGFnaW5hdGlvbk1ldGESDAoEcGFnZRgBIAEoBRIRCglwYWdlX3NpemUYAiABKAUSDQoFdG90YWwYAyABKAUSEwoLdG90YWxfcGFnZXMYBCABKAUSEAoIaGFzX25leHQYBSABKAgSEAoIaGFzX3ByZXYYBiABKAgqUAoJU29ydE9yZGVyEhoKFlNPUlRfT1JERVJfVU5TUEVDSUZJRUQQABISCg5TT1JUX09SREVSX0FTQxABEhMKD1NPUlRfT1JERVJfREVTQxACQrwBCg1jb20uY29tbW9uLnYxQg9QYWdpbmF0aW9uUHJvdG9QAVpVZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2NvbW1vbi92MTtjb21tb252MaICA0NYWKoCCUNvbW1vbi5WMcoCCUNvbW1vblxWMeICFUNvbW1vblxWMVxHUEJNZXRhZGF0YeoCCkNvbW1vbjo6VjFiBnByb3RvMw",
-  );
+export const file_common_v1_pagination: GenFile = /*@__PURE__*/
+  fileDesc("Chpjb21tb24vdjEvcGFnaW5hdGlvbi5wcm90bxIJY29tbW9uLnYxIm8KEVBhZ2luYXRpb25SZXF1ZXN0EgwKBHBhZ2UYASABKAUSEQoJcGFnZV9zaXplGAIgASgFEg8KB3NvcnRfYnkYAyABKAkSKAoKc29ydF9vcmRlchgEIAEoDjIULmNvbW1vbi52MS5Tb3J0T3JkZXIieQoOUGFnaW5hdGlvbk1ldGESDAoEcGFnZRgBIAEoBRIRCglwYWdlX3NpemUYAiABKAUSDQoFdG90YWwYAyABKAUSEwoLdG90YWxfcGFnZXMYBCABKAUSEAoIaGFzX25leHQYBSABKAgSEAoIaGFzX3ByZXYYBiABKAgqUAoJU29ydE9yZGVyEhoKFlNPUlRfT1JERVJfVU5TUEVDSUZJRUQQABISCg5TT1JUX09SREVSX0FTQxABEhMKD1NPUlRfT1JERVJfREVTQxACQrwBCg1jb20uY29tbW9uLnYxQg9QYWdpbmF0aW9uUHJvdG9QAVpVZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2NvbW1vbi92MTtjb21tb252MaICA0NYWKoCCUNvbW1vbi5WMcoCCUNvbW1vblxWMeICFUNvbW1vblxWMVxHUEJNZXRhZGF0YeoCCkNvbW1vbjo6VjFiBnByb3RvMw");
 
 /**
  * PaginationRequest is the standard input for list endpoints.
@@ -58,8 +51,7 @@ export type PaginationRequest = Message<"common.v1.PaginationRequest"> & {
  * Describes the message common.v1.PaginationRequest.
  * Use `create(PaginationRequestSchema)` to create a new message.
  */
-export const PaginationRequestSchema: GenMessage<PaginationRequest> =
-  /*@__PURE__*/
+export const PaginationRequestSchema: GenMessage<PaginationRequest> = /*@__PURE__*/
   messageDesc(file_common_v1_pagination, 0);
 
 /**
@@ -116,8 +108,7 @@ export type PaginationMeta = Message<"common.v1.PaginationMeta"> & {
  * Describes the message common.v1.PaginationMeta.
  * Use `create(PaginationMetaSchema)` to create a new message.
  */
-export const PaginationMetaSchema: GenMessage<PaginationMeta> =
-  /*@__PURE__*/
+export const PaginationMetaSchema: GenMessage<PaginationMeta> = /*@__PURE__*/
   messageDesc(file_common_v1_pagination, 1);
 
 /**
@@ -145,6 +136,6 @@ export enum SortOrder {
 /**
  * Describes the enum common.v1.SortOrder.
  */
-export const SortOrderSchema: GenEnum<SortOrder> =
-  /*@__PURE__*/
+export const SortOrderSchema: GenEnum<SortOrder> = /*@__PURE__*/
   enumDesc(file_common_v1_pagination, 0);
+

@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import List
 
 import betterproto
+import grpclib
 
 
 class ReviewVerdict(betterproto.Enum):
