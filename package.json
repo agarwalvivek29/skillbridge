@@ -4,12 +4,12 @@
   "type": "module",
   "scripts": {
     "prepare": "husky",
-    "lint": "pnpm -r run lint --if-present",
-    "type-check": "pnpm -r run type-check --if-present",
-    "test": "pnpm -r run test --if-present",
-    "test:unit": "pnpm -r run test:unit --if-present",
-    "test:e2e": "pnpm -r run test:e2e --if-present",
-    "build": "pnpm -r run build --if-present"
+    "lint": "pnpm -r run --if-present lint",
+    "type-check": "pnpm -r run --if-present type-check",
+    "test": "pnpm -r run --if-present test",
+    "test:unit": "pnpm -r run --if-present test:unit",
+    "test:e2e": "pnpm -r run --if-present test:e2e",
+    "build": "pnpm -r run --if-present build"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.0.0",
