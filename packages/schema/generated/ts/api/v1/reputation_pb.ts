@@ -2,16 +2,8 @@
 // @generated from file api/v1/reputation.proto (package api.v1, syntax proto3)
 /* eslint-disable */
 
-import type {
-  GenFile,
-  GenMessage,
-  GenService,
-} from "@bufbuild/protobuf/codegenv1";
-import {
-  fileDesc,
-  messageDesc,
-  serviceDesc,
-} from "@bufbuild/protobuf/codegenv1";
+import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
+import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
@@ -19,12 +11,8 @@ import type { Message } from "@bufbuild/protobuf";
 /**
  * Describes the file api/v1/reputation.proto.
  */
-export const file_api_v1_reputation: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    "ChdhcGkvdjEvcmVwdXRhdGlvbi5wcm90bxIGYXBpLnYxIoIDCgpSZXB1dGF0aW9uEgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSFgoOd2FsbGV0X2FkZHJlc3MYAyABKAkSFgoOZ2lnc19jb21wbGV0ZWQYBCABKAUSFgoOZ2lnc19hc19jbGllbnQYBSABKAUSFAoMdG90YWxfZWFybmVkGAYgASgJEhgKEGF2ZXJhZ2VfYWlfc2NvcmUYByABKAUSGAoQZGlzcHV0ZV9yYXRlX3BjdBgIIAEoBRIbChNhdmVyYWdlX3JhdGluZ194MTAwGAkgASgFEhQKDHJhdGluZ19jb3VudBgKIAEoBRIyCg5sYXN0X3N5bmNlZF9hdBgLIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY3JlYXRlZF9hdBgMIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKdXBkYXRlZF9hdBgNIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiJwoUR2V0UmVwdXRhdGlvblJlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCSI/ChVHZXRSZXB1dGF0aW9uUmVzcG9uc2USJgoKcmVwdXRhdGlvbhgBIAEoCzISLmFwaS52MS5SZXB1dGF0aW9uMmEKEVJlcHV0YXRpb25TZXJ2aWNlEkwKDUdldFJlcHV0YXRpb24SHC5hcGkudjEuR2V0UmVwdXRhdGlvblJlcXVlc3QaHS5hcGkudjEuR2V0UmVwdXRhdGlvblJlc3BvbnNlQqcBCgpjb20uYXBpLnYxQg9SZXB1dGF0aW9uUHJvdG9QAVpPZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2FwaS92MTthcGl2MaICA0FYWKoCBkFwaS5WMcoCBkFwaVxWMeICEkFwaVxWMVxHUEJNZXRhZGF0YeoCB0FwaTo6VjFiBnByb3RvMw",
-    [file_google_protobuf_timestamp],
-  );
+export const file_api_v1_reputation: GenFile = /*@__PURE__*/
+  fileDesc("ChdhcGkvdjEvcmVwdXRhdGlvbi5wcm90bxIGYXBpLnYxIoIDCgpSZXB1dGF0aW9uEgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSFgoOd2FsbGV0X2FkZHJlc3MYAyABKAkSFgoOZ2lnc19jb21wbGV0ZWQYBCABKAUSFgoOZ2lnc19hc19jbGllbnQYBSABKAUSFAoMdG90YWxfZWFybmVkGAYgASgJEhgKEGF2ZXJhZ2VfYWlfc2NvcmUYByABKAUSGAoQZGlzcHV0ZV9yYXRlX3BjdBgIIAEoBRIbChNhdmVyYWdlX3JhdGluZ194MTAwGAkgASgFEhQKDHJhdGluZ19jb3VudBgKIAEoBRIyCg5sYXN0X3N5bmNlZF9hdBgLIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY3JlYXRlZF9hdBgMIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKdXBkYXRlZF9hdBgNIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiJwoUR2V0UmVwdXRhdGlvblJlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCSI/ChVHZXRSZXB1dGF0aW9uUmVzcG9uc2USJgoKcmVwdXRhdGlvbhgBIAEoCzISLmFwaS52MS5SZXB1dGF0aW9uMmEKEVJlcHV0YXRpb25TZXJ2aWNlEkwKDUdldFJlcHV0YXRpb24SHC5hcGkudjEuR2V0UmVwdXRhdGlvblJlcXVlc3QaHS5hcGkudjEuR2V0UmVwdXRhdGlvblJlc3BvbnNlQqcBCgpjb20uYXBpLnYxQg9SZXB1dGF0aW9uUHJvdG9QAVpPZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2FwaS92MTthcGl2MaICA0FYWKoCBkFwaS5WMcoCBkFwaVxWMeICEkFwaVxWMVxHUEJNZXRhZGF0YeoCB0FwaTo6VjFiBnByb3RvMw", [file_google_protobuf_timestamp]);
 
 /**
  * DB cache of on-chain reputation data. One record per user (1:1).
@@ -122,8 +110,7 @@ export type Reputation = Message<"api.v1.Reputation"> & {
  * Describes the message api.v1.Reputation.
  * Use `create(ReputationSchema)` to create a new message.
  */
-export const ReputationSchema: GenMessage<Reputation> =
-  /*@__PURE__*/
+export const ReputationSchema: GenMessage<Reputation> = /*@__PURE__*/
   messageDesc(file_api_v1_reputation, 0);
 
 /**
@@ -140,8 +127,7 @@ export type GetReputationRequest = Message<"api.v1.GetReputationRequest"> & {
  * Describes the message api.v1.GetReputationRequest.
  * Use `create(GetReputationRequestSchema)` to create a new message.
  */
-export const GetReputationRequestSchema: GenMessage<GetReputationRequest> =
-  /*@__PURE__*/
+export const GetReputationRequestSchema: GenMessage<GetReputationRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_reputation, 1);
 
 /**
@@ -158,8 +144,7 @@ export type GetReputationResponse = Message<"api.v1.GetReputationResponse"> & {
  * Describes the message api.v1.GetReputationResponse.
  * Use `create(GetReputationResponseSchema)` to create a new message.
  */
-export const GetReputationResponseSchema: GenMessage<GetReputationResponse> =
-  /*@__PURE__*/
+export const GetReputationResponseSchema: GenMessage<GetReputationResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_reputation, 2);
 
 /**
@@ -173,5 +158,7 @@ export const ReputationService: GenService<{
     methodKind: "unary";
     input: typeof GetReputationRequestSchema;
     output: typeof GetReputationResponseSchema;
-  };
-}> = /*@__PURE__*/ serviceDesc(file_api_v1_reputation, 0);
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_api_v1_reputation, 0);
+

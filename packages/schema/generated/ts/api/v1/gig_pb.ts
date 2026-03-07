@@ -2,22 +2,9 @@
 // @generated from file api/v1/gig.proto (package api.v1, syntax proto3)
 /* eslint-disable */
 
-import type {
-  GenEnum,
-  GenFile,
-  GenMessage,
-  GenService,
-} from "@bufbuild/protobuf/codegenv1";
-import {
-  enumDesc,
-  fileDesc,
-  messageDesc,
-  serviceDesc,
-} from "@bufbuild/protobuf/codegenv1";
-import type {
-  PaginationMeta,
-  PaginationRequest,
-} from "../../common/v1/pagination_pb";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
+import type { PaginationMeta, PaginationRequest } from "../../common/v1/pagination_pb";
 import { file_common_v1_pagination } from "../../common/v1/pagination_pb";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
@@ -26,12 +13,8 @@ import type { Message } from "@bufbuild/protobuf";
 /**
  * Describes the file api/v1/gig.proto.
  */
-export const file_api_v1_gig: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    "ChBhcGkvdjEvZ2lnLnByb3RvEgZhcGkudjEiogMKA0dpZxIKCgJpZBgBIAEoCRIRCgljbGllbnRfaWQYAiABKAkSFQoNZnJlZWxhbmNlcl9pZBgDIAEoCRINCgV0aXRsZRgEIAEoCRITCgtkZXNjcmlwdGlvbhgFIAEoCRIUCgx0b3RhbF9hbW91bnQYBiABKAkSIgoIY3VycmVuY3kYByABKA4yEC5hcGkudjEuQ3VycmVuY3kSFQoNdG9rZW5fYWRkcmVzcxgIIAEoCRIYChBjb250cmFjdF9hZGRyZXNzGAkgASgJEiEKBnN0YXR1cxgKIAEoDjIRLmFwaS52MS5HaWdTdGF0dXMSDAoEdGFncxgLIAMoCRIXCg9yZXF1aXJlZF9za2lsbHMYDCADKAkSLAoIZGVhZGxpbmUYDSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCmNyZWF0ZWRfYXQYDiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYDyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wInQKD0dpZ0NyZWF0ZWRFdmVudBIOCgZnaWdfaWQYASABKAkSEQoJY2xpZW50X2lkGAIgASgJEg0KBXRpdGxlGAMgASgJEi8KC29jY3VycmVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCK4AQoOR2lnRnVuZGVkRXZlbnQSDgoGZ2lnX2lkGAEgASgJEhEKCWNsaWVudF9pZBgCIAEoCRIYChBjb250cmFjdF9hZGRyZXNzGAMgASgJEhQKDHRvdGFsX2Ftb3VudBgEIAEoCRIiCghjdXJyZW5jeRgFIAEoDjIQLmFwaS52MS5DdXJyZW5jeRIvCgtvY2N1cnJlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAifgoRR2lnQ29tcGxldGVkRXZlbnQSDgoGZ2lnX2lkGAEgASgJEhEKCWNsaWVudF9pZBgCIAEoCRIVCg1mcmVlbGFuY2VyX2lkGAMgASgJEi8KC29jY3VycmVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCLcAQoQQ3JlYXRlR2lnUmVxdWVzdBINCgV0aXRsZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRIUCgx0b3RhbF9hbW91bnQYAyABKAkSIgoIY3VycmVuY3kYBCABKA4yEC5hcGkudjEuQ3VycmVuY3kSFQoNdG9rZW5fYWRkcmVzcxgFIAEoCRIMCgR0YWdzGAYgAygJEhcKD3JlcXVpcmVkX3NraWxscxgHIAMoCRIsCghkZWFkbGluZRgIIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiGwoNR2V0R2lnUmVxdWVzdBIKCgJpZBgBIAEoCSLlAQoOR2V0R2lnc1JlcXVlc3QSMAoKcGFnaW5hdGlvbhgBIAEoCzIcLmNvbW1vbi52MS5QYWdpbmF0aW9uUmVxdWVzdBIoCg1zdGF0dXNfZmlsdGVyGAIgASgOMhEuYXBpLnYxLkdpZ1N0YXR1cxIYChBjbGllbnRfaWRfZmlsdGVyGAMgASgJEhwKFGZyZWVsYW5jZXJfaWRfZmlsdGVyGAQgASgJEikKD2N1cnJlbmN5X2ZpbHRlchgFIAEoDjIQLmFwaS52MS5DdXJyZW5jeRIUCgxza2lsbF9maWx0ZXIYBiABKAkiWwoPR2V0R2lnc1Jlc3BvbnNlEhkKBGdpZ3MYASADKAsyCy5hcGkudjEuR2lnEi0KCnBhZ2luYXRpb24YAiABKAsyGS5jb21tb24udjEuUGFnaW5hdGlvbk1ldGEiQAoXQXNzaWduRnJlZWxhbmNlclJlcXVlc3QSDgoGZ2lnX2lkGAEgASgJEhUKDWZyZWVsYW5jZXJfaWQYAiABKAkiLQoRQ3JlYXRlR2lnUmVzcG9uc2USGAoDZ2lnGAEgASgLMgsuYXBpLnYxLkdpZyIqCg5HZXRHaWdSZXNwb25zZRIYCgNnaWcYASABKAsyCy5hcGkudjEuR2lnIjQKGEFzc2lnbkZyZWVsYW5jZXJSZXNwb25zZRIYCgNnaWcYASABKAsyCy5hcGkudjEuR2lnKrsBCglHaWdTdGF0dXMSGgoWR0lHX1NUQVRVU19VTlNQRUNJRklFRBAAEhQKEEdJR19TVEFUVVNfRFJBRlQQARITCg9HSUdfU1RBVFVTX09QRU4QAhIaChZHSUdfU1RBVFVTX0lOX1BST0dSRVNTEAMSGAoUR0lHX1NUQVRVU19DT01QTEVURUQQBBIYChRHSUdfU1RBVFVTX0NBTkNFTExFRBAFEhcKE0dJR19TVEFUVVNfRElTUFVURUQQBipJCghDdXJyZW5jeRIYChRDVVJSRU5DWV9VTlNQRUNJRklFRBAAEhAKDENVUlJFTkNZX0VUSBABEhEKDUNVUlJFTkNZX1VTREMQAjKaAgoKR2lnU2VydmljZRJACglDcmVhdGVHaWcSGC5hcGkudjEuQ3JlYXRlR2lnUmVxdWVzdBoZLmFwaS52MS5DcmVhdGVHaWdSZXNwb25zZRI3CgZHZXRHaWcSFS5hcGkudjEuR2V0R2lnUmVxdWVzdBoWLmFwaS52MS5HZXRHaWdSZXNwb25zZRI6CgdHZXRHaWdzEhYuYXBpLnYxLkdldEdpZ3NSZXF1ZXN0GhcuYXBpLnYxLkdldEdpZ3NSZXNwb25zZRJVChBBc3NpZ25GcmVlbGFuY2VyEh8uYXBpLnYxLkFzc2lnbkZyZWVsYW5jZXJSZXF1ZXN0GiAuYXBpLnYxLkFzc2lnbkZyZWVsYW5jZXJSZXNwb25zZUKgAQoKY29tLmFwaS52MUIIR2lnUHJvdG9QAVpPZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2FwaS92MTthcGl2MaICA0FYWKoCBkFwaS5WMcoCBkFwaVxWMeICEkFwaVxWMVxHUEJNZXRhZGF0YeoCB0FwaTo6VjFiBnByb3RvMw",
-    [file_common_v1_pagination, file_google_protobuf_timestamp],
-  );
+export const file_api_v1_gig: GenFile = /*@__PURE__*/
+  fileDesc("ChBhcGkvdjEvZ2lnLnByb3RvEgZhcGkudjEiogMKA0dpZxIKCgJpZBgBIAEoCRIRCgljbGllbnRfaWQYAiABKAkSFQoNZnJlZWxhbmNlcl9pZBgDIAEoCRINCgV0aXRsZRgEIAEoCRITCgtkZXNjcmlwdGlvbhgFIAEoCRIUCgx0b3RhbF9hbW91bnQYBiABKAkSIgoIY3VycmVuY3kYByABKA4yEC5hcGkudjEuQ3VycmVuY3kSFQoNdG9rZW5fYWRkcmVzcxgIIAEoCRIYChBjb250cmFjdF9hZGRyZXNzGAkgASgJEiEKBnN0YXR1cxgKIAEoDjIRLmFwaS52MS5HaWdTdGF0dXMSDAoEdGFncxgLIAMoCRIXCg9yZXF1aXJlZF9za2lsbHMYDCADKAkSLAoIZGVhZGxpbmUYDSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCmNyZWF0ZWRfYXQYDiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYDyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wInQKD0dpZ0NyZWF0ZWRFdmVudBIOCgZnaWdfaWQYASABKAkSEQoJY2xpZW50X2lkGAIgASgJEg0KBXRpdGxlGAMgASgJEi8KC29jY3VycmVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCK4AQoOR2lnRnVuZGVkRXZlbnQSDgoGZ2lnX2lkGAEgASgJEhEKCWNsaWVudF9pZBgCIAEoCRIYChBjb250cmFjdF9hZGRyZXNzGAMgASgJEhQKDHRvdGFsX2Ftb3VudBgEIAEoCRIiCghjdXJyZW5jeRgFIAEoDjIQLmFwaS52MS5DdXJyZW5jeRIvCgtvY2N1cnJlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAifgoRR2lnQ29tcGxldGVkRXZlbnQSDgoGZ2lnX2lkGAEgASgJEhEKCWNsaWVudF9pZBgCIAEoCRIVCg1mcmVlbGFuY2VyX2lkGAMgASgJEi8KC29jY3VycmVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCLcAQoQQ3JlYXRlR2lnUmVxdWVzdBINCgV0aXRsZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRIUCgx0b3RhbF9hbW91bnQYAyABKAkSIgoIY3VycmVuY3kYBCABKA4yEC5hcGkudjEuQ3VycmVuY3kSFQoNdG9rZW5fYWRkcmVzcxgFIAEoCRIMCgR0YWdzGAYgAygJEhcKD3JlcXVpcmVkX3NraWxscxgHIAMoCRIsCghkZWFkbGluZRgIIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiGwoNR2V0R2lnUmVxdWVzdBIKCgJpZBgBIAEoCSLlAQoOR2V0R2lnc1JlcXVlc3QSMAoKcGFnaW5hdGlvbhgBIAEoCzIcLmNvbW1vbi52MS5QYWdpbmF0aW9uUmVxdWVzdBIoCg1zdGF0dXNfZmlsdGVyGAIgASgOMhEuYXBpLnYxLkdpZ1N0YXR1cxIYChBjbGllbnRfaWRfZmlsdGVyGAMgASgJEhwKFGZyZWVsYW5jZXJfaWRfZmlsdGVyGAQgASgJEikKD2N1cnJlbmN5X2ZpbHRlchgFIAEoDjIQLmFwaS52MS5DdXJyZW5jeRIUCgxza2lsbF9maWx0ZXIYBiABKAkiWwoPR2V0R2lnc1Jlc3BvbnNlEhkKBGdpZ3MYASADKAsyCy5hcGkudjEuR2lnEi0KCnBhZ2luYXRpb24YAiABKAsyGS5jb21tb24udjEuUGFnaW5hdGlvbk1ldGEiQAoXQXNzaWduRnJlZWxhbmNlclJlcXVlc3QSDgoGZ2lnX2lkGAEgASgJEhUKDWZyZWVsYW5jZXJfaWQYAiABKAkiLQoRQ3JlYXRlR2lnUmVzcG9uc2USGAoDZ2lnGAEgASgLMgsuYXBpLnYxLkdpZyIqCg5HZXRHaWdSZXNwb25zZRIYCgNnaWcYASABKAsyCy5hcGkudjEuR2lnIjQKGEFzc2lnbkZyZWVsYW5jZXJSZXNwb25zZRIYCgNnaWcYASABKAsyCy5hcGkudjEuR2lnKrsBCglHaWdTdGF0dXMSGgoWR0lHX1NUQVRVU19VTlNQRUNJRklFRBAAEhQKEEdJR19TVEFUVVNfRFJBRlQQARITCg9HSUdfU1RBVFVTX09QRU4QAhIaChZHSUdfU1RBVFVTX0lOX1BST0dSRVNTEAMSGAoUR0lHX1NUQVRVU19DT01QTEVURUQQBBIYChRHSUdfU1RBVFVTX0NBTkNFTExFRBAFEhcKE0dJR19TVEFUVVNfRElTUFVURUQQBipJCghDdXJyZW5jeRIYChRDVVJSRU5DWV9VTlNQRUNJRklFRBAAEhAKDENVUlJFTkNZX0VUSBABEhEKDUNVUlJFTkNZX1VTREMQAjKaAgoKR2lnU2VydmljZRJACglDcmVhdGVHaWcSGC5hcGkudjEuQ3JlYXRlR2lnUmVxdWVzdBoZLmFwaS52MS5DcmVhdGVHaWdSZXNwb25zZRI3CgZHZXRHaWcSFS5hcGkudjEuR2V0R2lnUmVxdWVzdBoWLmFwaS52MS5HZXRHaWdSZXNwb25zZRI6CgdHZXRHaWdzEhYuYXBpLnYxLkdldEdpZ3NSZXF1ZXN0GhcuYXBpLnYxLkdldEdpZ3NSZXNwb25zZRJVChBBc3NpZ25GcmVlbGFuY2VyEh8uYXBpLnYxLkFzc2lnbkZyZWVsYW5jZXJSZXF1ZXN0GiAuYXBpLnYxLkFzc2lnbkZyZWVsYW5jZXJSZXNwb25zZUKgAQoKY29tLmFwaS52MUIIR2lnUHJvdG9QAVpPZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2FwaS92MTthcGl2MaICA0FYWKoCBkFwaS5WMcoCBkFwaVxWMeICEkFwaVxWMVxHUEJNZXRhZGF0YeoCB0FwaTo6VjFiBnByb3RvMw", [file_common_v1_pagination, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message api.v1.Gig
@@ -128,8 +111,7 @@ export type Gig = Message<"api.v1.Gig"> & {
  * Describes the message api.v1.Gig.
  * Use `create(GigSchema)` to create a new message.
  */
-export const GigSchema: GenMessage<Gig> =
-  /*@__PURE__*/
+export const GigSchema: GenMessage<Gig> = /*@__PURE__*/
   messageDesc(file_api_v1_gig, 0);
 
 /**
@@ -161,8 +143,7 @@ export type GigCreatedEvent = Message<"api.v1.GigCreatedEvent"> & {
  * Describes the message api.v1.GigCreatedEvent.
  * Use `create(GigCreatedEventSchema)` to create a new message.
  */
-export const GigCreatedEventSchema: GenMessage<GigCreatedEvent> =
-  /*@__PURE__*/
+export const GigCreatedEventSchema: GenMessage<GigCreatedEvent> = /*@__PURE__*/
   messageDesc(file_api_v1_gig, 1);
 
 /**
@@ -204,8 +185,7 @@ export type GigFundedEvent = Message<"api.v1.GigFundedEvent"> & {
  * Describes the message api.v1.GigFundedEvent.
  * Use `create(GigFundedEventSchema)` to create a new message.
  */
-export const GigFundedEventSchema: GenMessage<GigFundedEvent> =
-  /*@__PURE__*/
+export const GigFundedEventSchema: GenMessage<GigFundedEvent> = /*@__PURE__*/
   messageDesc(file_api_v1_gig, 2);
 
 /**
@@ -237,8 +217,7 @@ export type GigCompletedEvent = Message<"api.v1.GigCompletedEvent"> & {
  * Describes the message api.v1.GigCompletedEvent.
  * Use `create(GigCompletedEventSchema)` to create a new message.
  */
-export const GigCompletedEventSchema: GenMessage<GigCompletedEvent> =
-  /*@__PURE__*/
+export const GigCompletedEventSchema: GenMessage<GigCompletedEvent> = /*@__PURE__*/
   messageDesc(file_api_v1_gig, 3);
 
 /**
@@ -292,8 +271,7 @@ export type CreateGigRequest = Message<"api.v1.CreateGigRequest"> & {
  * Describes the message api.v1.CreateGigRequest.
  * Use `create(CreateGigRequestSchema)` to create a new message.
  */
-export const CreateGigRequestSchema: GenMessage<CreateGigRequest> =
-  /*@__PURE__*/
+export const CreateGigRequestSchema: GenMessage<CreateGigRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_gig, 4);
 
 /**
@@ -310,8 +288,7 @@ export type GetGigRequest = Message<"api.v1.GetGigRequest"> & {
  * Describes the message api.v1.GetGigRequest.
  * Use `create(GetGigRequestSchema)` to create a new message.
  */
-export const GetGigRequestSchema: GenMessage<GetGigRequest> =
-  /*@__PURE__*/
+export const GetGigRequestSchema: GenMessage<GetGigRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_gig, 5);
 
 /**
@@ -355,8 +332,7 @@ export type GetGigsRequest = Message<"api.v1.GetGigsRequest"> & {
  * Describes the message api.v1.GetGigsRequest.
  * Use `create(GetGigsRequestSchema)` to create a new message.
  */
-export const GetGigsRequestSchema: GenMessage<GetGigsRequest> =
-  /*@__PURE__*/
+export const GetGigsRequestSchema: GenMessage<GetGigsRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_gig, 6);
 
 /**
@@ -378,32 +354,29 @@ export type GetGigsResponse = Message<"api.v1.GetGigsResponse"> & {
  * Describes the message api.v1.GetGigsResponse.
  * Use `create(GetGigsResponseSchema)` to create a new message.
  */
-export const GetGigsResponseSchema: GenMessage<GetGigsResponse> =
-  /*@__PURE__*/
+export const GetGigsResponseSchema: GenMessage<GetGigsResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_gig, 7);
 
 /**
  * @generated from message api.v1.AssignFreelancerRequest
  */
-export type AssignFreelancerRequest =
-  Message<"api.v1.AssignFreelancerRequest"> & {
-    /**
-     * @generated from field: string gig_id = 1;
-     */
-    gigId: string;
+export type AssignFreelancerRequest = Message<"api.v1.AssignFreelancerRequest"> & {
+  /**
+   * @generated from field: string gig_id = 1;
+   */
+  gigId: string;
 
-    /**
-     * @generated from field: string freelancer_id = 2;
-     */
-    freelancerId: string;
-  };
+  /**
+   * @generated from field: string freelancer_id = 2;
+   */
+  freelancerId: string;
+};
 
 /**
  * Describes the message api.v1.AssignFreelancerRequest.
  * Use `create(AssignFreelancerRequestSchema)` to create a new message.
  */
-export const AssignFreelancerRequestSchema: GenMessage<AssignFreelancerRequest> =
-  /*@__PURE__*/
+export const AssignFreelancerRequestSchema: GenMessage<AssignFreelancerRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_gig, 8);
 
 /**
@@ -420,8 +393,7 @@ export type CreateGigResponse = Message<"api.v1.CreateGigResponse"> & {
  * Describes the message api.v1.CreateGigResponse.
  * Use `create(CreateGigResponseSchema)` to create a new message.
  */
-export const CreateGigResponseSchema: GenMessage<CreateGigResponse> =
-  /*@__PURE__*/
+export const CreateGigResponseSchema: GenMessage<CreateGigResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_gig, 9);
 
 /**
@@ -438,27 +410,24 @@ export type GetGigResponse = Message<"api.v1.GetGigResponse"> & {
  * Describes the message api.v1.GetGigResponse.
  * Use `create(GetGigResponseSchema)` to create a new message.
  */
-export const GetGigResponseSchema: GenMessage<GetGigResponse> =
-  /*@__PURE__*/
+export const GetGigResponseSchema: GenMessage<GetGigResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_gig, 10);
 
 /**
  * @generated from message api.v1.AssignFreelancerResponse
  */
-export type AssignFreelancerResponse =
-  Message<"api.v1.AssignFreelancerResponse"> & {
-    /**
-     * @generated from field: api.v1.Gig gig = 1;
-     */
-    gig?: Gig;
-  };
+export type AssignFreelancerResponse = Message<"api.v1.AssignFreelancerResponse"> & {
+  /**
+   * @generated from field: api.v1.Gig gig = 1;
+   */
+  gig?: Gig;
+};
 
 /**
  * Describes the message api.v1.AssignFreelancerResponse.
  * Use `create(AssignFreelancerResponseSchema)` to create a new message.
  */
-export const AssignFreelancerResponseSchema: GenMessage<AssignFreelancerResponse> =
-  /*@__PURE__*/
+export const AssignFreelancerResponseSchema: GenMessage<AssignFreelancerResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_gig, 11);
 
 /**
@@ -516,8 +485,7 @@ export enum GigStatus {
 /**
  * Describes the enum api.v1.GigStatus.
  */
-export const GigStatusSchema: GenEnum<GigStatus> =
-  /*@__PURE__*/
+export const GigStatusSchema: GenEnum<GigStatus> = /*@__PURE__*/
   enumDesc(file_api_v1_gig, 0);
 
 /**
@@ -543,8 +511,7 @@ export enum Currency {
 /**
  * Describes the enum api.v1.Currency.
  */
-export const CurrencySchema: GenEnum<Currency> =
-  /*@__PURE__*/
+export const CurrencySchema: GenEnum<Currency> = /*@__PURE__*/
   enumDesc(file_api_v1_gig, 1);
 
 /**
@@ -558,7 +525,7 @@ export const GigService: GenService<{
     methodKind: "unary";
     input: typeof CreateGigRequestSchema;
     output: typeof CreateGigResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.GigService.GetGig
    */
@@ -566,7 +533,7 @@ export const GigService: GenService<{
     methodKind: "unary";
     input: typeof GetGigRequestSchema;
     output: typeof GetGigResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.GigService.GetGigs
    */
@@ -574,7 +541,7 @@ export const GigService: GenService<{
     methodKind: "unary";
     input: typeof GetGigsRequestSchema;
     output: typeof GetGigsResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.GigService.AssignFreelancer
    */
@@ -582,5 +549,7 @@ export const GigService: GenService<{
     methodKind: "unary";
     input: typeof AssignFreelancerRequestSchema;
     output: typeof AssignFreelancerResponseSchema;
-  };
-}> = /*@__PURE__*/ serviceDesc(file_api_v1_gig, 0);
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_api_v1_gig, 0);
+

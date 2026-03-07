@@ -2,16 +2,8 @@
 // @generated from file api/v1/auth.proto (package api.v1, syntax proto3)
 /* eslint-disable */
 
-import type {
-  GenFile,
-  GenMessage,
-  GenService,
-} from "@bufbuild/protobuf/codegenv1";
-import {
-  fileDesc,
-  messageDesc,
-  serviceDesc,
-} from "@bufbuild/protobuf/codegenv1";
+import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
+import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
@@ -19,12 +11,8 @@ import type { Message } from "@bufbuild/protobuf";
 /**
  * Describes the file api/v1/auth.proto.
  */
-export const file_api_v1_auth: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    "ChFhcGkvdjEvYXV0aC5wcm90bxIGYXBpLnYxImIKCUF1dGhOb25jZRIWCg53YWxsZXRfYWRkcmVzcxgBIAEoCRINCgVub25jZRgCIAEoCRIuCgpleHBpcmVzX2F0GAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCIpCg9HZXROb25jZVJlcXVlc3QSFgoOd2FsbGV0X2FkZHJlc3MYASABKAkiUQoQR2V0Tm9uY2VSZXNwb25zZRINCgVub25jZRgBIAEoCRIuCgpleHBpcmVzX2F0GAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCJQChJXYWxsZXRMb2dpblJlcXVlc3QSFgoOd2FsbGV0X2FkZHJlc3MYASABKAkSEQoJc2lnbmF0dXJlGAIgASgJEg8KB21lc3NhZ2UYAyABKAkiUwoURW1haWxSZWdpc3RlclJlcXVlc3QSDQoFZW1haWwYASABKAkSEAoIcGFzc3dvcmQYAiABKAkSDAoEbmFtZRgDIAEoCRIMCgRyb2xlGAQgASgJIjQKEUVtYWlsTG9naW5SZXF1ZXN0Eg0KBWVtYWlsGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIl0KDEF1dGhSZXNwb25zZRIUCgxhY2Nlc3NfdG9rZW4YASABKAkSEgoKdG9rZW5fdHlwZRgCIAEoCRISCgpleHBpcmVzX2luGAMgASgDEg8KB3VzZXJfaWQYBCABKAkiOQoTV2FsbGV0TG9naW5SZXNwb25zZRIiCgRhdXRoGAEgASgLMhQuYXBpLnYxLkF1dGhSZXNwb25zZSI7ChVFbWFpbFJlZ2lzdGVyUmVzcG9uc2USIgoEYXV0aBgBIAEoCzIULmFwaS52MS5BdXRoUmVzcG9uc2UiOAoSRW1haWxMb2dpblJlc3BvbnNlEiIKBGF1dGgYASABKAsyFC5hcGkudjEuQXV0aFJlc3BvbnNlMqcCCgtBdXRoU2VydmljZRI9CghHZXROb25jZRIXLmFwaS52MS5HZXROb25jZVJlcXVlc3QaGC5hcGkudjEuR2V0Tm9uY2VSZXNwb25zZRJGCgtXYWxsZXRMb2dpbhIaLmFwaS52MS5XYWxsZXRMb2dpblJlcXVlc3QaGy5hcGkudjEuV2FsbGV0TG9naW5SZXNwb25zZRJMCg1FbWFpbFJlZ2lzdGVyEhwuYXBpLnYxLkVtYWlsUmVnaXN0ZXJSZXF1ZXN0Gh0uYXBpLnYxLkVtYWlsUmVnaXN0ZXJSZXNwb25zZRJDCgpFbWFpbExvZ2luEhkuYXBpLnYxLkVtYWlsTG9naW5SZXF1ZXN0GhouYXBpLnYxLkVtYWlsTG9naW5SZXNwb25zZUKhAQoKY29tLmFwaS52MUIJQXV0aFByb3RvUAFaT2dpdGh1Yi5jb20vYWdhcndhbHZpdmVrMjkvc2tpbGxicmlkZ2UvcGFja2FnZXMvc2NoZW1hL2dlbmVyYXRlZC9nby9hcGkvdjE7YXBpdjGiAgNBWFiqAgZBcGkuVjHKAgZBcGlcVjHiAhJBcGlcVjFcR1BCTWV0YWRhdGHqAgdBcGk6OlYxYgZwcm90bzM",
-    [file_google_protobuf_timestamp],
-  );
+export const file_api_v1_auth: GenFile = /*@__PURE__*/
+  fileDesc("ChFhcGkvdjEvYXV0aC5wcm90bxIGYXBpLnYxImIKCUF1dGhOb25jZRIWCg53YWxsZXRfYWRkcmVzcxgBIAEoCRINCgVub25jZRgCIAEoCRIuCgpleHBpcmVzX2F0GAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCIpCg9HZXROb25jZVJlcXVlc3QSFgoOd2FsbGV0X2FkZHJlc3MYASABKAkiUQoQR2V0Tm9uY2VSZXNwb25zZRINCgVub25jZRgBIAEoCRIuCgpleHBpcmVzX2F0GAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCJQChJXYWxsZXRMb2dpblJlcXVlc3QSFgoOd2FsbGV0X2FkZHJlc3MYASABKAkSEQoJc2lnbmF0dXJlGAIgASgJEg8KB21lc3NhZ2UYAyABKAkiUwoURW1haWxSZWdpc3RlclJlcXVlc3QSDQoFZW1haWwYASABKAkSEAoIcGFzc3dvcmQYAiABKAkSDAoEbmFtZRgDIAEoCRIMCgRyb2xlGAQgASgJIjQKEUVtYWlsTG9naW5SZXF1ZXN0Eg0KBWVtYWlsGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIl0KDEF1dGhSZXNwb25zZRIUCgxhY2Nlc3NfdG9rZW4YASABKAkSEgoKdG9rZW5fdHlwZRgCIAEoCRISCgpleHBpcmVzX2luGAMgASgDEg8KB3VzZXJfaWQYBCABKAkiOQoTV2FsbGV0TG9naW5SZXNwb25zZRIiCgRhdXRoGAEgASgLMhQuYXBpLnYxLkF1dGhSZXNwb25zZSI7ChVFbWFpbFJlZ2lzdGVyUmVzcG9uc2USIgoEYXV0aBgBIAEoCzIULmFwaS52MS5BdXRoUmVzcG9uc2UiOAoSRW1haWxMb2dpblJlc3BvbnNlEiIKBGF1dGgYASABKAsyFC5hcGkudjEuQXV0aFJlc3BvbnNlMqcCCgtBdXRoU2VydmljZRI9CghHZXROb25jZRIXLmFwaS52MS5HZXROb25jZVJlcXVlc3QaGC5hcGkudjEuR2V0Tm9uY2VSZXNwb25zZRJGCgtXYWxsZXRMb2dpbhIaLmFwaS52MS5XYWxsZXRMb2dpblJlcXVlc3QaGy5hcGkudjEuV2FsbGV0TG9naW5SZXNwb25zZRJMCg1FbWFpbFJlZ2lzdGVyEhwuYXBpLnYxLkVtYWlsUmVnaXN0ZXJSZXF1ZXN0Gh0uYXBpLnYxLkVtYWlsUmVnaXN0ZXJSZXNwb25zZRJDCgpFbWFpbExvZ2luEhkuYXBpLnYxLkVtYWlsTG9naW5SZXF1ZXN0GhouYXBpLnYxLkVtYWlsTG9naW5SZXNwb25zZUKhAQoKY29tLmFwaS52MUIJQXV0aFByb3RvUAFaT2dpdGh1Yi5jb20vYWdhcndhbHZpdmVrMjkvc2tpbGxicmlkZ2UvcGFja2FnZXMvc2NoZW1hL2dlbmVyYXRlZC9nby9hcGkvdjE7YXBpdjGiAgNBWFiqAgZBcGkuVjHKAgZBcGlcVjHiAhJBcGlcVjFcR1BCTWV0YWRhdGHqAgdBcGk6OlYxYgZwcm90bzM", [file_google_protobuf_timestamp]);
 
 /**
  * Ephemeral nonce issued for SIWE (Sign-In with Ethereum).
@@ -53,8 +41,7 @@ export type AuthNonce = Message<"api.v1.AuthNonce"> & {
  * Describes the message api.v1.AuthNonce.
  * Use `create(AuthNonceSchema)` to create a new message.
  */
-export const AuthNonceSchema: GenMessage<AuthNonce> =
-  /*@__PURE__*/
+export const AuthNonceSchema: GenMessage<AuthNonce> = /*@__PURE__*/
   messageDesc(file_api_v1_auth, 0);
 
 /**
@@ -73,8 +60,7 @@ export type GetNonceRequest = Message<"api.v1.GetNonceRequest"> & {
  * Describes the message api.v1.GetNonceRequest.
  * Use `create(GetNonceRequestSchema)` to create a new message.
  */
-export const GetNonceRequestSchema: GenMessage<GetNonceRequest> =
-  /*@__PURE__*/
+export const GetNonceRequestSchema: GenMessage<GetNonceRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_auth, 1);
 
 /**
@@ -96,8 +82,7 @@ export type GetNonceResponse = Message<"api.v1.GetNonceResponse"> & {
  * Describes the message api.v1.GetNonceResponse.
  * Use `create(GetNonceResponseSchema)` to create a new message.
  */
-export const GetNonceResponseSchema: GenMessage<GetNonceResponse> =
-  /*@__PURE__*/
+export const GetNonceResponseSchema: GenMessage<GetNonceResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_auth, 2);
 
 /**
@@ -128,8 +113,7 @@ export type WalletLoginRequest = Message<"api.v1.WalletLoginRequest"> & {
  * Describes the message api.v1.WalletLoginRequest.
  * Use `create(WalletLoginRequestSchema)` to create a new message.
  */
-export const WalletLoginRequestSchema: GenMessage<WalletLoginRequest> =
-  /*@__PURE__*/
+export const WalletLoginRequestSchema: GenMessage<WalletLoginRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_auth, 3);
 
 /**
@@ -163,8 +147,7 @@ export type EmailRegisterRequest = Message<"api.v1.EmailRegisterRequest"> & {
  * Describes the message api.v1.EmailRegisterRequest.
  * Use `create(EmailRegisterRequestSchema)` to create a new message.
  */
-export const EmailRegisterRequestSchema: GenMessage<EmailRegisterRequest> =
-  /*@__PURE__*/
+export const EmailRegisterRequestSchema: GenMessage<EmailRegisterRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_auth, 4);
 
 /**
@@ -186,8 +169,7 @@ export type EmailLoginRequest = Message<"api.v1.EmailLoginRequest"> & {
  * Describes the message api.v1.EmailLoginRequest.
  * Use `create(EmailLoginRequestSchema)` to create a new message.
  */
-export const EmailLoginRequestSchema: GenMessage<EmailLoginRequest> =
-  /*@__PURE__*/
+export const EmailLoginRequestSchema: GenMessage<EmailLoginRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_auth, 5);
 
 /**
@@ -223,8 +205,7 @@ export type AuthResponse = Message<"api.v1.AuthResponse"> & {
  * Describes the message api.v1.AuthResponse.
  * Use `create(AuthResponseSchema)` to create a new message.
  */
-export const AuthResponseSchema: GenMessage<AuthResponse> =
-  /*@__PURE__*/
+export const AuthResponseSchema: GenMessage<AuthResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_auth, 6);
 
 /**
@@ -241,8 +222,7 @@ export type WalletLoginResponse = Message<"api.v1.WalletLoginResponse"> & {
  * Describes the message api.v1.WalletLoginResponse.
  * Use `create(WalletLoginResponseSchema)` to create a new message.
  */
-export const WalletLoginResponseSchema: GenMessage<WalletLoginResponse> =
-  /*@__PURE__*/
+export const WalletLoginResponseSchema: GenMessage<WalletLoginResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_auth, 7);
 
 /**
@@ -259,8 +239,7 @@ export type EmailRegisterResponse = Message<"api.v1.EmailRegisterResponse"> & {
  * Describes the message api.v1.EmailRegisterResponse.
  * Use `create(EmailRegisterResponseSchema)` to create a new message.
  */
-export const EmailRegisterResponseSchema: GenMessage<EmailRegisterResponse> =
-  /*@__PURE__*/
+export const EmailRegisterResponseSchema: GenMessage<EmailRegisterResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_auth, 8);
 
 /**
@@ -277,8 +256,7 @@ export type EmailLoginResponse = Message<"api.v1.EmailLoginResponse"> & {
  * Describes the message api.v1.EmailLoginResponse.
  * Use `create(EmailLoginResponseSchema)` to create a new message.
  */
-export const EmailLoginResponseSchema: GenMessage<EmailLoginResponse> =
-  /*@__PURE__*/
+export const EmailLoginResponseSchema: GenMessage<EmailLoginResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_auth, 9);
 
 /**
@@ -292,7 +270,7 @@ export const AuthService: GenService<{
     methodKind: "unary";
     input: typeof GetNonceRequestSchema;
     output: typeof GetNonceResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.AuthService.WalletLogin
    */
@@ -300,7 +278,7 @@ export const AuthService: GenService<{
     methodKind: "unary";
     input: typeof WalletLoginRequestSchema;
     output: typeof WalletLoginResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.AuthService.EmailRegister
    */
@@ -308,7 +286,7 @@ export const AuthService: GenService<{
     methodKind: "unary";
     input: typeof EmailRegisterRequestSchema;
     output: typeof EmailRegisterResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.AuthService.EmailLogin
    */
@@ -316,5 +294,7 @@ export const AuthService: GenService<{
     methodKind: "unary";
     input: typeof EmailLoginRequestSchema;
     output: typeof EmailLoginResponseSchema;
-  };
-}> = /*@__PURE__*/ serviceDesc(file_api_v1_auth, 0);
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_api_v1_auth, 0);
+

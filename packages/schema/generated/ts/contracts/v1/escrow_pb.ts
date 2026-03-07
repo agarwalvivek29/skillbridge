@@ -2,18 +2,8 @@
 // @generated from file contracts/v1/escrow.proto (package contracts.v1, syntax proto3)
 /* eslint-disable */
 
-import type {
-  GenEnum,
-  GenFile,
-  GenMessage,
-  GenService,
-} from "@bufbuild/protobuf/codegenv1";
-import {
-  enumDesc,
-  fileDesc,
-  messageDesc,
-  serviceDesc,
-} from "@bufbuild/protobuf/codegenv1";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
@@ -21,12 +11,8 @@ import type { Message } from "@bufbuild/protobuf";
 /**
  * Describes the file contracts/v1/escrow.proto.
  */
-export const file_contracts_v1_escrow: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    "Chljb250cmFjdHMvdjEvZXNjcm93LnByb3RvEgxjb250cmFjdHMudjEizgMKDkVzY3Jvd0NvbnRyYWN0EgoKAmlkGAEgASgJEg4KBmdpZ19pZBgCIAEoCRIVCg1jaGFpbl9hZGRyZXNzGAMgASgJEg8KB25ldHdvcmsYBCABKAkSFAoMdG90YWxfYW1vdW50GAUgASgJEhcKD3JlbGVhc2VkX2Ftb3VudBgGIAEoCRIqCgZzdGF0dXMYByABKA4yGi5jb250cmFjdHMudjEuRXNjcm93U3RhdHVzEhUKDXRva2VuX2FkZHJlc3MYCCABKAkSIQoZcGxhdGZvcm1fZmVlX2Jhc2lzX3BvaW50cxgJIAEoBRIbChNwbGF0Zm9ybV9mZWVfYW1vdW50GAogASgJEh4KFnBsYXRmb3JtX2ZlZV9yZWNpcGllbnQYCyABKAkSFwoPZnVuZGluZ190eF9oYXNoGAwgASgJEi4KCmNyZWF0ZWRfYXQYDSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi0KCWZ1bmRlZF9hdBgOIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKc2V0dGxlZF9hdBgPIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAixAEKEUVzY3Jvd0Z1bmRlZEV2ZW50EhEKCWVzY3Jvd19pZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSFQoNY2hhaW5fYWRkcmVzcxgDIAEoCRIUCgx0b3RhbF9hbW91bnQYBCABKAkSFQoNdG9rZW5fYWRkcmVzcxgFIAEoCRIXCg9mdW5kaW5nX3R4X2hhc2gYBiABKAkSLwoLb2NjdXJyZWRfYXQYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wItwBChJGdW5kc1JlbGVhc2VkRXZlbnQSEQoJZXNjcm93X2lkGAEgASgJEg4KBmdpZ19pZBgCIAEoCRIUCgxtaWxlc3RvbmVfaWQYAyABKAkSGgoSZnJlZWxhbmNlcl9hZGRyZXNzGAQgASgJEhIKCm5ldF9hbW91bnQYBSABKAkSGwoTcGxhdGZvcm1fZmVlX2Ftb3VudBgGIAEoCRIPCgd0eF9oYXNoGAcgASgJEi8KC29jY3VycmVkX2F0GAggASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCIiChBHZXRFc2Nyb3dSZXF1ZXN0Eg4KBmdpZ19pZBgBIAEoCSJmChxSZWxlYXNlTWlsZXN0b25lRnVuZHNSZXF1ZXN0Eg4KBmdpZ19pZBgBIAEoCRIUCgxtaWxlc3RvbmVfaWQYAiABKAkSIAoYY29udHJhY3RfbWlsZXN0b25lX2luZGV4GAMgASgFIkEKEUdldEVzY3Jvd1Jlc3BvbnNlEiwKBmVzY3JvdxgBIAEoCzIcLmNvbnRyYWN0cy52MS5Fc2Nyb3dDb250cmFjdCJNCh1SZWxlYXNlTWlsZXN0b25lRnVuZHNSZXNwb25zZRIsCgZlc2Nyb3cYASABKAsyHC5jb250cmFjdHMudjEuRXNjcm93Q29udHJhY3Qq3QEKDEVzY3Jvd1N0YXR1cxIdChlFU0NST1dfU1RBVFVTX1VOU1BFQ0lGSUVEEAASGwoXRVNDUk9XX1NUQVRVU19ERVBMT1lJTkcQARIYChRFU0NST1dfU1RBVFVTX0ZVTkRFRBACEiQKIEVTQ1JPV19TVEFUVVNfUEFSVElBTExZX1JFTEVBU0VEEAMSGQoVRVNDUk9XX1NUQVRVU19TRVRUTEVEEAQSGgoWRVNDUk9XX1NUQVRVU19ESVNQVVRFRBAFEhoKFkVTQ1JPV19TVEFUVVNfUkVGVU5ERUQQBjLPAQoNRXNjcm93U2VydmljZRJMCglHZXRFc2Nyb3cSHi5jb250cmFjdHMudjEuR2V0RXNjcm93UmVxdWVzdBofLmNvbnRyYWN0cy52MS5HZXRFc2Nyb3dSZXNwb25zZRJwChVSZWxlYXNlTWlsZXN0b25lRnVuZHMSKi5jb250cmFjdHMudjEuUmVsZWFzZU1pbGVzdG9uZUZ1bmRzUmVxdWVzdBorLmNvbnRyYWN0cy52MS5SZWxlYXNlTWlsZXN0b25lRnVuZHNSZXNwb25zZULNAQoQY29tLmNvbnRyYWN0cy52MUILRXNjcm93UHJvdG9QAVpbZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2NvbnRyYWN0cy92MTtjb250cmFjdHN2MaICA0NYWKoCDENvbnRyYWN0cy5WMcoCDENvbnRyYWN0c1xWMeICGENvbnRyYWN0c1xWMVxHUEJNZXRhZGF0YeoCDUNvbnRyYWN0czo6VjFiBnByb3RvMw",
-    [file_google_protobuf_timestamp],
-  );
+export const file_contracts_v1_escrow: GenFile = /*@__PURE__*/
+  fileDesc("Chljb250cmFjdHMvdjEvZXNjcm93LnByb3RvEgxjb250cmFjdHMudjEizgMKDkVzY3Jvd0NvbnRyYWN0EgoKAmlkGAEgASgJEg4KBmdpZ19pZBgCIAEoCRIVCg1jaGFpbl9hZGRyZXNzGAMgASgJEg8KB25ldHdvcmsYBCABKAkSFAoMdG90YWxfYW1vdW50GAUgASgJEhcKD3JlbGVhc2VkX2Ftb3VudBgGIAEoCRIqCgZzdGF0dXMYByABKA4yGi5jb250cmFjdHMudjEuRXNjcm93U3RhdHVzEhUKDXRva2VuX2FkZHJlc3MYCCABKAkSIQoZcGxhdGZvcm1fZmVlX2Jhc2lzX3BvaW50cxgJIAEoBRIbChNwbGF0Zm9ybV9mZWVfYW1vdW50GAogASgJEh4KFnBsYXRmb3JtX2ZlZV9yZWNpcGllbnQYCyABKAkSFwoPZnVuZGluZ190eF9oYXNoGAwgASgJEi4KCmNyZWF0ZWRfYXQYDSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi0KCWZ1bmRlZF9hdBgOIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKc2V0dGxlZF9hdBgPIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAixAEKEUVzY3Jvd0Z1bmRlZEV2ZW50EhEKCWVzY3Jvd19pZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSFQoNY2hhaW5fYWRkcmVzcxgDIAEoCRIUCgx0b3RhbF9hbW91bnQYBCABKAkSFQoNdG9rZW5fYWRkcmVzcxgFIAEoCRIXCg9mdW5kaW5nX3R4X2hhc2gYBiABKAkSLwoLb2NjdXJyZWRfYXQYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wItwBChJGdW5kc1JlbGVhc2VkRXZlbnQSEQoJZXNjcm93X2lkGAEgASgJEg4KBmdpZ19pZBgCIAEoCRIUCgxtaWxlc3RvbmVfaWQYAyABKAkSGgoSZnJlZWxhbmNlcl9hZGRyZXNzGAQgASgJEhIKCm5ldF9hbW91bnQYBSABKAkSGwoTcGxhdGZvcm1fZmVlX2Ftb3VudBgGIAEoCRIPCgd0eF9oYXNoGAcgASgJEi8KC29jY3VycmVkX2F0GAggASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCIiChBHZXRFc2Nyb3dSZXF1ZXN0Eg4KBmdpZ19pZBgBIAEoCSJmChxSZWxlYXNlTWlsZXN0b25lRnVuZHNSZXF1ZXN0Eg4KBmdpZ19pZBgBIAEoCRIUCgxtaWxlc3RvbmVfaWQYAiABKAkSIAoYY29udHJhY3RfbWlsZXN0b25lX2luZGV4GAMgASgFIkEKEUdldEVzY3Jvd1Jlc3BvbnNlEiwKBmVzY3JvdxgBIAEoCzIcLmNvbnRyYWN0cy52MS5Fc2Nyb3dDb250cmFjdCJNCh1SZWxlYXNlTWlsZXN0b25lRnVuZHNSZXNwb25zZRIsCgZlc2Nyb3cYASABKAsyHC5jb250cmFjdHMudjEuRXNjcm93Q29udHJhY3Qq3QEKDEVzY3Jvd1N0YXR1cxIdChlFU0NST1dfU1RBVFVTX1VOU1BFQ0lGSUVEEAASGwoXRVNDUk9XX1NUQVRVU19ERVBMT1lJTkcQARIYChRFU0NST1dfU1RBVFVTX0ZVTkRFRBACEiQKIEVTQ1JPV19TVEFUVVNfUEFSVElBTExZX1JFTEVBU0VEEAMSGQoVRVNDUk9XX1NUQVRVU19TRVRUTEVEEAQSGgoWRVNDUk9XX1NUQVRVU19ESVNQVVRFRBAFEhoKFkVTQ1JPV19TVEFUVVNfUkVGVU5ERUQQBjLPAQoNRXNjcm93U2VydmljZRJMCglHZXRFc2Nyb3cSHi5jb250cmFjdHMudjEuR2V0RXNjcm93UmVxdWVzdBofLmNvbnRyYWN0cy52MS5HZXRFc2Nyb3dSZXNwb25zZRJwChVSZWxlYXNlTWlsZXN0b25lRnVuZHMSKi5jb250cmFjdHMudjEuUmVsZWFzZU1pbGVzdG9uZUZ1bmRzUmVxdWVzdBorLmNvbnRyYWN0cy52MS5SZWxlYXNlTWlsZXN0b25lRnVuZHNSZXNwb25zZULNAQoQY29tLmNvbnRyYWN0cy52MUILRXNjcm93UHJvdG9QAVpbZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2NvbnRyYWN0cy92MTtjb250cmFjdHN2MaICA0NYWKoCDENvbnRyYWN0cy5WMcoCDENvbnRyYWN0c1xWMeICGENvbnRyYWN0c1xWMVxHUEJNZXRhZGF0YeoCDUNvbnRyYWN0czo6VjFiBnByb3RvMw", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message contracts.v1.EscrowContract
@@ -130,8 +116,7 @@ export type EscrowContract = Message<"contracts.v1.EscrowContract"> & {
  * Describes the message contracts.v1.EscrowContract.
  * Use `create(EscrowContractSchema)` to create a new message.
  */
-export const EscrowContractSchema: GenMessage<EscrowContract> =
-  /*@__PURE__*/
+export const EscrowContractSchema: GenMessage<EscrowContract> = /*@__PURE__*/
   messageDesc(file_contracts_v1_escrow, 0);
 
 /**
@@ -178,8 +163,7 @@ export type EscrowFundedEvent = Message<"contracts.v1.EscrowFundedEvent"> & {
  * Describes the message contracts.v1.EscrowFundedEvent.
  * Use `create(EscrowFundedEventSchema)` to create a new message.
  */
-export const EscrowFundedEventSchema: GenMessage<EscrowFundedEvent> =
-  /*@__PURE__*/
+export const EscrowFundedEventSchema: GenMessage<EscrowFundedEvent> = /*@__PURE__*/
   messageDesc(file_contracts_v1_escrow, 1);
 
 /**
@@ -233,8 +217,7 @@ export type FundsReleasedEvent = Message<"contracts.v1.FundsReleasedEvent"> & {
  * Describes the message contracts.v1.FundsReleasedEvent.
  * Use `create(FundsReleasedEventSchema)` to create a new message.
  */
-export const FundsReleasedEventSchema: GenMessage<FundsReleasedEvent> =
-  /*@__PURE__*/
+export const FundsReleasedEventSchema: GenMessage<FundsReleasedEvent> = /*@__PURE__*/
   messageDesc(file_contracts_v1_escrow, 2);
 
 /**
@@ -251,37 +234,34 @@ export type GetEscrowRequest = Message<"contracts.v1.GetEscrowRequest"> & {
  * Describes the message contracts.v1.GetEscrowRequest.
  * Use `create(GetEscrowRequestSchema)` to create a new message.
  */
-export const GetEscrowRequestSchema: GenMessage<GetEscrowRequest> =
-  /*@__PURE__*/
+export const GetEscrowRequestSchema: GenMessage<GetEscrowRequest> = /*@__PURE__*/
   messageDesc(file_contracts_v1_escrow, 3);
 
 /**
  * @generated from message contracts.v1.ReleaseMilestoneFundsRequest
  */
-export type ReleaseMilestoneFundsRequest =
-  Message<"contracts.v1.ReleaseMilestoneFundsRequest"> & {
-    /**
-     * @generated from field: string gig_id = 1;
-     */
-    gigId: string;
+export type ReleaseMilestoneFundsRequest = Message<"contracts.v1.ReleaseMilestoneFundsRequest"> & {
+  /**
+   * @generated from field: string gig_id = 1;
+   */
+  gigId: string;
 
-    /**
-     * @generated from field: string milestone_id = 2;
-     */
-    milestoneId: string;
+  /**
+   * @generated from field: string milestone_id = 2;
+   */
+  milestoneId: string;
 
-    /**
-     * @generated from field: int32 contract_milestone_index = 3;
-     */
-    contractMilestoneIndex: number;
-  };
+  /**
+   * @generated from field: int32 contract_milestone_index = 3;
+   */
+  contractMilestoneIndex: number;
+};
 
 /**
  * Describes the message contracts.v1.ReleaseMilestoneFundsRequest.
  * Use `create(ReleaseMilestoneFundsRequestSchema)` to create a new message.
  */
-export const ReleaseMilestoneFundsRequestSchema: GenMessage<ReleaseMilestoneFundsRequest> =
-  /*@__PURE__*/
+export const ReleaseMilestoneFundsRequestSchema: GenMessage<ReleaseMilestoneFundsRequest> = /*@__PURE__*/
   messageDesc(file_contracts_v1_escrow, 4);
 
 /**
@@ -298,27 +278,24 @@ export type GetEscrowResponse = Message<"contracts.v1.GetEscrowResponse"> & {
  * Describes the message contracts.v1.GetEscrowResponse.
  * Use `create(GetEscrowResponseSchema)` to create a new message.
  */
-export const GetEscrowResponseSchema: GenMessage<GetEscrowResponse> =
-  /*@__PURE__*/
+export const GetEscrowResponseSchema: GenMessage<GetEscrowResponse> = /*@__PURE__*/
   messageDesc(file_contracts_v1_escrow, 5);
 
 /**
  * @generated from message contracts.v1.ReleaseMilestoneFundsResponse
  */
-export type ReleaseMilestoneFundsResponse =
-  Message<"contracts.v1.ReleaseMilestoneFundsResponse"> & {
-    /**
-     * @generated from field: contracts.v1.EscrowContract escrow = 1;
-     */
-    escrow?: EscrowContract;
-  };
+export type ReleaseMilestoneFundsResponse = Message<"contracts.v1.ReleaseMilestoneFundsResponse"> & {
+  /**
+   * @generated from field: contracts.v1.EscrowContract escrow = 1;
+   */
+  escrow?: EscrowContract;
+};
 
 /**
  * Describes the message contracts.v1.ReleaseMilestoneFundsResponse.
  * Use `create(ReleaseMilestoneFundsResponseSchema)` to create a new message.
  */
-export const ReleaseMilestoneFundsResponseSchema: GenMessage<ReleaseMilestoneFundsResponse> =
-  /*@__PURE__*/
+export const ReleaseMilestoneFundsResponseSchema: GenMessage<ReleaseMilestoneFundsResponse> = /*@__PURE__*/
   messageDesc(file_contracts_v1_escrow, 6);
 
 /**
@@ -376,8 +353,7 @@ export enum EscrowStatus {
 /**
  * Describes the enum contracts.v1.EscrowStatus.
  */
-export const EscrowStatusSchema: GenEnum<EscrowStatus> =
-  /*@__PURE__*/
+export const EscrowStatusSchema: GenEnum<EscrowStatus> = /*@__PURE__*/
   enumDesc(file_contracts_v1_escrow, 0);
 
 /**
@@ -391,7 +367,7 @@ export const EscrowService: GenService<{
     methodKind: "unary";
     input: typeof GetEscrowRequestSchema;
     output: typeof GetEscrowResponseSchema;
-  };
+  },
   /**
    * @generated from rpc contracts.v1.EscrowService.ReleaseMilestoneFunds
    */
@@ -399,5 +375,7 @@ export const EscrowService: GenService<{
     methodKind: "unary";
     input: typeof ReleaseMilestoneFundsRequestSchema;
     output: typeof ReleaseMilestoneFundsResponseSchema;
-  };
-}> = /*@__PURE__*/ serviceDesc(file_contracts_v1_escrow, 0);
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_contracts_v1_escrow, 0);
+

@@ -9,11 +9,8 @@ import type { Message } from "@bufbuild/protobuf";
 /**
  * Describes the file common/v1/errors.proto.
  */
-export const file_common_v1_errors: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    "ChZjb21tb24vdjEvZXJyb3JzLnByb3RvEgljb21tb24udjEiWwoNRXJyb3JSZXNwb25zZRIMCgRjb2RlGAEgASgJEg8KB21lc3NhZ2UYAiABKAkSKwoMZmllbGRfZXJyb3JzGAMgAygLMhUuY29tbW9uLnYxLkZpZWxkRXJyb3IiOgoKRmllbGRFcnJvchINCgVmaWVsZBgBIAEoCRIPCgdtZXNzYWdlGAIgASgJEgwKBHJ1bGUYAyABKAlCuAEKDWNvbS5jb21tb24udjFCC0Vycm9yc1Byb3RvUAFaVWdpdGh1Yi5jb20vYWdhcndhbHZpdmVrMjkvc2tpbGxicmlkZ2UvcGFja2FnZXMvc2NoZW1hL2dlbmVyYXRlZC9nby9jb21tb24vdjE7Y29tbW9udjGiAgNDWFiqAglDb21tb24uVjHKAglDb21tb25cVjHiAhVDb21tb25cVjFcR1BCTWV0YWRhdGHqAgpDb21tb246OlYxYgZwcm90bzM",
-  );
+export const file_common_v1_errors: GenFile = /*@__PURE__*/
+  fileDesc("ChZjb21tb24vdjEvZXJyb3JzLnByb3RvEgljb21tb24udjEiWwoNRXJyb3JSZXNwb25zZRIMCgRjb2RlGAEgASgJEg8KB21lc3NhZ2UYAiABKAkSKwoMZmllbGRfZXJyb3JzGAMgAygLMhUuY29tbW9uLnYxLkZpZWxkRXJyb3IiOgoKRmllbGRFcnJvchINCgVmaWVsZBgBIAEoCRIPCgdtZXNzYWdlGAIgASgJEgwKBHJ1bGUYAyABKAlCuAEKDWNvbS5jb21tb24udjFCC0Vycm9yc1Byb3RvUAFaVWdpdGh1Yi5jb20vYWdhcndhbHZpdmVrMjkvc2tpbGxicmlkZ2UvcGFja2FnZXMvc2NoZW1hL2dlbmVyYXRlZC9nby9jb21tb24vdjE7Y29tbW9udjGiAgNDWFiqAglDb21tb24uVjHKAglDb21tb25cVjHiAhVDb21tb25cVjFcR1BCTWV0YWRhdGHqAgpDb21tb246OlYxYgZwcm90bzM");
 
 /**
  * ErrorResponse is the standard error envelope returned by all services.
@@ -49,8 +46,7 @@ export type ErrorResponse = Message<"common.v1.ErrorResponse"> & {
  * Describes the message common.v1.ErrorResponse.
  * Use `create(ErrorResponseSchema)` to create a new message.
  */
-export const ErrorResponseSchema: GenMessage<ErrorResponse> =
-  /*@__PURE__*/
+export const ErrorResponseSchema: GenMessage<ErrorResponse> = /*@__PURE__*/
   messageDesc(file_common_v1_errors, 0);
 
 /**
@@ -85,6 +81,6 @@ export type FieldError = Message<"common.v1.FieldError"> & {
  * Describes the message common.v1.FieldError.
  * Use `create(FieldErrorSchema)` to create a new message.
  */
-export const FieldErrorSchema: GenMessage<FieldError> =
-  /*@__PURE__*/
+export const FieldErrorSchema: GenMessage<FieldError> = /*@__PURE__*/
   messageDesc(file_common_v1_errors, 1);
+

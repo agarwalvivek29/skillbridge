@@ -2,18 +2,8 @@
 // @generated from file api/v1/dispute.proto (package api.v1, syntax proto3)
 /* eslint-disable */
 
-import type {
-  GenEnum,
-  GenFile,
-  GenMessage,
-  GenService,
-} from "@bufbuild/protobuf/codegenv1";
-import {
-  enumDesc,
-  fileDesc,
-  messageDesc,
-  serviceDesc,
-} from "@bufbuild/protobuf/codegenv1";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
@@ -21,12 +11,8 @@ import type { Message } from "@bufbuild/protobuf";
 /**
  * Describes the file api/v1/dispute.proto.
  */
-export const file_api_v1_dispute: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    "ChRhcGkvdjEvZGlzcHV0ZS5wcm90bxIGYXBpLnYxIuADCgdEaXNwdXRlEgoKAmlkGAEgASgJEhQKDG1pbGVzdG9uZV9pZBgCIAEoCRIOCgZnaWdfaWQYAyABKAkSGQoRcmFpc2VkX2J5X3VzZXJfaWQYBCABKAkSDgoGcmVhc29uGAUgASgJEiUKBnN0YXR1cxgGIAEoDjIVLmFwaS52MS5EaXNwdXRlU3RhdHVzEhsKE2FpX2V2aWRlbmNlX3N1bW1hcnkYByABKAkSLQoKcmVzb2x1dGlvbhgIIAEoDjIZLmFwaS52MS5EaXNwdXRlUmVzb2x1dGlvbhIfChdmcmVlbGFuY2VyX3NwbGl0X2Ftb3VudBgJIAEoCRIaChJyZXNvbHV0aW9uX3R4X2hhc2gYCiABKAkSNwoTZGlzY3Vzc2lvbl9kZWFkbGluZRgLIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLcmVzb2x2ZWRfYXQYDCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCmNyZWF0ZWRfYXQYDSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYDiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIoIBCg5EaXNwdXRlTWVzc2FnZRIKCgJpZBgBIAEoCRISCgpkaXNwdXRlX2lkGAIgASgJEg8KB3VzZXJfaWQYAyABKAkSDwoHY29udGVudBgEIAEoCRIuCgpjcmVhdGVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKaAQoSRGlzcHV0ZVJhaXNlZEV2ZW50EhIKCmRpc3B1dGVfaWQYASABKAkSFAoMbWlsZXN0b25lX2lkGAIgASgJEg4KBmdpZ19pZBgDIAEoCRIZChFyYWlzZWRfYnlfdXNlcl9pZBgEIAEoCRIvCgtvY2N1cnJlZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAivAEKFERpc3B1dGVSZXNvbHZlZEV2ZW50EhIKCmRpc3B1dGVfaWQYASABKAkSFAoMbWlsZXN0b25lX2lkGAIgASgJEi0KCnJlc29sdXRpb24YAyABKA4yGS5hcGkudjEuRGlzcHV0ZVJlc29sdXRpb24SGgoScmVzb2x1dGlvbl90eF9oYXNoGAQgASgJEi8KC29jY3VycmVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCI7ChNSYWlzZURpc3B1dGVSZXF1ZXN0EhQKDG1pbGVzdG9uZV9pZBgBIAEoCRIOCgZyZWFzb24YAiABKAkiHwoRR2V0RGlzcHV0ZVJlcXVlc3QSCgoCaWQYASABKAkiNAocR2V0RGlzcHV0ZUJ5TWlsZXN0b25lUmVxdWVzdBIUCgxtaWxlc3RvbmVfaWQYASABKAkiQAoZUG9zdERpc3B1dGVNZXNzYWdlUmVxdWVzdBISCgpkaXNwdXRlX2lkGAEgASgJEg8KB2NvbnRlbnQYAiABKAkiLwoZR2V0RGlzcHV0ZU1lc3NhZ2VzUmVxdWVzdBISCgpkaXNwdXRlX2lkGAEgASgJIkYKGkdldERpc3B1dGVNZXNzYWdlc1Jlc3BvbnNlEigKCG1lc3NhZ2VzGAEgAygLMhYuYXBpLnYxLkRpc3B1dGVNZXNzYWdlIjgKFFJhaXNlRGlzcHV0ZVJlc3BvbnNlEiAKB2Rpc3B1dGUYASABKAsyDy5hcGkudjEuRGlzcHV0ZSI2ChJHZXREaXNwdXRlUmVzcG9uc2USIAoHZGlzcHV0ZRgBIAEoCzIPLmFwaS52MS5EaXNwdXRlIkEKHUdldERpc3B1dGVCeU1pbGVzdG9uZVJlc3BvbnNlEiAKB2Rpc3B1dGUYASABKAsyDy5hcGkudjEuRGlzcHV0ZSJFChpQb3N0RGlzcHV0ZU1lc3NhZ2VSZXNwb25zZRInCgdtZXNzYWdlGAEgASgLMhYuYXBpLnYxLkRpc3B1dGVNZXNzYWdlKqQBCg1EaXNwdXRlU3RhdHVzEh4KGkRJU1BVVEVfU1RBVFVTX1VOU1BFQ0lGSUVEEAASFwoTRElTUFVURV9TVEFUVVNfT1BFThABEh0KGURJU1BVVEVfU1RBVFVTX0RJU0NVU1NJT04QAhIeChpESVNQVVRFX1NUQVRVU19BUkJJVFJBVElPThADEhsKF0RJU1BVVEVfU1RBVFVTX1JFU09MVkVEEAQqogEKEURpc3B1dGVSZXNvbHV0aW9uEiIKHkRJU1BVVEVfUkVTT0xVVElPTl9VTlNQRUNJRklFRBAAEiUKIURJU1BVVEVfUkVTT0xVVElPTl9QQVlfRlJFRUxBTkNFUhABEiQKIERJU1BVVEVfUkVTT0xVVElPTl9SRUZVTkRfQ0xJRU5UEAISHAoYRElTUFVURV9SRVNPTFVUSU9OX1NQTElUEAMywAMKDkRpc3B1dGVTZXJ2aWNlEkkKDFJhaXNlRGlzcHV0ZRIbLmFwaS52MS5SYWlzZURpc3B1dGVSZXF1ZXN0GhwuYXBpLnYxLlJhaXNlRGlzcHV0ZVJlc3BvbnNlEkMKCkdldERpc3B1dGUSGS5hcGkudjEuR2V0RGlzcHV0ZVJlcXVlc3QaGi5hcGkudjEuR2V0RGlzcHV0ZVJlc3BvbnNlEmQKFUdldERpc3B1dGVCeU1pbGVzdG9uZRIkLmFwaS52MS5HZXREaXNwdXRlQnlNaWxlc3RvbmVSZXF1ZXN0GiUuYXBpLnYxLkdldERpc3B1dGVCeU1pbGVzdG9uZVJlc3BvbnNlElsKElBvc3REaXNwdXRlTWVzc2FnZRIhLmFwaS52MS5Qb3N0RGlzcHV0ZU1lc3NhZ2VSZXF1ZXN0GiIuYXBpLnYxLlBvc3REaXNwdXRlTWVzc2FnZVJlc3BvbnNlElsKEkdldERpc3B1dGVNZXNzYWdlcxIhLmFwaS52MS5HZXREaXNwdXRlTWVzc2FnZXNSZXF1ZXN0GiIuYXBpLnYxLkdldERpc3B1dGVNZXNzYWdlc1Jlc3BvbnNlQqQBCgpjb20uYXBpLnYxQgxEaXNwdXRlUHJvdG9QAVpPZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2FwaS92MTthcGl2MaICA0FYWKoCBkFwaS5WMcoCBkFwaVxWMeICEkFwaVxWMVxHUEJNZXRhZGF0YeoCB0FwaTo6VjFiBnByb3RvMw",
-    [file_google_protobuf_timestamp],
-  );
+export const file_api_v1_dispute: GenFile = /*@__PURE__*/
+  fileDesc("ChRhcGkvdjEvZGlzcHV0ZS5wcm90bxIGYXBpLnYxIuADCgdEaXNwdXRlEgoKAmlkGAEgASgJEhQKDG1pbGVzdG9uZV9pZBgCIAEoCRIOCgZnaWdfaWQYAyABKAkSGQoRcmFpc2VkX2J5X3VzZXJfaWQYBCABKAkSDgoGcmVhc29uGAUgASgJEiUKBnN0YXR1cxgGIAEoDjIVLmFwaS52MS5EaXNwdXRlU3RhdHVzEhsKE2FpX2V2aWRlbmNlX3N1bW1hcnkYByABKAkSLQoKcmVzb2x1dGlvbhgIIAEoDjIZLmFwaS52MS5EaXNwdXRlUmVzb2x1dGlvbhIfChdmcmVlbGFuY2VyX3NwbGl0X2Ftb3VudBgJIAEoCRIaChJyZXNvbHV0aW9uX3R4X2hhc2gYCiABKAkSNwoTZGlzY3Vzc2lvbl9kZWFkbGluZRgLIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLcmVzb2x2ZWRfYXQYDCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCmNyZWF0ZWRfYXQYDSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYDiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIoIBCg5EaXNwdXRlTWVzc2FnZRIKCgJpZBgBIAEoCRISCgpkaXNwdXRlX2lkGAIgASgJEg8KB3VzZXJfaWQYAyABKAkSDwoHY29udGVudBgEIAEoCRIuCgpjcmVhdGVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKaAQoSRGlzcHV0ZVJhaXNlZEV2ZW50EhIKCmRpc3B1dGVfaWQYASABKAkSFAoMbWlsZXN0b25lX2lkGAIgASgJEg4KBmdpZ19pZBgDIAEoCRIZChFyYWlzZWRfYnlfdXNlcl9pZBgEIAEoCRIvCgtvY2N1cnJlZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAivAEKFERpc3B1dGVSZXNvbHZlZEV2ZW50EhIKCmRpc3B1dGVfaWQYASABKAkSFAoMbWlsZXN0b25lX2lkGAIgASgJEi0KCnJlc29sdXRpb24YAyABKA4yGS5hcGkudjEuRGlzcHV0ZVJlc29sdXRpb24SGgoScmVzb2x1dGlvbl90eF9oYXNoGAQgASgJEi8KC29jY3VycmVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCI7ChNSYWlzZURpc3B1dGVSZXF1ZXN0EhQKDG1pbGVzdG9uZV9pZBgBIAEoCRIOCgZyZWFzb24YAiABKAkiHwoRR2V0RGlzcHV0ZVJlcXVlc3QSCgoCaWQYASABKAkiNAocR2V0RGlzcHV0ZUJ5TWlsZXN0b25lUmVxdWVzdBIUCgxtaWxlc3RvbmVfaWQYASABKAkiQAoZUG9zdERpc3B1dGVNZXNzYWdlUmVxdWVzdBISCgpkaXNwdXRlX2lkGAEgASgJEg8KB2NvbnRlbnQYAiABKAkiLwoZR2V0RGlzcHV0ZU1lc3NhZ2VzUmVxdWVzdBISCgpkaXNwdXRlX2lkGAEgASgJIkYKGkdldERpc3B1dGVNZXNzYWdlc1Jlc3BvbnNlEigKCG1lc3NhZ2VzGAEgAygLMhYuYXBpLnYxLkRpc3B1dGVNZXNzYWdlIjgKFFJhaXNlRGlzcHV0ZVJlc3BvbnNlEiAKB2Rpc3B1dGUYASABKAsyDy5hcGkudjEuRGlzcHV0ZSI2ChJHZXREaXNwdXRlUmVzcG9uc2USIAoHZGlzcHV0ZRgBIAEoCzIPLmFwaS52MS5EaXNwdXRlIkEKHUdldERpc3B1dGVCeU1pbGVzdG9uZVJlc3BvbnNlEiAKB2Rpc3B1dGUYASABKAsyDy5hcGkudjEuRGlzcHV0ZSJFChpQb3N0RGlzcHV0ZU1lc3NhZ2VSZXNwb25zZRInCgdtZXNzYWdlGAEgASgLMhYuYXBpLnYxLkRpc3B1dGVNZXNzYWdlKqQBCg1EaXNwdXRlU3RhdHVzEh4KGkRJU1BVVEVfU1RBVFVTX1VOU1BFQ0lGSUVEEAASFwoTRElTUFVURV9TVEFUVVNfT1BFThABEh0KGURJU1BVVEVfU1RBVFVTX0RJU0NVU1NJT04QAhIeChpESVNQVVRFX1NUQVRVU19BUkJJVFJBVElPThADEhsKF0RJU1BVVEVfU1RBVFVTX1JFU09MVkVEEAQqogEKEURpc3B1dGVSZXNvbHV0aW9uEiIKHkRJU1BVVEVfUkVTT0xVVElPTl9VTlNQRUNJRklFRBAAEiUKIURJU1BVVEVfUkVTT0xVVElPTl9QQVlfRlJFRUxBTkNFUhABEiQKIERJU1BVVEVfUkVTT0xVVElPTl9SRUZVTkRfQ0xJRU5UEAISHAoYRElTUFVURV9SRVNPTFVUSU9OX1NQTElUEAMywAMKDkRpc3B1dGVTZXJ2aWNlEkkKDFJhaXNlRGlzcHV0ZRIbLmFwaS52MS5SYWlzZURpc3B1dGVSZXF1ZXN0GhwuYXBpLnYxLlJhaXNlRGlzcHV0ZVJlc3BvbnNlEkMKCkdldERpc3B1dGUSGS5hcGkudjEuR2V0RGlzcHV0ZVJlcXVlc3QaGi5hcGkudjEuR2V0RGlzcHV0ZVJlc3BvbnNlEmQKFUdldERpc3B1dGVCeU1pbGVzdG9uZRIkLmFwaS52MS5HZXREaXNwdXRlQnlNaWxlc3RvbmVSZXF1ZXN0GiUuYXBpLnYxLkdldERpc3B1dGVCeU1pbGVzdG9uZVJlc3BvbnNlElsKElBvc3REaXNwdXRlTWVzc2FnZRIhLmFwaS52MS5Qb3N0RGlzcHV0ZU1lc3NhZ2VSZXF1ZXN0GiIuYXBpLnYxLlBvc3REaXNwdXRlTWVzc2FnZVJlc3BvbnNlElsKEkdldERpc3B1dGVNZXNzYWdlcxIhLmFwaS52MS5HZXREaXNwdXRlTWVzc2FnZXNSZXF1ZXN0GiIuYXBpLnYxLkdldERpc3B1dGVNZXNzYWdlc1Jlc3BvbnNlQqQBCgpjb20uYXBpLnYxQgxEaXNwdXRlUHJvdG9QAVpPZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2FwaS92MTthcGl2MaICA0FYWKoCBkFwaS5WMcoCBkFwaVxWMeICEkFwaVxWMVxHUEJNZXRhZGF0YeoCB0FwaTo6VjFiBnByb3RvMw", [file_google_protobuf_timestamp]);
 
 /**
  * One dispute per milestone maximum. Raised by either client or freelancer.
@@ -117,8 +103,7 @@ export type Dispute = Message<"api.v1.Dispute"> & {
  * Describes the message api.v1.Dispute.
  * Use `create(DisputeSchema)` to create a new message.
  */
-export const DisputeSchema: GenMessage<Dispute> =
-  /*@__PURE__*/
+export const DisputeSchema: GenMessage<Dispute> = /*@__PURE__*/
   messageDesc(file_api_v1_dispute, 0);
 
 /**
@@ -157,8 +142,7 @@ export type DisputeMessage = Message<"api.v1.DisputeMessage"> & {
  * Describes the message api.v1.DisputeMessage.
  * Use `create(DisputeMessageSchema)` to create a new message.
  */
-export const DisputeMessageSchema: GenMessage<DisputeMessage> =
-  /*@__PURE__*/
+export const DisputeMessageSchema: GenMessage<DisputeMessage> = /*@__PURE__*/
   messageDesc(file_api_v1_dispute, 1);
 
 /**
@@ -195,8 +179,7 @@ export type DisputeRaisedEvent = Message<"api.v1.DisputeRaisedEvent"> & {
  * Describes the message api.v1.DisputeRaisedEvent.
  * Use `create(DisputeRaisedEventSchema)` to create a new message.
  */
-export const DisputeRaisedEventSchema: GenMessage<DisputeRaisedEvent> =
-  /*@__PURE__*/
+export const DisputeRaisedEventSchema: GenMessage<DisputeRaisedEvent> = /*@__PURE__*/
   messageDesc(file_api_v1_dispute, 2);
 
 /**
@@ -233,8 +216,7 @@ export type DisputeResolvedEvent = Message<"api.v1.DisputeResolvedEvent"> & {
  * Describes the message api.v1.DisputeResolvedEvent.
  * Use `create(DisputeResolvedEventSchema)` to create a new message.
  */
-export const DisputeResolvedEventSchema: GenMessage<DisputeResolvedEvent> =
-  /*@__PURE__*/
+export const DisputeResolvedEventSchema: GenMessage<DisputeResolvedEvent> = /*@__PURE__*/
   messageDesc(file_api_v1_dispute, 3);
 
 /**
@@ -256,8 +238,7 @@ export type RaiseDisputeRequest = Message<"api.v1.RaiseDisputeRequest"> & {
  * Describes the message api.v1.RaiseDisputeRequest.
  * Use `create(RaiseDisputeRequestSchema)` to create a new message.
  */
-export const RaiseDisputeRequestSchema: GenMessage<RaiseDisputeRequest> =
-  /*@__PURE__*/
+export const RaiseDisputeRequestSchema: GenMessage<RaiseDisputeRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_dispute, 4);
 
 /**
@@ -274,89 +255,80 @@ export type GetDisputeRequest = Message<"api.v1.GetDisputeRequest"> & {
  * Describes the message api.v1.GetDisputeRequest.
  * Use `create(GetDisputeRequestSchema)` to create a new message.
  */
-export const GetDisputeRequestSchema: GenMessage<GetDisputeRequest> =
-  /*@__PURE__*/
+export const GetDisputeRequestSchema: GenMessage<GetDisputeRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_dispute, 5);
 
 /**
  * @generated from message api.v1.GetDisputeByMilestoneRequest
  */
-export type GetDisputeByMilestoneRequest =
-  Message<"api.v1.GetDisputeByMilestoneRequest"> & {
-    /**
-     * @generated from field: string milestone_id = 1;
-     */
-    milestoneId: string;
-  };
+export type GetDisputeByMilestoneRequest = Message<"api.v1.GetDisputeByMilestoneRequest"> & {
+  /**
+   * @generated from field: string milestone_id = 1;
+   */
+  milestoneId: string;
+};
 
 /**
  * Describes the message api.v1.GetDisputeByMilestoneRequest.
  * Use `create(GetDisputeByMilestoneRequestSchema)` to create a new message.
  */
-export const GetDisputeByMilestoneRequestSchema: GenMessage<GetDisputeByMilestoneRequest> =
-  /*@__PURE__*/
+export const GetDisputeByMilestoneRequestSchema: GenMessage<GetDisputeByMilestoneRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_dispute, 6);
 
 /**
  * @generated from message api.v1.PostDisputeMessageRequest
  */
-export type PostDisputeMessageRequest =
-  Message<"api.v1.PostDisputeMessageRequest"> & {
-    /**
-     * @generated from field: string dispute_id = 1;
-     */
-    disputeId: string;
+export type PostDisputeMessageRequest = Message<"api.v1.PostDisputeMessageRequest"> & {
+  /**
+   * @generated from field: string dispute_id = 1;
+   */
+  disputeId: string;
 
-    /**
-     * @generated from field: string content = 2;
-     */
-    content: string;
-  };
+  /**
+   * @generated from field: string content = 2;
+   */
+  content: string;
+};
 
 /**
  * Describes the message api.v1.PostDisputeMessageRequest.
  * Use `create(PostDisputeMessageRequestSchema)` to create a new message.
  */
-export const PostDisputeMessageRequestSchema: GenMessage<PostDisputeMessageRequest> =
-  /*@__PURE__*/
+export const PostDisputeMessageRequestSchema: GenMessage<PostDisputeMessageRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_dispute, 7);
 
 /**
  * @generated from message api.v1.GetDisputeMessagesRequest
  */
-export type GetDisputeMessagesRequest =
-  Message<"api.v1.GetDisputeMessagesRequest"> & {
-    /**
-     * @generated from field: string dispute_id = 1;
-     */
-    disputeId: string;
-  };
+export type GetDisputeMessagesRequest = Message<"api.v1.GetDisputeMessagesRequest"> & {
+  /**
+   * @generated from field: string dispute_id = 1;
+   */
+  disputeId: string;
+};
 
 /**
  * Describes the message api.v1.GetDisputeMessagesRequest.
  * Use `create(GetDisputeMessagesRequestSchema)` to create a new message.
  */
-export const GetDisputeMessagesRequestSchema: GenMessage<GetDisputeMessagesRequest> =
-  /*@__PURE__*/
+export const GetDisputeMessagesRequestSchema: GenMessage<GetDisputeMessagesRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_dispute, 8);
 
 /**
  * @generated from message api.v1.GetDisputeMessagesResponse
  */
-export type GetDisputeMessagesResponse =
-  Message<"api.v1.GetDisputeMessagesResponse"> & {
-    /**
-     * @generated from field: repeated api.v1.DisputeMessage messages = 1;
-     */
-    messages: DisputeMessage[];
-  };
+export type GetDisputeMessagesResponse = Message<"api.v1.GetDisputeMessagesResponse"> & {
+  /**
+   * @generated from field: repeated api.v1.DisputeMessage messages = 1;
+   */
+  messages: DisputeMessage[];
+};
 
 /**
  * Describes the message api.v1.GetDisputeMessagesResponse.
  * Use `create(GetDisputeMessagesResponseSchema)` to create a new message.
  */
-export const GetDisputeMessagesResponseSchema: GenMessage<GetDisputeMessagesResponse> =
-  /*@__PURE__*/
+export const GetDisputeMessagesResponseSchema: GenMessage<GetDisputeMessagesResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_dispute, 9);
 
 /**
@@ -373,8 +345,7 @@ export type RaiseDisputeResponse = Message<"api.v1.RaiseDisputeResponse"> & {
  * Describes the message api.v1.RaiseDisputeResponse.
  * Use `create(RaiseDisputeResponseSchema)` to create a new message.
  */
-export const RaiseDisputeResponseSchema: GenMessage<RaiseDisputeResponse> =
-  /*@__PURE__*/
+export const RaiseDisputeResponseSchema: GenMessage<RaiseDisputeResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_dispute, 10);
 
 /**
@@ -391,46 +362,41 @@ export type GetDisputeResponse = Message<"api.v1.GetDisputeResponse"> & {
  * Describes the message api.v1.GetDisputeResponse.
  * Use `create(GetDisputeResponseSchema)` to create a new message.
  */
-export const GetDisputeResponseSchema: GenMessage<GetDisputeResponse> =
-  /*@__PURE__*/
+export const GetDisputeResponseSchema: GenMessage<GetDisputeResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_dispute, 11);
 
 /**
  * @generated from message api.v1.GetDisputeByMilestoneResponse
  */
-export type GetDisputeByMilestoneResponse =
-  Message<"api.v1.GetDisputeByMilestoneResponse"> & {
-    /**
-     * @generated from field: api.v1.Dispute dispute = 1;
-     */
-    dispute?: Dispute;
-  };
+export type GetDisputeByMilestoneResponse = Message<"api.v1.GetDisputeByMilestoneResponse"> & {
+  /**
+   * @generated from field: api.v1.Dispute dispute = 1;
+   */
+  dispute?: Dispute;
+};
 
 /**
  * Describes the message api.v1.GetDisputeByMilestoneResponse.
  * Use `create(GetDisputeByMilestoneResponseSchema)` to create a new message.
  */
-export const GetDisputeByMilestoneResponseSchema: GenMessage<GetDisputeByMilestoneResponse> =
-  /*@__PURE__*/
+export const GetDisputeByMilestoneResponseSchema: GenMessage<GetDisputeByMilestoneResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_dispute, 12);
 
 /**
  * @generated from message api.v1.PostDisputeMessageResponse
  */
-export type PostDisputeMessageResponse =
-  Message<"api.v1.PostDisputeMessageResponse"> & {
-    /**
-     * @generated from field: api.v1.DisputeMessage message = 1;
-     */
-    message?: DisputeMessage;
-  };
+export type PostDisputeMessageResponse = Message<"api.v1.PostDisputeMessageResponse"> & {
+  /**
+   * @generated from field: api.v1.DisputeMessage message = 1;
+   */
+  message?: DisputeMessage;
+};
 
 /**
  * Describes the message api.v1.PostDisputeMessageResponse.
  * Use `create(PostDisputeMessageResponseSchema)` to create a new message.
  */
-export const PostDisputeMessageResponseSchema: GenMessage<PostDisputeMessageResponse> =
-  /*@__PURE__*/
+export const PostDisputeMessageResponseSchema: GenMessage<PostDisputeMessageResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_dispute, 13);
 
 /**
@@ -474,8 +440,7 @@ export enum DisputeStatus {
 /**
  * Describes the enum api.v1.DisputeStatus.
  */
-export const DisputeStatusSchema: GenEnum<DisputeStatus> =
-  /*@__PURE__*/
+export const DisputeStatusSchema: GenEnum<DisputeStatus> = /*@__PURE__*/
   enumDesc(file_api_v1_dispute, 0);
 
 /**
@@ -512,8 +477,7 @@ export enum DisputeResolution {
 /**
  * Describes the enum api.v1.DisputeResolution.
  */
-export const DisputeResolutionSchema: GenEnum<DisputeResolution> =
-  /*@__PURE__*/
+export const DisputeResolutionSchema: GenEnum<DisputeResolution> = /*@__PURE__*/
   enumDesc(file_api_v1_dispute, 1);
 
 /**
@@ -527,7 +491,7 @@ export const DisputeService: GenService<{
     methodKind: "unary";
     input: typeof RaiseDisputeRequestSchema;
     output: typeof RaiseDisputeResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.DisputeService.GetDispute
    */
@@ -535,7 +499,7 @@ export const DisputeService: GenService<{
     methodKind: "unary";
     input: typeof GetDisputeRequestSchema;
     output: typeof GetDisputeResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.DisputeService.GetDisputeByMilestone
    */
@@ -543,7 +507,7 @@ export const DisputeService: GenService<{
     methodKind: "unary";
     input: typeof GetDisputeByMilestoneRequestSchema;
     output: typeof GetDisputeByMilestoneResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.DisputeService.PostDisputeMessage
    */
@@ -551,7 +515,7 @@ export const DisputeService: GenService<{
     methodKind: "unary";
     input: typeof PostDisputeMessageRequestSchema;
     output: typeof PostDisputeMessageResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.DisputeService.GetDisputeMessages
    */
@@ -559,5 +523,7 @@ export const DisputeService: GenService<{
     methodKind: "unary";
     input: typeof GetDisputeMessagesRequestSchema;
     output: typeof GetDisputeMessagesResponseSchema;
-  };
-}> = /*@__PURE__*/ serviceDesc(file_api_v1_dispute, 0);
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_api_v1_dispute, 0);
+

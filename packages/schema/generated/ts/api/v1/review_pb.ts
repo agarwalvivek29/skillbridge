@@ -2,16 +2,8 @@
 // @generated from file api/v1/review.proto (package api.v1, syntax proto3)
 /* eslint-disable */
 
-import type {
-  GenFile,
-  GenMessage,
-  GenService,
-} from "@bufbuild/protobuf/codegenv1";
-import {
-  fileDesc,
-  messageDesc,
-  serviceDesc,
-} from "@bufbuild/protobuf/codegenv1";
+import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
+import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
@@ -19,12 +11,8 @@ import type { Message } from "@bufbuild/protobuf";
 /**
  * Describes the file api/v1/review.proto.
  */
-export const file_api_v1_review: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    "ChNhcGkvdjEvcmV2aWV3LnByb3RvEgZhcGkudjEiswEKBlJldmlldxIKCgJpZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSEwoLcmV2aWV3ZXJfaWQYAyABKAkSEwoLcmV2aWV3ZWVfaWQYBCABKAkSDgoGcmF0aW5nGAUgASgFEg8KB2NvbW1lbnQYBiABKAkSEgoKaXNfdmlzaWJsZRgHIAEoCBIuCgpjcmVhdGVkX2F0GAggASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKkAQoUUmV2aWV3U3VibWl0dGVkRXZlbnQSEQoJcmV2aWV3X2lkGAEgASgJEg4KBmdpZ19pZBgCIAEoCRITCgtyZXZpZXdlcl9pZBgDIAEoCRITCgtyZXZpZXdlZV9pZBgEIAEoCRIOCgZyYXRpbmcYBSABKAUSLwoLb2NjdXJyZWRfYXQYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIkYKE0NyZWF0ZVJldmlld1JlcXVlc3QSDgoGZ2lnX2lkGAEgASgJEg4KBnJhdGluZxgCIAEoBRIPCgdjb21tZW50GAMgASgJIigKEUdldFJldmlld3NSZXF1ZXN0EhMKC3Jldmlld2VlX2lkGAEgASgJIlIKEkdldFJldmlld3NSZXNwb25zZRIfCgdyZXZpZXdzGAEgAygLMg4uYXBpLnYxLlJldmlldxIbChNhdmVyYWdlX3JhdGluZ194MTAwGAIgASgFIjYKFENyZWF0ZVJldmlld1Jlc3BvbnNlEh4KBnJldmlldxgBIAEoCzIOLmFwaS52MS5SZXZpZXcynwEKDVJldmlld1NlcnZpY2USSQoMQ3JlYXRlUmV2aWV3EhsuYXBpLnYxLkNyZWF0ZVJldmlld1JlcXVlc3QaHC5hcGkudjEuQ3JlYXRlUmV2aWV3UmVzcG9uc2USQwoKR2V0UmV2aWV3cxIZLmFwaS52MS5HZXRSZXZpZXdzUmVxdWVzdBoaLmFwaS52MS5HZXRSZXZpZXdzUmVzcG9uc2VCowEKCmNvbS5hcGkudjFCC1Jldmlld1Byb3RvUAFaT2dpdGh1Yi5jb20vYWdhcndhbHZpdmVrMjkvc2tpbGxicmlkZ2UvcGFja2FnZXMvc2NoZW1hL2dlbmVyYXRlZC9nby9hcGkvdjE7YXBpdjGiAgNBWFiqAgZBcGkuVjHKAgZBcGlcVjHiAhJBcGlcVjFcR1BCTWV0YWRhdGHqAgdBcGk6OlYxYgZwcm90bzM",
-    [file_google_protobuf_timestamp],
-  );
+export const file_api_v1_review: GenFile = /*@__PURE__*/
+  fileDesc("ChNhcGkvdjEvcmV2aWV3LnByb3RvEgZhcGkudjEiswEKBlJldmlldxIKCgJpZBgBIAEoCRIOCgZnaWdfaWQYAiABKAkSEwoLcmV2aWV3ZXJfaWQYAyABKAkSEwoLcmV2aWV3ZWVfaWQYBCABKAkSDgoGcmF0aW5nGAUgASgFEg8KB2NvbW1lbnQYBiABKAkSEgoKaXNfdmlzaWJsZRgHIAEoCBIuCgpjcmVhdGVkX2F0GAggASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKkAQoUUmV2aWV3U3VibWl0dGVkRXZlbnQSEQoJcmV2aWV3X2lkGAEgASgJEg4KBmdpZ19pZBgCIAEoCRITCgtyZXZpZXdlcl9pZBgDIAEoCRITCgtyZXZpZXdlZV9pZBgEIAEoCRIOCgZyYXRpbmcYBSABKAUSLwoLb2NjdXJyZWRfYXQYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIkYKE0NyZWF0ZVJldmlld1JlcXVlc3QSDgoGZ2lnX2lkGAEgASgJEg4KBnJhdGluZxgCIAEoBRIPCgdjb21tZW50GAMgASgJIigKEUdldFJldmlld3NSZXF1ZXN0EhMKC3Jldmlld2VlX2lkGAEgASgJIlIKEkdldFJldmlld3NSZXNwb25zZRIfCgdyZXZpZXdzGAEgAygLMg4uYXBpLnYxLlJldmlldxIbChNhdmVyYWdlX3JhdGluZ194MTAwGAIgASgFIjYKFENyZWF0ZVJldmlld1Jlc3BvbnNlEh4KBnJldmlldxgBIAEoCzIOLmFwaS52MS5SZXZpZXcynwEKDVJldmlld1NlcnZpY2USSQoMQ3JlYXRlUmV2aWV3EhsuYXBpLnYxLkNyZWF0ZVJldmlld1JlcXVlc3QaHC5hcGkudjEuQ3JlYXRlUmV2aWV3UmVzcG9uc2USQwoKR2V0UmV2aWV3cxIZLmFwaS52MS5HZXRSZXZpZXdzUmVxdWVzdBoaLmFwaS52MS5HZXRSZXZpZXdzUmVzcG9uc2VCowEKCmNvbS5hcGkudjFCC1Jldmlld1Byb3RvUAFaT2dpdGh1Yi5jb20vYWdhcndhbHZpdmVrMjkvc2tpbGxicmlkZ2UvcGFja2FnZXMvc2NoZW1hL2dlbmVyYXRlZC9nby9hcGkvdjE7YXBpdjGiAgNBWFiqAgZBcGkuVjHKAgZBcGlcVjHiAhJBcGlcVjFcR1BCTWV0YWRhdGHqAgdBcGk6OlYxYgZwcm90bzM", [file_google_protobuf_timestamp]);
 
 /**
  * Mutual ratings left after a gig completes.
@@ -91,8 +79,7 @@ export type Review = Message<"api.v1.Review"> & {
  * Describes the message api.v1.Review.
  * Use `create(ReviewSchema)` to create a new message.
  */
-export const ReviewSchema: GenMessage<Review> =
-  /*@__PURE__*/
+export const ReviewSchema: GenMessage<Review> = /*@__PURE__*/
   messageDesc(file_api_v1_review, 0);
 
 /**
@@ -134,8 +121,7 @@ export type ReviewSubmittedEvent = Message<"api.v1.ReviewSubmittedEvent"> & {
  * Describes the message api.v1.ReviewSubmittedEvent.
  * Use `create(ReviewSubmittedEventSchema)` to create a new message.
  */
-export const ReviewSubmittedEventSchema: GenMessage<ReviewSubmittedEvent> =
-  /*@__PURE__*/
+export const ReviewSubmittedEventSchema: GenMessage<ReviewSubmittedEvent> = /*@__PURE__*/
   messageDesc(file_api_v1_review, 1);
 
 /**
@@ -164,8 +150,7 @@ export type CreateReviewRequest = Message<"api.v1.CreateReviewRequest"> & {
  * Describes the message api.v1.CreateReviewRequest.
  * Use `create(CreateReviewRequestSchema)` to create a new message.
  */
-export const CreateReviewRequestSchema: GenMessage<CreateReviewRequest> =
-  /*@__PURE__*/
+export const CreateReviewRequestSchema: GenMessage<CreateReviewRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_review, 2);
 
 /**
@@ -184,8 +169,7 @@ export type GetReviewsRequest = Message<"api.v1.GetReviewsRequest"> & {
  * Describes the message api.v1.GetReviewsRequest.
  * Use `create(GetReviewsRequestSchema)` to create a new message.
  */
-export const GetReviewsRequestSchema: GenMessage<GetReviewsRequest> =
-  /*@__PURE__*/
+export const GetReviewsRequestSchema: GenMessage<GetReviewsRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_review, 3);
 
 /**
@@ -209,8 +193,7 @@ export type GetReviewsResponse = Message<"api.v1.GetReviewsResponse"> & {
  * Describes the message api.v1.GetReviewsResponse.
  * Use `create(GetReviewsResponseSchema)` to create a new message.
  */
-export const GetReviewsResponseSchema: GenMessage<GetReviewsResponse> =
-  /*@__PURE__*/
+export const GetReviewsResponseSchema: GenMessage<GetReviewsResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_review, 4);
 
 /**
@@ -227,8 +210,7 @@ export type CreateReviewResponse = Message<"api.v1.CreateReviewResponse"> & {
  * Describes the message api.v1.CreateReviewResponse.
  * Use `create(CreateReviewResponseSchema)` to create a new message.
  */
-export const CreateReviewResponseSchema: GenMessage<CreateReviewResponse> =
-  /*@__PURE__*/
+export const CreateReviewResponseSchema: GenMessage<CreateReviewResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_review, 5);
 
 /**
@@ -242,7 +224,7 @@ export const ReviewService: GenService<{
     methodKind: "unary";
     input: typeof CreateReviewRequestSchema;
     output: typeof CreateReviewResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.ReviewService.GetReviews
    */
@@ -250,5 +232,7 @@ export const ReviewService: GenService<{
     methodKind: "unary";
     input: typeof GetReviewsRequestSchema;
     output: typeof GetReviewsResponseSchema;
-  };
-}> = /*@__PURE__*/ serviceDesc(file_api_v1_review, 0);
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_api_v1_review, 0);
+
