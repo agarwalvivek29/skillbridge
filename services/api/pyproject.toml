@@ -34,7 +34,16 @@ dev = [
     "aiosqlite>=0.20.0",
     "coverage>=7.0.0",
     "mypy>=1.0.0",
+    "types-python-jose>=3.3.0",
 ]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = false
+
+[[tool.mypy.overrides]]
+module = ["siwe", "siwe.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
