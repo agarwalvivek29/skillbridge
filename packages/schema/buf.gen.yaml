@@ -1,0 +1,59 @@
+version: v2
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Buf code generation configuration
+#
+# Generates from proto/ → generated/{ts,go,python}/
+# Rust: generated via build.rs in each service (see examples/rust-build.rs)
+#
+# To regenerate: ./scripts/generate.sh
+# ─────────────────────────────────────────────────────────────────────────────
+
+inputs:
+  - directory: proto
+
+managed:
+  enabled: true
+  override:
+    # Update this to match your actual Go module path
+    - file_option: go_package_prefix
+      value: github.com/your-org/your-project/packages/schema/generated/go
+
+plugins:
+  # ─── TypeScript ─────────────────────────────────────────────────────────────
+  # @bufbuild/protobuf — browser + Node.js compatible
+  # Output: generated/ts/
+  # Usage: import { User } from '../../../packages/schema/generated/ts/example/v1/user_pb'
+  - remote: buf.build/bufbuild/es:v2.2.3
+    out: generated/ts
+    opt:
+      - target=ts
+      - import_extension=none
+
+  # ─── Go ─────────────────────────────────────────────────────────────────────
+  # protoc-gen-go — message types
+  # Output: generated/go/
+  # Usage: import userv1 "github.com/your-org/your-project/packages/schema/generated/go/example/v1"
+  - remote: buf.build/protocolbuffers/go:v1.34.2
+    out: generated/go
+    opt:
+      - paths=source_relative
+
+  # protoc-gen-go-grpc — gRPC service stubs
+  - remote: buf.build/grpc/go:v1.4.0
+    out: generated/go
+    opt:
+      - paths=source_relative
+
+  # ─── Python ─────────────────────────────────────────────────────────────────
+  # betterproto — generates Pydantic-compatible dataclasses
+  # Output: generated/python/
+  # Usage: from schema.example.v1 import User, UserStatus
+  # Install: pip install betterproto[compiler]
+  - local: protoc-gen-python_betterproto
+    out: generated/python
+    strategy: all
+
+  # ─── Rust ───────────────────────────────────────────────────────────────────
+  # Rust generation is NOT done here — use prost-build in each service's build.rs
+  # See examples/rust-build.rs for the pattern

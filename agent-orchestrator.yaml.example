@@ -1,0 +1,145 @@
+# agent-orchestrator.yaml — Agent Orchestrator (ao) configuration
+#
+# Quick start:
+#   1. cp agent-orchestrator.yaml.example agent-orchestrator.yaml
+#   2. Fill in `repo` and `path` under your project
+#   3. gh auth login          (GitHub CLI — required for tracker + SCM)
+#   4. ao init                (installs workspace hooks for this repo)
+#   5. ao start               (launches dashboard + lifecycle manager)
+#   6. ao spawn my-project #42  (spawn an agent on a GitHub Issue)
+#
+# Prerequisites:
+#   - tmux:        brew install tmux
+#   - Claude Code: npm install -g @anthropic-ai/claude-code
+#   - gh CLI:      brew install gh && gh auth login
+#   - ao:          npm install -g @composio/ao-cli
+#
+# Docs: https://github.com/ComposioHQ/agent-orchestrator
+
+# Where ao stores session metadata, event logs, and state
+dataDir: ~/.agent-orchestrator
+
+# Where git worktrees are created (one isolated directory per agent session)
+worktreeDir: ~/.worktrees
+
+# Web dashboard port — http://localhost:3000
+port: 3000
+
+# Default plugins (these are the built-in defaults — you can omit this section)
+defaults:
+  runtime: tmux          # where sessions execute
+  agent: claude-code     # which AI coding tool to use
+  workspace: worktree    # git worktrees — fast, minimal disk usage
+  notifiers: [desktop]   # how to notify you when judgment is needed
+
+# ─── Projects ─────────────────────────────────────────────────────────────────
+# Add one entry per repository. Key is the project ID used in CLI commands:
+#   ao spawn my-project #42
+#   ao status my-project
+projects:
+  my-project:
+    name: My Project
+    repo: your-org/your-repo        # GitHub repo in owner/repo format (required)
+    path: ~/path/to/your/repo       # Absolute local path to the cloned repo (required)
+    defaultBranch: main
+    sessionPrefix: svc              # Session names: svc-1, svc-2, svc-3 ...
+
+    # Issue tracker — GitHub Issues by default.
+    # Uncomment and configure for Linear:
+    tracker:
+      plugin: github
+      # plugin: linear
+      # teamId: "YOUR_LINEAR_TEAM_ID"
+
+    # Inject CORE_RULES.md into every agent's system prompt via --append-system-prompt.
+    # Agents receive the binding rules without needing to re-read the file themselves.
+    # This is the primary mechanism for enforcing repo conventions in unattended sessions.
+    agentRulesFile: docs/CORE_RULES.md
+
+    # Files/directories to symlink from the repo root into every worktree.
+    #
+    # .env    — local secrets and config (gitignored — must exist at repo root)
+    # .claude — Claude Code settings.json and memory/ (shared across all sessions,
+    #            ensures consistent permissions and accumulated knowledge)
+    symlinks:
+      - .env
+      - .claude
+
+    # Shell commands to run after each worktree is created.
+    # Uncomment the line matching your primary language:
+    # postCreate:
+    #   - "pnpm install"        # TypeScript / Node.js
+    #   - "uv sync"             # Python
+    #   - "go mod download"     # Go
+    #   - "cargo fetch"         # Rust
+
+    # Agent configuration
+    agentConfig:
+      # Skip permission prompts for unattended operation.
+      # Agents can push branches, create PRs, and run tests without pausing to ask.
+      # The repo's CORE_RULES and CLAUDE.md still govern what they may do.
+      permissions: skip
+      # model: claude-sonnet-4-6   # override the default model for this project
+
+    # Per-project reaction overrides.
+    # Most reactions are enabled globally below — override here only when needed.
+    # Example: enable auto-merge for this specific project:
+    # reactions:
+    #   approved-and-green:
+    #     auto: true
+
+# ─── Notifications ─────────────────────────────────────────────────────────────
+# Configure where ao sends notifications when your input is needed.
+# Desktop notifications are enabled by default (macOS only).
+#
+# notifiers:
+#   slack:
+#     plugin: slack
+#     webhook: ${SLACK_WEBHOOK_URL}
+#     channel: "#dev-agents"
+
+# Route events to notifiers by priority level:
+#   urgent — agent stuck, needs_input, errored       → wake you up
+#   action — PR approved + CI green, merge ready     → act soon
+#   warning — CI auto-fix failed, review escalated   → be aware
+#   info    — session done, all sessions complete     → FYI
+#
+# notificationRouting:
+#   urgent: [desktop, slack]
+#   action: [desktop, slack]
+#   warning: [slack]
+#   info: [slack]
+
+# ─── Reactions ────────────────────────────────────────────────────────────────
+# Automatic responses to lifecycle events. The defaults below are active even
+# when this section is commented out — shown here for visibility and override.
+#
+# reactions:
+#
+#   # CI failure: auto-send logs to the agent so it can fix the issue.
+#   # After `retries` failed attempts, escalate to human notification.
+#   ci-failed:
+#     auto: true
+#     action: send-to-agent
+#     retries: 2
+#     escalateAfter: 2
+#
+#   # Review comments: auto-forward to the agent for self-correction.
+#   # If not resolved within `escalateAfter`, notify human.
+#   changes-requested:
+#     auto: true
+#     action: send-to-agent
+#     escalateAfter: 30m
+#
+#   # PR approved + CI green: notify human by default.
+#   # Set auto: true to enable auto-merge (per-project override recommended).
+#   approved-and-green:
+#     auto: false
+#     action: notify
+#     priority: action
+#
+#   # Agent stuck: notify if idle for longer than `threshold`.
+#   agent-stuck:
+#     threshold: 10m
+#     action: notify
+#     priority: urgent

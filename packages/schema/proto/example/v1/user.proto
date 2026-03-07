@@ -1,0 +1,148 @@
+syntax = "proto3";
+
+package example.v1;
+
+import "common/v1/errors.proto";
+import "common/v1/pagination.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/your-org/your-project/packages/schema/generated/go/example/v1;examplev1";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Example: User domain — shows the schema-first pattern.
+//
+// This file demonstrates how ALL data models should be defined:
+//   - DB entities   → messages (User)
+//   - Enums         → enum (UserStatus, UserRole)
+//   - API shapes    → messages (CreateUserRequest, GetUsersResponse, ...)
+//   - Event payloads → messages (UserCreatedEvent, UserUpdatedEvent)
+//   - RPC services  → service (UserService)
+//
+// Copy this file to proto/[your-service]/v1/[your-entity].proto and adapt.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+// UserStatus represents the lifecycle state of a user account.
+// Maps to a DB column — use the generated enum in your ORM schema.
+enum UserStatus {
+  USER_STATUS_UNSPECIFIED = 0;
+  USER_STATUS_PENDING_VERIFICATION = 1;
+  USER_STATUS_ACTIVE = 2;
+  USER_STATUS_INACTIVE = 3;
+  USER_STATUS_BANNED = 4;
+}
+
+// UserRole governs what permissions a user has within the system.
+enum UserRole {
+  USER_ROLE_UNSPECIFIED = 0;
+  USER_ROLE_MEMBER = 1;
+  USER_ROLE_ADMIN = 2;
+  USER_ROLE_SUPER_ADMIN = 3;
+}
+
+// ─── DB / Domain Entity ───────────────────────────────────────────────────────
+
+// User is the canonical user model.
+// This is the single definition used for:
+//   - DB table schema (derive your ORM model from this)
+//   - API response bodies
+//   - Event payloads
+//   - Internal domain objects
+message User {
+  // UUID v4, assigned on creation
+  string id = 1;
+
+  string email = 2;
+  string name = 3;
+
+  UserStatus status = 4;
+  UserRole role = 5;
+
+  // Hashed password — NEVER include in API responses
+  // Use a view model (UserPublic) that omits sensitive fields
+  // string password_hash = 6;  // Store in DB, exclude from API responses
+
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+}
+
+// UserPublic is the safe view of User exposed in API responses.
+// Sensitive fields (password_hash, internal flags) are excluded.
+message UserPublic {
+  string id = 1;
+  string email = 2;
+  string name = 3;
+  UserStatus status = 4;
+  UserRole role = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+// ─── Event Payloads ──────────────────────────────────────────────────────────
+// Published to the event bus / queue when user state changes.
+// Consumers use these same generated types — no guessing at payload shape.
+
+message UserCreatedEvent {
+  string user_id = 1;
+  string email = 2;
+  UserRole role = 3;
+  google.protobuf.Timestamp occurred_at = 4;
+}
+
+message UserStatusChangedEvent {
+  string user_id = 1;
+  UserStatus previous_status = 2;
+  UserStatus new_status = 3;
+  string changed_by_user_id = 4;
+  google.protobuf.Timestamp occurred_at = 5;
+}
+
+// ─── API Request / Response shapes ───────────────────────────────────────────
+
+message GetUsersRequest {
+  common.v1.PaginationRequest pagination = 1;
+  // Optional filters
+  UserStatus status_filter = 2;
+  UserRole role_filter = 3;
+}
+
+message GetUsersResponse {
+  repeated UserPublic users = 1;
+  common.v1.PaginationMeta pagination = 2;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message CreateUserRequest {
+  string email = 1;
+  string name = 2;
+  // Role defaults to USER_ROLE_MEMBER if unspecified
+  UserRole role = 3;
+}
+
+message UpdateUserRequest {
+  string id = 1;
+  // Only set fields that should change (use field_mask in production for partial updates)
+  string name = 2;
+  UserRole role = 3;
+}
+
+message UpdateUserStatusRequest {
+  string id = 1;
+  UserStatus status = 2;
+  string reason = 3;
+}
+
+// ─── Service ─────────────────────────────────────────────────────────────────
+
+// UserService defines the RPC contract for the user service.
+// HTTP/gRPC adapters are generated from this definition.
+service UserService {
+  rpc GetUsers(GetUsersRequest) returns (GetUsersResponse);
+  rpc GetUser(GetUserRequest) returns (UserPublic);
+  rpc CreateUser(CreateUserRequest) returns (UserPublic);
+  rpc UpdateUser(UpdateUserRequest) returns (UserPublic);
+  rpc UpdateUserStatus(UpdateUserStatusRequest) returns (UserPublic);
+}
