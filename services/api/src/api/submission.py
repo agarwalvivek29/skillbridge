@@ -22,7 +22,7 @@ from src.domain.submission import (
     SubmissionValidationError,
     create_submission,
     get_submission_checked,
-    list_submissions,
+    list_submissions_checked,
 )
 from src.infra.database import get_db
 from src.infra.models import SubmissionModel
@@ -238,9 +238,13 @@ async def list_submissions_endpoint(
     request: Request,
     db: AsyncSession = Depends(get_db),
 ) -> SubmissionListOut:
-    """List all submissions (revision history) for a milestone. Auth required."""
-    _require_auth(request)
-    submissions = await list_submissions(db, milestone_id)
+    """List all submissions (revision history) for a milestone.
+    Auth required; caller must be the gig's client or assigned freelancer."""
+    user_id = _require_auth(request)
+    try:
+        submissions = await list_submissions_checked(db, milestone_id, user_id)
+    except SubmissionValidationError as exc:
+        raise _handle_validation_error(exc)
     return SubmissionListOut(submissions=[_submission_to_out(s) for s in submissions])
 
 

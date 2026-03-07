@@ -302,7 +302,7 @@ class TestListSubmissions:
         self, client: AsyncClient, db_session: AsyncSession
     ):
         with patch("src.domain.submission.enqueue_review"):
-            _, fl_token, _, milestone_id = await _setup_in_progress_gig(
+            cl_token, fl_token, _, milestone_id = await _setup_in_progress_gig(
                 client, db_session
             )
             await client.post(
@@ -311,9 +311,7 @@ class TestListSubmissions:
                 headers=_auth(fl_token),
             )
 
-        cl_token, _ = await _register_and_get_token(
-            client, {**_CLIENT_PAYLOAD, "email": "cl2@example.com"}
-        )
+        # The gig's own client can list submissions
         resp = await client.get(
             f"/v1/milestones/{milestone_id}/submissions",
             headers=_auth(cl_token),
@@ -327,6 +325,38 @@ class TestListSubmissions:
             "/v1/milestones/00000000-0000-0000-0000-000000000000/submissions"
         )
         assert resp.status_code == 401
+
+    @pytest.mark.asyncio
+    async def test_unrelated_user_cannot_list_submissions(
+        self, client: AsyncClient, db_session: AsyncSession
+    ):
+        """Blocking issue: unrelated authenticated user must get 403 on list endpoint."""
+        with patch("src.domain.submission.enqueue_review"):
+            _, fl_token, _, milestone_id = await _setup_in_progress_gig(
+                client, db_session
+            )
+            await client.post(
+                f"/v1/milestones/{milestone_id}/submissions",
+                json={"repo_url": "https://github.com/user/repo"},
+                headers=_auth(fl_token),
+            )
+
+        # Register a third user unrelated to the gig
+        third_token, _ = await _register_and_get_token(
+            client,
+            {
+                "email": "third@example.com",
+                "password": "strongPass1",
+                "name": "Third User",
+                "role": "USER_ROLE_CLIENT",
+            },
+        )
+        resp = await client.get(
+            f"/v1/milestones/{milestone_id}/submissions",
+            headers=_auth(third_token),
+        )
+        assert resp.status_code == 403
+        assert resp.json()["detail"]["code"] == "FORBIDDEN"
 
 
 # ---------------------------------------------------------------------------

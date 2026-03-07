@@ -289,3 +289,42 @@ async def list_submissions(
         .order_by(SubmissionModel.revision_number.asc())
     )
     return list(result.scalars().all())
+
+
+async def list_submissions_checked(
+    db: AsyncSession,
+    milestone_id: str,
+    user_id: str,
+) -> list[SubmissionModel]:
+    """
+    Return all submissions for a milestone if the caller has read access.
+
+    Access is granted to the gig's client or assigned freelancer.
+    Raises SubmissionValidationError("MILESTONE_NOT_FOUND") if milestone does not exist.
+    Raises SubmissionValidationError("FORBIDDEN") if caller is neither party.
+    """
+    milestone_result = await db.execute(
+        select(MilestoneModel).where(MilestoneModel.id == milestone_id)
+    )
+    milestone = milestone_result.scalar_one_or_none()
+    if milestone is None:
+        raise SubmissionValidationError(
+            "MILESTONE_NOT_FOUND", f"Milestone {milestone_id} not found"
+        )
+
+    gig_result = await db.execute(
+        select(GigModel).where(GigModel.id == milestone.gig_id)
+    )
+    gig = gig_result.scalar_one_or_none()
+    if gig is None:
+        raise SubmissionValidationError(
+            "GIG_NOT_FOUND", f"Gig for milestone {milestone_id} not found"
+        )
+
+    if gig.client_id != user_id and gig.freelancer_id != user_id:
+        raise SubmissionValidationError(
+            "FORBIDDEN",
+            "You do not have access to submissions for this milestone",
+        )
+
+    return await list_submissions(db, milestone_id)
