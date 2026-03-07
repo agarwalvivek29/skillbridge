@@ -132,8 +132,6 @@ async def consume_nonce(db: AsyncSession, wallet_address: str) -> AuthNonceModel
 # SIWE verification
 # ---------------------------------------------------------------------------
 
-_SIWE_DOMAIN = "skillbridge.xyz"
-
 
 def verify_siwe_signature(
     wallet_address: str,
@@ -147,7 +145,7 @@ def verify_siwe_signature(
     Uses the `siwe` package for full EIP-4361 compliance:
     - Parses the structured SIWE message
     - Verifies the cryptographic signature
-    - Checks domain matches _SIWE_DOMAIN
+    - Checks domain matches settings.siwe_domain
     - Checks nonce matches expected_nonce
 
     Returns True only if all checks pass; False on any failure.
@@ -156,7 +154,7 @@ def verify_siwe_signature(
         siwe_msg = SiweMessage.from_message(message=message)
         siwe_msg.verify(
             signature=signature,
-            domain=_SIWE_DOMAIN,
+            domain=settings.siwe_domain,
             nonce=expected_nonce,
         )
         # Extra check: recovered address must match the claimed wallet
