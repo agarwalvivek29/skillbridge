@@ -2,18 +2,8 @@
 // @generated from file api/v1/submission.proto (package api.v1, syntax proto3)
 /* eslint-disable */
 
-import type {
-  GenEnum,
-  GenFile,
-  GenMessage,
-  GenService,
-} from "@bufbuild/protobuf/codegenv1";
-import {
-  enumDesc,
-  fileDesc,
-  messageDesc,
-  serviceDesc,
-} from "@bufbuild/protobuf/codegenv1";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
@@ -21,12 +11,8 @@ import type { Message } from "@bufbuild/protobuf";
 /**
  * Describes the file api/v1/submission.proto.
  */
-export const file_api_v1_submission: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    "ChdhcGkvdjEvc3VibWlzc2lvbi5wcm90bxIGYXBpLnYxIrwCCgpTdWJtaXNzaW9uEgoKAmlkGAEgASgJEhQKDG1pbGVzdG9uZV9pZBgCIAEoCRIVCg1mcmVlbGFuY2VyX2lkGAMgASgJEhAKCHJlcG9fdXJsGAQgASgJEhEKCWZpbGVfa2V5cxgFIAMoCRINCgVub3RlcxgGIAEoCRIoCgZzdGF0dXMYByABKA4yGC5hcGkudjEuU3VibWlzc2lvblN0YXR1cxIXCg9yZXZpc2lvbl9udW1iZXIYCCABKAUSHgoWcHJldmlvdXNfc3VibWlzc2lvbl9pZBgJIAEoCRIuCgpjcmVhdGVkX2F0GAogASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgp1cGRhdGVkX2F0GAsgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCK4AQoWU3VibWlzc2lvbkNyZWF0ZWRFdmVudBIVCg1zdWJtaXNzaW9uX2lkGAEgASgJEhQKDG1pbGVzdG9uZV9pZBgCIAEoCRIVCg1mcmVlbGFuY2VyX2lkGAMgASgJEhAKCHJlcG9fdXJsGAQgASgJEhcKD3JldmlzaW9uX251bWJlchgFIAEoBRIvCgtvY2N1cnJlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiogEKF1N1Ym1pc3Npb25SZXZpZXdlZEV2ZW50EhUKDXN1Ym1pc3Npb25faWQYASABKAkSFAoMbWlsZXN0b25lX2lkGAIgASgJEikKB3ZlcmRpY3QYAyABKA4yGC5hcGkudjEuU3VibWlzc2lvblN0YXR1cxIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAigwEKF0NyZWF0ZVN1Ym1pc3Npb25SZXF1ZXN0EhQKDG1pbGVzdG9uZV9pZBgBIAEoCRIQCghyZXBvX3VybBgCIAEoCRIRCglmaWxlX2tleXMYAyADKAkSDQoFbm90ZXMYBCABKAkSHgoWcHJldmlvdXNfc3VibWlzc2lvbl9pZBgFIAEoCSIiChRHZXRTdWJtaXNzaW9uUmVxdWVzdBIKCgJpZBgBIAEoCSItChVHZXRTdWJtaXNzaW9uc1JlcXVlc3QSFAoMbWlsZXN0b25lX2lkGAEgASgJIkEKFkdldFN1Ym1pc3Npb25zUmVzcG9uc2USJwoLc3VibWlzc2lvbnMYASADKAsyEi5hcGkudjEuU3VibWlzc2lvbiJCChhDcmVhdGVTdWJtaXNzaW9uUmVzcG9uc2USJgoKc3VibWlzc2lvbhgBIAEoCzISLmFwaS52MS5TdWJtaXNzaW9uIj8KFUdldFN1Ym1pc3Npb25SZXNwb25zZRImCgpzdWJtaXNzaW9uGAEgASgLMhIuYXBpLnYxLlN1Ym1pc3Npb24quAEKEFN1Ym1pc3Npb25TdGF0dXMSIQodU1VCTUlTU0lPTl9TVEFUVVNfVU5TUEVDSUZJRUQQABIdChlTVUJNSVNTSU9OX1NUQVRVU19QRU5ESU5HEAESIgoeU1VCTUlTU0lPTl9TVEFUVVNfVU5ERVJfUkVWSUVXEAISHgoaU1VCTUlTU0lPTl9TVEFUVVNfQVBQUk9WRUQQAxIeChpTVUJNSVNTSU9OX1NUQVRVU19SRUpFQ1RFRBAEMokCChFTdWJtaXNzaW9uU2VydmljZRJVChBDcmVhdGVTdWJtaXNzaW9uEh8uYXBpLnYxLkNyZWF0ZVN1Ym1pc3Npb25SZXF1ZXN0GiAuYXBpLnYxLkNyZWF0ZVN1Ym1pc3Npb25SZXNwb25zZRJMCg1HZXRTdWJtaXNzaW9uEhwuYXBpLnYxLkdldFN1Ym1pc3Npb25SZXF1ZXN0Gh0uYXBpLnYxLkdldFN1Ym1pc3Npb25SZXNwb25zZRJPCg5HZXRTdWJtaXNzaW9ucxIdLmFwaS52MS5HZXRTdWJtaXNzaW9uc1JlcXVlc3QaHi5hcGkudjEuR2V0U3VibWlzc2lvbnNSZXNwb25zZUKnAQoKY29tLmFwaS52MUIPU3VibWlzc2lvblByb3RvUAFaT2dpdGh1Yi5jb20vYWdhcndhbHZpdmVrMjkvc2tpbGxicmlkZ2UvcGFja2FnZXMvc2NoZW1hL2dlbmVyYXRlZC9nby9hcGkvdjE7YXBpdjGiAgNBWFiqAgZBcGkuVjHKAgZBcGlcVjHiAhJBcGlcVjFcR1BCTWV0YWRhdGHqAgdBcGk6OlYxYgZwcm90bzM",
-    [file_google_protobuf_timestamp],
-  );
+export const file_api_v1_submission: GenFile = /*@__PURE__*/
+  fileDesc("ChdhcGkvdjEvc3VibWlzc2lvbi5wcm90bxIGYXBpLnYxIrwCCgpTdWJtaXNzaW9uEgoKAmlkGAEgASgJEhQKDG1pbGVzdG9uZV9pZBgCIAEoCRIVCg1mcmVlbGFuY2VyX2lkGAMgASgJEhAKCHJlcG9fdXJsGAQgASgJEhEKCWZpbGVfa2V5cxgFIAMoCRINCgVub3RlcxgGIAEoCRIoCgZzdGF0dXMYByABKA4yGC5hcGkudjEuU3VibWlzc2lvblN0YXR1cxIXCg9yZXZpc2lvbl9udW1iZXIYCCABKAUSHgoWcHJldmlvdXNfc3VibWlzc2lvbl9pZBgJIAEoCRIuCgpjcmVhdGVkX2F0GAogASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgp1cGRhdGVkX2F0GAsgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCK4AQoWU3VibWlzc2lvbkNyZWF0ZWRFdmVudBIVCg1zdWJtaXNzaW9uX2lkGAEgASgJEhQKDG1pbGVzdG9uZV9pZBgCIAEoCRIVCg1mcmVlbGFuY2VyX2lkGAMgASgJEhAKCHJlcG9fdXJsGAQgASgJEhcKD3JldmlzaW9uX251bWJlchgFIAEoBRIvCgtvY2N1cnJlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiogEKF1N1Ym1pc3Npb25SZXZpZXdlZEV2ZW50EhUKDXN1Ym1pc3Npb25faWQYASABKAkSFAoMbWlsZXN0b25lX2lkGAIgASgJEikKB3ZlcmRpY3QYAyABKA4yGC5hcGkudjEuU3VibWlzc2lvblN0YXR1cxIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAigwEKF0NyZWF0ZVN1Ym1pc3Npb25SZXF1ZXN0EhQKDG1pbGVzdG9uZV9pZBgBIAEoCRIQCghyZXBvX3VybBgCIAEoCRIRCglmaWxlX2tleXMYAyADKAkSDQoFbm90ZXMYBCABKAkSHgoWcHJldmlvdXNfc3VibWlzc2lvbl9pZBgFIAEoCSIiChRHZXRTdWJtaXNzaW9uUmVxdWVzdBIKCgJpZBgBIAEoCSItChVHZXRTdWJtaXNzaW9uc1JlcXVlc3QSFAoMbWlsZXN0b25lX2lkGAEgASgJIkEKFkdldFN1Ym1pc3Npb25zUmVzcG9uc2USJwoLc3VibWlzc2lvbnMYASADKAsyEi5hcGkudjEuU3VibWlzc2lvbiJCChhDcmVhdGVTdWJtaXNzaW9uUmVzcG9uc2USJgoKc3VibWlzc2lvbhgBIAEoCzISLmFwaS52MS5TdWJtaXNzaW9uIj8KFUdldFN1Ym1pc3Npb25SZXNwb25zZRImCgpzdWJtaXNzaW9uGAEgASgLMhIuYXBpLnYxLlN1Ym1pc3Npb24quAEKEFN1Ym1pc3Npb25TdGF0dXMSIQodU1VCTUlTU0lPTl9TVEFUVVNfVU5TUEVDSUZJRUQQABIdChlTVUJNSVNTSU9OX1NUQVRVU19QRU5ESU5HEAESIgoeU1VCTUlTU0lPTl9TVEFUVVNfVU5ERVJfUkVWSUVXEAISHgoaU1VCTUlTU0lPTl9TVEFUVVNfQVBQUk9WRUQQAxIeChpTVUJNSVNTSU9OX1NUQVRVU19SRUpFQ1RFRBAEMokCChFTdWJtaXNzaW9uU2VydmljZRJVChBDcmVhdGVTdWJtaXNzaW9uEh8uYXBpLnYxLkNyZWF0ZVN1Ym1pc3Npb25SZXF1ZXN0GiAuYXBpLnYxLkNyZWF0ZVN1Ym1pc3Npb25SZXNwb25zZRJMCg1HZXRTdWJtaXNzaW9uEhwuYXBpLnYxLkdldFN1Ym1pc3Npb25SZXF1ZXN0Gh0uYXBpLnYxLkdldFN1Ym1pc3Npb25SZXNwb25zZRJPCg5HZXRTdWJtaXNzaW9ucxIdLmFwaS52MS5HZXRTdWJtaXNzaW9uc1JlcXVlc3QaHi5hcGkudjEuR2V0U3VibWlzc2lvbnNSZXNwb25zZUKnAQoKY29tLmFwaS52MUIPU3VibWlzc2lvblByb3RvUAFaT2dpdGh1Yi5jb20vYWdhcndhbHZpdmVrMjkvc2tpbGxicmlkZ2UvcGFja2FnZXMvc2NoZW1hL2dlbmVyYXRlZC9nby9hcGkvdjE7YXBpdjGiAgNBWFiqAgZBcGkuVjHKAgZBcGlcVjHiAhJBcGlcVjFcR1BCTWV0YWRhdGHqAgdBcGk6OlYxYgZwcm90bzM", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message api.v1.Submission
@@ -100,127 +86,120 @@ export type Submission = Message<"api.v1.Submission"> & {
  * Describes the message api.v1.Submission.
  * Use `create(SubmissionSchema)` to create a new message.
  */
-export const SubmissionSchema: GenMessage<Submission> =
-  /*@__PURE__*/
+export const SubmissionSchema: GenMessage<Submission> = /*@__PURE__*/
   messageDesc(file_api_v1_submission, 0);
 
 /**
  * @generated from message api.v1.SubmissionCreatedEvent
  */
-export type SubmissionCreatedEvent =
-  Message<"api.v1.SubmissionCreatedEvent"> & {
-    /**
-     * @generated from field: string submission_id = 1;
-     */
-    submissionId: string;
+export type SubmissionCreatedEvent = Message<"api.v1.SubmissionCreatedEvent"> & {
+  /**
+   * @generated from field: string submission_id = 1;
+   */
+  submissionId: string;
 
-    /**
-     * @generated from field: string milestone_id = 2;
-     */
-    milestoneId: string;
+  /**
+   * @generated from field: string milestone_id = 2;
+   */
+  milestoneId: string;
 
-    /**
-     * @generated from field: string freelancer_id = 3;
-     */
-    freelancerId: string;
+  /**
+   * @generated from field: string freelancer_id = 3;
+   */
+  freelancerId: string;
 
-    /**
-     * @generated from field: string repo_url = 4;
-     */
-    repoUrl: string;
+  /**
+   * @generated from field: string repo_url = 4;
+   */
+  repoUrl: string;
 
-    /**
-     * @generated from field: int32 revision_number = 5;
-     */
-    revisionNumber: number;
+  /**
+   * @generated from field: int32 revision_number = 5;
+   */
+  revisionNumber: number;
 
-    /**
-     * @generated from field: google.protobuf.Timestamp occurred_at = 6;
-     */
-    occurredAt?: Timestamp;
-  };
+  /**
+   * @generated from field: google.protobuf.Timestamp occurred_at = 6;
+   */
+  occurredAt?: Timestamp;
+};
 
 /**
  * Describes the message api.v1.SubmissionCreatedEvent.
  * Use `create(SubmissionCreatedEventSchema)` to create a new message.
  */
-export const SubmissionCreatedEventSchema: GenMessage<SubmissionCreatedEvent> =
-  /*@__PURE__*/
+export const SubmissionCreatedEventSchema: GenMessage<SubmissionCreatedEvent> = /*@__PURE__*/
   messageDesc(file_api_v1_submission, 1);
 
 /**
  * @generated from message api.v1.SubmissionReviewedEvent
  */
-export type SubmissionReviewedEvent =
-  Message<"api.v1.SubmissionReviewedEvent"> & {
-    /**
-     * @generated from field: string submission_id = 1;
-     */
-    submissionId: string;
+export type SubmissionReviewedEvent = Message<"api.v1.SubmissionReviewedEvent"> & {
+  /**
+   * @generated from field: string submission_id = 1;
+   */
+  submissionId: string;
 
-    /**
-     * @generated from field: string milestone_id = 2;
-     */
-    milestoneId: string;
+  /**
+   * @generated from field: string milestone_id = 2;
+   */
+  milestoneId: string;
 
-    /**
-     * @generated from field: api.v1.SubmissionStatus verdict = 3;
-     */
-    verdict: SubmissionStatus;
+  /**
+   * @generated from field: api.v1.SubmissionStatus verdict = 3;
+   */
+  verdict: SubmissionStatus;
 
-    /**
-     * @generated from field: google.protobuf.Timestamp occurred_at = 4;
-     */
-    occurredAt?: Timestamp;
-  };
+  /**
+   * @generated from field: google.protobuf.Timestamp occurred_at = 4;
+   */
+  occurredAt?: Timestamp;
+};
 
 /**
  * Describes the message api.v1.SubmissionReviewedEvent.
  * Use `create(SubmissionReviewedEventSchema)` to create a new message.
  */
-export const SubmissionReviewedEventSchema: GenMessage<SubmissionReviewedEvent> =
-  /*@__PURE__*/
+export const SubmissionReviewedEventSchema: GenMessage<SubmissionReviewedEvent> = /*@__PURE__*/
   messageDesc(file_api_v1_submission, 2);
 
 /**
  * @generated from message api.v1.CreateSubmissionRequest
  */
-export type CreateSubmissionRequest =
-  Message<"api.v1.CreateSubmissionRequest"> & {
-    /**
-     * @generated from field: string milestone_id = 1;
-     */
-    milestoneId: string;
+export type CreateSubmissionRequest = Message<"api.v1.CreateSubmissionRequest"> & {
+  /**
+   * @generated from field: string milestone_id = 1;
+   */
+  milestoneId: string;
 
-    /**
-     * @generated from field: string repo_url = 2;
-     */
-    repoUrl: string;
+  /**
+   * @generated from field: string repo_url = 2;
+   */
+  repoUrl: string;
 
-    /**
-     * @generated from field: repeated string file_keys = 3;
-     */
-    fileKeys: string[];
+  /**
+   * @generated from field: repeated string file_keys = 3;
+   */
+  fileKeys: string[];
 
-    /**
-     * @generated from field: string notes = 4;
-     */
-    notes: string;
+  /**
+   * @generated from field: string notes = 4;
+   */
+  notes: string;
 
-    /**
-     * Set when resubmitting after a revision request
-     *
-     * @generated from field: string previous_submission_id = 5;
-     */
-    previousSubmissionId: string;
-  };
+  /**
+   * Set when resubmitting after a revision request
+   *
+   * @generated from field: string previous_submission_id = 5;
+   */
+  previousSubmissionId: string;
+};
 
 /**
  * Describes the message api.v1.CreateSubmissionRequest.
  * Use `create(CreateSubmissionRequestSchema)` to create a new message.
  */
-export const CreateSubmissionRequestSchema: GenMessage<CreateSubmissionRequest> =
-  /*@__PURE__*/
+export const CreateSubmissionRequestSchema: GenMessage<CreateSubmissionRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_submission, 3);
 
 /**
@@ -237,8 +216,7 @@ export type GetSubmissionRequest = Message<"api.v1.GetSubmissionRequest"> & {
  * Describes the message api.v1.GetSubmissionRequest.
  * Use `create(GetSubmissionRequestSchema)` to create a new message.
  */
-export const GetSubmissionRequestSchema: GenMessage<GetSubmissionRequest> =
-  /*@__PURE__*/
+export const GetSubmissionRequestSchema: GenMessage<GetSubmissionRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_submission, 4);
 
 /**
@@ -255,46 +233,41 @@ export type GetSubmissionsRequest = Message<"api.v1.GetSubmissionsRequest"> & {
  * Describes the message api.v1.GetSubmissionsRequest.
  * Use `create(GetSubmissionsRequestSchema)` to create a new message.
  */
-export const GetSubmissionsRequestSchema: GenMessage<GetSubmissionsRequest> =
-  /*@__PURE__*/
+export const GetSubmissionsRequestSchema: GenMessage<GetSubmissionsRequest> = /*@__PURE__*/
   messageDesc(file_api_v1_submission, 5);
 
 /**
  * @generated from message api.v1.GetSubmissionsResponse
  */
-export type GetSubmissionsResponse =
-  Message<"api.v1.GetSubmissionsResponse"> & {
-    /**
-     * @generated from field: repeated api.v1.Submission submissions = 1;
-     */
-    submissions: Submission[];
-  };
+export type GetSubmissionsResponse = Message<"api.v1.GetSubmissionsResponse"> & {
+  /**
+   * @generated from field: repeated api.v1.Submission submissions = 1;
+   */
+  submissions: Submission[];
+};
 
 /**
  * Describes the message api.v1.GetSubmissionsResponse.
  * Use `create(GetSubmissionsResponseSchema)` to create a new message.
  */
-export const GetSubmissionsResponseSchema: GenMessage<GetSubmissionsResponse> =
-  /*@__PURE__*/
+export const GetSubmissionsResponseSchema: GenMessage<GetSubmissionsResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_submission, 6);
 
 /**
  * @generated from message api.v1.CreateSubmissionResponse
  */
-export type CreateSubmissionResponse =
-  Message<"api.v1.CreateSubmissionResponse"> & {
-    /**
-     * @generated from field: api.v1.Submission submission = 1;
-     */
-    submission?: Submission;
-  };
+export type CreateSubmissionResponse = Message<"api.v1.CreateSubmissionResponse"> & {
+  /**
+   * @generated from field: api.v1.Submission submission = 1;
+   */
+  submission?: Submission;
+};
 
 /**
  * Describes the message api.v1.CreateSubmissionResponse.
  * Use `create(CreateSubmissionResponseSchema)` to create a new message.
  */
-export const CreateSubmissionResponseSchema: GenMessage<CreateSubmissionResponse> =
-  /*@__PURE__*/
+export const CreateSubmissionResponseSchema: GenMessage<CreateSubmissionResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_submission, 7);
 
 /**
@@ -311,8 +284,7 @@ export type GetSubmissionResponse = Message<"api.v1.GetSubmissionResponse"> & {
  * Describes the message api.v1.GetSubmissionResponse.
  * Use `create(GetSubmissionResponseSchema)` to create a new message.
  */
-export const GetSubmissionResponseSchema: GenMessage<GetSubmissionResponse> =
-  /*@__PURE__*/
+export const GetSubmissionResponseSchema: GenMessage<GetSubmissionResponse> = /*@__PURE__*/
   messageDesc(file_api_v1_submission, 8);
 
 /**
@@ -356,8 +328,7 @@ export enum SubmissionStatus {
 /**
  * Describes the enum api.v1.SubmissionStatus.
  */
-export const SubmissionStatusSchema: GenEnum<SubmissionStatus> =
-  /*@__PURE__*/
+export const SubmissionStatusSchema: GenEnum<SubmissionStatus> = /*@__PURE__*/
   enumDesc(file_api_v1_submission, 0);
 
 /**
@@ -371,7 +342,7 @@ export const SubmissionService: GenService<{
     methodKind: "unary";
     input: typeof CreateSubmissionRequestSchema;
     output: typeof CreateSubmissionResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.SubmissionService.GetSubmission
    */
@@ -379,7 +350,7 @@ export const SubmissionService: GenService<{
     methodKind: "unary";
     input: typeof GetSubmissionRequestSchema;
     output: typeof GetSubmissionResponseSchema;
-  };
+  },
   /**
    * @generated from rpc api.v1.SubmissionService.GetSubmissions
    */
@@ -387,5 +358,7 @@ export const SubmissionService: GenService<{
     methodKind: "unary";
     input: typeof GetSubmissionsRequestSchema;
     output: typeof GetSubmissionsResponseSchema;
-  };
-}> = /*@__PURE__*/ serviceDesc(file_api_v1_submission, 0);
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_api_v1_submission, 0);
+

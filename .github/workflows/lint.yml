@@ -73,7 +73,7 @@ jobs:
           for service_dir in services/*/; do
             if [ -f "${service_dir}pyproject.toml" ]; then
               echo "Checking ${service_dir}"
-              uv run --directory "${service_dir}" mypy .
+              uv run --directory "${service_dir}" --extra dev mypy .
             fi
           done
 

@@ -2,22 +2,15 @@
 // @generated from file common/v1/auth.proto (package common.v1, syntax proto3)
 /* eslint-disable */
 
-import type {
-  GenEnum,
-  GenFile,
-  GenMessage,
-} from "@bufbuild/protobuf/codegenv1";
+import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
 import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv1";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file common/v1/auth.proto.
  */
-export const file_common_v1_auth: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    "ChRjb21tb24vdjEvYXV0aC5wcm90bxIJY29tbW9uLnYxIrMBCgpBdXRoQ2xhaW1zEg8KB3N1YmplY3QYASABKAkSJQoGbWV0aG9kGAIgASgOMhUuY29tbW9uLnYxLkF1dGhNZXRob2QSKAoKdG9rZW5fdHlwZRgDIAEoDjIULmNvbW1vbi52MS5Ub2tlblR5cGUSDAoEcm9sZRgEIAEoCRIOCgZzY29wZXMYBSADKAkSEQoJaXNzdWVkX2F0GAYgASgDEhIKCmV4cGlyZXNfYXQYByABKAMqVwoKQXV0aE1ldGhvZBIbChdBVVRIX01FVEhPRF9VTlNQRUNJRklFRBAAEhMKD0FVVEhfTUVUSE9EX0pXVBABEhcKE0FVVEhfTUVUSE9EX0FQSV9LRVkQAipUCglUb2tlblR5cGUSGgoWVE9LRU5fVFlQRV9VTlNQRUNJRklFRBAAEhMKD1RPS0VOX1RZUEVfVVNFUhABEhYKElRPS0VOX1RZUEVfU0VSVklDRRACQrYBCg1jb20uY29tbW9uLnYxQglBdXRoUHJvdG9QAVpVZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2NvbW1vbi92MTtjb21tb252MaICA0NYWKoCCUNvbW1vbi5WMcoCCUNvbW1vblxWMeICFUNvbW1vblxWMVxHUEJNZXRhZGF0YeoCCkNvbW1vbjo6VjFiBnByb3RvMw",
-  );
+export const file_common_v1_auth: GenFile = /*@__PURE__*/
+  fileDesc("ChRjb21tb24vdjEvYXV0aC5wcm90bxIJY29tbW9uLnYxIrMBCgpBdXRoQ2xhaW1zEg8KB3N1YmplY3QYASABKAkSJQoGbWV0aG9kGAIgASgOMhUuY29tbW9uLnYxLkF1dGhNZXRob2QSKAoKdG9rZW5fdHlwZRgDIAEoDjIULmNvbW1vbi52MS5Ub2tlblR5cGUSDAoEcm9sZRgEIAEoCRIOCgZzY29wZXMYBSADKAkSEQoJaXNzdWVkX2F0GAYgASgDEhIKCmV4cGlyZXNfYXQYByABKAMqVwoKQXV0aE1ldGhvZBIbChdBVVRIX01FVEhPRF9VTlNQRUNJRklFRBAAEhMKD0FVVEhfTUVUSE9EX0pXVBABEhcKE0FVVEhfTUVUSE9EX0FQSV9LRVkQAipUCglUb2tlblR5cGUSGgoWVE9LRU5fVFlQRV9VTlNQRUNJRklFRBAAEhMKD1RPS0VOX1RZUEVfVVNFUhABEhYKElRPS0VOX1RZUEVfU0VSVklDRRACQrYBCg1jb20uY29tbW9uLnYxQglBdXRoUHJvdG9QAVpVZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2NvbW1vbi92MTtjb21tb252MaICA0NYWKoCCUNvbW1vbi5WMcoCCUNvbW1vblxWMeICFUNvbW1vblxWMVxHUEJNZXRhZGF0YeoCCkNvbW1vbjo6VjFiBnByb3RvMw");
 
 /**
  * AuthClaims represents the resolved identity attached to an authenticated request.
@@ -80,8 +73,7 @@ export type AuthClaims = Message<"common.v1.AuthClaims"> & {
  * Describes the message common.v1.AuthClaims.
  * Use `create(AuthClaimsSchema)` to create a new message.
  */
-export const AuthClaimsSchema: GenMessage<AuthClaims> =
-  /*@__PURE__*/
+export const AuthClaimsSchema: GenMessage<AuthClaims> = /*@__PURE__*/
   messageDesc(file_common_v1_auth, 0);
 
 /**
@@ -113,8 +105,7 @@ export enum AuthMethod {
 /**
  * Describes the enum common.v1.AuthMethod.
  */
-export const AuthMethodSchema: GenEnum<AuthMethod> =
-  /*@__PURE__*/
+export const AuthMethodSchema: GenEnum<AuthMethod> = /*@__PURE__*/
   enumDesc(file_common_v1_auth, 0);
 
 /**
@@ -146,6 +137,6 @@ export enum TokenType {
 /**
  * Describes the enum common.v1.TokenType.
  */
-export const TokenTypeSchema: GenEnum<TokenType> =
-  /*@__PURE__*/
+export const TokenTypeSchema: GenEnum<TokenType> = /*@__PURE__*/
   enumDesc(file_common_v1_auth, 1);
+

@@ -2,22 +2,9 @@
 // @generated from file example/v1/user.proto (package example.v1, syntax proto3)
 /* eslint-disable */
 
-import type {
-  GenEnum,
-  GenFile,
-  GenMessage,
-  GenService,
-} from "@bufbuild/protobuf/codegenv1";
-import {
-  enumDesc,
-  fileDesc,
-  messageDesc,
-  serviceDesc,
-} from "@bufbuild/protobuf/codegenv1";
-import type {
-  PaginationMeta,
-  PaginationRequest,
-} from "../../common/v1/pagination_pb";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
+import type { PaginationMeta, PaginationRequest } from "../../common/v1/pagination_pb";
 import { file_common_v1_pagination } from "../../common/v1/pagination_pb";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
@@ -26,12 +13,8 @@ import type { Message } from "@bufbuild/protobuf";
 /**
  * Describes the file example/v1/user.proto.
  */
-export const file_example_v1_user: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    "ChVleGFtcGxlL3YxL3VzZXIucHJvdG8SCmV4YW1wbGUudjEi2wEKBFVzZXISCgoCaWQYASABKAkSDQoFZW1haWwYAiABKAkSDAoEbmFtZRgDIAEoCRImCgZzdGF0dXMYBCABKA4yFi5leGFtcGxlLnYxLlVzZXJTdGF0dXMSIgoEcm9sZRgFIAEoDjIULmV4YW1wbGUudjEuVXNlclJvbGUSLgoKY3JlYXRlZF9hdBgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKdXBkYXRlZF9hdBgIIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAisQEKClVzZXJQdWJsaWMSCgoCaWQYASABKAkSDQoFZW1haWwYAiABKAkSDAoEbmFtZRgDIAEoCRImCgZzdGF0dXMYBCABKA4yFi5leGFtcGxlLnYxLlVzZXJTdGF0dXMSIgoEcm9sZRgFIAEoDjIULmV4YW1wbGUudjEuVXNlclJvbGUSLgoKY3JlYXRlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAihwEKEFVzZXJDcmVhdGVkRXZlbnQSDwoHdXNlcl9pZBgBIAEoCRINCgVlbWFpbBgCIAEoCRIiCgRyb2xlGAMgASgOMhQuZXhhbXBsZS52MS5Vc2VyUm9sZRIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAi0wEKFlVzZXJTdGF0dXNDaGFuZ2VkRXZlbnQSDwoHdXNlcl9pZBgBIAEoCRIvCg9wcmV2aW91c19zdGF0dXMYAiABKA4yFi5leGFtcGxlLnYxLlVzZXJTdGF0dXMSKgoKbmV3X3N0YXR1cxgDIAEoDjIWLmV4YW1wbGUudjEuVXNlclN0YXR1cxIaChJjaGFuZ2VkX2J5X3VzZXJfaWQYBCABKAkSLwoLb2NjdXJyZWRfYXQYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIp0BCg9HZXRVc2Vyc1JlcXVlc3QSMAoKcGFnaW5hdGlvbhgBIAEoCzIcLmNvbW1vbi52MS5QYWdpbmF0aW9uUmVxdWVzdBItCg1zdGF0dXNfZmlsdGVyGAIgASgOMhYuZXhhbXBsZS52MS5Vc2VyU3RhdHVzEikKC3JvbGVfZmlsdGVyGAMgASgOMhQuZXhhbXBsZS52MS5Vc2VyUm9sZSJoChBHZXRVc2Vyc1Jlc3BvbnNlEiUKBXVzZXJzGAEgAygLMhYuZXhhbXBsZS52MS5Vc2VyUHVibGljEi0KCnBhZ2luYXRpb24YAiABKAsyGS5jb21tb24udjEuUGFnaW5hdGlvbk1ldGEiHAoOR2V0VXNlclJlcXVlc3QSCgoCaWQYASABKAkiVAoRQ3JlYXRlVXNlclJlcXVlc3QSDQoFZW1haWwYASABKAkSDAoEbmFtZRgCIAEoCRIiCgRyb2xlGAMgASgOMhQuZXhhbXBsZS52MS5Vc2VyUm9sZSJRChFVcGRhdGVVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEiIKBHJvbGUYAyABKA4yFC5leGFtcGxlLnYxLlVzZXJSb2xlIl0KF1VwZGF0ZVVzZXJTdGF0dXNSZXF1ZXN0EgoKAmlkGAEgASgJEiYKBnN0YXR1cxgCIAEoDjIWLmV4YW1wbGUudjEuVXNlclN0YXR1cxIOCgZyZWFzb24YAyABKAkiNwoPR2V0VXNlclJlc3BvbnNlEiQKBHVzZXIYASABKAsyFi5leGFtcGxlLnYxLlVzZXJQdWJsaWMiOgoSQ3JlYXRlVXNlclJlc3BvbnNlEiQKBHVzZXIYASABKAsyFi5leGFtcGxlLnYxLlVzZXJQdWJsaWMiOgoSVXBkYXRlVXNlclJlc3BvbnNlEiQKBHVzZXIYASABKAsyFi5leGFtcGxlLnYxLlVzZXJQdWJsaWMiQAoYVXBkYXRlVXNlclN0YXR1c1Jlc3BvbnNlEiQKBHVzZXIYASABKAsyFi5leGFtcGxlLnYxLlVzZXJQdWJsaWMqmQEKClVzZXJTdGF0dXMSGwoXVVNFUl9TVEFUVVNfVU5TUEVDSUZJRUQQABIkCiBVU0VSX1NUQVRVU19QRU5ESU5HX1ZFUklGSUNBVElPThABEhYKElVTRVJfU1RBVFVTX0FDVElWRRACEhgKFFVTRVJfU1RBVFVTX0lOQUNUSVZFEAMSFgoSVVNFUl9TVEFUVVNfQkFOTkVEEAQqawoIVXNlclJvbGUSGQoVVVNFUl9ST0xFX1VOU1BFQ0lGSUVEEAASFAoQVVNFUl9ST0xFX01FTUJFUhABEhMKD1VTRVJfUk9MRV9BRE1JThACEhkKFVVTRVJfUk9MRV9TVVBFUl9BRE1JThADMpEDCgtVc2VyU2VydmljZRJFCghHZXRVc2VycxIbLmV4YW1wbGUudjEuR2V0VXNlcnNSZXF1ZXN0GhwuZXhhbXBsZS52MS5HZXRVc2Vyc1Jlc3BvbnNlEkIKB0dldFVzZXISGi5leGFtcGxlLnYxLkdldFVzZXJSZXF1ZXN0GhsuZXhhbXBsZS52MS5HZXRVc2VyUmVzcG9uc2USSwoKQ3JlYXRlVXNlchIdLmV4YW1wbGUudjEuQ3JlYXRlVXNlclJlcXVlc3QaHi5leGFtcGxlLnYxLkNyZWF0ZVVzZXJSZXNwb25zZRJLCgpVcGRhdGVVc2VyEh0uZXhhbXBsZS52MS5VcGRhdGVVc2VyUmVxdWVzdBoeLmV4YW1wbGUudjEuVXBkYXRlVXNlclJlc3BvbnNlEl0KEFVwZGF0ZVVzZXJTdGF0dXMSIy5leGFtcGxlLnYxLlVwZGF0ZVVzZXJTdGF0dXNSZXF1ZXN0GiQuZXhhbXBsZS52MS5VcGRhdGVVc2VyU3RhdHVzUmVzcG9uc2VCvQEKDmNvbS5leGFtcGxlLnYxQglVc2VyUHJvdG9QAVpXZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2V4YW1wbGUvdjE7ZXhhbXBsZXYxogIDRVhYqgIKRXhhbXBsZS5WMcoCCkV4YW1wbGVcVjHiAhZFeGFtcGxlXFYxXEdQQk1ldGFkYXRh6gILRXhhbXBsZTo6VjFiBnByb3RvMw",
-    [file_common_v1_pagination, file_google_protobuf_timestamp],
-  );
+export const file_example_v1_user: GenFile = /*@__PURE__*/
+  fileDesc("ChVleGFtcGxlL3YxL3VzZXIucHJvdG8SCmV4YW1wbGUudjEi2wEKBFVzZXISCgoCaWQYASABKAkSDQoFZW1haWwYAiABKAkSDAoEbmFtZRgDIAEoCRImCgZzdGF0dXMYBCABKA4yFi5leGFtcGxlLnYxLlVzZXJTdGF0dXMSIgoEcm9sZRgFIAEoDjIULmV4YW1wbGUudjEuVXNlclJvbGUSLgoKY3JlYXRlZF9hdBgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKdXBkYXRlZF9hdBgIIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAisQEKClVzZXJQdWJsaWMSCgoCaWQYASABKAkSDQoFZW1haWwYAiABKAkSDAoEbmFtZRgDIAEoCRImCgZzdGF0dXMYBCABKA4yFi5leGFtcGxlLnYxLlVzZXJTdGF0dXMSIgoEcm9sZRgFIAEoDjIULmV4YW1wbGUudjEuVXNlclJvbGUSLgoKY3JlYXRlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAihwEKEFVzZXJDcmVhdGVkRXZlbnQSDwoHdXNlcl9pZBgBIAEoCRINCgVlbWFpbBgCIAEoCRIiCgRyb2xlGAMgASgOMhQuZXhhbXBsZS52MS5Vc2VyUm9sZRIvCgtvY2N1cnJlZF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAi0wEKFlVzZXJTdGF0dXNDaGFuZ2VkRXZlbnQSDwoHdXNlcl9pZBgBIAEoCRIvCg9wcmV2aW91c19zdGF0dXMYAiABKA4yFi5leGFtcGxlLnYxLlVzZXJTdGF0dXMSKgoKbmV3X3N0YXR1cxgDIAEoDjIWLmV4YW1wbGUudjEuVXNlclN0YXR1cxIaChJjaGFuZ2VkX2J5X3VzZXJfaWQYBCABKAkSLwoLb2NjdXJyZWRfYXQYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIp0BCg9HZXRVc2Vyc1JlcXVlc3QSMAoKcGFnaW5hdGlvbhgBIAEoCzIcLmNvbW1vbi52MS5QYWdpbmF0aW9uUmVxdWVzdBItCg1zdGF0dXNfZmlsdGVyGAIgASgOMhYuZXhhbXBsZS52MS5Vc2VyU3RhdHVzEikKC3JvbGVfZmlsdGVyGAMgASgOMhQuZXhhbXBsZS52MS5Vc2VyUm9sZSJoChBHZXRVc2Vyc1Jlc3BvbnNlEiUKBXVzZXJzGAEgAygLMhYuZXhhbXBsZS52MS5Vc2VyUHVibGljEi0KCnBhZ2luYXRpb24YAiABKAsyGS5jb21tb24udjEuUGFnaW5hdGlvbk1ldGEiHAoOR2V0VXNlclJlcXVlc3QSCgoCaWQYASABKAkiVAoRQ3JlYXRlVXNlclJlcXVlc3QSDQoFZW1haWwYASABKAkSDAoEbmFtZRgCIAEoCRIiCgRyb2xlGAMgASgOMhQuZXhhbXBsZS52MS5Vc2VyUm9sZSJRChFVcGRhdGVVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEiIKBHJvbGUYAyABKA4yFC5leGFtcGxlLnYxLlVzZXJSb2xlIl0KF1VwZGF0ZVVzZXJTdGF0dXNSZXF1ZXN0EgoKAmlkGAEgASgJEiYKBnN0YXR1cxgCIAEoDjIWLmV4YW1wbGUudjEuVXNlclN0YXR1cxIOCgZyZWFzb24YAyABKAkiNwoPR2V0VXNlclJlc3BvbnNlEiQKBHVzZXIYASABKAsyFi5leGFtcGxlLnYxLlVzZXJQdWJsaWMiOgoSQ3JlYXRlVXNlclJlc3BvbnNlEiQKBHVzZXIYASABKAsyFi5leGFtcGxlLnYxLlVzZXJQdWJsaWMiOgoSVXBkYXRlVXNlclJlc3BvbnNlEiQKBHVzZXIYASABKAsyFi5leGFtcGxlLnYxLlVzZXJQdWJsaWMiQAoYVXBkYXRlVXNlclN0YXR1c1Jlc3BvbnNlEiQKBHVzZXIYASABKAsyFi5leGFtcGxlLnYxLlVzZXJQdWJsaWMqmQEKClVzZXJTdGF0dXMSGwoXVVNFUl9TVEFUVVNfVU5TUEVDSUZJRUQQABIkCiBVU0VSX1NUQVRVU19QRU5ESU5HX1ZFUklGSUNBVElPThABEhYKElVTRVJfU1RBVFVTX0FDVElWRRACEhgKFFVTRVJfU1RBVFVTX0lOQUNUSVZFEAMSFgoSVVNFUl9TVEFUVVNfQkFOTkVEEAQqawoIVXNlclJvbGUSGQoVVVNFUl9ST0xFX1VOU1BFQ0lGSUVEEAASFAoQVVNFUl9ST0xFX01FTUJFUhABEhMKD1VTRVJfUk9MRV9BRE1JThACEhkKFVVTRVJfUk9MRV9TVVBFUl9BRE1JThADMpEDCgtVc2VyU2VydmljZRJFCghHZXRVc2VycxIbLmV4YW1wbGUudjEuR2V0VXNlcnNSZXF1ZXN0GhwuZXhhbXBsZS52MS5HZXRVc2Vyc1Jlc3BvbnNlEkIKB0dldFVzZXISGi5leGFtcGxlLnYxLkdldFVzZXJSZXF1ZXN0GhsuZXhhbXBsZS52MS5HZXRVc2VyUmVzcG9uc2USSwoKQ3JlYXRlVXNlchIdLmV4YW1wbGUudjEuQ3JlYXRlVXNlclJlcXVlc3QaHi5leGFtcGxlLnYxLkNyZWF0ZVVzZXJSZXNwb25zZRJLCgpVcGRhdGVVc2VyEh0uZXhhbXBsZS52MS5VcGRhdGVVc2VyUmVxdWVzdBoeLmV4YW1wbGUudjEuVXBkYXRlVXNlclJlc3BvbnNlEl0KEFVwZGF0ZVVzZXJTdGF0dXMSIy5leGFtcGxlLnYxLlVwZGF0ZVVzZXJTdGF0dXNSZXF1ZXN0GiQuZXhhbXBsZS52MS5VcGRhdGVVc2VyU3RhdHVzUmVzcG9uc2VCvQEKDmNvbS5leGFtcGxlLnYxQglVc2VyUHJvdG9QAVpXZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2V4YW1wbGUvdjE7ZXhhbXBsZXYxogIDRVhYqgIKRXhhbXBsZS5WMcoCCkV4YW1wbGVcVjHiAhZFeGFtcGxlXFYxXEdQQk1ldGFkYXRh6gILRXhhbXBsZTo6VjFiBnByb3RvMw", [file_common_v1_pagination, file_google_protobuf_timestamp]);
 
 /**
  * User is the canonical user model.
@@ -86,8 +69,7 @@ export type User = Message<"example.v1.User"> & {
  * Describes the message example.v1.User.
  * Use `create(UserSchema)` to create a new message.
  */
-export const UserSchema: GenMessage<User> =
-  /*@__PURE__*/
+export const UserSchema: GenMessage<User> = /*@__PURE__*/
   messageDesc(file_example_v1_user, 0);
 
 /**
@@ -132,8 +114,7 @@ export type UserPublic = Message<"example.v1.UserPublic"> & {
  * Describes the message example.v1.UserPublic.
  * Use `create(UserPublicSchema)` to create a new message.
  */
-export const UserPublicSchema: GenMessage<UserPublic> =
-  /*@__PURE__*/
+export const UserPublicSchema: GenMessage<UserPublic> = /*@__PURE__*/
   messageDesc(file_example_v1_user, 1);
 
 /**
@@ -165,47 +146,44 @@ export type UserCreatedEvent = Message<"example.v1.UserCreatedEvent"> & {
  * Describes the message example.v1.UserCreatedEvent.
  * Use `create(UserCreatedEventSchema)` to create a new message.
  */
-export const UserCreatedEventSchema: GenMessage<UserCreatedEvent> =
-  /*@__PURE__*/
+export const UserCreatedEventSchema: GenMessage<UserCreatedEvent> = /*@__PURE__*/
   messageDesc(file_example_v1_user, 2);
 
 /**
  * @generated from message example.v1.UserStatusChangedEvent
  */
-export type UserStatusChangedEvent =
-  Message<"example.v1.UserStatusChangedEvent"> & {
-    /**
-     * @generated from field: string user_id = 1;
-     */
-    userId: string;
+export type UserStatusChangedEvent = Message<"example.v1.UserStatusChangedEvent"> & {
+  /**
+   * @generated from field: string user_id = 1;
+   */
+  userId: string;
 
-    /**
-     * @generated from field: example.v1.UserStatus previous_status = 2;
-     */
-    previousStatus: UserStatus;
+  /**
+   * @generated from field: example.v1.UserStatus previous_status = 2;
+   */
+  previousStatus: UserStatus;
 
-    /**
-     * @generated from field: example.v1.UserStatus new_status = 3;
-     */
-    newStatus: UserStatus;
+  /**
+   * @generated from field: example.v1.UserStatus new_status = 3;
+   */
+  newStatus: UserStatus;
 
-    /**
-     * @generated from field: string changed_by_user_id = 4;
-     */
-    changedByUserId: string;
+  /**
+   * @generated from field: string changed_by_user_id = 4;
+   */
+  changedByUserId: string;
 
-    /**
-     * @generated from field: google.protobuf.Timestamp occurred_at = 5;
-     */
-    occurredAt?: Timestamp;
-  };
+  /**
+   * @generated from field: google.protobuf.Timestamp occurred_at = 5;
+   */
+  occurredAt?: Timestamp;
+};
 
 /**
  * Describes the message example.v1.UserStatusChangedEvent.
  * Use `create(UserStatusChangedEventSchema)` to create a new message.
  */
-export const UserStatusChangedEventSchema: GenMessage<UserStatusChangedEvent> =
-  /*@__PURE__*/
+export const UserStatusChangedEventSchema: GenMessage<UserStatusChangedEvent> = /*@__PURE__*/
   messageDesc(file_example_v1_user, 3);
 
 /**
@@ -234,8 +212,7 @@ export type GetUsersRequest = Message<"example.v1.GetUsersRequest"> & {
  * Describes the message example.v1.GetUsersRequest.
  * Use `create(GetUsersRequestSchema)` to create a new message.
  */
-export const GetUsersRequestSchema: GenMessage<GetUsersRequest> =
-  /*@__PURE__*/
+export const GetUsersRequestSchema: GenMessage<GetUsersRequest> = /*@__PURE__*/
   messageDesc(file_example_v1_user, 4);
 
 /**
@@ -257,8 +234,7 @@ export type GetUsersResponse = Message<"example.v1.GetUsersResponse"> & {
  * Describes the message example.v1.GetUsersResponse.
  * Use `create(GetUsersResponseSchema)` to create a new message.
  */
-export const GetUsersResponseSchema: GenMessage<GetUsersResponse> =
-  /*@__PURE__*/
+export const GetUsersResponseSchema: GenMessage<GetUsersResponse> = /*@__PURE__*/
   messageDesc(file_example_v1_user, 5);
 
 /**
@@ -275,8 +251,7 @@ export type GetUserRequest = Message<"example.v1.GetUserRequest"> & {
  * Describes the message example.v1.GetUserRequest.
  * Use `create(GetUserRequestSchema)` to create a new message.
  */
-export const GetUserRequestSchema: GenMessage<GetUserRequest> =
-  /*@__PURE__*/
+export const GetUserRequestSchema: GenMessage<GetUserRequest> = /*@__PURE__*/
   messageDesc(file_example_v1_user, 6);
 
 /**
@@ -305,8 +280,7 @@ export type CreateUserRequest = Message<"example.v1.CreateUserRequest"> & {
  * Describes the message example.v1.CreateUserRequest.
  * Use `create(CreateUserRequestSchema)` to create a new message.
  */
-export const CreateUserRequestSchema: GenMessage<CreateUserRequest> =
-  /*@__PURE__*/
+export const CreateUserRequestSchema: GenMessage<CreateUserRequest> = /*@__PURE__*/
   messageDesc(file_example_v1_user, 7);
 
 /**
@@ -335,37 +309,34 @@ export type UpdateUserRequest = Message<"example.v1.UpdateUserRequest"> & {
  * Describes the message example.v1.UpdateUserRequest.
  * Use `create(UpdateUserRequestSchema)` to create a new message.
  */
-export const UpdateUserRequestSchema: GenMessage<UpdateUserRequest> =
-  /*@__PURE__*/
+export const UpdateUserRequestSchema: GenMessage<UpdateUserRequest> = /*@__PURE__*/
   messageDesc(file_example_v1_user, 8);
 
 /**
  * @generated from message example.v1.UpdateUserStatusRequest
  */
-export type UpdateUserStatusRequest =
-  Message<"example.v1.UpdateUserStatusRequest"> & {
-    /**
-     * @generated from field: string id = 1;
-     */
-    id: string;
+export type UpdateUserStatusRequest = Message<"example.v1.UpdateUserStatusRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
 
-    /**
-     * @generated from field: example.v1.UserStatus status = 2;
-     */
-    status: UserStatus;
+  /**
+   * @generated from field: example.v1.UserStatus status = 2;
+   */
+  status: UserStatus;
 
-    /**
-     * @generated from field: string reason = 3;
-     */
-    reason: string;
-  };
+  /**
+   * @generated from field: string reason = 3;
+   */
+  reason: string;
+};
 
 /**
  * Describes the message example.v1.UpdateUserStatusRequest.
  * Use `create(UpdateUserStatusRequestSchema)` to create a new message.
  */
-export const UpdateUserStatusRequestSchema: GenMessage<UpdateUserStatusRequest> =
-  /*@__PURE__*/
+export const UpdateUserStatusRequestSchema: GenMessage<UpdateUserStatusRequest> = /*@__PURE__*/
   messageDesc(file_example_v1_user, 9);
 
 /**
@@ -382,8 +353,7 @@ export type GetUserResponse = Message<"example.v1.GetUserResponse"> & {
  * Describes the message example.v1.GetUserResponse.
  * Use `create(GetUserResponseSchema)` to create a new message.
  */
-export const GetUserResponseSchema: GenMessage<GetUserResponse> =
-  /*@__PURE__*/
+export const GetUserResponseSchema: GenMessage<GetUserResponse> = /*@__PURE__*/
   messageDesc(file_example_v1_user, 10);
 
 /**
@@ -400,8 +370,7 @@ export type CreateUserResponse = Message<"example.v1.CreateUserResponse"> & {
  * Describes the message example.v1.CreateUserResponse.
  * Use `create(CreateUserResponseSchema)` to create a new message.
  */
-export const CreateUserResponseSchema: GenMessage<CreateUserResponse> =
-  /*@__PURE__*/
+export const CreateUserResponseSchema: GenMessage<CreateUserResponse> = /*@__PURE__*/
   messageDesc(file_example_v1_user, 11);
 
 /**
@@ -418,27 +387,24 @@ export type UpdateUserResponse = Message<"example.v1.UpdateUserResponse"> & {
  * Describes the message example.v1.UpdateUserResponse.
  * Use `create(UpdateUserResponseSchema)` to create a new message.
  */
-export const UpdateUserResponseSchema: GenMessage<UpdateUserResponse> =
-  /*@__PURE__*/
+export const UpdateUserResponseSchema: GenMessage<UpdateUserResponse> = /*@__PURE__*/
   messageDesc(file_example_v1_user, 12);
 
 /**
  * @generated from message example.v1.UpdateUserStatusResponse
  */
-export type UpdateUserStatusResponse =
-  Message<"example.v1.UpdateUserStatusResponse"> & {
-    /**
-     * @generated from field: example.v1.UserPublic user = 1;
-     */
-    user?: UserPublic;
-  };
+export type UpdateUserStatusResponse = Message<"example.v1.UpdateUserStatusResponse"> & {
+  /**
+   * @generated from field: example.v1.UserPublic user = 1;
+   */
+  user?: UserPublic;
+};
 
 /**
  * Describes the message example.v1.UpdateUserStatusResponse.
  * Use `create(UpdateUserStatusResponseSchema)` to create a new message.
  */
-export const UpdateUserStatusResponseSchema: GenMessage<UpdateUserStatusResponse> =
-  /*@__PURE__*/
+export const UpdateUserStatusResponseSchema: GenMessage<UpdateUserStatusResponse> = /*@__PURE__*/
   messageDesc(file_example_v1_user, 13);
 
 /**
@@ -477,8 +443,7 @@ export enum UserStatus {
 /**
  * Describes the enum example.v1.UserStatus.
  */
-export const UserStatusSchema: GenEnum<UserStatus> =
-  /*@__PURE__*/
+export const UserStatusSchema: GenEnum<UserStatus> = /*@__PURE__*/
   enumDesc(file_example_v1_user, 0);
 
 /**
@@ -511,8 +476,7 @@ export enum UserRole {
 /**
  * Describes the enum example.v1.UserRole.
  */
-export const UserRoleSchema: GenEnum<UserRole> =
-  /*@__PURE__*/
+export const UserRoleSchema: GenEnum<UserRole> = /*@__PURE__*/
   enumDesc(file_example_v1_user, 1);
 
 /**
@@ -529,7 +493,7 @@ export const UserService: GenService<{
     methodKind: "unary";
     input: typeof GetUsersRequestSchema;
     output: typeof GetUsersResponseSchema;
-  };
+  },
   /**
    * @generated from rpc example.v1.UserService.GetUser
    */
@@ -537,7 +501,7 @@ export const UserService: GenService<{
     methodKind: "unary";
     input: typeof GetUserRequestSchema;
     output: typeof GetUserResponseSchema;
-  };
+  },
   /**
    * @generated from rpc example.v1.UserService.CreateUser
    */
@@ -545,7 +509,7 @@ export const UserService: GenService<{
     methodKind: "unary";
     input: typeof CreateUserRequestSchema;
     output: typeof CreateUserResponseSchema;
-  };
+  },
   /**
    * @generated from rpc example.v1.UserService.UpdateUser
    */
@@ -553,7 +517,7 @@ export const UserService: GenService<{
     methodKind: "unary";
     input: typeof UpdateUserRequestSchema;
     output: typeof UpdateUserResponseSchema;
-  };
+  },
   /**
    * @generated from rpc example.v1.UserService.UpdateUserStatus
    */
@@ -561,5 +525,7 @@ export const UserService: GenService<{
     methodKind: "unary";
     input: typeof UpdateUserStatusRequestSchema;
     output: typeof UpdateUserStatusResponseSchema;
-  };
-}> = /*@__PURE__*/ serviceDesc(file_example_v1_user, 0);
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_example_v1_user, 0);
+

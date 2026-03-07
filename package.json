@@ -18,14 +18,14 @@
     "prettier": "^3.0.0"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
+    "!(packages/schema/generated/**)*.{ts,tsx,js,jsx}": [
       "eslint --fix",
       "prettier --write"
     ],
-    "*.{json,md,yaml,yml}": [
+    "!(packages/schema/generated/**)*.{json,md,yaml,yml}": [
       "prettier --write"
     ],
-    "*.py": [
+    "!(packages/schema/generated/**)*.py": [
       "ruff check --fix",
       "ruff format"
     ],
