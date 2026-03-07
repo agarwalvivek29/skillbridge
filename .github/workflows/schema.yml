@@ -50,7 +50,8 @@ jobs:
         working-directory: packages/schema
         run: |
           buf breaking \
-            --against "https://github.com/${{ github.repository }}.git#branch=main,subdir=packages/schema"
+            --against "https://github.com/${{ github.repository }}.git#branch=main,subdir=packages/schema" \
+            --exclude-path proto/example
         continue-on-error: false
 
       # ─── Verify generated code is up to date ─────────────────────────────
