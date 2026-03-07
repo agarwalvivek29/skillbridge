@@ -57,11 +57,23 @@ message DeletePortfolioItemRequest {
   string id = 1;
 }
 
+message CreatePortfolioItemResponse {
+  PortfolioItem item = 1;
+}
+
+message UpdatePortfolioItemResponse {
+  PortfolioItem item = 1;
+}
+
+message DeletePortfolioItemResponse {
+  PortfolioItem item = 1;
+}
+
 // ─── Service ─────────────────────────────────────────────────────────────────
 
 service PortfolioService {
-  rpc CreatePortfolioItem(CreatePortfolioItemRequest) returns (PortfolioItem);
-  rpc UpdatePortfolioItem(UpdatePortfolioItemRequest) returns (PortfolioItem);
+  rpc CreatePortfolioItem(CreatePortfolioItemRequest) returns (CreatePortfolioItemResponse);
+  rpc UpdatePortfolioItem(UpdatePortfolioItemRequest) returns (UpdatePortfolioItemResponse);
   rpc GetPortfolioItems(GetPortfolioItemsRequest) returns (GetPortfolioItemsResponse);
-  rpc DeletePortfolioItem(DeletePortfolioItemRequest) returns (PortfolioItem);
+  rpc DeletePortfolioItem(DeletePortfolioItemRequest) returns (DeletePortfolioItemResponse);
 }

@@ -73,11 +73,23 @@ message WithdrawProposalRequest {
   string proposal_id = 1;
 }
 
+message CreateProposalResponse {
+  Proposal proposal = 1;
+}
+
+message AcceptProposalResponse {
+  Proposal proposal = 1;
+}
+
+message WithdrawProposalResponse {
+  Proposal proposal = 1;
+}
+
 // ─── Service ─────────────────────────────────────────────────────────────────
 
 service ProposalService {
-  rpc CreateProposal(CreateProposalRequest) returns (Proposal);
+  rpc CreateProposal(CreateProposalRequest) returns (CreateProposalResponse);
   rpc GetProposals(GetProposalsRequest) returns (GetProposalsResponse);
-  rpc AcceptProposal(AcceptProposalRequest) returns (Proposal);
-  rpc WithdrawProposal(WithdrawProposalRequest) returns (Proposal);
+  rpc AcceptProposal(AcceptProposalRequest) returns (AcceptProposalResponse);
+  rpc WithdrawProposal(WithdrawProposalRequest) returns (WithdrawProposalResponse);
 }

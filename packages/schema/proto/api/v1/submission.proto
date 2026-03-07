@@ -77,10 +77,18 @@ message GetSubmissionsResponse {
   repeated Submission submissions = 1;
 }
 
+message CreateSubmissionResponse {
+  Submission submission = 1;
+}
+
+message GetSubmissionResponse {
+  Submission submission = 1;
+}
+
 // ─── Service ─────────────────────────────────────────────────────────────────
 
 service SubmissionService {
-  rpc CreateSubmission(CreateSubmissionRequest) returns (Submission);
-  rpc GetSubmission(GetSubmissionRequest) returns (Submission);
+  rpc CreateSubmission(CreateSubmissionRequest) returns (CreateSubmissionResponse);
+  rpc GetSubmission(GetSubmissionRequest) returns (GetSubmissionResponse);
   rpc GetSubmissions(GetSubmissionsRequest) returns (GetSubmissionsResponse);
 }

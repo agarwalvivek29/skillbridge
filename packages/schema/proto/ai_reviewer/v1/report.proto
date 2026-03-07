@@ -84,8 +84,12 @@ message GetReviewReportRequest {
   string submission_id = 1;
 }
 
+message GetReviewReportResponse {
+  ReviewReport report = 1;
+}
+
 // ─── Service ─────────────────────────────────────────────────────────────────
 
 service ReviewService {
-  rpc GetReviewReport(GetReviewReportRequest) returns (ReviewReport);
+  rpc GetReviewReport(GetReviewReportRequest) returns (GetReviewReportResponse);
 }
