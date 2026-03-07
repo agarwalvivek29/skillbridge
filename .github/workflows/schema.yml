@@ -11,12 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # needed for buf breaking comparison
+          fetch-depth: 0 # needed for buf breaking comparison
 
       # ─── Install buf ──────────────────────────────────────────────────────
       - uses: bufbuild/buf-setup-action@v1
         with:
-          version: latest
+          version: "1.66.0"
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       # ─── Install Go proto plugins ─────────────────────────────────────────
@@ -34,10 +34,10 @@ jobs:
       # ─── Install Python betterproto ───────────────────────────────────────
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install betterproto
-        run: pip install "betterproto[compiler]"
+        run: pip install "betterproto[compiler]==1.2.5"
 
       # ─── Lint proto files ─────────────────────────────────────────────────
       - name: buf lint
