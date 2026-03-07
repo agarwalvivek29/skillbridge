@@ -33,6 +33,30 @@ enum NotificationType {
   NOTIFICATION_TYPE_REVIEW_RECEIVED = 14;    // → reviewee
 }
 
+// ─── Notification Payload Schemas ─────────────────────────────────────────────
+// Each payload message defines the exact JSON structure stored in
+// Notification.payload_json for its corresponding NotificationType.
+// The frontend deserialises payload_json into the matching message type.
+
+// NOTIFICATION_TYPE_PROPOSAL_RECEIVED → gig client
+message ProposalReceivedPayload {
+  string gig_id = 1;
+  string proposal_id = 2;
+  string freelancer_id = 3;
+}
+
+// NOTIFICATION_TYPE_PROPOSAL_ACCEPTED → freelancer
+message ProposalAcceptedPayload {
+  string gig_id = 1;
+  string proposal_id = 2;
+}
+
+// NOTIFICATION_TYPE_PROPOSAL_REJECTED → freelancer
+message ProposalRejectedPayload {
+  string gig_id = 1;
+  string proposal_id = 2;
+}
+
 // ─── Domain Entity ────────────────────────────────────────────────────────────
 
 message Notification {

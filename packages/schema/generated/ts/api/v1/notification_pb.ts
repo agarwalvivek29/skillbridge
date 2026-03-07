@@ -12,7 +12,84 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/v1/notification.proto.
  */
 export const file_api_v1_notification: GenFile = /*@__PURE__*/
-  fileDesc("ChlhcGkvdjEvbm90aWZpY2F0aW9uLnByb3RvEgZhcGkudjEixgEKDE5vdGlmaWNhdGlvbhIKCgJpZBgBIAEoCRIPCgd1c2VyX2lkGAIgASgJEiYKBHR5cGUYAyABKA4yGC5hcGkudjEuTm90aWZpY2F0aW9uVHlwZRIUCgxwYXlsb2FkX2pzb24YBCABKAkSKwoHcmVhZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY3JlYXRlZF9hdBgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiPwoXR2V0Tm90aWZpY2F0aW9uc1JlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCRITCgt1bnJlYWRfb25seRgCIAEoCCJdChhHZXROb3RpZmljYXRpb25zUmVzcG9uc2USKwoNbm90aWZpY2F0aW9ucxgBIAMoCzIULmFwaS52MS5Ob3RpZmljYXRpb24SFAoMdW5yZWFkX2NvdW50GAIgASgFIioKD01hcmtSZWFkUmVxdWVzdBIXCg9ub3RpZmljYXRpb25faWQYASABKAkiJQoSTWFya0FsbFJlYWRSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkiPgoQTWFya1JlYWRSZXNwb25zZRIqCgxub3RpZmljYXRpb24YASABKAsyFC5hcGkudjEuTm90aWZpY2F0aW9uIlgKE01hcmtBbGxSZWFkUmVzcG9uc2USKwoNbm90aWZpY2F0aW9ucxgBIAMoCzIULmFwaS52MS5Ob3RpZmljYXRpb24SFAoMdW5yZWFkX2NvdW50GAIgASgFKt0EChBOb3RpZmljYXRpb25UeXBlEiEKHU5PVElGSUNBVElPTl9UWVBFX1VOU1BFQ0lGSUVEEAASIAocTk9USUZJQ0FUSU9OX1RZUEVfR0lHX0ZVTkRFRBABEiMKH05PVElGSUNBVElPTl9UWVBFX0dJR19DQU5DRUxMRUQQAhIjCh9OT1RJRklDQVRJT05fVFlQRV9HSUdfQ09NUExFVEVEEAMSJwojTk9USUZJQ0FUSU9OX1RZUEVfUFJPUE9TQUxfUkVDRUlWRUQQBBInCiNOT1RJRklDQVRJT05fVFlQRV9QUk9QT1NBTF9BQ0NFUFRFRBAFEicKI05PVElGSUNBVElPTl9UWVBFX1BST1BPU0FMX1JFSkVDVEVEEAYSKQolTk9USUZJQ0FUSU9OX1RZUEVfU1VCTUlTU0lPTl9SRUNFSVZFRBAHEigKJE5PVElGSUNBVElPTl9UWVBFX1JFVklTSU9OX1JFUVVFU1RFRBAIEigKJE5PVElGSUNBVElPTl9UWVBFX01JTEVTVE9ORV9BUFBST1ZFRBAJEiQKIE5PVElGSUNBVElPTl9UWVBFX0ZVTkRTX1JFTEVBU0VEEAoSJQohTk9USUZJQ0FUSU9OX1RZUEVfUkVWSUVXX0NPTVBMRVRFEAsSJAogTk9USUZJQ0FUSU9OX1RZUEVfRElTUFVURV9SQUlTRUQQDBImCiJOT1RJRklDQVRJT05fVFlQRV9ESVNQVVRFX1JFU09MVkVEEA0SJQohTk9USUZJQ0FUSU9OX1RZUEVfUkVWSUVXX1JFQ0VJVkVEEA4y8wEKE05vdGlmaWNhdGlvblNlcnZpY2USVQoQR2V0Tm90aWZpY2F0aW9ucxIfLmFwaS52MS5HZXROb3RpZmljYXRpb25zUmVxdWVzdBogLmFwaS52MS5HZXROb3RpZmljYXRpb25zUmVzcG9uc2USPQoITWFya1JlYWQSFy5hcGkudjEuTWFya1JlYWRSZXF1ZXN0GhguYXBpLnYxLk1hcmtSZWFkUmVzcG9uc2USRgoLTWFya0FsbFJlYWQSGi5hcGkudjEuTWFya0FsbFJlYWRSZXF1ZXN0GhsuYXBpLnYxLk1hcmtBbGxSZWFkUmVzcG9uc2VCqQEKCmNvbS5hcGkudjFCEU5vdGlmaWNhdGlvblByb3RvUAFaT2dpdGh1Yi5jb20vYWdhcndhbHZpdmVrMjkvc2tpbGxicmlkZ2UvcGFja2FnZXMvc2NoZW1hL2dlbmVyYXRlZC9nby9hcGkvdjE7YXBpdjGiAgNBWFiqAgZBcGkuVjHKAgZBcGlcVjHiAhJBcGlcVjFcR1BCTWV0YWRhdGHqAgdBcGk6OlYxYgZwcm90bzM", [file_google_protobuf_timestamp]);
+  fileDesc("ChlhcGkvdjEvbm90aWZpY2F0aW9uLnByb3RvEgZhcGkudjEiVQoXUHJvcG9zYWxSZWNlaXZlZFBheWxvYWQSDgoGZ2lnX2lkGAEgASgJEhMKC3Byb3Bvc2FsX2lkGAIgASgJEhUKDWZyZWVsYW5jZXJfaWQYAyABKAkiPgoXUHJvcG9zYWxBY2NlcHRlZFBheWxvYWQSDgoGZ2lnX2lkGAEgASgJEhMKC3Byb3Bvc2FsX2lkGAIgASgJIj4KF1Byb3Bvc2FsUmVqZWN0ZWRQYXlsb2FkEg4KBmdpZ19pZBgBIAEoCRITCgtwcm9wb3NhbF9pZBgCIAEoCSLGAQoMTm90aWZpY2F0aW9uEgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSJgoEdHlwZRgDIAEoDjIYLmFwaS52MS5Ob3RpZmljYXRpb25UeXBlEhQKDHBheWxvYWRfanNvbhgEIAEoCRIrCgdyZWFkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgpjcmVhdGVkX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCI/ChdHZXROb3RpZmljYXRpb25zUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJEhMKC3VucmVhZF9vbmx5GAIgASgIIl0KGEdldE5vdGlmaWNhdGlvbnNSZXNwb25zZRIrCg1ub3RpZmljYXRpb25zGAEgAygLMhQuYXBpLnYxLk5vdGlmaWNhdGlvbhIUCgx1bnJlYWRfY291bnQYAiABKAUiKgoPTWFya1JlYWRSZXF1ZXN0EhcKD25vdGlmaWNhdGlvbl9pZBgBIAEoCSIlChJNYXJrQWxsUmVhZFJlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCSI+ChBNYXJrUmVhZFJlc3BvbnNlEioKDG5vdGlmaWNhdGlvbhgBIAEoCzIULmFwaS52MS5Ob3RpZmljYXRpb24iWAoTTWFya0FsbFJlYWRSZXNwb25zZRIrCg1ub3RpZmljYXRpb25zGAEgAygLMhQuYXBpLnYxLk5vdGlmaWNhdGlvbhIUCgx1bnJlYWRfY291bnQYAiABKAUq3QQKEE5vdGlmaWNhdGlvblR5cGUSIQodTk9USUZJQ0FUSU9OX1RZUEVfVU5TUEVDSUZJRUQQABIgChxOT1RJRklDQVRJT05fVFlQRV9HSUdfRlVOREVEEAESIwofTk9USUZJQ0FUSU9OX1RZUEVfR0lHX0NBTkNFTExFRBACEiMKH05PVElGSUNBVElPTl9UWVBFX0dJR19DT01QTEVURUQQAxInCiNOT1RJRklDQVRJT05fVFlQRV9QUk9QT1NBTF9SRUNFSVZFRBAEEicKI05PVElGSUNBVElPTl9UWVBFX1BST1BPU0FMX0FDQ0VQVEVEEAUSJwojTk9USUZJQ0FUSU9OX1RZUEVfUFJPUE9TQUxfUkVKRUNURUQQBhIpCiVOT1RJRklDQVRJT05fVFlQRV9TVUJNSVNTSU9OX1JFQ0VJVkVEEAcSKAokTk9USUZJQ0FUSU9OX1RZUEVfUkVWSVNJT05fUkVRVUVTVEVEEAgSKAokTk9USUZJQ0FUSU9OX1RZUEVfTUlMRVNUT05FX0FQUFJPVkVEEAkSJAogTk9USUZJQ0FUSU9OX1RZUEVfRlVORFNfUkVMRUFTRUQQChIlCiFOT1RJRklDQVRJT05fVFlQRV9SRVZJRVdfQ09NUExFVEUQCxIkCiBOT1RJRklDQVRJT05fVFlQRV9ESVNQVVRFX1JBSVNFRBAMEiYKIk5PVElGSUNBVElPTl9UWVBFX0RJU1BVVEVfUkVTT0xWRUQQDRIlCiFOT1RJRklDQVRJT05fVFlQRV9SRVZJRVdfUkVDRUlWRUQQDjLzAQoTTm90aWZpY2F0aW9uU2VydmljZRJVChBHZXROb3RpZmljYXRpb25zEh8uYXBpLnYxLkdldE5vdGlmaWNhdGlvbnNSZXF1ZXN0GiAuYXBpLnYxLkdldE5vdGlmaWNhdGlvbnNSZXNwb25zZRI9CghNYXJrUmVhZBIXLmFwaS52MS5NYXJrUmVhZFJlcXVlc3QaGC5hcGkudjEuTWFya1JlYWRSZXNwb25zZRJGCgtNYXJrQWxsUmVhZBIaLmFwaS52MS5NYXJrQWxsUmVhZFJlcXVlc3QaGy5hcGkudjEuTWFya0FsbFJlYWRSZXNwb25zZUKpAQoKY29tLmFwaS52MUIRTm90aWZpY2F0aW9uUHJvdG9QAVpPZ2l0aHViLmNvbS9hZ2Fyd2Fsdml2ZWsyOS9za2lsbGJyaWRnZS9wYWNrYWdlcy9zY2hlbWEvZ2VuZXJhdGVkL2dvL2FwaS92MTthcGl2MaICA0FYWKoCBkFwaS5WMcoCBkFwaVxWMeICEkFwaVxWMVxHUEJNZXRhZGF0YeoCB0FwaTo6VjFiBnByb3RvMw", [file_google_protobuf_timestamp]);
+
+/**
+ * NOTIFICATION_TYPE_PROPOSAL_RECEIVED → gig client
+ *
+ * @generated from message api.v1.ProposalReceivedPayload
+ */
+export type ProposalReceivedPayload = Message<"api.v1.ProposalReceivedPayload"> & {
+  /**
+   * @generated from field: string gig_id = 1;
+   */
+  gigId: string;
+
+  /**
+   * @generated from field: string proposal_id = 2;
+   */
+  proposalId: string;
+
+  /**
+   * @generated from field: string freelancer_id = 3;
+   */
+  freelancerId: string;
+};
+
+/**
+ * Describes the message api.v1.ProposalReceivedPayload.
+ * Use `create(ProposalReceivedPayloadSchema)` to create a new message.
+ */
+export const ProposalReceivedPayloadSchema: GenMessage<ProposalReceivedPayload> = /*@__PURE__*/
+  messageDesc(file_api_v1_notification, 0);
+
+/**
+ * NOTIFICATION_TYPE_PROPOSAL_ACCEPTED → freelancer
+ *
+ * @generated from message api.v1.ProposalAcceptedPayload
+ */
+export type ProposalAcceptedPayload = Message<"api.v1.ProposalAcceptedPayload"> & {
+  /**
+   * @generated from field: string gig_id = 1;
+   */
+  gigId: string;
+
+  /**
+   * @generated from field: string proposal_id = 2;
+   */
+  proposalId: string;
+};
+
+/**
+ * Describes the message api.v1.ProposalAcceptedPayload.
+ * Use `create(ProposalAcceptedPayloadSchema)` to create a new message.
+ */
+export const ProposalAcceptedPayloadSchema: GenMessage<ProposalAcceptedPayload> = /*@__PURE__*/
+  messageDesc(file_api_v1_notification, 1);
+
+/**
+ * NOTIFICATION_TYPE_PROPOSAL_REJECTED → freelancer
+ *
+ * @generated from message api.v1.ProposalRejectedPayload
+ */
+export type ProposalRejectedPayload = Message<"api.v1.ProposalRejectedPayload"> & {
+  /**
+   * @generated from field: string gig_id = 1;
+   */
+  gigId: string;
+
+  /**
+   * @generated from field: string proposal_id = 2;
+   */
+  proposalId: string;
+};
+
+/**
+ * Describes the message api.v1.ProposalRejectedPayload.
+ * Use `create(ProposalRejectedPayloadSchema)` to create a new message.
+ */
+export const ProposalRejectedPayloadSchema: GenMessage<ProposalRejectedPayload> = /*@__PURE__*/
+  messageDesc(file_api_v1_notification, 2);
 
 /**
  * @generated from message api.v1.Notification
@@ -59,7 +136,7 @@ export type Notification = Message<"api.v1.Notification"> & {
  * Use `create(NotificationSchema)` to create a new message.
  */
 export const NotificationSchema: GenMessage<Notification> = /*@__PURE__*/
-  messageDesc(file_api_v1_notification, 0);
+  messageDesc(file_api_v1_notification, 3);
 
 /**
  * @generated from message api.v1.GetNotificationsRequest
@@ -83,7 +160,7 @@ export type GetNotificationsRequest = Message<"api.v1.GetNotificationsRequest"> 
  * Use `create(GetNotificationsRequestSchema)` to create a new message.
  */
 export const GetNotificationsRequestSchema: GenMessage<GetNotificationsRequest> = /*@__PURE__*/
-  messageDesc(file_api_v1_notification, 1);
+  messageDesc(file_api_v1_notification, 4);
 
 /**
  * @generated from message api.v1.GetNotificationsResponse
@@ -105,7 +182,7 @@ export type GetNotificationsResponse = Message<"api.v1.GetNotificationsResponse"
  * Use `create(GetNotificationsResponseSchema)` to create a new message.
  */
 export const GetNotificationsResponseSchema: GenMessage<GetNotificationsResponse> = /*@__PURE__*/
-  messageDesc(file_api_v1_notification, 2);
+  messageDesc(file_api_v1_notification, 5);
 
 /**
  * @generated from message api.v1.MarkReadRequest
@@ -124,7 +201,7 @@ export type MarkReadRequest = Message<"api.v1.MarkReadRequest"> & {
  * Use `create(MarkReadRequestSchema)` to create a new message.
  */
 export const MarkReadRequestSchema: GenMessage<MarkReadRequest> = /*@__PURE__*/
-  messageDesc(file_api_v1_notification, 3);
+  messageDesc(file_api_v1_notification, 6);
 
 /**
  * @generated from message api.v1.MarkAllReadRequest
@@ -141,7 +218,7 @@ export type MarkAllReadRequest = Message<"api.v1.MarkAllReadRequest"> & {
  * Use `create(MarkAllReadRequestSchema)` to create a new message.
  */
 export const MarkAllReadRequestSchema: GenMessage<MarkAllReadRequest> = /*@__PURE__*/
-  messageDesc(file_api_v1_notification, 4);
+  messageDesc(file_api_v1_notification, 7);
 
 /**
  * @generated from message api.v1.MarkReadResponse
@@ -158,7 +235,7 @@ export type MarkReadResponse = Message<"api.v1.MarkReadResponse"> & {
  * Use `create(MarkReadResponseSchema)` to create a new message.
  */
 export const MarkReadResponseSchema: GenMessage<MarkReadResponse> = /*@__PURE__*/
-  messageDesc(file_api_v1_notification, 5);
+  messageDesc(file_api_v1_notification, 8);
 
 /**
  * @generated from message api.v1.MarkAllReadResponse
@@ -180,7 +257,7 @@ export type MarkAllReadResponse = Message<"api.v1.MarkAllReadResponse"> & {
  * Use `create(MarkAllReadResponseSchema)` to create a new message.
  */
 export const MarkAllReadResponseSchema: GenMessage<MarkAllReadResponse> = /*@__PURE__*/
-  messageDesc(file_api_v1_notification, 6);
+  messageDesc(file_api_v1_notification, 9);
 
 /**
  * @generated from enum api.v1.NotificationType

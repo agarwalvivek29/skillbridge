@@ -313,13 +313,30 @@ async def list_gigs_endpoint(
     status_filter: Optional[str] = Query(
         None, description="Filter by gig status (default: OPEN)"
     ),
+    currency: Optional[str] = Query(
+        None, description="Filter by currency (ETH or USDC)"
+    ),
+    skill: Optional[str] = Query(None, description="Filter by required skill"),
+    min_amount: Optional[str] = Query(
+        None, description="Minimum total_amount (integer string)"
+    ),
+    max_amount: Optional[str] = Query(
+        None, description="Maximum total_amount (integer string)"
+    ),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
 ) -> GigListOut:
     """List gigs for the discovery board. No auth required. Defaults to OPEN gigs."""
     gigs, total = await list_gigs(
-        db, status=status_filter, page=page, page_size=page_size
+        db,
+        status=status_filter,
+        page=page,
+        page_size=page_size,
+        currency=currency,
+        skill=skill,
+        min_amount=min_amount,
+        max_amount=max_amount,
     )
     return GigListOut(
         gigs=[_gig_to_out(g) for g in gigs],

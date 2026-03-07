@@ -9,6 +9,7 @@ Exempt paths: GET /health, GET /metrics, /v1/auth/*
 """
 
 import logging
+import re
 
 from fastapi import Request, Response
 from jose import JWTError
@@ -30,12 +31,14 @@ _EXEMPT_PREFIXES = (
     "/openapi.json",
 )
 
-# (method, path_prefix) pairs that bypass auth for specific HTTP methods only
-# Used for public read endpoints on otherwise protected resources
-_EXEMPT_METHOD_PREFIXES: tuple[tuple[str, str], ...] = (
-    ("GET", "/v1/gigs"),
-    ("GET", "/v1/portfolio"),
-)
+# Only these GET paths are genuinely public (no auth required):
+#   GET /v1/gigs                  — discovery board listing
+#   GET /v1/gigs/<uuid>           — single gig detail
+#   GET /v1/portfolio             — portfolio listing
+#   GET /v1/portfolio/<uuid>      — single portfolio item
+# Any sub-resource (e.g. /v1/gigs/<uuid>/proposals) still requires auth.
+_UUID_SEGMENT = r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+_PUBLIC_GET_RE = re.compile(rf"^/v1/(gigs|portfolio)(/{_UUID_SEGMENT})?$")
 
 
 class AuthMiddleware(BaseHTTPMiddleware):
@@ -49,11 +52,10 @@ class AuthMiddleware(BaseHTTPMiddleware):
             if path.startswith(prefix):
                 return await call_next(request)
 
-        # Exempt method+path combinations (public read endpoints)
+        # Exempt only the exact public GET endpoints (list + detail)
         method = request.method.upper()
-        for exempt_method, exempt_prefix in _EXEMPT_METHOD_PREFIXES:
-            if method == exempt_method and path.startswith(exempt_prefix):
-                return await call_next(request)
+        if method == "GET" and _PUBLIC_GET_RE.match(path):
+            return await call_next(request)
 
         # --- API Key auth ---
         api_key = request.headers.get("X-API-Key")

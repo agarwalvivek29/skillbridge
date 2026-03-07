@@ -6,9 +6,6 @@ Uses SQLite in-memory (aiosqlite) — no Docker dependency.
 
 from __future__ import annotations
 
-from datetime import datetime
-from typing import Optional
-
 import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -67,30 +64,20 @@ def _make_milestones(n: int = 2, total: int = 1000) -> list[MilestoneInput]:
     return milestones
 
 
-def _make_input(
-    title: str = "Build a widget",
-    description: str = "Full description here",
-    total_amount: str = "1000",
-    currency: str = "ETH",
-    token_address: Optional[str] = None,
-    tags: Optional[list[str]] = None,
-    required_skills: Optional[list[str]] = None,
-    deadline: Optional[datetime] = None,
-    milestones: Optional[list[MilestoneInput]] = None,
-) -> CreateGigInput:
-    return CreateGigInput(
-        title=title,
-        description=description,
-        total_amount=total_amount,
-        currency=currency,
-        token_address=token_address,
-        tags=tags if tags is not None else ["python", "api"],
-        required_skills=required_skills
-        if required_skills is not None
-        else ["Python", "FastAPI"],
-        deadline=deadline,
-        milestones=milestones if milestones is not None else _make_milestones(2, 1000),
+def _make_input(**overrides: object) -> CreateGigInput:
+    defaults: dict[str, object] = dict(
+        title="Build a widget",
+        description="Full description here",
+        total_amount="1000",
+        currency="ETH",
+        token_address=None,
+        tags=["python", "api"],
+        required_skills=["Python", "FastAPI"],
+        deadline=None,
+        milestones=_make_milestones(2, 1000),
     )
+    defaults.update(overrides)
+    return CreateGigInput(**defaults)  # type: ignore[arg-type]
 
 
 # ---------------------------------------------------------------------------

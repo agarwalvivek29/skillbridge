@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import func, select
+from sqlalchemy import Numeric, Text, cast, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -228,11 +228,19 @@ async def list_gigs(
     status: Optional[str] = None,
     page: int = 1,
     page_size: int = 20,
+    currency: Optional[str] = None,
+    skill: Optional[str] = None,
+    min_amount: Optional[str] = None,
+    max_amount: Optional[str] = None,
 ) -> tuple[list[GigModel], int]:
     """
     Return a paginated list of gigs and the total count.
 
     - status: filter by GIG_STATUS string; defaults to "OPEN" (discovery board)
+    - currency: filter by currency ("ETH" or "USDC")
+    - skill: filter by required skill (case-sensitive substring match)
+    - min_amount: minimum total_amount (inclusive, integer string)
+    - max_amount: maximum total_amount (inclusive, integer string)
     - page: 1-indexed
     - page_size: max 100
     """
@@ -240,22 +248,42 @@ async def list_gigs(
     offset = (page - 1) * page_size
     effective_status = status if status else "OPEN"
 
+    base_where = [GigModel.status == effective_status]
+    if currency:
+        base_where.append(GigModel.currency == currency)
+    if min_amount is not None:
+        try:
+            base_where.append(cast(GigModel.total_amount, Numeric) >= int(min_amount))
+        except ValueError:
+            pass
+    if max_amount is not None:
+        try:
+            base_where.append(cast(GigModel.total_amount, Numeric) <= int(max_amount))
+        except ValueError:
+            pass
+
+    if skill:
+        # Cast the JSON column to text and use LIKE to search for the skill value.
+        # JSON arrays are stored as e.g. '["Python", "FastAPI"]' in both PostgreSQL
+        # and SQLite, so searching for '"<skill>"' (with quotes) avoids false positives
+        # from partial matches (e.g. "Java" matching "JavaScript").
+        base_where.append(cast(GigModel.required_skills, Text).like(f'%"{skill}"%'))
+
     count_result = await db.execute(
-        select(func.count())
-        .select_from(GigModel)
-        .where(GigModel.status == effective_status)
+        select(func.count()).select_from(GigModel).where(*base_where)
     )
     total = count_result.scalar_one()
 
     result = await db.execute(
         select(GigModel)
-        .where(GigModel.status == effective_status)
+        .where(*base_where)
         .options(selectinload(GigModel.milestones))
         .order_by(GigModel.created_at.desc())
         .offset(offset)
         .limit(page_size)
     )
     gigs = list(result.scalars().all())
+
     return gigs, total
 
 
