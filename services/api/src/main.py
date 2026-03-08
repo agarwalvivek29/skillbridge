@@ -14,6 +14,7 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
 from src.api.auth import router as auth_router
+from src.api.webhooks import router as webhooks_router
 from src.api.gig import router as gig_router
 from src.api.middleware import AuthMiddleware
 from src.api.portfolio import router as portfolio_router
@@ -41,6 +42,7 @@ app.include_router(portfolio_router)
 app.include_router(proposal_router)
 app.include_router(submission_milestone_router)
 app.include_router(submission_router)
+app.include_router(webhooks_router)
 
 
 # ── Infrastructure routes (exempt from auth) ──────────────────────────────────

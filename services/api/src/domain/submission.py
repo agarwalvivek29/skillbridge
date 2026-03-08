@@ -12,7 +12,8 @@ from typing import Optional
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.infra.celery_client import enqueue_review
+from src.config import settings
+from src.infra.github import GitHubError, post_openreview_comment
 from src.infra.models import (
     GigModel,
     MilestoneModel,
@@ -188,8 +189,16 @@ async def create_submission(
     milestone.revision_count = milestone.revision_count + 1
     await db.flush()
 
-    # Enqueue review job (best-effort; Redis unavailability is logged, not fatal)
-    enqueue_review(submission.id)
+    # Post @openreview comment on the PR (best-effort; failure is logged, not fatal)
+    if repo_url and settings.github_token:
+        try:
+            await post_openreview_comment(repo_url, settings.github_token)
+        except (GitHubError, Exception) as exc:  # noqa: BLE001
+            logger.warning(
+                "openreview comment failed submission_id=%s error=%s",
+                submission.id,
+                exc,
+            )
 
     # Transition submission and milestone: → UNDER_REVIEW
     submission.status = "UNDER_REVIEW"
