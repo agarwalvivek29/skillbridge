@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import type { Abi, Address } from "viem";
 
@@ -34,14 +34,15 @@ export function useTxFlow(): UseTxFlowReturn {
     hash: txHash,
   });
 
-  if (isSuccess && state === "confirming") {
-    setState("success");
-  }
-
-  if (isError && state === "confirming") {
-    setState("error");
-    setError(receiptError?.message ?? "Transaction failed");
-  }
+  useEffect(() => {
+    if (isSuccess && state === "confirming") {
+      setState("success");
+    }
+    if (isError && state === "confirming") {
+      setState("error");
+      setError(receiptError?.message ?? "Transaction failed");
+    }
+  }, [isSuccess, isError, state, receiptError]);
 
   const execute: UseTxFlowReturn["execute"] = useCallback(
     (params) => {
