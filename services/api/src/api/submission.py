@@ -11,7 +11,6 @@ Endpoints:
 from __future__ import annotations
 
 import logging
-import re
 from datetime import datetime
 from typing import Optional
 
@@ -54,15 +53,16 @@ class CreateSubmissionRequest(BaseModel):
 
     @field_validator("repo_url")
     @classmethod
-    def repo_url_must_be_github_pr(cls, v: Optional[str]) -> Optional[str]:
+    def repo_url_must_be_https_github_or_gitlab(cls, v: Optional[str]) -> Optional[str]:
         if v is None:
             return v
-        # Must be a GitHub PR URL so OpenReview can be triggered on it
-        if not re.match(r"^https://github\.com/[^/]+/[^/]+/pull/\d+", v):
-            raise ValueError(
-                "repo_url must be a GitHub PR URL "
-                "(e.g. https://github.com/owner/repo/pull/1)"
-            )
+        # HTTPS only — HTTP is not accepted (fix #6)
+        allowed_prefixes = (
+            "https://github.com/",
+            "https://gitlab.com/",
+        )
+        if not any(v.startswith(p) for p in allowed_prefixes):
+            raise ValueError("repo_url must be a GitHub or GitLab HTTPS URL")
         return v
 
     @field_validator("file_keys")
