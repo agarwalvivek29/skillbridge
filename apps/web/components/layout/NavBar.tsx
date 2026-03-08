@@ -50,6 +50,22 @@ export function NavBar() {
         </nav>
 
         <div className="flex items-center gap-3">
+          {token && (
+            <>
+              <NotificationBell />
+              <Link
+                href="/dashboard"
+                className={cn(
+                  "hidden text-sm font-medium transition-colors md:block",
+                  pathname.startsWith("/dashboard")
+                    ? "text-primary-600"
+                    : "text-neutral-600 hover:text-neutral-900",
+                )}
+              >
+                Dashboard
+              </Link>
+            </>
+          )}
           <ConnectButton />
           {/* Hamburger */}
           <button
