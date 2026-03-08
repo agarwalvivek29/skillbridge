@@ -94,6 +94,24 @@ const statusStyles: Record<
     border: "border-neutral-300",
     dot: "bg-neutral-400",
   },
+  DISCUSSION: {
+    bg: "bg-warning-50",
+    text: "text-[#92400E]",
+    border: "border-[#FDE68A]",
+    dot: "bg-warning-500",
+  },
+  ARBITRATION: {
+    bg: "bg-web3-50",
+    text: "text-[#5B21B6]",
+    border: "border-[#DDD6FE]",
+    dot: "bg-web3-500",
+  },
+  RESOLVED: {
+    bg: "bg-success-50",
+    text: "text-[#166534]",
+    border: "border-[#BBF7D0]",
+    dot: "bg-success-500",
+  },
 };
 
 const fallback = {
