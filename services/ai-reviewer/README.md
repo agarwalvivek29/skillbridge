@@ -1,99 +1,102 @@
-# [SERVICE_NAME]
+# ai-reviewer — OpenReview Instance
 
-> Replace this with a one-paragraph description of what this service does and why it exists.
+This service is a self-hosted deployment of [`vercel-labs/openreview`](https://github.com/vercel-labs/openreview), an AI-powered PR review bot backed by Claude Sonnet 4.6.
 
-**Language**: [TypeScript / Python / Go / Rust]
-**Type**: [REST API / GraphQL / WebSocket / gRPC / Worker / CLI / Agentic]
-**Owner**: [team or person]
-**Issue**: #[ISSUE-NUMBER]
-**Spec**: [docs/specs/ISSUE-NUMBER-name.md](../../docs/specs/)
-**ADR**: [docs/adr/NNNN-title.md](../../docs/adr/)
+SkillBridge uses it to automatically review freelancer work submissions: when a freelancer submits a GitHub PR URL, the api posts `@openreview` as a PR comment, OpenReview runs its review, and the verdict feeds back to the api via GitHub webhook.
 
----
-
-## Prerequisites
-
-- Docker & Docker Compose
-- [Language-specific: Node.js 22 / Python 3.12 / Go 1.23 / Rust stable]
+**Language**: TypeScript (Next.js)
+**Type**: GitHub App / Webhook Handler
+**Issue**: #7
 
 ---
 
-## Local Development
+## How it fits into SkillBridge
+
+```
+Freelancer submits PR URL
+        ↓
+api posts "@openreview" comment on the PR
+        ↓
+OpenReview (this service) receives the mention via GitHub App webhook
+        ↓
+OpenReview reviews the PR with Claude, posts PR Review (APPROVED / CHANGES_REQUESTED)
+        ↓
+GitHub sends pull_request_review event → api /v1/webhooks/github
+        ↓
+api updates submission + milestone status, writes ReviewReport
+```
+
+---
+
+## Setup
+
+### 1. Clone OpenReview into this directory
 
 ```bash
-# 1. Start required infrastructure
-docker compose -f ../../infra/docker-compose.yml up -d
+# from repo root
+git clone https://github.com/vercel-labs/openreview services/ai-reviewer
+# or if already inside this directory:
+git clone https://github.com/vercel-labs/openreview .
+```
 
-# 2. Set up environment
+### 2. Install dependencies
+
+```bash
+bun install
+```
+
+### 3. Configure environment
+
+```bash
 cp .env.example .env
-# Edit .env — fill in real local values
-
-# 3. Install dependencies
-# TypeScript:  pnpm install
-# Python:      uv sync
-# Go:          go mod download
-# Rust:        cargo build
-
-# 4. Run in dev mode (hot reload)
-# TypeScript:  pnpm dev
-# Python:      uv run python -m [service_name]
-# Go:          go run ./cmd/server
-# Rust:        cargo run
+# fill in real values — see table below
 ```
 
----
+### 4. Create a GitHub App
 
-## Running Tests
+Go to `https://github.com/settings/apps/new`:
+
+| Field                  | Value                                                              |
+| ---------------------- | ------------------------------------------------------------------ |
+| Webhook URL            | `https://your-openreview-domain/api/webhooks`                      |
+| Webhook Secret         | value for `GITHUB_APP_WEBHOOK_SECRET`                              |
+| Repository permissions | Contents (R/W), Issues (R/W), Pull requests (R/W), Metadata (R)    |
+| Subscribe to events    | Issue comments, Pull request review comments, Pull request reviews |
+
+Generate a private key. Note the App ID and Installation ID.
+
+### 5. Install the GitHub App on freelancer repos
+
+`https://github.com/apps/{your-app-name}` → Install → select repos where freelancers will submit PRs.
+
+### 6. Run
 
 ```bash
-# TypeScript:  pnpm test
-# Python:      uv run pytest -v
-# Go:          go test ./...
-# Rust:        cargo test
+bun dev          # local, port 3000
 ```
+
+Or deploy to Vercel (recommended for production).
 
 ---
 
-## API Reference
+## Environment Variables
 
-[Link to OpenAPI spec or describe key endpoints]
-
-```
-GET  /health      — Health check
-GET  /metrics     — Prometheus metrics
-```
-
----
-
-## Architecture
-
-[Brief description of the service's internal structure. Reference AGENTS.md for agent-specific details.]
-
-```
-src/
-├── api/        Routes and request handlers
-├── domain/     Business logic (framework-free)
-├── infra/      DB clients, queue clients, external calls
-└── config.ts   Environment variable validation
-```
-
----
-
-## Configuration
-
-See `.env.example` for all environment variables. All variables are validated at startup — the service will fail fast if required variables are missing.
-
----
-
-## Deployment
-
-[Link to deployment docs or describe the deploy process]
+| Variable                     | Description                             |
+| ---------------------------- | --------------------------------------- |
+| `ANTHROPIC_API_KEY`          | Claude API key                          |
+| `GITHUB_APP_ID`              | GitHub App ID                           |
+| `GITHUB_APP_INSTALLATION_ID` | Installation ID for your repos          |
+| `GITHUB_APP_PRIVATE_KEY`     | App private key (use `\n` for newlines) |
+| `GITHUB_APP_WEBHOOK_SECRET`  | Webhook HMAC secret                     |
 
 ---
 
 ## Troubleshooting
 
-| Problem               | Solution                                                    |
-| --------------------- | ----------------------------------------------------------- |
-| Service won't start   | Check `.env` has all required variables from `.env.example` |
-| DB connection refused | Ensure `docker compose up -d` has been run                  |
+| Problem                   | Solution                                                         |
+| ------------------------- | ---------------------------------------------------------------- |
+| Review not triggered      | Confirm GitHub App is installed on the PR's repo                 |
+| Webhook not received      | Check App webhook URL and secret match                           |
+| Verdicts not reaching api | Confirm api `GITHUB_WEBHOOK_SECRET` matches App's webhook secret |
+| Service won't start       | Check `.env` has all required variables from `.env.example`      |
+| DB connection refused     | Ensure `docker compose up -d` has been run                       |

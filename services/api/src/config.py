@@ -34,6 +34,11 @@ class Settings(BaseSettings):
     api_key: str
     siwe_domain: str = "skillbridge.agarwalvivek.com"
 
+    # GitHub — OpenReview integration
+    github_token: str = ""
+    github_webhook_secret: str = ""
+    openreview_bot_login: str = "openreview-bot"
+
     # Blockchain
     base_rpc_url: str = "https://sepolia.base.org"
     escrow_factory_address: str = ""

@@ -2,12 +2,12 @@
 Unit tests for domain/submission.py.
 
 Uses SQLite in-memory (aiosqlite) — no Docker dependency.
-Celery enqueue is mocked to avoid Redis dependency.
+GitHub comment posting is mocked to avoid network dependency.
 """
 
 from __future__ import annotations
 
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 import pytest_asyncio
@@ -88,7 +88,7 @@ async def _setup_in_progress_gig(db: AsyncSession) -> tuple[str, str]:
 class TestCreateSubmission:
     @pytest.mark.asyncio
     async def test_happy_path_first_submission(self, db: AsyncSession):
-        with patch("src.domain.submission.enqueue_review"):
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
             _, milestone_id = await _setup_in_progress_gig(db)
             submission = await create_submission(
                 db,
@@ -110,7 +110,7 @@ class TestCreateSubmission:
         from src.infra.models import MilestoneModel
         from sqlalchemy import select
 
-        with patch("src.domain.submission.enqueue_review"):
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
             _, milestone_id = await _setup_in_progress_gig(db)
             await create_submission(
                 db,
@@ -134,7 +134,7 @@ class TestCreateSubmission:
         from src.infra.models import NotificationModel
         from sqlalchemy import select
 
-        with patch("src.domain.submission.enqueue_review"):
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
             _, milestone_id = await _setup_in_progress_gig(db)
             await create_submission(
                 db,
@@ -157,7 +157,7 @@ class TestCreateSubmission:
         from src.infra.models import MilestoneModel
         from sqlalchemy import update as sa_update
 
-        with patch("src.domain.submission.enqueue_review"):
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
             _, milestone_id = await _setup_in_progress_gig(db)
             first = await create_submission(
                 db,
@@ -192,7 +192,7 @@ class TestCreateSubmission:
 
     @pytest.mark.asyncio
     async def test_wrong_freelancer_raises_forbidden(self, db: AsyncSession):
-        with patch("src.domain.submission.enqueue_review"):
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
             _, milestone_id = await _setup_in_progress_gig(db)
             with pytest.raises(SubmissionValidationError) as exc_info:
                 await create_submission(
@@ -225,7 +225,7 @@ class TestCreateSubmission:
         from src.infra.models import MilestoneModel
         from sqlalchemy import update as sa_update
 
-        with patch("src.domain.submission.enqueue_review"):
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
             _, milestone_id = await _setup_in_progress_gig(db)
             # Force milestone to APPROVED status
             await db.execute(
@@ -286,7 +286,7 @@ class TestCreateSubmission:
         from src.infra.models import MilestoneModel
         from sqlalchemy import update as sa_update
 
-        with patch("src.domain.submission.enqueue_review"):
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
             _, milestone_id = await _setup_in_progress_gig(db)
             await create_submission(
                 db,
@@ -325,7 +325,7 @@ class TestCreateSubmission:
 class TestGetAndListSubmissions:
     @pytest.mark.asyncio
     async def test_get_existing_submission(self, db: AsyncSession):
-        with patch("src.domain.submission.enqueue_review"):
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
             _, milestone_id = await _setup_in_progress_gig(db)
             created = await create_submission(
                 db,
@@ -350,7 +350,7 @@ class TestGetAndListSubmissions:
         from src.infra.models import MilestoneModel
         from sqlalchemy import update as sa_update
 
-        with patch("src.domain.submission.enqueue_review"):
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
             _, milestone_id = await _setup_in_progress_gig(db)
             first = await create_submission(
                 db,
