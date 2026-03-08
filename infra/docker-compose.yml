@@ -28,6 +28,7 @@ volumes:
   # rabbitmq-data:
 
 services:
+
   # ─── PostgreSQL ─────────────────────────────────────────────────────────────
   postgres:
     image: postgres:17-alpine
@@ -167,24 +168,27 @@ services:
   #     redis:
   #       condition: service_healthy
 
-  # ─── ai-reviewer (openreview — Next.js GitHub App) ───────────────────────────
-  # Clone vercel-labs/openreview into services/ai-reviewer before enabling.
-  # Run `bun install` inside that directory first.
-  # For production, deploy to Vercel instead.
-  #
+  # ─── ai-reviewer (Celery worker) ─────────────────────────────────────────────
   # ai-reviewer:
-  #   image: oven/bun:1
-  #   working_dir: /app
-  #   command: sh -c "bun install && bun dev"
+  #   build:
+  #     context: ../services/ai-reviewer
+  #     dockerfile: Dockerfile.dev
   #   restart: unless-stopped
   #   env_file:
   #     - ../services/ai-reviewer/.env
-  #   ports:
-  #     - "${AI_REVIEWER_PORT:-3001}:3000"
+  #   environment:
+  #     DATABASE_URL: postgresql://postgres:postgres@postgres:5432/skillbridge
+  #     REDIS_URL: redis://:redis@redis:6379/0
   #   volumes:
-  #     - ../services/ai-reviewer:/app
+  #     - ../services/ai-reviewer/src:/app/src
+  #     - ../packages/schema/generated:/schema/generated
   #   networks:
   #     - app-network
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
 
   # ─── web (Next.js frontend) ──────────────────────────────────────────────────
   # web:
