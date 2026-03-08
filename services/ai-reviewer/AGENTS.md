@@ -50,13 +50,18 @@ services/ai-reviewer/        ← clone vercel-labs/openreview here
 
 ## Environment Variables
 
-| Variable                     | Description                        |
-| ---------------------------- | ---------------------------------- |
-| `ANTHROPIC_API_KEY`          | Claude API key                     |
-| `GITHUB_APP_ID`              | GitHub App ID                      |
-| `GITHUB_APP_INSTALLATION_ID` | Installation ID for target repos   |
-| `GITHUB_APP_PRIVATE_KEY`     | App private key (newlines as `\n`) |
-| `GITHUB_APP_WEBHOOK_SECRET`  | Webhook HMAC secret                |
+| Variable                     | Description                                       |
+| ---------------------------- | ------------------------------------------------- |
+| `ANTHROPIC_API_KEY`          | Claude API key                                    |
+| `GITHUB_APP_ID`              | GitHub App ID                                     |
+| `GITHUB_APP_INSTALLATION_ID` | Installation ID for target repos                  |
+| `GITHUB_APP_PRIVATE_KEY`     | App private key (newlines as `\n`)                |
+| `GITHUB_APP_WEBHOOK_SECRET`  | Webhook HMAC secret                               |
+| `REDIS_URL`                  | Redis connection string (Celery broker + backend) |
+| `DATABASE_URL`               | PostgreSQL — for writing ReviewReport             |
+| `REVIEW_MODEL`               | Default: `claude-sonnet-4-6`                      |
+| `REVIEW_SCORE_THRESHOLD`     | Pass threshold (0–100), default 70                |
+| `API_KEY`                    | Min 16 chars — for any internal API calls         |
 
 ---
 

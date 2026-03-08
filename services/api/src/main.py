@@ -20,6 +20,7 @@ from src.api.gig import router as gig_router
 from src.api.middleware import AuthMiddleware
 from src.api.portfolio import router as portfolio_router
 from src.api.proposal import router as proposal_router
+from src.api.milestone import router as milestone_approval_router
 from src.api.submission import milestone_router as submission_milestone_router
 from src.api.submission import submission_router
 
@@ -53,6 +54,7 @@ app.include_router(portfolio_router)
 app.include_router(proposal_router)
 app.include_router(submission_milestone_router)
 app.include_router(submission_router)
+app.include_router(milestone_approval_router)
 app.include_router(webhooks_router)
 
 

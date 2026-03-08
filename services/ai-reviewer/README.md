@@ -98,3 +98,5 @@ Or deploy to Vercel (recommended for production).
 | Review not triggered      | Confirm GitHub App is installed on the PR's repo                 |
 | Webhook not received      | Check App webhook URL and secret match                           |
 | Verdicts not reaching api | Confirm api `GITHUB_WEBHOOK_SECRET` matches App's webhook secret |
+| Service won't start       | Check `.env` has all required variables from `.env.example`      |
+| DB connection refused     | Ensure `docker compose up -d` has been run                       |
