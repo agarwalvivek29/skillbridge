@@ -93,7 +93,7 @@ See `.env.example` for all environment variables. All variables are validated at
 
 ## Troubleshooting
 
-| Problem | Solution |
-|---|---|
-| Service won't start | Check `.env` has all required variables from `.env.example` |
-| DB connection refused | Ensure `docker compose up -d` has been run |
+| Problem               | Solution                                                    |
+| --------------------- | ----------------------------------------------------------- |
+| Service won't start   | Check `.env` has all required variables from `.env.example` |
+| DB connection refused | Ensure `docker compose up -d` has been run                  |

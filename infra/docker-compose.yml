@@ -28,7 +28,6 @@ volumes:
   # rabbitmq-data:
 
 services:
-
   # ─── PostgreSQL ─────────────────────────────────────────────────────────────
   postgres:
     image: postgres:17-alpine

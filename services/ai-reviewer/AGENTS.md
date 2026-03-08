@@ -58,14 +58,14 @@ services/ai-reviewer/
 
 ## Environment Variables
 
-| Variable | Description |
-|---|---|
-| `REDIS_URL` | Redis connection string (Celery broker + backend) |
-| `DATABASE_URL` | PostgreSQL — for writing ReviewReport |
-| `ANTHROPIC_API_KEY` | Claude API key |
-| `REVIEW_MODEL` | Default: `claude-sonnet-4-6` |
-| `REVIEW_SCORE_THRESHOLD` | Pass threshold (0–100), default 70 |
-| `API_KEY` | Min 16 chars — for any internal API calls |
+| Variable                 | Description                                       |
+| ------------------------ | ------------------------------------------------- |
+| `REDIS_URL`              | Redis connection string (Celery broker + backend) |
+| `DATABASE_URL`           | PostgreSQL — for writing ReviewReport             |
+| `ANTHROPIC_API_KEY`      | Claude API key                                    |
+| `REVIEW_MODEL`           | Default: `claude-sonnet-4-6`                      |
+| `REVIEW_SCORE_THRESHOLD` | Pass threshold (0–100), default 70                |
+| `API_KEY`                | Min 16 chars — for any internal API calls         |
 
 ---
 
@@ -125,8 +125,8 @@ Agents may use any available MCP servers, skills, and tools as needed.
 ### MCP Servers in Use
 
 | MCP Server | Purpose | Added by |
-|---|---|---|
-| (none yet) | | |
+| ---------- | ------- | -------- |
+| (none yet) |         |          |
 
 ---
 
