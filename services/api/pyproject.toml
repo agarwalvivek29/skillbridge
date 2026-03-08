@@ -26,13 +26,13 @@ dependencies = [
     "grpclib>=0.4.7",
     "celery[redis]>=5.3.0",
     "boto3>=1.34.0",
-    "httpx>=0.27.0",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0.0",
     "pytest-asyncio>=0.23.0",
+    "httpx>=0.27.0",
     "aiosqlite>=0.20.0",
     "coverage>=7.0.0",
     "mypy>=1.0.0",

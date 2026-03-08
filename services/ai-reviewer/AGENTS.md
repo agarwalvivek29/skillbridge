@@ -8,77 +8,113 @@
 ## Service Overview
 
 **Name**: `ai-reviewer`
-**Purpose**: Self-hosted instance of [`vercel-labs/openreview`](https://github.com/vercel-labs/openreview). A GitHub App that reviews PRs with Claude Sonnet 4.6 when mentioned with `@openreview`. Triggered by the api service when a freelancer submits work; verdict delivered back to the api via GitHub's `pull_request_review` webhook.
-**Language**: TypeScript (Next.js)
-**Type**: GitHub App / Webhook Handler
+**Purpose**: Async Celery worker that performs AI-powered code review on freelancer submissions. Consumes `review.enqueue` jobs from Redis, clones the submitted repository, runs linters and static analysis, calls Claude Sonnet 4.6 to evaluate the submission against the milestone's acceptance criteria, and writes a `ReviewReport` to PostgreSQL.
+**Language**: Python 3.12
+**Type**: Worker (Celery consumer — no HTTP server)
 **Created**: 2026-03-07
-**Issue**: #7
+**ADR**: `docs/adr/0002-tech-stack.md`
 
 ---
 
 ## Tech Stack
 
-- **Runtime**: Node.js / Bun
-- **Framework**: Next.js (openreview app)
-- **AI**: Anthropic SDK (`claude-sonnet-4-6`) — handled internally by openreview
-- **Integration**: GitHub App (webhooks, PR comments, PR reviews)
-- **Protocol**: HTTP (Next.js API routes handle GitHub webhook events)
+- **Language**: Python 3.12
+- **Queue**: Redis + Celery (consumer)
+- **AI**: Anthropic Python SDK (`claude-sonnet-4-6`)
+- **Database**: PostgreSQL (SQLAlchemy async — writes ReviewReport only)
+- **Sandboxing**: subprocess (git clone to temp dir, run linters, cleanup)
+- **Protocol**: Worker (no HTTP)
 
 ---
 
 ## Repository Layout
 
-This directory should contain the cloned `vercel-labs/openreview` codebase.
-See README.md for setup instructions.
-
 ```
-services/ai-reviewer/        ← clone vercel-labs/openreview here
-├── app/
+services/ai-reviewer/
+├── src/
+│   ├── tasks/         # Celery task definitions (review_submission.py)
+│   ├── reviewer/      # Core review logic — criteria parsing, code analysis, report generation
+│   ├── sandbox/       # Subprocess management — clone, lint, cleanup
+│   ├── infra/         # DB session, Celery app init, Anthropic client
+│   └── config.py      # Pydantic Settings — all env vars validated here
+├── tests/
+│   ├── unit/          # reviewer logic tests (mocked Claude API)
+│   └── e2e/           # full review flow tests (real repo, mocked Claude)
+├── Dockerfile
+├── Dockerfile.dev
 ├── .env.example
-└── README.md (this file documents SkillBridge-specific setup)
+└── README.md
 ```
 
 ---
 
 ## Key Entry Points
 
-- **Webhook handler**: `app/api/webhooks/route.ts` (openreview internal — handles `@openreview` mentions)
-- **Outbound**: openreview posts PR Reviews (APPROVED / CHANGES_REQUESTED) back to GitHub
-- **Inbound to api**: GitHub forwards `pull_request_review` events to `api /v1/webhooks/github`
+- **Celery app**: `src/infra/celery_app.py`
+- **Main task**: `src/tasks/review_submission.py` — `review_submission(submission_id: str)`
+- **Config**: `src/config.py` — import `settings` not `os.environ`
 
 ---
 
 ## Environment Variables
 
-| Variable                     | Description                        |
-| ---------------------------- | ---------------------------------- |
-| `ANTHROPIC_API_KEY`          | Claude API key                     |
-| `GITHUB_APP_ID`              | GitHub App ID                      |
-| `GITHUB_APP_INSTALLATION_ID` | Installation ID for target repos   |
-| `GITHUB_APP_PRIVATE_KEY`     | App private key (newlines as `\n`) |
-| `GITHUB_APP_WEBHOOK_SECRET`  | Webhook HMAC secret                |
+| Variable | Description |
+|---|---|
+| `REDIS_URL` | Redis connection string (Celery broker + backend) |
+| `DATABASE_URL` | PostgreSQL — for writing ReviewReport |
+| `ANTHROPIC_API_KEY` | Claude API key |
+| `REVIEW_MODEL` | Default: `claude-sonnet-4-6` |
+| `REVIEW_SCORE_THRESHOLD` | Pass threshold (0–100), default 70 |
+| `API_KEY` | Min 16 chars — for any internal API calls |
 
 ---
 
 ## Review Flow
 
 ```
-1. Freelancer submits work with a GitHub PR URL
-2. api posts "@openreview" comment on the PR (services/api/src/infra/github.py)
-3. GitHub notifies openreview (this service) via its App webhook
-4. openreview clones repo, runs analysis, calls Claude Sonnet 4.6
-5. openreview posts PR Review: APPROVED or CHANGES_REQUESTED
-6. GitHub sends pull_request_review event to api /v1/webhooks/github
-7. api processes verdict → updates submission + milestone + writes ReviewReport
+1. Celery task receives submission_id
+2. Load Submission + Milestone (acceptance_criteria) from DB
+3. Clone repo to temp directory (subprocess, timeout 60s)
+4. Run linters: ruff (Python), eslint (JS/TS), skip if unrecognized lang
+5. Build prompt: acceptance_criteria + repo structure + key file contents
+6. Call Claude API (claude-sonnet-4-6) with structured output prompt
+7. Parse response: verdict (PASS/FAIL/NEEDS_REVISION), score, findings[]
+8. Write ReviewReport to DB
+9. Cleanup temp directory (always, even on error)
 ```
+
+---
+
+## Schema Package Usage
+
+Report types come from `packages/schema/proto/ai_reviewer/v1/report.proto`.
+
+```python
+from schema.ai_reviewer.v1 import ReviewReport, ReviewVerdict, ReviewFinding, ReviewStatus
+```
+
+Never define domain types locally.
 
 ---
 
 ## Constraints
 
-- Never add custom business logic to this service — it is a vanilla openreview instance
-- All verdict processing happens in `services/api/src/domain/review.py`
-- `GITHUB_APP_WEBHOOK_SECRET` here and `GITHUB_WEBHOOK_SECRET` in the api must match
+- Sandbox temp directories must always be cleaned up (use `try/finally`)
+- Max repo size: 500MB (reject with error if exceeded)
+- Max review timeout: 5 minutes total (Celery task timeout)
+- Never log file contents or code in production logs (may contain secrets)
+- Claude API calls must include retry logic (max 3 attempts, exponential backoff)
+- Only writes to `review_reports` table — never reads/writes other service tables
+
+---
+
+## Forbidden Actions for Agents
+
+- Executing code from cloned repositories (lint only — never `python repo_code.py`)
+- Writing to any table other than `review_reports`
+- Storing cloned repo contents anywhere persistent
+- Hardcoding the Claude model version — always use `settings.review_model`
+- Adding an HTTP server to this worker
 
 ---
 
@@ -89,8 +125,8 @@ Agents may use any available MCP servers, skills, and tools as needed.
 ### MCP Servers in Use
 
 | MCP Server | Purpose | Added by |
-| ---------- | ------- | -------- |
-| (none yet) |         |          |
+|---|---|---|
+| (none yet) | | |
 
 ---
 
