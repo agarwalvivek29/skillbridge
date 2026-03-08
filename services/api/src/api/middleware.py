@@ -26,6 +26,7 @@ _EXEMPT_PREFIXES = (
     "/health",
     "/metrics",
     "/v1/auth/",
+    "/v1/webhooks/",
     "/docs",
     "/redoc",
     "/openapi.json",

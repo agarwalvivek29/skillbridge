@@ -249,6 +249,29 @@ class ProposalModel(Base):
     )
 
 
+class ReviewReportModel(Base):
+    __tablename__ = "review_reports"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    submission_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("submissions.id", ondelete="CASCADE"), nullable=False
+    )
+    # "PASS" or "FAIL"
+    verdict: Mapped[str] = mapped_column(String(32), nullable=False)
+    # 0–100; 100 = APPROVED, 0 = CHANGES_REQUESTED
+    score: Mapped[int] = mapped_column(Integer, nullable=False)
+    # Raw review body text from the openreview bot PR review
+    body: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    model_version: Mapped[str] = mapped_column(
+        String(64), nullable=False, default="openreview"
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+
 class NotificationModel(Base):
     __tablename__ = "notifications"
 

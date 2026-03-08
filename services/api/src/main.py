@@ -13,7 +13,9 @@ import logging
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
+from src.config import settings
 from src.api.auth import router as auth_router
+from src.api.webhooks import router as webhooks_router
 from src.api.gig import router as gig_router
 from src.api.middleware import AuthMiddleware
 from src.api.portfolio import router as portfolio_router
@@ -31,6 +33,16 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+
+@app.on_event("startup")
+async def _startup_checks() -> None:
+    if not settings.github_webhook_secret:
+        logger.warning(
+            "GITHUB_WEBHOOK_SECRET is not set — POST /v1/webhooks/github accepts "
+            "unauthenticated requests; set this in production"
+        )
+
+
 # ── Middleware (add_middleware inserts at front of stack — last added = first executed) ──
 app.add_middleware(AuthMiddleware)
 
@@ -41,6 +53,7 @@ app.include_router(portfolio_router)
 app.include_router(proposal_router)
 app.include_router(submission_milestone_router)
 app.include_router(submission_router)
+app.include_router(webhooks_router)
 
 
 # ── Infrastructure routes (exempt from auth) ──────────────────────────────────
