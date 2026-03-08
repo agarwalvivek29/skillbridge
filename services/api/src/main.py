@@ -13,6 +13,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
+from src.config import settings
 from src.api.auth import router as auth_router
 from src.api.webhooks import router as webhooks_router
 from src.api.gig import router as gig_router
@@ -31,6 +32,16 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+
+@app.on_event("startup")
+async def _startup_checks() -> None:
+    if not settings.github_webhook_secret:
+        logger.warning(
+            "GITHUB_WEBHOOK_SECRET is not set — POST /v1/webhooks/github accepts "
+            "unauthenticated requests; set this in production"
+        )
+
 
 # ── Middleware (add_middleware inserts at front of stack — last added = first executed) ──
 app.add_middleware(AuthMiddleware)

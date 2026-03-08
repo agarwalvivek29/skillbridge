@@ -13,7 +13,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.config import settings
-from src.infra.github import GitHubError, post_openreview_comment
+from src.infra.github import post_openreview_comment
 from src.infra.models import (
     GigModel,
     MilestoneModel,
@@ -193,7 +193,7 @@ async def create_submission(
     if repo_url and settings.github_token:
         try:
             await post_openreview_comment(repo_url, settings.github_token)
-        except (GitHubError, Exception) as exc:  # noqa: BLE001
+        except Exception as exc:  # noqa: BLE001
             logger.warning(
                 "openreview comment failed submission_id=%s error=%s",
                 submission.id,

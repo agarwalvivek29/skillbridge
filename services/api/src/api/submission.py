@@ -11,6 +11,7 @@ Endpoints:
 from __future__ import annotations
 
 import logging
+import re
 from datetime import datetime
 from typing import Optional
 
@@ -56,8 +57,6 @@ class CreateSubmissionRequest(BaseModel):
     def repo_url_must_be_github_pr(cls, v: Optional[str]) -> Optional[str]:
         if v is None:
             return v
-        import re
-
         # Must be a GitHub PR URL so OpenReview can be triggered on it
         if not re.match(r"^https://github\.com/[^/]+/[^/]+/pull/\d+", v):
             raise ValueError(

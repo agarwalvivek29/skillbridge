@@ -82,6 +82,19 @@ async def process_openreview_verdict(
         )
         return
 
+    # Idempotency: if a ReviewReport already exists for this submission, skip
+    existing = await db.execute(
+        select(ReviewReportModel).where(
+            ReviewReportModel.submission_id == submission.id
+        )
+    )
+    if existing.scalar_one_or_none() is not None:
+        logger.info(
+            "openreview webhook: ReviewReport already exists for submission_id=%s — skipping duplicate",
+            submission.id,
+        )
+        return
+
     if state == "approved":
         submission.status = "APPROVED"
         milestone.status = "APPROVED"

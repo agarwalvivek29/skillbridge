@@ -75,7 +75,16 @@ async def github_webhook(
     if x_github_event != "pull_request_review":
         return {"status": "ignored", "event": x_github_event}
 
-    payload = await request.json()
+    try:
+        payload = await request.json()
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "code": "INVALID_PAYLOAD",
+                "message": "request body must be valid JSON",
+            },
+        )
 
     review = payload.get("review", {})
     reviewer_login = review.get("user", {}).get("login", "")
