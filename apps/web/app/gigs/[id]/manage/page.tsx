@@ -61,7 +61,8 @@ function ManageContent() {
     } finally {
       setLoading(false);
     }
-  }, [params.id, toast]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id]);
 
   useEffect(() => {
     load();
