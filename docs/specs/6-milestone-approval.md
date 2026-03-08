@@ -28,10 +28,12 @@ Milestone approval is the core payment trigger on SkillBridge. Without it, clien
 - `POST /v1/milestones/{id}/request-revision` — client requests changes
 - `GET /v1/milestones/{id}/release-tx` — return ABI-encoded calldata for `completeMilestone(index)`
 - `POST /v1/milestones/{id}/confirm-release` — record tx_hash after client broadcasts
-- `PAID` milestone status added to DB model and migration
-- `release_tx_hash` column added to `escrow_contracts` table (migration 0007)
+- `PAID` and `REVISION_REQUESTED` milestone statuses added to DB model and migration
+- `release_tx_hash` column added to `milestones` table (migration 0007) — stored per-milestone so multi-milestone gigs each retain their own on-chain tx_hash
+- `escrow_contracts` table created (migration 0007) — tracks deployed GigEscrow contract per gig
 - Notifications for freelancer on all state transitions
 - Dispute guard: 409 if milestone is DISPUTED
+- Contract guard: 409 if no `EscrowContractModel` row exists when confirming release
 
 ### Out of Scope
 
@@ -93,15 +95,33 @@ Response: { id, gig_id, status, ... }
 
 ### Data Model Changes
 
-#### New column on escrow_contracts table (migration 0007)
+#### New table: `escrow_contracts` (migration 0007)
+
+Tracks the deployed `GigEscrow` contract per gig. One row per gig.
 
 ```sql
-ALTER TABLE escrow_contracts ADD COLUMN release_tx_hash TEXT;
+CREATE TABLE escrow_contracts (
+  id               UUID PRIMARY KEY,
+  gig_id           UUID NOT NULL UNIQUE REFERENCES gigs(id) ON DELETE CASCADE,
+  contract_address TEXT NOT NULL,
+  created_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at       TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 ```
+
+An `ON UPDATE` trigger (`trg_escrow_contracts_updated_at`) keeps `updated_at` accurate for raw-SQL updates.
+
+#### New column: `milestones.release_tx_hash` (migration 0007)
+
+```sql
+ALTER TABLE milestones ADD COLUMN release_tx_hash TEXT;
+```
+
+Stored on the milestone (not on `escrow_contracts`) so that each milestone in a multi-milestone gig independently tracks the tx_hash of its own `completeMilestone()` call.
 
 #### MilestoneModel status comment update
 
-Add `PAID` to the status comment on `MilestoneModel`.
+`PAID` and `REVISION_REQUESTED` added to the status comment on `MilestoneModel`.
 
 ### Calldata Generation
 
@@ -127,7 +147,8 @@ Pure Python — no web3 dependency required.
 ## Observability
 
 - **Logs**: INFO on each status transition with milestone_id and new status
-- **Logs**: WARNING if EscrowContractModel not found during confirm-release
+- **Logs**: INFO on fund release confirmed with milestone_id and tx_hash
+- **Errors**: 409 NO_CONTRACT_ADDRESS if no `EscrowContractModel` row exists when confirm-release is called
 
 ---
 
@@ -152,7 +173,7 @@ Pure Python — no web3 dependency required.
 
 ## Migration / Rollout Plan
 
-- **Database migrations**: Yes — migration 0007 adds `release_tx_hash` to `escrow_contracts`
+- **Database migrations**: Yes — migration 0007 creates `escrow_contracts` table and adds `release_tx_hash` to `milestones`
 - **Breaking changes**: No
 - **Feature flag**: No
 - **Rollback plan**: Run migration 0007 downgrade to remove the column
