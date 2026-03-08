@@ -138,7 +138,7 @@ class MilestoneModel(Base):
     due_date: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
-    # "PENDING", "IN_PROGRESS", "SUBMITTED", "APPROVED", "DISPUTED", "RESOLVED"
+    # "PENDING", "IN_PROGRESS", "SUBMITTED", "APPROVED", "DISPUTED", "RESOLVED", "PAID", "REVISION_REQUESTED"
     status: Mapped[str] = mapped_column(String(32), nullable=False, default="PENDING")
     revision_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     created_at: Mapped[datetime] = mapped_column(
@@ -269,6 +269,33 @@ class ReviewReportModel(Base):
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+
+class EscrowContractModel(Base):
+    __tablename__ = "escrow_contracts"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    gig_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("gigs.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
+    )
+    # On-chain contract address of the deployed GigEscrow
+    contract_address: Mapped[str] = mapped_column(Text, nullable=False)
+    # tx_hash of the completeMilestone() call after client confirms fund release
+    release_tx_hash: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
     )
 
 
