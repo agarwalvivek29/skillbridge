@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const sizeStyles = {
@@ -7,6 +8,8 @@ const sizeStyles = {
   lg: "h-14 w-14 text-xl",
   xl: "h-20 w-20 text-[28px]",
 } as const;
+
+const sizePx = { xs: 24, sm: 32, md: 40, lg: 56, xl: 80 } as const;
 
 interface AvatarProps {
   src?: string | null;
@@ -32,12 +35,15 @@ export function Avatar({
   className,
 }: AvatarProps) {
   const fallback = getFallback(name, walletAddress);
+  const px = sizePx[size];
 
   if (src) {
     return (
-      <img
+      <Image
         src={src}
         alt={alt ?? name ?? "Avatar"}
+        width={px}
+        height={px}
         className={cn(
           "rounded-full border-2 border-white object-cover",
           sizeStyles[size],
