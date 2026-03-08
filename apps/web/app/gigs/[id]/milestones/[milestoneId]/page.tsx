@@ -246,14 +246,14 @@ function MilestoneContent() {
       {/* Revision feedback banner */}
       {milestone.status === "REVISION_REQUESTED" &&
         milestone.revision_feedback && (
-          <div className="mt-4 rounded-lg border border-[#FED7AA] bg-[#FFF7ED] p-4">
+          <div className="mt-4 rounded-lg border border-warning-200 bg-warning-50 p-4">
             <div className="flex items-start gap-3">
-              <MessageSquare className="mt-0.5 h-5 w-5 shrink-0 text-[#F97316]" />
+              <MessageSquare className="mt-0.5 h-5 w-5 shrink-0 text-warning-400" />
               <div>
-                <p className="text-sm font-medium text-[#9A3412]">
+                <p className="text-sm font-medium text-warning-800">
                   Changes Requested
                 </p>
-                <p className="mt-1 whitespace-pre-wrap text-sm text-[#9A3412]/80">
+                <p className="mt-1 whitespace-pre-wrap text-sm text-warning-800/80">
                   {milestone.revision_feedback}
                 </p>
               </div>
@@ -294,21 +294,21 @@ function MilestoneContent() {
         <div className="mt-4 rounded-lg bg-success-50 p-4">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-5 w-5 text-success-500" />
-            <p className="text-sm font-medium text-[#166534]">Approved</p>
+            <p className="text-sm font-medium text-success-800">Approved</p>
           </div>
-          <p className="mt-1 text-sm text-[#166534]/80">
+          <p className="mt-1 text-sm text-success-800/80">
             This milestone has been approved. Funds will be released shortly.
           </p>
         </div>
       )}
 
       {milestone.status === "PAID" && (
-        <div className="mt-4 rounded-lg bg-[#ECFDF5] p-4">
+        <div className="mt-4 rounded-lg bg-success-50 p-4">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-[#10B981]" />
-            <p className="text-sm font-medium text-[#065F46]">Paid</p>
+            <ShieldCheck className="h-5 w-5 text-success-500" />
+            <p className="text-sm font-medium text-success-800">Paid</p>
           </div>
-          <p className="mt-1 text-sm text-[#065F46]/80">
+          <p className="mt-1 text-sm text-success-800/80">
             Funds have been released for this milestone.
           </p>
         </div>

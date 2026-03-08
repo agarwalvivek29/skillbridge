@@ -287,7 +287,7 @@ function ReviewContent() {
                 <p className="text-lg font-semibold text-success-600">
                   Code Review Passed
                 </p>
-                <p className="text-sm text-[#166534]/80">
+                <p className="text-sm text-success-800/80">
                   The submission meets the quality standards.
                 </p>
               </div>
@@ -299,7 +299,7 @@ function ReviewContent() {
                 <p className="text-lg font-semibold text-error-600">
                   Changes Required
                 </p>
-                <p className="text-sm text-[#991B1B]/80">
+                <p className="text-sm text-error-800/80">
                   The submission needs revisions before approval.
                 </p>
               </div>
