@@ -58,6 +58,14 @@ async def process_openreview_verdict(
         logger.warning("openreview webhook: no submission found for pr_url=%s", pr_url)
         return
 
+    if submission.status in ("APPROVED", "REJECTED"):
+        logger.info(
+            "openreview webhook: submission_id=%s already in terminal status %s — skipping",
+            submission.id,
+            submission.status,
+        )
+        return
+
     milestone_result = await db.execute(
         select(MilestoneModel).where(MilestoneModel.id == submission.milestone_id)
     )

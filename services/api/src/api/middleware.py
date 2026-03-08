@@ -26,7 +26,7 @@ _EXEMPT_PREFIXES = (
     "/health",
     "/metrics",
     "/v1/auth/",
-    "/v1/webhooks/",
+    "/v1/webhooks/",  # HMAC-verified — not JWT; any future /v1/webhooks/* is also exempt
     "/docs",
     "/redoc",
     "/openapi.json",

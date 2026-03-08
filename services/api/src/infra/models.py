@@ -262,7 +262,7 @@ class ReviewReportModel(Base):
     )
     # "PASS" or "FAIL"
     verdict: Mapped[str] = mapped_column(String(32), nullable=False)
-    # 0–100; 100 = APPROVED, 0 = CHANGES_REQUESTED
+    # v1: binary — 100 = PASS (approved), 0 = FAIL (changes_requested)
     score: Mapped[int] = mapped_column(Integer, nullable=False)
     # Raw review body text from the openreview bot PR review
     body: Mapped[str] = mapped_column(Text, nullable=False, default="")

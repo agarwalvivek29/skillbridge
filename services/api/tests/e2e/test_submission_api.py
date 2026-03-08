@@ -2,12 +2,12 @@
 E2E tests for submission endpoints.
 
 Runs against in-memory SQLite via conftest.py fixture.
-Celery and S3 are mocked to avoid external dependencies.
+GitHub comment posting is mocked to avoid network dependency.
 """
 
 from __future__ import annotations
 
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 from httpx import AsyncClient
@@ -109,13 +109,13 @@ class TestCreateSubmission:
     async def test_freelancer_can_submit(
         self, client: AsyncClient, db_session: AsyncSession
     ):
-        with patch("src.domain.submission.enqueue_review"):
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
             _, fl_token, _, milestone_id = await _setup_in_progress_gig(
                 client, db_session
             )
             resp = await client.post(
                 f"/v1/milestones/{milestone_id}/submissions",
-                json={"repo_url": "https://github.com/user/repo"},
+                json={"repo_url": "https://github.com/user/repo/pull/1"},
                 headers=_auth(fl_token),
             )
         assert resp.status_code == 201
@@ -123,7 +123,7 @@ class TestCreateSubmission:
         assert data["revision_number"] == 1
         assert data["previous_submission_id"] is None
         assert data["status"] == "UNDER_REVIEW"
-        assert data["repo_url"] == "https://github.com/user/repo"
+        assert data["repo_url"] == "https://github.com/user/repo/pull/1"
 
     @pytest.mark.asyncio
     async def test_client_cannot_submit(
@@ -132,7 +132,7 @@ class TestCreateSubmission:
         cl_token, _, _, milestone_id = await _setup_in_progress_gig(client, db_session)
         resp = await client.post(
             f"/v1/milestones/{milestone_id}/submissions",
-            json={"repo_url": "https://github.com/user/repo"},
+            json={"repo_url": "https://github.com/user/repo/pull/1"},
             headers=_auth(cl_token),
         )
         assert resp.status_code == 403
@@ -145,7 +145,7 @@ class TestCreateSubmission:
         _, _, _, milestone_id = await _setup_in_progress_gig(client, db_session)
         resp = await client.post(
             f"/v1/milestones/{milestone_id}/submissions",
-            json={"repo_url": "https://github.com/user/repo"},
+            json={"repo_url": "https://github.com/user/repo/pull/1"},
         )
         assert resp.status_code == 401
 
@@ -167,7 +167,7 @@ class TestCreateSubmission:
         fl_token, _ = await _register_and_get_token(client, _FREELANCER_PAYLOAD)
         resp = await client.post(
             "/v1/milestones/00000000-0000-0000-0000-000000000000/submissions",
-            json={"repo_url": "https://github.com/user/repo"},
+            json={"repo_url": "https://github.com/user/repo/pull/1"},
             headers=_auth(fl_token),
         )
         assert resp.status_code == 404
@@ -217,13 +217,13 @@ class TestCreateSubmission:
         """fix #5: cannot chain a resubmission onto an APPROVED previous submission."""
         from src.infra.models import SubmissionModel
 
-        with patch("src.domain.submission.enqueue_review"):
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
             _, fl_token, _, milestone_id = await _setup_in_progress_gig(
                 client, db_session
             )
             first_resp = await client.post(
                 f"/v1/milestones/{milestone_id}/submissions",
-                json={"repo_url": "https://github.com/user/repo"},
+                json={"repo_url": "https://github.com/user/repo/pull/1"},
                 headers=_auth(fl_token),
             )
             assert first_resp.status_code == 201
@@ -245,7 +245,7 @@ class TestCreateSubmission:
             resp = await client.post(
                 f"/v1/milestones/{milestone_id}/submissions",
                 json={
-                    "repo_url": "https://github.com/user/repo-v2",
+                    "repo_url": "https://github.com/user/repo/pull/2",
                     "previous_submission_id": first_id,
                 },
                 headers=_auth(fl_token),
@@ -257,13 +257,13 @@ class TestCreateSubmission:
     async def test_resubmission_increments_revision(
         self, client: AsyncClient, db_session: AsyncSession
     ):
-        with patch("src.domain.submission.enqueue_review"):
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
             _, fl_token, _, milestone_id = await _setup_in_progress_gig(
                 client, db_session
             )
             first_resp = await client.post(
                 f"/v1/milestones/{milestone_id}/submissions",
-                json={"repo_url": "https://github.com/user/repo"},
+                json={"repo_url": "https://github.com/user/repo/pull/1"},
                 headers=_auth(fl_token),
             )
             assert first_resp.status_code == 201
@@ -280,7 +280,7 @@ class TestCreateSubmission:
             second_resp = await client.post(
                 f"/v1/milestones/{milestone_id}/submissions",
                 json={
-                    "repo_url": "https://github.com/user/repo-v2",
+                    "repo_url": "https://github.com/user/repo/pull/2",
                     "previous_submission_id": first_id,
                 },
                 headers=_auth(fl_token),
@@ -301,13 +301,13 @@ class TestListSubmissions:
     async def test_list_returns_all_submissions(
         self, client: AsyncClient, db_session: AsyncSession
     ):
-        with patch("src.domain.submission.enqueue_review"):
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
             cl_token, fl_token, _, milestone_id = await _setup_in_progress_gig(
                 client, db_session
             )
             await client.post(
                 f"/v1/milestones/{milestone_id}/submissions",
-                json={"repo_url": "https://github.com/user/repo"},
+                json={"repo_url": "https://github.com/user/repo/pull/1"},
                 headers=_auth(fl_token),
             )
 
@@ -331,13 +331,13 @@ class TestListSubmissions:
         self, client: AsyncClient, db_session: AsyncSession
     ):
         """Blocking issue: unrelated authenticated user must get 403 on list endpoint."""
-        with patch("src.domain.submission.enqueue_review"):
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
             _, fl_token, _, milestone_id = await _setup_in_progress_gig(
                 client, db_session
             )
             await client.post(
                 f"/v1/milestones/{milestone_id}/submissions",
-                json={"repo_url": "https://github.com/user/repo"},
+                json={"repo_url": "https://github.com/user/repo/pull/1"},
                 headers=_auth(fl_token),
             )
 
@@ -369,13 +369,13 @@ class TestGetSubmission:
     async def test_get_existing_submission(
         self, client: AsyncClient, db_session: AsyncSession
     ):
-        with patch("src.domain.submission.enqueue_review"):
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
             _, fl_token, _, milestone_id = await _setup_in_progress_gig(
                 client, db_session
             )
             create_resp = await client.post(
                 f"/v1/milestones/{milestone_id}/submissions",
-                json={"repo_url": "https://github.com/user/repo"},
+                json={"repo_url": "https://github.com/user/repo/pull/1"},
                 headers=_auth(fl_token),
             )
         submission_id = create_resp.json()["id"]
@@ -404,13 +404,13 @@ class TestGetSubmission:
         self, client: AsyncClient, db_session: AsyncSession
     ):
         """fix #4: a user who is neither the gig's client nor freelancer gets 403."""
-        with patch("src.domain.submission.enqueue_review"):
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
             _, fl_token, _, milestone_id = await _setup_in_progress_gig(
                 client, db_session
             )
             create_resp = await client.post(
                 f"/v1/milestones/{milestone_id}/submissions",
-                json={"repo_url": "https://github.com/user/repo"},
+                json={"repo_url": "https://github.com/user/repo/pull/1"},
                 headers=_auth(fl_token),
             )
         submission_id = create_resp.json()["id"]
