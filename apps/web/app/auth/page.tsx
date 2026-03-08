@@ -156,8 +156,8 @@ export default function AuthPage() {
             </div>
           ) : null}
 
-          {/* Error display */}
-          {error && (
+          {/* Wallet error display — only show for wallet-related errors */}
+          {error && step !== "connect" && (
             <div className="flex items-start gap-2 rounded-md border border-error-500 bg-error-50 p-3">
               <AlertCircle className="mt-0.5 h-4 w-4 text-error-500" />
               <div className="flex-1">
