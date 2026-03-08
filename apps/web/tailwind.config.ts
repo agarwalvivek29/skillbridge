@@ -37,6 +37,7 @@ const config: Config = {
           500: "#8B5CF6",
           600: "#7C3AED",
           700: "#6D28D9",
+          800: "#5B21B6",
         },
         success: {
           50: "#F0FDF4",
@@ -63,6 +64,7 @@ const config: Config = {
           400: "#FB923C",
           500: "#F59E0B",
           600: "#D97706",
+          700: "#92400E",
           800: "#9A3412",
         },
         info: {

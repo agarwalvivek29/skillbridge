@@ -295,7 +295,7 @@ function DisputeFormContent() {
         <div className="mt-4 rounded-lg border border-warning-200 bg-warning-50 p-4">
           <div className="flex items-start gap-3">
             <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-warning-500" />
-            <p className="text-sm text-[#92400E]">
+            <p className="text-sm text-warning-700">
               Raising a dispute will freeze the milestone and notify both
               parties. Arbitrators will review within 48 hours.
             </p>

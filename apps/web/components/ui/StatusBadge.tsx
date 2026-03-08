@@ -30,14 +30,14 @@ const statusStyles: Record<
   },
   UNDER_REVIEW: {
     bg: "bg-warning-50",
-    text: "text-[#92400E]",
-    border: "border-[#FDE68A]",
+    text: "text-warning-700",
+    border: "border-warning-200",
     dot: "bg-warning-500",
   },
   APPROVED: {
     bg: "bg-success-50",
-    text: "text-[#166534]",
-    border: "border-[#BBF7D0]",
+    text: "text-success-800",
+    border: "border-success-200",
     dot: "bg-success-500",
   },
   PAID: {
@@ -54,8 +54,8 @@ const statusStyles: Record<
   },
   DISPUTED: {
     bg: "bg-error-50",
-    text: "text-[#991B1B]",
-    border: "border-[#FECACA]",
+    text: "text-error-800",
+    border: "border-error-200",
     dot: "bg-error-500",
   },
   IN_PROGRESS: {
@@ -66,8 +66,8 @@ const statusStyles: Record<
   },
   COMPLETED: {
     bg: "bg-success-50",
-    text: "text-[#166534]",
-    border: "border-[#BBF7D0]",
+    text: "text-success-800",
+    border: "border-success-200",
     dot: "bg-success-500",
   },
   CANCELLED: {
@@ -78,14 +78,14 @@ const statusStyles: Record<
   },
   ACCEPTED: {
     bg: "bg-success-50",
-    text: "text-[#166534]",
-    border: "border-[#BBF7D0]",
+    text: "text-success-800",
+    border: "border-success-200",
     dot: "bg-success-500",
   },
   REJECTED: {
     bg: "bg-error-50",
-    text: "text-[#991B1B]",
-    border: "border-[#FECACA]",
+    text: "text-error-800",
+    border: "border-error-200",
     dot: "bg-error-500",
   },
   WITHDRAWN: {
@@ -96,20 +96,20 @@ const statusStyles: Record<
   },
   DISCUSSION: {
     bg: "bg-warning-50",
-    text: "text-[#92400E]",
-    border: "border-[#FDE68A]",
+    text: "text-warning-700",
+    border: "border-warning-200",
     dot: "bg-warning-500",
   },
   ARBITRATION: {
     bg: "bg-web3-50",
-    text: "text-[#5B21B6]",
-    border: "border-[#DDD6FE]",
+    text: "text-web3-800",
+    border: "border-web3-200",
     dot: "bg-web3-500",
   },
   RESOLVED: {
     bg: "bg-success-50",
-    text: "text-[#166534]",
-    border: "border-[#BBF7D0]",
+    text: "text-success-800",
+    border: "border-success-200",
     dot: "bg-success-500",
   },
 };
