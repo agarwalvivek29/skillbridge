@@ -32,8 +32,8 @@ logger = logging.getLogger(__name__)
 # Constants
 # ---------------------------------------------------------------------------
 
-_APPROVABLE_STATUSES = {"UNDER_REVIEW", "SUBMITTED"}
-_REVISION_REQUESTABLE_STATUSES = {"UNDER_REVIEW", "SUBMITTED"}
+# Statuses that allow a client to approve or request a revision
+_REVIEWABLE_STATUSES = {"UNDER_REVIEW", "SUBMITTED"}
 
 _NOTIFICATION_TYPE_MILESTONE_APPROVED = "NOTIFICATION_TYPE_MILESTONE_APPROVED"
 _NOTIFICATION_TYPE_REVISION_REQUESTED = "NOTIFICATION_TYPE_REVISION_REQUESTED"
@@ -146,7 +146,7 @@ async def approve_milestone(
     - Milestone is not DISPUTED
     - Milestone is in UNDER_REVIEW or SUBMITTED status (or already APPROVED — idempotent)
 
-    Side effects:
+    Side effects (only when transitioning from non-APPROVED):
     - milestone.status → APPROVED
     - NotificationModel created for the gig's freelancer
     """
@@ -158,7 +158,7 @@ async def approve_milestone(
             "Cannot approve a disputed milestone",
         )
 
-    if milestone.status not in _APPROVABLE_STATUSES and milestone.status != "APPROVED":
+    if milestone.status not in _REVIEWABLE_STATUSES and milestone.status != "APPROVED":
         raise MilestoneApprovalError(
             "MILESTONE_NOT_APPROVABLE",
             f"Milestone cannot be approved in status {milestone.status}",
@@ -168,18 +168,18 @@ async def approve_milestone(
         milestone.status = "APPROVED"
         await db.flush()
 
-    if gig.freelancer_id:
-        _notify_freelancer(
-            db,
-            gig.freelancer_id,
-            _NOTIFICATION_TYPE_MILESTONE_APPROVED,
-            {
-                "milestone_id": milestone_id,
-                "gig_id": gig.id,
-                "milestone_title": milestone.title,
-            },
-        )
-        await db.flush()
+        if gig.freelancer_id:
+            _notify_freelancer(
+                db,
+                gig.freelancer_id,
+                _NOTIFICATION_TYPE_MILESTONE_APPROVED,
+                {
+                    "milestone_id": milestone_id,
+                    "gig_id": gig.id,
+                    "milestone_title": milestone.title,
+                },
+            )
+            await db.flush()
 
     logger.info(
         "milestone approved milestone_id=%s by client_id=%s", milestone_id, client_id
@@ -211,7 +211,7 @@ async def request_revision(
     """
     milestone, gig = await _fetch_milestone_and_gig(db, milestone_id, client_id)
 
-    if milestone.status not in _REVISION_REQUESTABLE_STATUSES:
+    if milestone.status not in _REVIEWABLE_STATUSES:
         raise MilestoneApprovalError(
             "MILESTONE_NOT_REVISABLE",
             f"Revision cannot be requested in status {milestone.status}",
@@ -314,10 +314,11 @@ async def confirm_release(
     Validates:
     - Milestone exists and caller is the gig's client
     - Milestone is APPROVED
+    - Gig has a deployed escrow contract (EscrowContractModel must exist)
 
     Side effects:
     - milestone.status → PAID
-    - EscrowContractModel.release_tx_hash set if a record exists for this gig
+    - milestone.release_tx_hash set to tx_hash (stored per-milestone, not per-gig)
     - NotificationModel created for the gig's freelancer
     """
     milestone, gig = await _fetch_milestone_and_gig(db, milestone_id, client_id)
@@ -328,23 +329,19 @@ async def confirm_release(
             f"Milestone must be APPROVED to confirm release; current status: {milestone.status}",
         )
 
-    milestone.status = "PAID"
-    await db.flush()
-
-    # Store tx_hash on the EscrowContract record if one exists for this gig
+    # Ensure the gig has a deployed escrow contract before marking as paid
     escrow_result = await db.execute(
         select(EscrowContractModel).where(EscrowContractModel.gig_id == gig.id)
     )
-    escrow = escrow_result.scalar_one_or_none()
-    if escrow is not None:
-        escrow.release_tx_hash = tx_hash
-        await db.flush()
-    else:
-        logger.warning(
-            "confirm_release: no EscrowContractModel found for gig_id=%s; tx_hash=%s not stored",
-            gig.id,
-            tx_hash,
+    if escrow_result.scalar_one_or_none() is None:
+        raise MilestoneApprovalError(
+            "NO_CONTRACT_ADDRESS",
+            "This gig does not have a deployed escrow contract; cannot confirm release",
         )
+
+    milestone.status = "PAID"
+    milestone.release_tx_hash = tx_hash
+    await db.flush()
 
     if gig.freelancer_id:
         _notify_freelancer(

@@ -11,7 +11,7 @@ from httpx import AsyncClient
 from sqlalchemy import update as sa_update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.infra.models import GigModel, MilestoneModel
+from src.infra.models import EscrowContractModel, GigModel, MilestoneModel
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -369,9 +369,49 @@ class TestGetReleaseTxEndpoint:
 # ---------------------------------------------------------------------------
 
 
+async def _insert_escrow_contract(db_session: AsyncSession, gig_id: str) -> None:
+    """Insert a minimal EscrowContractModel row so confirm_release can proceed."""
+    import uuid
+
+    db_session.add(
+        EscrowContractModel(
+            id=str(uuid.uuid4()),
+            gig_id=gig_id,
+            contract_address="0xABCDEF1234567890AbcdEF1234567890aBcdef12",
+        )
+    )
+    await db_session.flush()
+
+
 class TestConfirmReleaseEndpoint:
     @pytest.mark.asyncio
     async def test_confirm_sets_paid(
+        self, client: AsyncClient, db_session: AsyncSession
+    ):
+        (
+            client_token,
+            _,
+            gig_id,
+            milestone_id,
+        ) = await _setup_gig_with_milestone_under_review(client, db_session)
+        await db_session.execute(
+            sa_update(MilestoneModel)
+            .where(MilestoneModel.id == milestone_id)
+            .values(status="APPROVED")
+        )
+        await _insert_escrow_contract(db_session, gig_id)
+
+        resp = await client.post(
+            f"/v1/milestones/{milestone_id}/confirm-release",
+            json={"tx_hash": "0xdeadbeef1234"},
+            headers=_auth(client_token),
+        )
+
+        assert resp.status_code == 200, resp.text
+        assert resp.json()["status"] == "PAID"
+
+    @pytest.mark.asyncio
+    async def test_confirm_no_escrow_contract_returns_409(
         self, client: AsyncClient, db_session: AsyncSession
     ):
         client_token, _, _, milestone_id = await _setup_gig_with_milestone_under_review(
@@ -383,6 +423,7 @@ class TestConfirmReleaseEndpoint:
             .values(status="APPROVED")
         )
         await db_session.flush()
+        # No EscrowContractModel inserted
 
         resp = await client.post(
             f"/v1/milestones/{milestone_id}/confirm-release",
@@ -390,8 +431,8 @@ class TestConfirmReleaseEndpoint:
             headers=_auth(client_token),
         )
 
-        assert resp.status_code == 200, resp.text
-        assert resp.json()["status"] == "PAID"
+        assert resp.status_code == 409
+        assert resp.json()["detail"]["code"] == "NO_CONTRACT_ADDRESS"
 
     @pytest.mark.asyncio
     async def test_confirm_requires_client_role(

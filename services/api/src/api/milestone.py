@@ -71,12 +71,12 @@ class ReleaseTxOut(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# Helpers
+# Dependencies
 # ---------------------------------------------------------------------------
 
 
-def _require_client(request: Request) -> str:
-    """Extract user_id and verify CLIENT role. Returns user_id."""
+def require_client(request: Request) -> str:
+    """FastAPI dependency: extracts user_id and enforces CLIENT role."""
     user_id: str = getattr(request.state, "user_id", "")
     role: str = getattr(request.state, "role", "")
     if not user_id:
@@ -127,11 +127,13 @@ def _handle_approval_error(exc: MilestoneApprovalError) -> HTTPException:
 )
 async def approve_milestone_endpoint(
     milestone_id: str,
-    request: Request,
+    client_id: str = Depends(require_client),
     db: AsyncSession = Depends(get_db),
 ) -> MilestoneOut:
-    """Approve a milestone. CLIENT role only. Milestone must be in UNDER_REVIEW or SUBMITTED."""
-    client_id = _require_client(request)
+    """
+    Approve a milestone. CLIENT role only.
+    Milestone must be in UNDER_REVIEW or SUBMITTED status (APPROVED is idempotent).
+    """
     try:
         milestone = await approve_milestone(db, milestone_id, client_id)
     except MilestoneApprovalError as exc:
@@ -147,11 +149,10 @@ async def approve_milestone_endpoint(
 async def request_revision_endpoint(
     milestone_id: str,
     body: RequestRevisionBody,
-    request: Request,
+    client_id: str = Depends(require_client),
     db: AsyncSession = Depends(get_db),
 ) -> MilestoneOut:
     """Request a revision on a milestone. CLIENT role only. Milestone must be UNDER_REVIEW or SUBMITTED."""
-    client_id = _require_client(request)
     try:
         milestone = await request_revision(db, milestone_id, client_id, body.reason)
     except MilestoneApprovalError as exc:
@@ -166,14 +167,13 @@ async def request_revision_endpoint(
 )
 async def get_release_tx_endpoint(
     milestone_id: str,
-    request: Request,
+    client_id: str = Depends(require_client),
     db: AsyncSession = Depends(get_db),
 ) -> ReleaseTxOut:
     """
     Return ABI-encoded calldata for GigEscrow.completeMilestone(index).
     CLIENT role only. Milestone must be APPROVED and gig must have a contract_address.
     """
-    client_id = _require_client(request)
     try:
         tx_data = await get_release_tx(db, milestone_id, client_id)
     except MilestoneApprovalError as exc:
@@ -189,14 +189,13 @@ async def get_release_tx_endpoint(
 async def confirm_release_endpoint(
     milestone_id: str,
     body: ConfirmReleaseBody,
-    request: Request,
+    client_id: str = Depends(require_client),
     db: AsyncSession = Depends(get_db),
 ) -> MilestoneOut:
     """
     Record an on-chain fund release after the client broadcasts the tx.
-    Sets milestone → PAID and stores tx_hash. CLIENT role only.
+    Sets milestone → PAID and stores tx_hash on the milestone. CLIENT role only.
     """
-    client_id = _require_client(request)
     try:
         milestone = await confirm_release(db, milestone_id, client_id, body.tx_hash)
     except MilestoneApprovalError as exc:

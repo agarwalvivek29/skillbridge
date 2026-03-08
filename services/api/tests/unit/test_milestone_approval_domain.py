@@ -21,7 +21,12 @@ from src.domain.milestone_approval import (
     request_revision,
 )
 from src.infra.database import Base
-from src.infra.models import GigModel, MilestoneModel, NotificationModel
+from src.infra.models import (
+    EscrowContractModel,
+    GigModel,
+    MilestoneModel,
+    NotificationModel,
+)
 
 _TEST_DB_URL = "sqlite+aiosqlite:///:memory:"
 _CLIENT_ID = "cccccccc-0000-0000-0000-000000000001"
@@ -77,6 +82,20 @@ async def _setup_in_progress_gig(db: AsyncSession) -> tuple[str, str]:
     await db.flush()
     milestone_id = gig.milestones[0].id
     return gig.id, milestone_id
+
+
+async def _add_escrow_contract(db: AsyncSession, gig_id: str) -> None:
+    """Insert a minimal EscrowContractModel row for gig_id."""
+    import uuid
+
+    db.add(
+        EscrowContractModel(
+            id=str(uuid.uuid4()),
+            gig_id=gig_id,
+            contract_address="0xABCDEF1234567890AbcdEF1234567890aBcdef12",
+        )
+    )
+    await db.flush()
 
 
 async def _set_milestone_status(
@@ -352,20 +371,23 @@ class TestGetReleaseTx:
 class TestConfirmRelease:
     @pytest.mark.asyncio
     async def test_confirm_release_sets_paid(self, db: AsyncSession):
-        _, milestone_id = await _setup_in_progress_gig(db)
+        gig_id, milestone_id = await _setup_in_progress_gig(db)
         await _set_milestone_status(db, milestone_id, "APPROVED")
+        await _add_escrow_contract(db, gig_id)
 
         milestone = await confirm_release(db, milestone_id, _CLIENT_ID, "0xdeadbeef")
 
         assert milestone.status == "PAID"
+        assert milestone.release_tx_hash == "0xdeadbeef"
 
     @pytest.mark.asyncio
     async def test_confirm_release_creates_notification(self, db: AsyncSession):
         import json
         from sqlalchemy import select
 
-        _, milestone_id = await _setup_in_progress_gig(db)
+        gig_id, milestone_id = await _setup_in_progress_gig(db)
         await _set_milestone_status(db, milestone_id, "APPROVED")
+        await _add_escrow_contract(db, gig_id)
 
         await confirm_release(db, milestone_id, _CLIENT_ID, "0xdeadbeef")
 
@@ -386,6 +408,19 @@ class TestConfirmRelease:
             await confirm_release(db, milestone_id, _CLIENT_ID, "0xdeadbeef")
 
         assert exc_info.value.code == "MILESTONE_NOT_APPROVED"
+
+    @pytest.mark.asyncio
+    async def test_confirm_release_no_escrow_contract_raises_error(
+        self, db: AsyncSession
+    ):
+        _, milestone_id = await _setup_in_progress_gig(db)
+        await _set_milestone_status(db, milestone_id, "APPROVED")
+        # No EscrowContractModel inserted
+
+        with pytest.raises(MilestoneApprovalError) as exc_info:
+            await confirm_release(db, milestone_id, _CLIENT_ID, "0xdeadbeef")
+
+        assert exc_info.value.code == "NO_CONTRACT_ADDRESS"
 
     @pytest.mark.asyncio
     async def test_confirm_release_wrong_client_raises_forbidden(

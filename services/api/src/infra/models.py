@@ -141,6 +141,8 @@ class MilestoneModel(Base):
     # "PENDING", "IN_PROGRESS", "SUBMITTED", "APPROVED", "DISPUTED", "RESOLVED", "PAID", "REVISION_REQUESTED"
     status: Mapped[str] = mapped_column(String(32), nullable=False, default="PENDING")
     revision_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    # tx_hash of the completeMilestone() call after client confirms fund release
+    release_tx_hash: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
@@ -286,8 +288,6 @@ class EscrowContractModel(Base):
     )
     # On-chain contract address of the deployed GigEscrow
     contract_address: Mapped[str] = mapped_column(Text, nullable=False)
-    # tx_hash of the completeMilestone() call after client confirms fund release
-    release_tx_hash: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
