@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Star,
@@ -225,9 +226,11 @@ export default function PublicProfilePage() {
                   <Card key={item.id} className="relative overflow-hidden">
                     {item.cover_image_url && (
                       <div className="mb-3 h-40 overflow-hidden rounded-md bg-neutral-100">
-                        <img
+                        <Image
                           src={item.cover_image_url}
                           alt={item.title}
+                          width={400}
+                          height={160}
                           className="h-full w-full object-cover"
                         />
                       </div>

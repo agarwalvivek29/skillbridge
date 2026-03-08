@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Image from "next/image";
 import {
   Plus,
   Pencil,
@@ -226,9 +227,11 @@ function PortfolioContent() {
             <Card key={item.id} className="relative">
               {item.cover_image_url && (
                 <div className="mb-3 h-40 overflow-hidden rounded-md bg-neutral-100">
-                  <img
+                  <Image
                     src={item.cover_image_url}
                     alt={item.title}
+                    width={400}
+                    height={160}
                     className="h-full w-full object-cover"
                   />
                 </div>
