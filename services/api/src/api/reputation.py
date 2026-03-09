@@ -1,37 +1,23 @@
-"""
-api/reputation.py — Reputation endpoint.
-
-Endpoints:
-  GET /v1/reputation/{wallet_address}  — get reputation for a wallet (auth required)
-"""
+"""api/reputation.py — Reputation endpoint (public)."""
 
 from __future__ import annotations
-
 import logging
 from datetime import datetime
 from typing import Optional
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from src.domain.reputation import ReputationError, get_reputation
 from src.infra.database import get_db
 from src.infra.models import ReputationModel
 
 logger = logging.getLogger(__name__)
-
 router = APIRouter(prefix="/v1/reputation", tags=["reputation"])
 
 
-# ---------------------------------------------------------------------------
-# Pydantic response models
-# ---------------------------------------------------------------------------
-
-
 class ReputationOut(BaseModel):
-    id: str
-    user_id: Optional[str]
+    id: Optional[str] = None
+    user_id: Optional[str] = None
     wallet_address: str
     gigs_completed: int
     gigs_as_client: int
@@ -40,20 +26,14 @@ class ReputationOut(BaseModel):
     dispute_rate_pct: int
     average_rating_x100: int
     rating_count: int
-    last_synced_at: Optional[datetime]
-    created_at: datetime
-    updated_at: datetime
-
+    last_synced_at: Optional[datetime] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
     model_config = {"from_attributes": True}
 
 
 class GetReputationResponse(BaseModel):
     reputation: ReputationOut
-
-
-# ---------------------------------------------------------------------------
-# Helper
-# ---------------------------------------------------------------------------
 
 
 def _reputation_to_out(r: ReputationModel) -> ReputationOut:
@@ -74,17 +54,23 @@ def _reputation_to_out(r: ReputationModel) -> ReputationOut:
     )
 
 
-# ---------------------------------------------------------------------------
-# Endpoints
-# ---------------------------------------------------------------------------
+def _zeroed_reputation(wallet_address: str) -> ReputationOut:
+    return ReputationOut(
+        wallet_address=wallet_address.lower(),
+        gigs_completed=0,
+        gigs_as_client=0,
+        total_earned="0",
+        average_ai_score=0,
+        dispute_rate_pct=0,
+        average_rating_x100=0,
+        rating_count=0,
+    )
 
 
 @router.get("/{wallet_address}", response_model=GetReputationResponse)
 async def get_reputation_endpoint(
-    wallet_address: str,
-    db: AsyncSession = Depends(get_db),
+    wallet_address: str, db: AsyncSession = Depends(get_db)
 ) -> GetReputationResponse:
-    """Get reputation data for a wallet address. Auth required."""
     try:
         record = await get_reputation(db, wallet_address)
     except ReputationError as exc:
@@ -92,15 +78,6 @@ async def get_reputation_endpoint(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={"code": exc.code, "message": exc.message, "field_errors": []},
         )
-
     if record is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={
-                "code": "REPUTATION_NOT_FOUND",
-                "message": f"No reputation record for wallet {wallet_address}",
-                "field_errors": [],
-            },
-        )
-
+        return GetReputationResponse(reputation=_zeroed_reputation(wallet_address))
     return GetReputationResponse(reputation=_reputation_to_out(record))

@@ -1,3 +1,6 @@
+// Aggregate view model across multiple proto sources. Web-layer only.
+// Proto sources: user.proto, gig.proto, portfolio.proto
+
 import type { PortfolioItem } from "./portfolio";
 
 export interface OnChainBadge {

@@ -42,6 +42,7 @@ class Settings(BaseSettings):
     # Blockchain
     base_rpc_url: str = "https://sepolia.base.org"
     escrow_factory_address: str = ""
+    reputation_contract_address: str = ""
     base_chain_id: int = 84532  # Base Sepolia testnet
 
     # AWS / S3 — REQUIRED for file upload functionality
