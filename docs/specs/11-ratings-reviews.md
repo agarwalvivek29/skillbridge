@@ -130,7 +130,7 @@ CREATE TABLE reviews (
 
 ## Migration / Rollout Plan
 
-- **Database migrations**: yes -- new `reviews` table (migration 0008)
+- **Database migrations**: yes -- new `reviews` table (migration 0010)
 - **Breaking changes**: no
 - **Rollback plan**: drop `reviews` table
 
