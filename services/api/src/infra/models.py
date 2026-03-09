@@ -299,6 +299,37 @@ class EscrowContractModel(Base):
     )
 
 
+class ReputationModel(Base):
+    __tablename__ = "reputation"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    user_id: Mapped[str | None] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=True
+    )
+    wallet_address: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
+    gigs_completed: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    gigs_as_client: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    total_earned: Mapped[str] = mapped_column(Text, nullable=False, default="0")
+    average_ai_score: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    dispute_rate_pct: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    average_rating_x100: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    rating_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    last_synced_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+
+
 class NotificationModel(Base):
     __tablename__ = "notifications"
 
@@ -318,4 +349,77 @@ class NotificationModel(Base):
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+
+class DisputeModel(Base):
+    __tablename__ = "disputes"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    milestone_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("milestones.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
+    )
+    gig_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("gigs.id", ondelete="CASCADE"), nullable=False
+    )
+    raised_by_user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id"), nullable=False
+    )
+    reason: Mapped[str] = mapped_column(Text, nullable=False)
+    # "OPEN", "ARBITRATION", "RESOLVED"
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="OPEN")
+    ai_evidence_summary: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    resolution: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
+    freelancer_split_amount: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    resolution_tx_hash: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    discussion_deadline: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+    resolved_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+
+    messages: Mapped[list["DisputeMessageModel"]] = relationship(
+        "DisputeMessageModel",
+        back_populates="dispute",
+        cascade="all, delete-orphan",
+        order_by="DisputeMessageModel.created_at",
+    )
+
+
+class DisputeMessageModel(Base):
+    __tablename__ = "dispute_messages"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    dispute_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("disputes.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id"), nullable=False
+    )
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+    dispute: Mapped["DisputeModel"] = relationship(
+        "DisputeModel", back_populates="messages"
     )

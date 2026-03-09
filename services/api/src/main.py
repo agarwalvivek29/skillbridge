@@ -15,6 +15,7 @@ from fastapi.responses import JSONResponse
 
 from src.config import settings
 from src.api.auth import router as auth_router
+from src.api.dispute import dispute_router, milestone_dispute_router
 from src.api.webhooks import router as webhooks_router
 from src.api.gig import router as gig_router
 from src.api.middleware import AuthMiddleware
@@ -55,6 +56,8 @@ app.include_router(proposal_router)
 app.include_router(submission_milestone_router)
 app.include_router(submission_router)
 app.include_router(milestone_approval_router)
+app.include_router(milestone_dispute_router)
+app.include_router(dispute_router)
 app.include_router(webhooks_router)
 
 

@@ -1,0 +1,106 @@
+"""
+api/reputation.py — Reputation endpoint.
+
+Endpoints:
+  GET /v1/reputation/{wallet_address}  — get reputation for a wallet (auth required)
+"""
+
+from __future__ import annotations
+
+import logging
+from datetime import datetime
+from typing import Optional
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from src.domain.reputation import ReputationError, get_reputation
+from src.infra.database import get_db
+from src.infra.models import ReputationModel
+
+logger = logging.getLogger(__name__)
+
+router = APIRouter(prefix="/v1/reputation", tags=["reputation"])
+
+
+# ---------------------------------------------------------------------------
+# Pydantic response models
+# ---------------------------------------------------------------------------
+
+
+class ReputationOut(BaseModel):
+    id: str
+    user_id: Optional[str]
+    wallet_address: str
+    gigs_completed: int
+    gigs_as_client: int
+    total_earned: str
+    average_ai_score: int
+    dispute_rate_pct: int
+    average_rating_x100: int
+    rating_count: int
+    last_synced_at: Optional[datetime]
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class GetReputationResponse(BaseModel):
+    reputation: ReputationOut
+
+
+# ---------------------------------------------------------------------------
+# Helper
+# ---------------------------------------------------------------------------
+
+
+def _reputation_to_out(r: ReputationModel) -> ReputationOut:
+    return ReputationOut(
+        id=r.id,
+        user_id=r.user_id,
+        wallet_address=r.wallet_address,
+        gigs_completed=r.gigs_completed,
+        gigs_as_client=r.gigs_as_client,
+        total_earned=r.total_earned,
+        average_ai_score=r.average_ai_score,
+        dispute_rate_pct=r.dispute_rate_pct,
+        average_rating_x100=r.average_rating_x100,
+        rating_count=r.rating_count,
+        last_synced_at=r.last_synced_at,
+        created_at=r.created_at,
+        updated_at=r.updated_at,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Endpoints
+# ---------------------------------------------------------------------------
+
+
+@router.get("/{wallet_address}", response_model=GetReputationResponse)
+async def get_reputation_endpoint(
+    wallet_address: str,
+    db: AsyncSession = Depends(get_db),
+) -> GetReputationResponse:
+    """Get reputation data for a wallet address. Auth required."""
+    try:
+        record = await get_reputation(db, wallet_address)
+    except ReputationError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"code": exc.code, "message": exc.message, "field_errors": []},
+        )
+
+    if record is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "REPUTATION_NOT_FOUND",
+                "message": f"No reputation record for wallet {wallet_address}",
+                "field_errors": [],
+            },
+        )
+
+    return GetReputationResponse(reputation=_reputation_to_out(record))
