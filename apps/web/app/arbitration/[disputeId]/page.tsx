@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   Scale,
@@ -47,6 +47,14 @@ function ArbitrationReviewContent() {
   const [dispute, setDispute] = useState<Dispute | null>(null);
   const [votes, setVotes] = useState<ArbitrationVote[]>([]);
   const [loading, setLoading] = useState(true);
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   // Vote form
   const [verdict, setVerdict] = useState<DisputeVerdict | null>(null);
@@ -60,15 +68,16 @@ function ArbitrationReviewContent() {
         fetchArbitrationDetail(params.disputeId),
         fetchVotes(params.disputeId),
       ]);
+      if (!isMounted.current) return;
       setDispute(d);
       setVotes(v);
       if (user && v.some((vote) => vote.arbitrator_id === user.id)) {
         setHasVoted(true);
       }
     } catch {
-      toast.error("Failed to load dispute");
+      if (isMounted.current) toast.error("Failed to load dispute");
     } finally {
-      setLoading(false);
+      if (isMounted.current) setLoading(false);
     }
   }, [params.disputeId, user, toast]);
 

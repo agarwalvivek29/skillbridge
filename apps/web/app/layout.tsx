@@ -5,6 +5,7 @@ import { Providers } from "@/components/providers/Providers";
 import { NavBar } from "@/components/layout/NavBar";
 import { ToastContainer } from "@/components/ui/Toast";
 import { NetworkSwitchPrompt } from "@/components/web3/NetworkSwitchPrompt";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -32,7 +33,9 @@ export default function RootLayout({
           <div className="flex min-h-screen flex-col">
             <NavBar />
             <NetworkSwitchPrompt />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1">
+              <ErrorBoundary>{children}</ErrorBoundary>
+            </main>
           </div>
           <ToastContainer />
         </Providers>

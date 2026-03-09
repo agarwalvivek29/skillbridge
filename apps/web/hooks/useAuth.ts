@@ -53,6 +53,14 @@ export function useAuth(): UseAuthReturn {
       return;
     }
 
+    const expectedChainId = parseInt(
+      process.env.NEXT_PUBLIC_BASE_CHAIN_ID ?? "84532",
+    );
+    if (chainId !== expectedChainId) {
+      setError("Please switch to the Base network before signing in");
+      return;
+    }
+
     setError(null);
     setIsLoading(true);
 

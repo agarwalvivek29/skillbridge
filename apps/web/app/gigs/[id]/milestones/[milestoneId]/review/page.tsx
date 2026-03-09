@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   ShieldCheck,
@@ -74,21 +74,31 @@ function ReviewContent() {
   const [reportState, setReportState] = useState<
     "loading" | "pending" | "found" | "empty"
   >("loading");
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const loadMilestone = useCallback(async () => {
     try {
       const data = await fetchMilestone(params.milestoneId);
+      if (!isMounted.current) return null;
       setMilestone(data);
       return data;
     } catch {
-      toast.error("Failed to load milestone");
+      if (isMounted.current) toast.error("Failed to load milestone");
       return null;
     } finally {
-      setLoading(false);
+      if (isMounted.current) setLoading(false);
     }
   }, [params.milestoneId, toast]);
 
   const loadReport = useCallback(async (ms: MilestoneDetail) => {
+    if (!isMounted.current) return;
     setReportLoading(true);
     const latestSubmission =
       ms.submissions.length > 0
@@ -96,20 +106,25 @@ function ReviewContent() {
         : null;
 
     if (!latestSubmission) {
-      setReportState("empty");
-      setReportLoading(false);
+      if (isMounted.current) {
+        setReportState("empty");
+        setReportLoading(false);
+      }
       return;
     }
 
     // No review for file-only submissions
     if (!latestSubmission.repo_url) {
-      setReportState("empty");
-      setReportLoading(false);
+      if (isMounted.current) {
+        setReportState("empty");
+        setReportLoading(false);
+      }
       return;
     }
 
     try {
       const r = await fetchReviewReport(latestSubmission.id);
+      if (!isMounted.current) return;
       if (r.verdict === "PENDING") {
         setReportState("pending");
       } else {
@@ -117,9 +132,9 @@ function ReviewContent() {
         setReportState("found");
       }
     } catch {
-      setReportState("empty");
+      if (isMounted.current) setReportState("empty");
     } finally {
-      setReportLoading(false);
+      if (isMounted.current) setReportLoading(false);
     }
   }, []);
 

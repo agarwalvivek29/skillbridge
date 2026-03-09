@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
@@ -43,6 +43,14 @@ function ManageContent() {
   const [loading, setLoading] = useState(true);
   const [cancelOpen, setCancelOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const load = useCallback(async () => {
     try {
@@ -53,16 +61,16 @@ function ManageContent() {
           .catch(() => []),
         fetchGigSubmissions(params.id).catch(() => []),
       ]);
+      if (!isMounted.current) return;
       setGig(g);
       setProposals(p);
       setSubmissions(s);
     } catch {
-      toast.error("Failed to load gig");
+      if (isMounted.current) toast.error("Failed to load gig");
     } finally {
-      setLoading(false);
+      if (isMounted.current) setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.id]);
+  }, [params.id, toast]);
 
   useEffect(() => {
     load();

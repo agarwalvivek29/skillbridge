@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   AlertTriangle,
@@ -39,6 +39,14 @@ function DisputeDetailContent() {
 
   const [dispute, setDispute] = useState<Dispute | null>(null);
   const [loading, setLoading] = useState(true);
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   // Evidence submission
   const [evidenceBody, setEvidenceBody] = useState("");
@@ -48,11 +56,12 @@ function DisputeDetailContent() {
   const load = useCallback(async () => {
     try {
       const data = await fetchDispute(params.id);
+      if (!isMounted.current) return;
       setDispute(data);
     } catch {
-      toast.error("Failed to load dispute");
+      if (isMounted.current) toast.error("Failed to load dispute");
     } finally {
-      setLoading(false);
+      if (isMounted.current) setLoading(false);
     }
   }, [params.id, toast]);
 

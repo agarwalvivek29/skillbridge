@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
-import { parseEther, type Address, type Abi } from "viem";
+import { parseEther, isAddress, type Address } from "viem";
 import { Wallet, ArrowRight, CheckCircle2, Coins } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AuthGuard } from "@/components/layout/AuthGuard";
@@ -47,21 +47,25 @@ function FundFlowContent() {
   const [selectedToken, setSelectedToken] = useState<"ETH" | "USDC">("ETH");
   const [confirming, setConfirming] = useState(false);
 
-  const loadGig = useCallback(async () => {
-    try {
-      const g = await fetchGig(params.id);
-      setGig(g);
-    } catch {
-      toast.error("Failed to load gig details");
-    } finally {
-      setLoading(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.id]);
-
   useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadGig() {
+      try {
+        const g = await fetchGig(params.id);
+        if (controller.signal.aborted) return;
+        setGig(g);
+      } catch {
+        if (!controller.signal.aborted)
+          toast.error("Failed to load gig details");
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    }
+
     loadGig();
-  }, [loadGig]);
+    return () => controller.abort();
+  }, [params.id, toast]);
 
   useEffect(() => {
     if (tx.state === "success" && step === "deposit") {
@@ -72,11 +76,13 @@ function FundFlowContent() {
   async function handleDeposit() {
     try {
       const escrowTx = await fetchEscrowTx(params.id);
-      tx.execute({
-        address: escrowTx.to as Address,
-        abi: [] as unknown as Abi,
-        functionName: "",
-        args: [],
+      if (!isAddress(escrowTx.to)) {
+        toast.error("Invalid escrow contract address");
+        return;
+      }
+      tx.executeRaw({
+        to: escrowTx.to as Address,
+        data: escrowTx.data as `0x${string}`,
         value:
           selectedToken === "ETH"
             ? parseEther(escrowTx.value || "0")

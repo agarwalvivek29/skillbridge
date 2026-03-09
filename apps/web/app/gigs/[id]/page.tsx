@@ -31,25 +31,40 @@ export default function GigDetailPage() {
   const [similarLoading, setSimilarLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-    fetchGig(gigId)
-      .then((data) => {
+    const controller = new AbortController();
+
+    async function load() {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchGig(gigId);
+        if (controller.signal.aborted) return;
         setGig(data);
         setSimilarLoading(true);
-        fetchGigs({
-          page_size: 3,
-          category: data.category ?? undefined,
-          status: "OPEN",
-        })
-          .then((res) =>
-            setSimilarGigs(res.gigs.filter((g) => g.id !== gigId).slice(0, 3)),
-          )
-          .catch(() => setSimilarGigs([]))
-          .finally(() => setSimilarLoading(false));
-      })
-      .catch((err) => setError(err.message ?? "Failed to load gig"))
-      .finally(() => setLoading(false));
+        try {
+          const res = await fetchGigs({
+            page_size: 3,
+            category: data.category ?? undefined,
+            status: "OPEN",
+          });
+          if (controller.signal.aborted) return;
+          setSimilarGigs(res.gigs.filter((g) => g.id !== gigId).slice(0, 3));
+        } catch {
+          if (!controller.signal.aborted) setSimilarGigs([]);
+        } finally {
+          if (!controller.signal.aborted) setSimilarLoading(false);
+        }
+      } catch (err) {
+        if (!controller.signal.aborted) {
+          setError(err instanceof Error ? err.message : "Failed to load gig");
+        }
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    }
+
+    load();
+    return () => controller.abort();
   }, [gigId]);
 
   if (loading) {

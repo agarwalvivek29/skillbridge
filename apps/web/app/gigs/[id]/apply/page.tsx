@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Send, CheckCircle2, Clock } from "lucide-react";
 import { AuthGuard } from "@/components/layout/AuthGuard";
@@ -37,32 +37,35 @@ function ApplyContent() {
   const [timeline, setTimeline] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const load = useCallback(async () => {
-    try {
-      const [g, myProposal] = await Promise.all([
-        fetchGig(params.id),
-        fetchMyProposal(params.id).catch(() => null),
-      ]);
-      setGig(g);
-      setExisting(myProposal);
-      if (g) {
-        const initialTimeline: Record<string, string> = {};
-        g.milestones.forEach((m) => {
-          initialTimeline[m.id] = "";
-        });
-        setTimeline(initialTimeline);
-      }
-    } catch {
-      toast.error("Failed to load gig");
-    } finally {
-      setLoading(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.id]);
-
   useEffect(() => {
+    const controller = new AbortController();
+
+    async function load() {
+      try {
+        const [g, myProposal] = await Promise.all([
+          fetchGig(params.id),
+          fetchMyProposal(params.id).catch(() => null),
+        ]);
+        if (controller.signal.aborted) return;
+        setGig(g);
+        setExisting(myProposal);
+        if (g) {
+          const initialTimeline: Record<string, string> = {};
+          g.milestones.forEach((m) => {
+            initialTimeline[m.id] = "";
+          });
+          setTimeline(initialTimeline);
+        }
+      } catch {
+        if (!controller.signal.aborted) toast.error("Failed to load gig");
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    }
+
     load();
-  }, [load]);
+    return () => controller.abort();
+  }, [params.id, toast]);
 
   function validate(): boolean {
     const e: Record<string, string> = {};
