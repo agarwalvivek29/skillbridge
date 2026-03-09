@@ -1,3 +1,8 @@
+// View model for API JSON responses. Proto source: packages/schema/proto/api/v1/gig.proto
+// Enums re-exported from @/types/proto; enriched fields are web-layer only.
+
+export { GigStatus, Currency } from "./proto";
+
 export interface Milestone {
   id: string;
   gig_id: string;

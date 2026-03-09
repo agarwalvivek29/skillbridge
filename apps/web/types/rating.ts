@@ -1,3 +1,6 @@
+// View model for API JSON responses. No proto enums applicable (RatingTag is web-only).
+// Proto source: packages/schema/proto/api/v1/rating.proto (if/when created)
+
 export type RatingTag =
   | "Great communication"
   | "High quality work"
