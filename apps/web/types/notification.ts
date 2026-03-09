@@ -1,3 +1,8 @@
+// View model for API JSON responses. Proto source: packages/schema/proto/api/v1/notification.proto
+// Enum re-exported from @/types/proto (aliased to avoid conflict with local string union).
+
+export { NotificationType as ProtoNotificationType } from "./proto";
+
 export type NotificationType =
   | "PROPOSAL_RECEIVED"
   | "PROPOSAL_ACCEPTED"

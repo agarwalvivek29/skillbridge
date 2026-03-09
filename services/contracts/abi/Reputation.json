@@ -1,0 +1,437 @@
+{
+  "abi": [
+    { "type": "constructor", "inputs": [], "stateMutability": "nonpayable" },
+    {
+      "type": "function",
+      "name": "acceptOwnership",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "aiScoreSum",
+      "inputs": [
+        { "name": "freelancer", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "averageAiScore",
+      "inputs": [
+        { "name": "freelancer", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "gigsCompleted",
+      "inputs": [
+        { "name": "freelancer", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "owner",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "pendingOwner",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "proposeOwner",
+      "inputs": [
+        { "name": "newOwner", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "recordCompletion",
+      "inputs": [
+        { "name": "freelancer", "type": "address", "internalType": "address" },
+        { "name": "earned", "type": "uint256", "internalType": "uint256" },
+        { "name": "aiScore", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "totalEarned",
+      "inputs": [
+        { "name": "freelancer", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "event",
+      "name": "OwnershipTransferProposed",
+      "inputs": [
+        {
+          "name": "currentOwner",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "pendingOwner",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "OwnershipTransferred",
+      "inputs": [
+        {
+          "name": "previousOwner",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "newOwner",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "ReputationUpdated",
+      "inputs": [
+        {
+          "name": "freelancer",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "gigsCompleted",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        },
+        {
+          "name": "totalEarned",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        },
+        {
+          "name": "averageAiScore",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    { "type": "error", "name": "InvalidAiScore", "inputs": [] },
+    { "type": "error", "name": "OnlyOwner", "inputs": [] },
+    { "type": "error", "name": "OnlyPendingOwner", "inputs": [] },
+    { "type": "error", "name": "ZeroAddress", "inputs": [] }
+  ],
+  "bytecode": {
+    "object": "0x608060405234801561000f575f80fd5b505f80546001600160a01b0319163317905561052a8061002e5f395ff3fe608060405234801561000f575f80fd5b5060043610610090575f3560e01c80638da5cb5b116100635780638da5cb5b14610130578063b5ed298a1461015a578063bf43a2f51461016d578063e30c397814610180578063eee479d414610193575f80fd5b806362bff8d514610094578063649aca4a146100d3578063708121f8146100fe57806379ba509714610126575b5f80fd5b6100c06100a2366004610467565b6001600160a01b03165f908152600260208190526040909120015490565b6040519081526020015b60405180910390f35b6100c06100e1366004610467565b6001600160a01b03165f9081526002602052604090206001015490565b6100c061010c366004610467565b6001600160a01b03165f9081526002602052604090205490565b61012e6101a6565b005b5f54610142906001600160a01b031681565b6040516001600160a01b0390911681526020016100ca565b61012e610168366004610467565b61022a565b61012e61017b366004610480565b6102cb565b600154610142906001600160a01b031681565b6100c06101a1366004610467565b61040d565b6001546001600160a01b031633146101d1576040516303c25d1960e61b815260040160405180910390fd5b5f8054600180546001600160a01b038082166001600160a01b031980861682178755909216909255604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a350565b5f546001600160a01b0316331461025457604051635fc483c560e01b815260040160405180910390fd5b6001600160a01b03811661027b5760405163d92e233d60e01b815260040160405180910390fd5b600180546001600160a01b0319166001600160a01b038381169182179092555f8054604051929316917ff4e75b79500ab730f8a026ed3cba6d55331bcb64c9e9f60c548e371356e5e3c09190a350565b5f546001600160a01b031633146102f557604051635fc483c560e01b815260040160405180910390fd5b6001600160a01b03831661031c5760405163d92e233d60e01b815260040160405180910390fd5b606481111561033e576040516324136dfd60e11b815260040160405180910390fd5b6001600160a01b0383165f9081526002602052604081208054909160019183919061036a9084906104b0565b9250508190555082816001015f82825461038491906104b0565b9250508190555081816002015f82825461039e91906104b0565b90915550508054600182015460028301546001600160a01b038716927fc2fd17ad7e9f23b8607f0bd02d7a6cdcccd5a964fa99ce5a066ed34c5b4bb55b9290916103e99083906104d5565b6040805193845260208401929092529082015260600160405180910390a250505050565b6001600160a01b0381165f9081526002602052604081208054820361043457505f92915050565b8054600282015461044591906104d5565b9392505050565b80356001600160a01b0381168114610462575f80fd5b919050565b5f60208284031215610477575f80fd5b6104458261044c565b5f805f60608486031215610492575f80fd5b61049b8461044c565b95602085013595506040909401359392505050565b808201808211156104cf57634e487b7160e01b5f52601160045260245ffd5b92915050565b5f826104ef57634e487b7160e01b5f52601260045260245ffd5b50049056fea26469706673582212204ef04bbebefcc9d8586b1d2b7b2d90655f2a7c375a1f4563575890a1527ba07864736f6c63430008180033",
+    "sourceMap": "564:4609:19:-:0;;;2107:49;;;;;;;;;-1:-1:-1;2131:5:19;:18;;-1:-1:-1;;;;;;2131:18:19;2139:10;2131:18;;;564:4609;;;;;;",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x608060405234801561000f575f80fd5b5060043610610090575f3560e01c80638da5cb5b116100635780638da5cb5b14610130578063b5ed298a1461015a578063bf43a2f51461016d578063e30c397814610180578063eee479d414610193575f80fd5b806362bff8d514610094578063649aca4a146100d3578063708121f8146100fe57806379ba509714610126575b5f80fd5b6100c06100a2366004610467565b6001600160a01b03165f908152600260208190526040909120015490565b6040519081526020015b60405180910390f35b6100c06100e1366004610467565b6001600160a01b03165f9081526002602052604090206001015490565b6100c061010c366004610467565b6001600160a01b03165f9081526002602052604090205490565b61012e6101a6565b005b5f54610142906001600160a01b031681565b6040516001600160a01b0390911681526020016100ca565b61012e610168366004610467565b61022a565b61012e61017b366004610480565b6102cb565b600154610142906001600160a01b031681565b6100c06101a1366004610467565b61040d565b6001546001600160a01b031633146101d1576040516303c25d1960e61b815260040160405180910390fd5b5f8054600180546001600160a01b038082166001600160a01b031980861682178755909216909255604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a350565b5f546001600160a01b0316331461025457604051635fc483c560e01b815260040160405180910390fd5b6001600160a01b03811661027b5760405163d92e233d60e01b815260040160405180910390fd5b600180546001600160a01b0319166001600160a01b038381169182179092555f8054604051929316917ff4e75b79500ab730f8a026ed3cba6d55331bcb64c9e9f60c548e371356e5e3c09190a350565b5f546001600160a01b031633146102f557604051635fc483c560e01b815260040160405180910390fd5b6001600160a01b03831661031c5760405163d92e233d60e01b815260040160405180910390fd5b606481111561033e576040516324136dfd60e11b815260040160405180910390fd5b6001600160a01b0383165f9081526002602052604081208054909160019183919061036a9084906104b0565b9250508190555082816001015f82825461038491906104b0565b9250508190555081816002015f82825461039e91906104b0565b90915550508054600182015460028301546001600160a01b038716927fc2fd17ad7e9f23b8607f0bd02d7a6cdcccd5a964fa99ce5a066ed34c5b4bb55b9290916103e99083906104d5565b6040805193845260208401929092529082015260600160405180910390a250505050565b6001600160a01b0381165f9081526002602052604081208054820361043457505f92915050565b8054600282015461044591906104d5565b9392505050565b80356001600160a01b0381168114610462575f80fd5b919050565b5f60208284031215610477575f80fd5b6104458261044c565b5f805f60608486031215610492575f80fd5b61049b8461044c565b95602085013595506040909401359392505050565b808201808211156104cf57634e487b7160e01b5f52601160045260245ffd5b92915050565b5f826104ef57634e487b7160e01b5f52601260045260245ffd5b50049056fea26469706673582212204ef04bbebefcc9d8586b1d2b7b2d90655f2a7c375a1f4563575890a1527ba07864736f6c63430008180033",
+    "sourceMap": "564:4609:19:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;5044:127;;;;;;:::i;:::-;-1:-1:-1;;;;;5133:20:19;5107:7;5133:20;;;:8;:20;;;;;;;;:31;;;5044:127;;;;529:25:22;;;517:2;502:18;5044:127:19;;;;;;;;4569:129;;;;;;:::i;:::-;-1:-1:-1;;;;;4659:20:19;4633:7;4659:20;;;:8;:20;;;;;:32;;;;4569:129;4398:133;;;;;;:::i;:::-;-1:-1:-1;;;;;4490:20:19;4464:7;4490:20;;;:8;:20;;;;;:34;;4398:133;3891:261;;;:::i;:::-;;1582:20;;;;;-1:-1:-1;;;;;1582:20:19;;;;;;-1:-1:-1;;;;;729:32:22;;;711:51;;699:2;684:18;1582:20:19;565:203:22;3592:214:19;;;;;;:::i;:::-;;:::i;2721:560::-;;;;;;:::i;:::-;;:::i;1608:27::-;;;;;-1:-1:-1;;;;;1608:27:19;;;4736:223;;;;;;:::i;:::-;;:::i;3891:261::-;3955:12;;-1:-1:-1;;;;;3955:12:19;3941:10;:26;3937:57;;3976:18;;-1:-1:-1;;;3976:18:19;;;;;;;;;;;3937:57;4004:16;4023:5;;;4046:12;;-1:-1:-1;;;;;4046:12:19;;;-1:-1:-1;;;;;;4038:20:19;;;;;;;4068:25;;;;;;4108:37;;4023:5;;;;;;;4108:37;;4004:16;4108:37;3927:225;3891:261::o;3592:214::-;2432:5;;-1:-1:-1;;;;;2432:5:19;2418:10;:19;2414:43;;2446:11;;-1:-1:-1;;;2446:11:19;;;;;;;;;;;2414:43;-1:-1:-1;;;;;3665:22:19;::::1;3661:48;;3696:13;;-1:-1:-1::0;;;3696:13:19::1;;;;;;;;;;;3661:48;3719:12;:23:::0;;-1:-1:-1;;;;;;3719:23:19::1;-1:-1:-1::0;;;;;3719:23:19;;::::1;::::0;;::::1;::::0;;;-1:-1:-1;3783:5:19;;3757:42:::1;::::0;3719:23;;3783:5:::1;::::0;3757:42:::1;::::0;-1:-1:-1;3757:42:19::1;3592:214:::0;:::o;2721:560::-;2432:5;;-1:-1:-1;;;;;2432:5:19;2418:10;:19;2414:43;;2446:11;;-1:-1:-1;;;2446:11:19;;;;;;;;;;;2414:43;-1:-1:-1;;;;;2863:24:19;::::1;2859:50;;2896:13;;-1:-1:-1::0;;;2896:13:19::1;;;;;;;;;;;2859:50;2933:3;2923:7;:13;2919:42;;;2945:16;;-1:-1:-1::0;;;2945:16:19::1;;;;;;;;;;;2919:42;-1:-1:-1::0;;;;;2991:20:19;::::1;2972:16;2991:20:::0;;;:8:::1;:20;::::0;;;;3021;;2991;;3040:1:::1;::::0;2991:20;;2972:16;3021:20:::1;::::0;3040:1;;3021:20:::1;:::i;:::-;;;;;;;;3068:6;3051:1;:13;;;:23;;;;;;;:::i;:::-;;;;;;;;3100:7;3084:1;:12;;;:23;;;;;;;:::i;:::-;::::0;;;-1:-1:-1;;3178:15:19;;3207:13:::1;::::0;::::1;::::0;3234:12:::1;::::0;::::1;::::0;-1:-1:-1;;;;;3123:151:19;::::1;::::0;::::1;::::0;3178:15;;3234:30:::1;::::0;3178:15;;3234:30:::1;:::i;:::-;3123:151;::::0;;1751:25:22;;;1807:2;1792:18;;1785:34;;;;1835:18;;;1828:34;1739:2;1724:18;3123:151:19::1;;;;;;;2849:432;2721:560:::0;;;:::o;4736:223::-;-1:-1:-1;;;;;4841:20:19;;4803:7;4841:20;;;:8;:20;;;;;4875:15;;:20;;4871:34;;-1:-1:-1;4904:1:19;;4736:223;-1:-1:-1;;4736:223:19:o;4871:34::-;4937:15;;4922:12;;;;:30;;4937:15;4922:30;:::i;:::-;4915:37;4736:223;-1:-1:-1;;;4736:223:19:o;14:173:22:-;82:20;;-1:-1:-1;;;;;131:31:22;;121:42;;111:70;;177:1;174;167:12;111:70;14:173;;;:::o;192:186::-;251:6;304:2;292:9;283:7;279:23;275:32;272:52;;;320:1;317;310:12;272:52;343:29;362:9;343:29;:::i;773:322::-;850:6;858;866;919:2;907:9;898:7;894:23;890:32;887:52;;;935:1;932;925:12;887:52;958:29;977:9;958:29;:::i;:::-;948:39;1034:2;1019:18;;1006:32;;-1:-1:-1;1085:2:22;1070:18;;;1057:32;;773:322;-1:-1:-1;;;773:322:22:o;1100:222::-;1165:9;;;1186:10;;;1183:133;;;1238:10;1233:3;1229:20;1226:1;1219:31;1273:4;1270:1;1263:15;1301:4;1298:1;1291:15;1183:133;1100:222;;;;:::o;1327:217::-;1367:1;1393;1383:132;;1437:10;1432:3;1428:20;1425:1;1418:31;1472:4;1469:1;1462:15;1500:4;1497:1;1490:15;1383:132;-1:-1:-1;1529:9:22;;1327:217::o",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "acceptOwnership()": "79ba5097",
+    "aiScoreSum(address)": "62bff8d5",
+    "averageAiScore(address)": "eee479d4",
+    "gigsCompleted(address)": "708121f8",
+    "owner()": "8da5cb5b",
+    "pendingOwner()": "e30c3978",
+    "proposeOwner(address)": "b5ed298a",
+    "recordCompletion(address,uint256,uint256)": "bf43a2f5",
+    "totalEarned(address)": "649aca4a"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.24+commit.e11b9ed9\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"InvalidAiScore\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"OnlyOwner\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"OnlyPendingOwner\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ZeroAddress\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"currentOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"pendingOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferProposed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"freelancer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gigsCompleted\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"totalEarned\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"averageAiScore\",\"type\":\"uint256\"}],\"name\":\"ReputationUpdated\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"acceptOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"freelancer\",\"type\":\"address\"}],\"name\":\"aiScoreSum\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"freelancer\",\"type\":\"address\"}],\"name\":\"averageAiScore\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"freelancer\",\"type\":\"address\"}],\"name\":\"gigsCompleted\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"pendingOwner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"proposeOwner\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"freelancer\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"earned\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"aiScore\",\"type\":\"uint256\"}],\"name\":\"recordCompletion\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"freelancer\",\"type\":\"address\"}],\"name\":\"totalEarned\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Deployed once on Base L2. The factory owner (platform oracle) calls      recordCompletion() after each GigEscrow.completeMilestone() event.      Two-step ownership transfer for safety.\",\"kind\":\"dev\",\"methods\":{\"recordCompletion(address,uint256,uint256)\":{\"params\":{\"aiScore\":\"AI quality score for this submission (0\\u2013100)\",\"earned\":\"Amount earned from this milestone (wei / token units)\",\"freelancer\":\"Address of the freelancer\"}}},\"title\":\"Reputation\",\"version\":1},\"userdoc\":{\"events\":{\"ReputationUpdated(address,uint256,uint256,uint256)\":{\"notice\":\"Emitted when a freelancer's reputation record is updated\"}},\"kind\":\"user\",\"methods\":{\"acceptOwnership()\":{\"notice\":\"Accept ownership transfer. Must be called by the pendingOwner.\"},\"aiScoreSum(address)\":{\"notice\":\"Raw AI score sum for a freelancer (for off-chain verification)\"},\"averageAiScore(address)\":{\"notice\":\"Average AI quality score (0\\u2013100) across all reviewed submissions\"},\"gigsCompleted(address)\":{\"notice\":\"Number of gigs completed by this address\"},\"proposeOwner(address)\":{\"notice\":\"Propose a new owner. The proposed address must call acceptOwnership().\"},\"recordCompletion(address,uint256,uint256)\":{\"notice\":\"Record a milestone completion for a freelancer\"},\"totalEarned(address)\":{\"notice\":\"Total amount earned by this address (cumulative, in wei / token units)\"}},\"notice\":\"On-chain reputation aggregator for SkillBridge. Stores per-address         stats updated on every milestone completion: gigs completed,         cumulative earnings, and rolling average AI quality score.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/Reputation.sol\":\"Reputation\"},\"evmVersion\":\"cancun\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":forge-std/=lib/forge-std/src/\"]},\"sources\":{\"src/Reputation.sol\":{\"keccak256\":\"0xd58fd5cf0806aab781345b305f2b765298d228b821caf581c2dca1e191312f48\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://051e2bbf533e821e145c003c653f4fb947e431331bc3b65da529d17792e539dc\",\"dweb:/ipfs/QmbWMivHMrkhNDbkWkqYQNYRWeuyoDLmyvw9rZ98xoQ1Si\"]},\"src/interfaces/IReputation.sol\":{\"keccak256\":\"0xc763150d432bcf06151ad10283a2a3a63cbc2cfa555622f15c65136fc4342640\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://53bddc2bfed6f183f4114c3dbc7cce17d96bccca776e73a677f45782244d27da\",\"dweb:/ipfs/QmTSAQ1xdUEvHUGRDbyW6RCxPgaCKe1awXSrGm2zJZpXD5\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": { "version": "0.8.24+commit.e11b9ed9" },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "stateMutability": "nonpayable",
+          "type": "constructor"
+        },
+        { "inputs": [], "type": "error", "name": "InvalidAiScore" },
+        { "inputs": [], "type": "error", "name": "OnlyOwner" },
+        { "inputs": [], "type": "error", "name": "OnlyPendingOwner" },
+        { "inputs": [], "type": "error", "name": "ZeroAddress" },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "currentOwner",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "pendingOwner",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "OwnershipTransferProposed",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "OwnershipTransferred",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "freelancer",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "gigsCompleted",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "internalType": "uint256",
+              "name": "totalEarned",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "internalType": "uint256",
+              "name": "averageAiScore",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "ReputationUpdated",
+          "anonymous": false
+        },
+        {
+          "inputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "acceptOwnership"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "freelancer",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "aiScoreSum",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "freelancer",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "averageAiScore",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "freelancer",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "gigsCompleted",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "owner",
+          "outputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "pendingOwner",
+          "outputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ]
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "newOwner", "type": "address" }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "proposeOwner"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "freelancer",
+              "type": "address"
+            },
+            { "internalType": "uint256", "name": "earned", "type": "uint256" },
+            { "internalType": "uint256", "name": "aiScore", "type": "uint256" }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "recordCompletion"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "freelancer",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "totalEarned",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ]
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "recordCompletion(address,uint256,uint256)": {
+            "params": {
+              "aiScore": "AI quality score for this submission (0–100)",
+              "earned": "Amount earned from this milestone (wei / token units)",
+              "freelancer": "Address of the freelancer"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "acceptOwnership()": {
+            "notice": "Accept ownership transfer. Must be called by the pendingOwner."
+          },
+          "aiScoreSum(address)": {
+            "notice": "Raw AI score sum for a freelancer (for off-chain verification)"
+          },
+          "averageAiScore(address)": {
+            "notice": "Average AI quality score (0–100) across all reviewed submissions"
+          },
+          "gigsCompleted(address)": {
+            "notice": "Number of gigs completed by this address"
+          },
+          "proposeOwner(address)": {
+            "notice": "Propose a new owner. The proposed address must call acceptOwnership()."
+          },
+          "recordCompletion(address,uint256,uint256)": {
+            "notice": "Record a milestone completion for a freelancer"
+          },
+          "totalEarned(address)": {
+            "notice": "Total amount earned by this address (cumulative, in wei / token units)"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": ["forge-std/=lib/forge-std/src/"],
+      "optimizer": { "enabled": true, "runs": 200 },
+      "metadata": { "bytecodeHash": "ipfs" },
+      "compilationTarget": { "src/Reputation.sol": "Reputation" },
+      "evmVersion": "cancun",
+      "libraries": {}
+    },
+    "sources": {
+      "src/Reputation.sol": {
+        "keccak256": "0xd58fd5cf0806aab781345b305f2b765298d228b821caf581c2dca1e191312f48",
+        "urls": [
+          "bzz-raw://051e2bbf533e821e145c003c653f4fb947e431331bc3b65da529d17792e539dc",
+          "dweb:/ipfs/QmbWMivHMrkhNDbkWkqYQNYRWeuyoDLmyvw9rZ98xoQ1Si"
+        ],
+        "license": "MIT"
+      },
+      "src/interfaces/IReputation.sol": {
+        "keccak256": "0xc763150d432bcf06151ad10283a2a3a63cbc2cfa555622f15c65136fc4342640",
+        "urls": [
+          "bzz-raw://53bddc2bfed6f183f4114c3dbc7cce17d96bccca776e73a677f45782244d27da",
+          "dweb:/ipfs/QmTSAQ1xdUEvHUGRDbyW6RCxPgaCKe1awXSrGm2zJZpXD5"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "id": 19
+}

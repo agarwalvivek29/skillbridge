@@ -1,3 +1,5 @@
+// View model for API JSON responses. Proto source: packages/schema/proto/api/v1/portfolio.proto
+
 export interface PortfolioItem {
   id: string;
   user_id: string;

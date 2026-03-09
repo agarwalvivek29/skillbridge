@@ -1,3 +1,11 @@
+// View model for API JSON responses. Proto source: packages/schema/proto/api/v1/dispute.proto
+// Enums re-exported from @/types/proto (aliased to avoid conflicts with local types).
+
+export {
+  DisputeStatus as ProtoDisputeStatus,
+  DisputeResolution as ProtoDisputeResolution,
+} from "./proto";
+
 export type DisputeReason =
   | "WORK_DOESNT_MEET_REQUIREMENTS"
   | "CLIENT_UNRESPONSIVE"

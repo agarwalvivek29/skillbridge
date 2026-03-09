@@ -1,3 +1,8 @@
+// View model for API JSON responses. Proto source: packages/schema/proto/api/v1/submission.proto
+// Enums re-exported from @/types/proto; enriched fields are web-layer only.
+
+export { SubmissionStatus, MilestoneStatus } from "./proto";
+
 export interface Submission {
   id: string;
   milestone_id: string;
