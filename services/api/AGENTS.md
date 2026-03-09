@@ -103,6 +103,12 @@ See `.env.example` for all required variables.
 - `POST /v1/submissions/upload-url` — generate S3 presigned PUT URL for file upload (auth required)
 - `POST /v1/milestones/:id/approve` — approve milestone + trigger fund release (auth required)
 - `GET/POST/PUT/DELETE /v1/portfolio` — portfolio item CRUD (auth required)
+- `POST /v1/milestones/:id/dispute` — raise dispute on milestone (auth required, CLIENT or FREELANCER)
+- `GET /v1/milestones/:id/dispute` — get active dispute for milestone (auth required)
+- `GET /v1/disputes/:id` — get dispute with messages (auth required)
+- `POST /v1/disputes/:id/messages` — post discussion message (auth required, CLIENT or FREELANCER, OPEN status only)
+- `POST /v1/disputes/:id/resolve` — resolve dispute with on-chain tx (auth required, ADMIN only)
+
 - `GET /health`, `GET /metrics` (no auth required)
 
 ### Events Published (to Celery/Redis)

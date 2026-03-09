@@ -118,6 +118,19 @@ message PostDisputeMessageResponse {
   DisputeMessage message = 1;
 }
 
+message ResolveDisputeRequest {
+  string dispute_id = 1;
+  DisputeResolution resolution = 2;
+  // Required when resolution is SPLIT; how much goes to freelancer
+  string freelancer_split_amount = 3;
+  // TX hash of the on-chain resolution call
+  string tx_hash = 4;
+}
+
+message ResolveDisputeResponse {
+  Dispute dispute = 1;
+}
+
 // ─── Service ─────────────────────────────────────────────────────────────────
 
 service DisputeService {
@@ -126,4 +139,5 @@ service DisputeService {
   rpc GetDisputeByMilestone(GetDisputeByMilestoneRequest) returns (GetDisputeByMilestoneResponse);
   rpc PostDisputeMessage(PostDisputeMessageRequest) returns (PostDisputeMessageResponse);
   rpc GetDisputeMessages(GetDisputeMessagesRequest) returns (GetDisputeMessagesResponse);
+  rpc ResolveDispute(ResolveDisputeRequest) returns (ResolveDisputeResponse);
 }

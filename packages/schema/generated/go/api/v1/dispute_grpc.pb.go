@@ -24,6 +24,7 @@ const (
 	DisputeService_GetDisputeByMilestone_FullMethodName = "/api.v1.DisputeService/GetDisputeByMilestone"
 	DisputeService_PostDisputeMessage_FullMethodName    = "/api.v1.DisputeService/PostDisputeMessage"
 	DisputeService_GetDisputeMessages_FullMethodName    = "/api.v1.DisputeService/GetDisputeMessages"
+	DisputeService_ResolveDispute_FullMethodName        = "/api.v1.DisputeService/ResolveDispute"
 )
 
 // DisputeServiceClient is the client API for DisputeService service.
@@ -35,6 +36,7 @@ type DisputeServiceClient interface {
 	GetDisputeByMilestone(ctx context.Context, in *GetDisputeByMilestoneRequest, opts ...grpc.CallOption) (*GetDisputeByMilestoneResponse, error)
 	PostDisputeMessage(ctx context.Context, in *PostDisputeMessageRequest, opts ...grpc.CallOption) (*PostDisputeMessageResponse, error)
 	GetDisputeMessages(ctx context.Context, in *GetDisputeMessagesRequest, opts ...grpc.CallOption) (*GetDisputeMessagesResponse, error)
+	ResolveDispute(ctx context.Context, in *ResolveDisputeRequest, opts ...grpc.CallOption) (*ResolveDisputeResponse, error)
 }
 
 type disputeServiceClient struct {
@@ -95,6 +97,16 @@ func (c *disputeServiceClient) GetDisputeMessages(ctx context.Context, in *GetDi
 	return out, nil
 }
 
+func (c *disputeServiceClient) ResolveDispute(ctx context.Context, in *ResolveDisputeRequest, opts ...grpc.CallOption) (*ResolveDisputeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ResolveDisputeResponse)
+	err := c.cc.Invoke(ctx, DisputeService_ResolveDispute_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DisputeServiceServer is the server API for DisputeService service.
 // All implementations must embed UnimplementedDisputeServiceServer
 // for forward compatibility
@@ -104,6 +116,7 @@ type DisputeServiceServer interface {
 	GetDisputeByMilestone(context.Context, *GetDisputeByMilestoneRequest) (*GetDisputeByMilestoneResponse, error)
 	PostDisputeMessage(context.Context, *PostDisputeMessageRequest) (*PostDisputeMessageResponse, error)
 	GetDisputeMessages(context.Context, *GetDisputeMessagesRequest) (*GetDisputeMessagesResponse, error)
+	ResolveDispute(context.Context, *ResolveDisputeRequest) (*ResolveDisputeResponse, error)
 	mustEmbedUnimplementedDisputeServiceServer()
 }
 
@@ -125,6 +138,9 @@ func (UnimplementedDisputeServiceServer) PostDisputeMessage(context.Context, *Po
 }
 func (UnimplementedDisputeServiceServer) GetDisputeMessages(context.Context, *GetDisputeMessagesRequest) (*GetDisputeMessagesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDisputeMessages not implemented")
+}
+func (UnimplementedDisputeServiceServer) ResolveDispute(context.Context, *ResolveDisputeRequest) (*ResolveDisputeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResolveDispute not implemented")
 }
 func (UnimplementedDisputeServiceServer) mustEmbedUnimplementedDisputeServiceServer() {}
 
@@ -229,6 +245,24 @@ func _DisputeService_GetDisputeMessages_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DisputeService_ResolveDispute_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResolveDisputeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DisputeServiceServer).ResolveDispute(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DisputeService_ResolveDispute_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DisputeServiceServer).ResolveDispute(ctx, req.(*ResolveDisputeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DisputeService_ServiceDesc is the grpc.ServiceDesc for DisputeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -255,6 +289,10 @@ var DisputeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetDisputeMessages",
 			Handler:    _DisputeService_GetDisputeMessages_Handler,
+		},
+		{
+			MethodName: "ResolveDispute",
+			Handler:    _DisputeService_ResolveDispute_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

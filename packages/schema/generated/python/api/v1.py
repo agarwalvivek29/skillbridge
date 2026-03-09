@@ -292,6 +292,21 @@ class PostDisputeMessageResponse(betterproto.Message):
 
 
 @dataclass
+class ResolveDisputeRequest(betterproto.Message):
+    dispute_id: str = betterproto.string_field(1)
+    resolution: "DisputeResolution" = betterproto.enum_field(2)
+    # Required when resolution is SPLIT; how much goes to freelancer
+    freelancer_split_amount: str = betterproto.string_field(3)
+    # TX hash of the on-chain resolution call
+    tx_hash: str = betterproto.string_field(4)
+
+
+@dataclass
+class ResolveDisputeResponse(betterproto.Message):
+    dispute: "Dispute" = betterproto.message_field(1)
+
+
+@dataclass
 class Gig(betterproto.Message):
     id: str = betterproto.string_field(1)
     client_id: str = betterproto.string_field(2)
@@ -1088,6 +1103,26 @@ class DisputeServiceStub(betterproto.ServiceStub):
             "/api.v1.DisputeService/GetDisputeMessages",
             request,
             GetDisputeMessagesResponse,
+        )
+
+    async def resolve_dispute(
+        self,
+        *,
+        dispute_id: str = "",
+        resolution: "DisputeResolution" = 0,
+        freelancer_split_amount: str = "",
+        tx_hash: str = "",
+    ) -> ResolveDisputeResponse:
+        request = ResolveDisputeRequest()
+        request.dispute_id = dispute_id
+        request.resolution = resolution
+        request.freelancer_split_amount = freelancer_split_amount
+        request.tx_hash = tx_hash
+
+        return await self._unary_unary(
+            "/api.v1.DisputeService/ResolveDispute",
+            request,
+            ResolveDisputeResponse,
         )
 
 
