@@ -27,6 +27,7 @@ _EXEMPT_PREFIXES = (
     "/metrics",
     "/v1/auth/",
     "/v1/webhooks/",  # HMAC-verified — not JWT; any future /v1/webhooks/* is also exempt
+    "/v1/notifications/stream",  # SSE uses query-param JWT auth (EventSource limitation)
     "/docs",
     "/redoc",
     "/openapi.json",
@@ -37,9 +38,11 @@ _EXEMPT_PREFIXES = (
 #   GET /v1/gigs/<uuid>           — single gig detail
 #   GET /v1/portfolio             — portfolio listing
 #   GET /v1/portfolio/<uuid>      — single portfolio item
+#   GET /v1/users/<uuid>/reviews  — user profile reviews
 # Any sub-resource (e.g. /v1/gigs/<uuid>/proposals) still requires auth.
 _UUID_SEGMENT = r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
 _PUBLIC_GET_RE = re.compile(rf"^/v1/(gigs|portfolio)(/{_UUID_SEGMENT})?$")
+_PUBLIC_USER_REVIEWS_RE = re.compile(rf"^/v1/users/{_UUID_SEGMENT}/reviews$")
 
 
 class AuthMiddleware(BaseHTTPMiddleware):
@@ -55,7 +58,9 @@ class AuthMiddleware(BaseHTTPMiddleware):
 
         # Exempt only the exact public GET endpoints (list + detail)
         method = request.method.upper()
-        if method == "GET" and _PUBLIC_GET_RE.match(path):
+        if method == "GET" and (
+            _PUBLIC_GET_RE.match(path) or _PUBLIC_USER_REVIEWS_RE.match(path)
+        ):
             return await call_next(request)
 
         # --- API Key auth ---

@@ -16,6 +16,7 @@ from datetime import datetime
 from typing import Optional
 
 from sqlalchemy import (
+    Boolean,
     DateTime,
     ForeignKey,
     Integer,
@@ -299,6 +300,110 @@ class EscrowContractModel(Base):
     )
 
 
+class DisputeModel(Base):
+    __tablename__ = "disputes"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    milestone_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("milestones.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
+    )
+    gig_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("gigs.id", ondelete="CASCADE"), nullable=False
+    )
+    raised_by_user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id"), nullable=False
+    )
+    reason: Mapped[str] = mapped_column(Text, nullable=False)
+    # "OPEN", "DISCUSSION", "ARBITRATION", "RESOLVED"
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="OPEN")
+    ai_evidence_summary: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    # "DISPUTE_RESOLUTION_PAY_FREELANCER", "DISPUTE_RESOLUTION_REFUND_CLIENT", "DISPUTE_RESOLUTION_SPLIT"
+    resolution: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    freelancer_split_amount: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    resolution_tx_hash: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    discussion_deadline: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+    resolved_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+
+    messages: Mapped[list["DisputeMessageModel"]] = relationship(
+        "DisputeMessageModel",
+        back_populates="dispute",
+        cascade="all, delete-orphan",
+        order_by="DisputeMessageModel.created_at",
+    )
+
+
+class DisputeMessageModel(Base):
+    __tablename__ = "dispute_messages"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    dispute_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("disputes.id", ondelete="CASCADE"), nullable=False
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id"), nullable=False
+    )
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+    dispute: Mapped["DisputeModel"] = relationship(
+        "DisputeModel", back_populates="messages"
+    )
+
+
+class ReputationModel(Base):
+    __tablename__ = "reputation"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    user_id: Mapped[str | None] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=True
+    )
+    wallet_address: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
+    gigs_completed: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    gigs_as_client: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    # Stored as string (wei / smallest unit) to avoid precision loss
+    total_earned: Mapped[str] = mapped_column(Text, nullable=False, default="0")
+    average_ai_score: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    dispute_rate_pct: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    average_rating_x100: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    rating_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    last_synced_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+
+
 class NotificationModel(Base):
     __tablename__ = "notifications"
 
@@ -316,6 +421,32 @@ class NotificationModel(Base):
     read_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+
+class ReviewModel(Base):
+    __tablename__ = "reviews"
+    __table_args__ = (
+        UniqueConstraint("gig_id", "reviewer_id", name="uq_review_gig_reviewer"),
+    )
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    gig_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("gigs.id", ondelete="CASCADE"), nullable=False
+    )
+    reviewer_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id"), nullable=False
+    )
+    reviewee_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id"), nullable=False
+    )
+    rating: Mapped[int] = mapped_column(Integer, nullable=False)
+    comment: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    is_visible: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
