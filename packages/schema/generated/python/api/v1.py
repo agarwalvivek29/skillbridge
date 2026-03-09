@@ -14,7 +14,6 @@ from .common import v1
 class DisputeStatus(betterproto.Enum):
     DISPUTE_STATUS_UNSPECIFIED = 0
     DISPUTE_STATUS_OPEN = 1
-    DISPUTE_STATUS_DISCUSSION = 2
     DISPUTE_STATUS_ARBITRATION = 3
     DISPUTE_STATUS_RESOLVED = 4
 
@@ -289,6 +288,19 @@ class GetDisputeByMilestoneResponse(betterproto.Message):
 @dataclass
 class PostDisputeMessageResponse(betterproto.Message):
     message: "DisputeMessage" = betterproto.message_field(1)
+
+
+@dataclass
+class ResolveDisputeRequest(betterproto.Message):
+    dispute_id: str = betterproto.string_field(1)
+    resolution: "DisputeResolution" = betterproto.enum_field(2)
+    # Required when resolution is SPLIT; how much goes to freelancer
+    freelancer_split_amount: str = betterproto.string_field(3)
+
+
+@dataclass
+class ResolveDisputeResponse(betterproto.Message):
+    dispute: "Dispute" = betterproto.message_field(1)
 
 
 @dataclass
@@ -1088,6 +1100,24 @@ class DisputeServiceStub(betterproto.ServiceStub):
             "/api.v1.DisputeService/GetDisputeMessages",
             request,
             GetDisputeMessagesResponse,
+        )
+
+    async def resolve_dispute(
+        self,
+        *,
+        dispute_id: str = "",
+        resolution: "DisputeResolution" = 0,
+        freelancer_split_amount: str = "",
+    ) -> ResolveDisputeResponse:
+        request = ResolveDisputeRequest()
+        request.dispute_id = dispute_id
+        request.resolution = resolution
+        request.freelancer_split_amount = freelancer_split_amount
+
+        return await self._unary_unary(
+            "/api.v1.DisputeService/ResolveDispute",
+            request,
+            ResolveDisputeResponse,
         )
 
 

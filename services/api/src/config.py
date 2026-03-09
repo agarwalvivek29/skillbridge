@@ -39,9 +39,14 @@ class Settings(BaseSettings):
     github_webhook_secret: str = ""
     openreview_bot_login: str = "openreview-bot"
 
+    # AI — Anthropic (optional; AI evidence generation disabled when empty)
+    anthropic_api_key: str = ""
+
     # Blockchain
     base_rpc_url: str = "https://sepolia.base.org"
     escrow_factory_address: str = ""
+    reputation_contract_address: str = ""
+    oracle_private_key: str = ""  # hot-wallet key for server-side tx signing
     base_chain_id: int = 84532  # Base Sepolia testnet
 
     # AWS / S3 — REQUIRED for file upload functionality

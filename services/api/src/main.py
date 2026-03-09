@@ -13,16 +13,17 @@ import logging
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
-from src.config import settings
 from src.api.auth import router as auth_router
-from src.api.webhooks import router as webhooks_router
+from src.api.dispute import dispute_router, milestone_dispute_router
 from src.api.gig import router as gig_router
 from src.api.middleware import AuthMiddleware
+from src.api.milestone import router as milestone_approval_router
 from src.api.portfolio import router as portfolio_router
 from src.api.proposal import router as proposal_router
-from src.api.milestone import router as milestone_approval_router
 from src.api.submission import milestone_router as submission_milestone_router
 from src.api.submission import submission_router
+from src.api.webhooks import router as webhooks_router
+from src.config import settings
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -44,7 +45,31 @@ async def _startup_checks() -> None:
         )
 
 
-# ── Middleware (add_middleware inserts at front of stack — last added = first executed) ──
+@app.on_event("startup")
+async def _start_scheduler() -> None:
+    """Start APScheduler background job for dispute escalation (every 15 min)."""
+    from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+    from src.domain.dispute import escalate_open_disputes
+    from src.infra.database import AsyncSessionLocal
+
+    async def _escalate_job() -> None:
+        async with AsyncSessionLocal() as db:
+            try:
+                count = await escalate_open_disputes(db)
+                if count:
+                    logger.info("escalated %d open disputes to ARBITRATION", count)
+                await db.commit()
+            except Exception:
+                await db.rollback()
+                logger.exception("dispute escalation job failed")
+
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(_escalate_job, "interval", minutes=15, id="escalate_disputes")
+    scheduler.start()
+    logger.info("dispute escalation scheduler started (every 15 min)")
+
+
 app.add_middleware(AuthMiddleware)
 
 # ── Routers ──────────────────────────────────────────────────────────────────
@@ -55,6 +80,8 @@ app.include_router(proposal_router)
 app.include_router(submission_milestone_router)
 app.include_router(submission_router)
 app.include_router(milestone_approval_router)
+app.include_router(milestone_dispute_router)
+app.include_router(dispute_router)
 app.include_router(webhooks_router)
 
 
