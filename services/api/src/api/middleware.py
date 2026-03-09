@@ -27,6 +27,7 @@ _EXEMPT_PREFIXES = (
     "/metrics",
     "/v1/auth/",
     "/v1/webhooks/",  # HMAC-verified — not JWT; any future /v1/webhooks/* is also exempt
+    "/v1/notifications/stream",  # SSE uses query-param JWT auth (EventSource limitation)
     "/docs",
     "/redoc",
     "/openapi.json",

@@ -44,6 +44,10 @@ class Settings(BaseSettings):
     escrow_factory_address: str = ""
     base_chain_id: int = 84532  # Base Sepolia testnet
 
+    # Email (SendGrid) — optional; disabled when key is empty
+    sendgrid_api_key: str = ""
+    sendgrid_from_email: str = "noreply@skillbridge.dev"
+
     # AWS / S3 — REQUIRED for file upload functionality
     aws_access_key_id: str
     aws_secret_access_key: str

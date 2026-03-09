@@ -103,6 +103,10 @@ See `.env.example` for all required variables.
 - `POST /v1/submissions/upload-url` — generate S3 presigned PUT URL for file upload (auth required)
 - `POST /v1/milestones/:id/approve` — approve milestone + trigger fund release (auth required)
 - `GET/POST/PUT/DELETE /v1/portfolio` — portfolio item CRUD (auth required)
+- `GET /v1/notifications` — list notifications, paginated, optional `unread_only` filter (auth required)
+- `GET /v1/notifications/stream` — SSE real-time unread count stream (query-param JWT auth)
+- `POST /v1/notifications/:id/read` — mark single notification as read (auth required)
+- `POST /v1/notifications/read-all` — mark all notifications as read (auth required)
 - `GET /health`, `GET /metrics` (no auth required)
 
 ### Events Published (to Celery/Redis)
