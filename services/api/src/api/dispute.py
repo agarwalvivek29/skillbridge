@@ -17,6 +17,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api._roles import ROLE_ADMIN
@@ -30,6 +31,8 @@ from src.domain.dispute import (
     resolve_dispute,
 )
 from src.infra.database import get_db
+from src.infra.models import GigModel, MilestoneModel
+from src.infra.web3_client import OnChainError, call_resolve_dispute_on_chain
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +55,6 @@ class PostMessageBody(BaseModel):
 class ResolveDisputeBody(BaseModel):
     resolution: str
     freelancer_split_amount: Optional[str] = None
-    tx_hash: str
 
 
 class DisputeMessageOut(BaseModel):
@@ -101,6 +103,7 @@ _STATUS_CODE_MAP = {
     "DISPUTE_NOT_RESOLVABLE": 409,
     "INVALID_RESOLUTION": 400,
     "SPLIT_AMOUNT_REQUIRED": 400,
+    "ON_CHAIN_FAILED": 502,
 }
 
 
@@ -256,8 +259,64 @@ async def resolve_dispute_endpoint(
     request: Request,
     db: AsyncSession = Depends(get_db),
 ) -> DisputeOut:
-    """Resolve a dispute. ADMIN role only."""
+    """Resolve a dispute. ADMIN role only. Calls GigEscrow.resolveDispute() on-chain."""
     _require_admin(request)
+
+    # Load dispute to get gig_id and milestone_id
+    dispute_row = await get_dispute(db, dispute_id)
+    if dispute_row is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "DISPUTE_NOT_FOUND",
+                "message": f"Dispute {dispute_id} not found",
+            },
+        )
+
+    # Look up the gig's escrow contract address
+    gig_result = await db.execute(
+        select(GigModel).where(GigModel.id == dispute_row.gig_id)
+    )
+    gig = gig_result.scalar_one_or_none()
+    contract_address = gig.contract_address if gig else None
+
+    # Fail-fast: call on-chain BEFORE updating DB (skip if no contract deployed)
+    tx_hash = ""
+    if contract_address:
+        # Determine milestone index (0-based position within the gig)
+        milestone_index = 0
+        ms_result = await db.execute(
+            select(MilestoneModel)
+            .where(MilestoneModel.gig_id == gig.id)
+            .order_by(MilestoneModel.created_at)
+        )
+        milestones = list(ms_result.scalars().all())
+        for i, m in enumerate(milestones):
+            if m.id == dispute_row.milestone_id:
+                milestone_index = i
+                break
+
+        try:
+            tx_hash = await call_resolve_dispute_on_chain(
+                contract_address=contract_address,
+                milestone_index=milestone_index,
+                resolution=body.resolution,
+                freelancer_split_amount=body.freelancer_split_amount,
+            )
+        except OnChainError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail={
+                    "code": "ON_CHAIN_FAILED",
+                    "message": str(exc),
+                    "field_errors": [],
+                },
+            )
+    else:
+        logger.warning(
+            "dispute %s: gig has no contract_address, skipping on-chain call",
+            dispute_id,
+        )
 
     try:
         dispute = await resolve_dispute(
@@ -265,7 +324,7 @@ async def resolve_dispute_endpoint(
             dispute_id,
             body.resolution,
             body.freelancer_split_amount,
-            body.tx_hash,
+            tx_hash,
         )
     except DisputeError as exc:
         raise _handle_dispute_error(exc)

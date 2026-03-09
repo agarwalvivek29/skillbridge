@@ -14,7 +14,6 @@ from .common import v1
 class DisputeStatus(betterproto.Enum):
     DISPUTE_STATUS_UNSPECIFIED = 0
     DISPUTE_STATUS_OPEN = 1
-    DISPUTE_STATUS_DISCUSSION = 2
     DISPUTE_STATUS_ARBITRATION = 3
     DISPUTE_STATUS_RESOLVED = 4
 
@@ -297,8 +296,6 @@ class ResolveDisputeRequest(betterproto.Message):
     resolution: "DisputeResolution" = betterproto.enum_field(2)
     # Required when resolution is SPLIT; how much goes to freelancer
     freelancer_split_amount: str = betterproto.string_field(3)
-    # TX hash of the on-chain resolution call
-    tx_hash: str = betterproto.string_field(4)
 
 
 @dataclass
@@ -1111,13 +1108,11 @@ class DisputeServiceStub(betterproto.ServiceStub):
         dispute_id: str = "",
         resolution: "DisputeResolution" = 0,
         freelancer_split_amount: str = "",
-        tx_hash: str = "",
     ) -> ResolveDisputeResponse:
         request = ResolveDisputeRequest()
         request.dispute_id = dispute_id
         request.resolution = resolution
         request.freelancer_split_amount = freelancer_split_amount
-        request.tx_hash = tx_hash
 
         return await self._unary_unary(
             "/api.v1.DisputeService/ResolveDispute",

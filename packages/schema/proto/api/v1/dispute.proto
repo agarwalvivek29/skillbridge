@@ -11,7 +11,7 @@ option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/gener
 enum DisputeStatus {
   DISPUTE_STATUS_UNSPECIFIED = 0;
   DISPUTE_STATUS_OPEN = 1;         // just raised, AI generating evidence
-  DISPUTE_STATUS_DISCUSSION = 2;   // 3-day discussion window open
+  reserved 2;                      // was DISCUSSION; lifecycle is OPEN -> ARBITRATION -> RESOLVED
   DISPUTE_STATUS_ARBITRATION = 3;  // escalated to community arbitrators
   DISPUTE_STATUS_RESOLVED = 4;     // decided, contract called
 }
@@ -123,8 +123,6 @@ message ResolveDisputeRequest {
   DisputeResolution resolution = 2;
   // Required when resolution is SPLIT; how much goes to freelancer
   string freelancer_split_amount = 3;
-  // TX hash of the on-chain resolution call
-  string tx_hash = 4;
 }
 
 message ResolveDisputeResponse {

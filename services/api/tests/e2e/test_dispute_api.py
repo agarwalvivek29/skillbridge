@@ -301,7 +301,6 @@ class TestResolveDisputeAPI:
             headers=_ADMIN_HEADERS,
             json={
                 "resolution": "DISPUTE_RESOLUTION_PAY_FREELANCER",
-                "tx_hash": "0xdeadbeef",
             },
         )
 
@@ -309,7 +308,6 @@ class TestResolveDisputeAPI:
         data = resp.json()
         assert data["status"] == "RESOLVED"
         assert data["resolution"] == "DISPUTE_RESOLUTION_PAY_FREELANCER"
-        assert data["resolution_tx_hash"] == "0xdeadbeef"
 
     @pytest.mark.asyncio
     async def test_resolve_dispute_non_admin_fails(
@@ -329,7 +327,6 @@ class TestResolveDisputeAPI:
             headers=_CLIENT_HEADERS,
             json={
                 "resolution": "DISPUTE_RESOLUTION_PAY_FREELANCER",
-                "tx_hash": "0xdeadbeef",
             },
         )
 
@@ -354,7 +351,6 @@ class TestResolveDisputeAPI:
             json={
                 "resolution": "DISPUTE_RESOLUTION_SPLIT",
                 "freelancer_split_amount": "500",
-                "tx_hash": "0xabc",
             },
         )
 

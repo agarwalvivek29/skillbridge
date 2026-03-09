@@ -293,7 +293,7 @@ async def resolve_dispute(
     dispute_id: str,
     resolution: str,
     freelancer_split_amount: Optional[str],
-    tx_hash: str,
+    tx_hash: str = "",
 ) -> DisputeModel:
     """
     Resolve a dispute (ADMIN only — role check done in router).

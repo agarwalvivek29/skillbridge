@@ -45,7 +45,31 @@ async def _startup_checks() -> None:
         )
 
 
-# ── Middleware (add_middleware inserts at front of stack — last added = first executed) ──
+@app.on_event("startup")
+async def _start_scheduler() -> None:
+    """Start APScheduler background job for dispute escalation (every 15 min)."""
+    from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+    from src.domain.dispute import escalate_open_disputes
+    from src.infra.database import AsyncSessionLocal
+
+    async def _escalate_job() -> None:
+        async with AsyncSessionLocal() as db:
+            try:
+                count = await escalate_open_disputes(db)
+                if count:
+                    logger.info("escalated %d open disputes to ARBITRATION", count)
+                await db.commit()
+            except Exception:
+                await db.rollback()
+                logger.exception("dispute escalation job failed")
+
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(_escalate_job, "interval", minutes=15, id="escalate_disputes")
+    scheduler.start()
+    logger.info("dispute escalation scheduler started (every 15 min)")
+
+
 app.add_middleware(AuthMiddleware)
 
 # ── Routers ──────────────────────────────────────────────────────────────────

@@ -363,12 +363,10 @@ class TestResolveDispute:
             dispute.id,
             "DISPUTE_RESOLUTION_PAY_FREELANCER",
             None,
-            "0xabc123",
         )
 
         assert resolved.status == "RESOLVED"
         assert resolved.resolution == "DISPUTE_RESOLUTION_PAY_FREELANCER"
-        assert resolved.resolution_tx_hash == "0xabc123"
         assert resolved.resolved_at is not None
 
     @pytest.mark.asyncio
@@ -381,7 +379,6 @@ class TestResolveDispute:
             dispute.id,
             "DISPUTE_RESOLUTION_REFUND_CLIENT",
             None,
-            "0xdef456",
         )
 
         assert resolved.status == "RESOLVED"
@@ -397,7 +394,6 @@ class TestResolveDispute:
             dispute.id,
             "DISPUTE_RESOLUTION_SPLIT",
             "500",
-            "0x789",
         )
 
         assert resolved.status == "RESOLVED"
@@ -414,7 +410,6 @@ class TestResolveDispute:
             dispute.id,
             "DISPUTE_RESOLUTION_PAY_FREELANCER",
             None,
-            "0xabc",
         )
 
         result = await db.execute(
@@ -433,7 +428,6 @@ class TestResolveDispute:
             dispute.id,
             "DISPUTE_RESOLUTION_PAY_FREELANCER",
             None,
-            "0xabc",
         )
 
         result = await db.execute(
@@ -454,7 +448,6 @@ class TestResolveDispute:
             dispute.id,
             "DISPUTE_RESOLUTION_PAY_FREELANCER",
             None,
-            "0xabc",
         )
 
         with pytest.raises(DisputeError) as exc_info:
@@ -463,7 +456,6 @@ class TestResolveDispute:
                 dispute.id,
                 "DISPUTE_RESOLUTION_PAY_FREELANCER",
                 None,
-                "0xabc2",
             )
 
         assert exc_info.value.code == "DISPUTE_NOT_RESOLVABLE"
@@ -479,7 +471,6 @@ class TestResolveDispute:
                 dispute.id,
                 "INVALID_VALUE",
                 None,
-                "0xabc",
             )
 
         assert exc_info.value.code == "INVALID_RESOLUTION"
@@ -495,7 +486,6 @@ class TestResolveDispute:
                 dispute.id,
                 "DISPUTE_RESOLUTION_SPLIT",
                 None,
-                "0xabc",
             )
 
         assert exc_info.value.code == "SPLIT_AMOUNT_REQUIRED"
@@ -518,7 +508,6 @@ class TestResolveDispute:
             dispute.id,
             "DISPUTE_RESOLUTION_PAY_FREELANCER",
             None,
-            "0xabc",
         )
 
         assert resolved.status == "RESOLVED"
