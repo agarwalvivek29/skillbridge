@@ -14,6 +14,7 @@ from src.config import settings
 logger = logging.getLogger(__name__)
 
 _REVIEW_TASK_NAME = "review.enqueue"
+_REPUTATION_SYNC_TASK_NAME = "reputation.sync"
 
 _celery_app: Celery | None = None
 
@@ -43,3 +44,22 @@ def enqueue_review(submission_id: str) -> None:
             submission_id,
             exc,
         )
+
+
+def enqueue_reputation_sync(*, from_block: int | str = "latest") -> None:
+    """
+    Enqueue a reputation sync job that polls ReputationUpdated events
+    from the on-chain Reputation contract and refreshes the DB cache.
+
+    Dispatched on a periodic schedule (Celery beat) or after milestone
+    completion. Fails silently if Redis is unavailable.
+    """
+    try:
+        app = _get_celery()
+        app.send_task(
+            _REPUTATION_SYNC_TASK_NAME,
+            kwargs={"from_block": from_block},
+        )
+        logger.info("reputation.sync dispatched from_block=%s", from_block)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("celery unavailable, skipping reputation sync error=%s", exc)
