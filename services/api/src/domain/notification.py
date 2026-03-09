@@ -12,7 +12,8 @@ from datetime import datetime, timezone
 from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.infra.models import NotificationModel
+from src.infra.email import send_notification_email
+from src.infra.models import NotificationModel, UserModel
 
 logger = logging.getLogger(__name__)
 
@@ -92,6 +93,18 @@ async def create_notification(
         user_id,
         notification_type,
     )
+
+    # Best-effort email delivery (never blocks notification creation)
+    try:
+        user_result = await db.execute(
+            select(UserModel.email).where(UserModel.id == user_id)
+        )
+        user_email = user_result.scalar_one_or_none()
+        if user_email:
+            await send_notification_email(user_email, notification_type, payload)
+    except Exception:
+        logger.exception("failed to send notification email user_id=%s", user_id)
+
     return notification
 
 
@@ -201,7 +214,6 @@ async def mark_all_read(
         select(NotificationModel)
         .where(NotificationModel.user_id == user_id)
         .order_by(NotificationModel.created_at.desc())
-        .limit(50)
     )
     notifications = list(result.scalars().all())
 
