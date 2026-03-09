@@ -78,7 +78,7 @@ export enum ProposalStatus {
 export enum DisputeStatus {
   UNSPECIFIED = 0,
   OPEN = 1,
-  DISCUSSION = 2,
+  // 2 reserved (was DISCUSSION; lifecycle is OPEN -> ARBITRATION -> RESOLVED)
   ARBITRATION = 3,
   RESOLVED = 4,
 }
