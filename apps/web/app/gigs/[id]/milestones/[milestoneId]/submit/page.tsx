@@ -57,11 +57,21 @@ function SubmitContent() {
     return true;
   }
 
+  const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
+
   const uploadFiles = useCallback(
     async (files: FileList | File[]) => {
+      const fileArray = Array.from(files);
+      const oversized = fileArray.filter((f) => f.size > MAX_FILE_SIZE);
+      if (oversized.length > 0) {
+        toast.error(
+          `Files must be under 20 MB. Remove: ${oversized.map((f) => f.name).join(", ")}`,
+        );
+        return;
+      }
+
       setUploading(true);
       try {
-        const fileArray = Array.from(files);
         const results: UploadedFile[] = [];
 
         for (const file of fileArray) {

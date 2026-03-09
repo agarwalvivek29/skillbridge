@@ -108,7 +108,7 @@ function MilestoneContent() {
         {
           to: calldata.to as `0x${string}`,
           data: calldata.data as `0x${string}`,
-          value: BigInt(calldata.value),
+          value: BigInt(calldata.value ?? "0"),
         },
         {
           onError: (err) => {
@@ -174,7 +174,8 @@ function MilestoneContent() {
       milestone.status === "IN_PROGRESS" ||
       milestone.status === "REVISION_REQUESTED");
   const canDispute =
-    milestone.status === "SUBMITTED" || milestone.status === "UNDER_REVIEW";
+    (isClient || isFreelancer) &&
+    (milestone.status === "SUBMITTED" || milestone.status === "UNDER_REVIEW");
 
   const latestSubmission =
     milestone.submissions.length > 0

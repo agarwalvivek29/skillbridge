@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Bell, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/lib/stores/auth";
@@ -15,6 +16,7 @@ import { notificationIcon, notificationLabel } from "@/lib/notificationHelpers";
 
 export function NotificationBell() {
   const token = useAuthStore((s) => s.token);
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -103,7 +105,7 @@ export function NotificationBell() {
                     key={n.id}
                     onClick={() => {
                       handleMarkRead(n.id);
-                      if (n.link) window.location.href = n.link;
+                      if (n.link?.startsWith("/")) router.push(n.link);
                       setOpen(false);
                     }}
                     className={cn(

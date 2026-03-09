@@ -19,13 +19,7 @@ import { useTxFlow } from "@/hooks/useTxFlow";
 import { fetchGig, fetchEscrowTx, confirmEscrow } from "@/lib/api/gigs";
 import type { Gig } from "@/types/gig";
 
-type FundStep =
-  | "summary"
-  | "token"
-  | "approve"
-  | "deposit"
-  | "confirm"
-  | "done";
+type FundStep = "summary" | "token" | "deposit" | "confirm" | "done";
 
 const FUND_STEPS: { key: FundStep; label: string }[] = [
   { key: "summary", label: "Summary" },
@@ -46,6 +40,7 @@ function FundFlowContent() {
   const [step, setStep] = useState<FundStep>("summary");
   const [selectedToken, setSelectedToken] = useState<"ETH" | "USDC">("ETH");
   const [confirming, setConfirming] = useState(false);
+  const [confirmError, setConfirmError] = useState<string | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -96,12 +91,15 @@ function FundFlowContent() {
   async function handleConfirmEscrow() {
     if (!tx.txHash) return;
     setConfirming(true);
+    setConfirmError(null);
     try {
       await confirmEscrow(params.id, tx.txHash);
       setStep("done");
       toast.success("Escrow funded successfully!");
     } catch {
-      toast.error("Failed to confirm escrow on backend");
+      setConfirmError(
+        "Failed to confirm escrow on SkillBridge. Your on-chain transaction succeeded — click Retry to try again.",
+      );
     } finally {
       setConfirming(false);
     }
@@ -121,10 +119,12 @@ function FundFlowContent() {
     );
   }
 
-  const total = gig.milestones.reduce(
-    (sum, m) => sum + parseFloat(m.amount || "0"),
-    0,
-  );
+  // Sum in integer units (×1e8) to avoid floating-point accumulation errors
+  const total =
+    gig.milestones.reduce(
+      (sum, m) => sum + Math.round(parseFloat(m.amount || "0") * 1e8),
+      0,
+    ) / 1e8;
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8 md:px-6">
@@ -278,13 +278,18 @@ function FundFlowContent() {
         {step === "confirm" && tx.txHash && (
           <div className="space-y-4">
             <TxSuccess txHash={tx.txHash} />
+            {confirmError && (
+              <div className="rounded-lg bg-error-50 p-3 text-sm text-error-700">
+                {confirmError}
+              </div>
+            )}
             <Button
               onClick={handleConfirmEscrow}
               loading={confirming}
               className="w-full"
             >
               <CheckCircle2 className="mr-1 h-4 w-4" />
-              Confirm Escrow on SkillBridge
+              {confirmError ? "Retry Confirm" : "Confirm Escrow on SkillBridge"}
             </Button>
           </div>
         )}
