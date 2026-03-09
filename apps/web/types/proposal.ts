@@ -1,3 +1,8 @@
+// View model for API JSON responses. Proto source: packages/schema/proto/api/v1/proposal.proto
+// Enums re-exported from @/types/proto; enriched fields are web-layer only.
+
+export { ProposalStatus } from "./proto";
+
 export interface Proposal {
   id: string;
   gig_id: string;
