@@ -22,16 +22,17 @@ class EscrowStatus(betterproto.Enum):
 class EscrowContract(betterproto.Message):
     id: str = betterproto.string_field(1)
     gig_id: str = betterproto.string_field(2)
-    # Deployed GigEscrow contract address on Base L2
+    # Deployed escrow PDA address on Solana (base58 format)
     chain_address: str = betterproto.string_field(3)
-    # "base-mainnet" or "base-sepolia"
+    # "solana-mainnet-beta", "solana-devnet", or "solana-localnet"
     network: str = betterproto.string_field(4)
-    # Total amount locked — in wei (ETH) or 6-decimal units (USDC)
+    # Total amount locked — in lamports (SOL) or 6-decimal units (USDC)
     total_amount: str = betterproto.string_field(5)
     # Amount released so far
     released_amount: str = betterproto.string_field(6)
     status: "EscrowStatus" = betterproto.enum_field(7)
-    # ETH: empty string (native asset). USDC: ERC-20 contract address on Base L2.
+    # SOL: empty string (native asset). USDC: SPL token mint address on Solana
+    # (base58).
     token_address: str = betterproto.string_field(8)
     # Platform fee in basis points (500 = 5%). Stored in the contract at deploy
     # time.
@@ -39,7 +40,8 @@ class EscrowContract(betterproto.Message):
     # Computed platform fee amount (total_amount * platform_fee_basis_points /
     # 10000)
     platform_fee_amount: str = betterproto.string_field(10)
-    # Wallet that receives the platform fee on each completeMilestone call
+    # Solana wallet address (base58) that receives the platform fee on each
+    # completeMilestone call
     platform_fee_recipient: str = betterproto.string_field(11)
     # Transaction hash of the funding tx
     funding_tx_hash: str = betterproto.string_field(12)

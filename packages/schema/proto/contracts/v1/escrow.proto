@@ -23,22 +23,22 @@ enum EscrowStatus {
 message EscrowContract {
   string id = 1;
   string gig_id = 2;
-  // Deployed GigEscrow contract address on Base L2
+  // Deployed escrow PDA address on Solana (base58 format)
   string chain_address = 3;
-  // "base-mainnet" or "base-sepolia"
+  // "solana-mainnet-beta", "solana-devnet", or "solana-localnet"
   string network = 4;
-  // Total amount locked — in wei (ETH) or 6-decimal units (USDC)
+  // Total amount locked — in lamports (SOL) or 6-decimal units (USDC)
   string total_amount = 5;
   // Amount released so far
   string released_amount = 6;
   EscrowStatus status = 7;
-  // ETH: empty string (native asset). USDC: ERC-20 contract address on Base L2.
+  // SOL: empty string (native asset). USDC: SPL token mint address on Solana (base58).
   string token_address = 8;
   // Platform fee in basis points (500 = 5%). Stored in the contract at deploy time.
   int32 platform_fee_basis_points = 9;
   // Computed platform fee amount (total_amount * platform_fee_basis_points / 10000)
   string platform_fee_amount = 10;
-  // Wallet that receives the platform fee on each completeMilestone call
+  // Solana wallet address (base58) that receives the platform fee on each completeMilestone call
   string platform_fee_recipient = 11;
   // Transaction hash of the funding tx
   string funding_tx_hash = 12;

@@ -29,21 +29,21 @@ export type EscrowContract = Message<"contracts.v1.EscrowContract"> & {
   gigId: string;
 
   /**
-   * Deployed GigEscrow contract address on Base L2
+   * Deployed escrow PDA address on Solana (base58 format)
    *
    * @generated from field: string chain_address = 3;
    */
   chainAddress: string;
 
   /**
-   * "base-mainnet" or "base-sepolia"
+   * "solana-mainnet-beta", "solana-devnet", or "solana-localnet"
    *
    * @generated from field: string network = 4;
    */
   network: string;
 
   /**
-   * Total amount locked — in wei (ETH) or 6-decimal units (USDC)
+   * Total amount locked — in lamports (SOL) or 6-decimal units (USDC)
    *
    * @generated from field: string total_amount = 5;
    */
@@ -62,7 +62,7 @@ export type EscrowContract = Message<"contracts.v1.EscrowContract"> & {
   status: EscrowStatus;
 
   /**
-   * ETH: empty string (native asset). USDC: ERC-20 contract address on Base L2.
+   * SOL: empty string (native asset). USDC: SPL token mint address on Solana (base58).
    *
    * @generated from field: string token_address = 8;
    */
@@ -83,7 +83,7 @@ export type EscrowContract = Message<"contracts.v1.EscrowContract"> & {
   platformFeeAmount: string;
 
   /**
-   * Wallet that receives the platform fee on each completeMilestone call
+   * Solana wallet address (base58) that receives the platform fee on each completeMilestone call
    *
    * @generated from field: string platform_fee_recipient = 11;
    */
