@@ -3,14 +3,15 @@ domain/auth.py — Pure business logic for authentication.
 No FastAPI imports. No DB session. All side-effect-free helpers + DB-taking functions.
 """
 
+import base64
 import secrets
 import string
 from datetime import datetime, timedelta, timezone
 
+import base58
 import bcrypt as _bcrypt
+import nacl.signing
 from jose import jwt
-from siwe import SiweMessage
-from siwe import DomainMismatch, ExpiredMessage, InvalidSignature, NonceMismatch
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -84,9 +85,9 @@ async def create_nonce(db: AsyncSession, wallet_address: str) -> AuthNonceModel:
     """
     Generate a fresh nonce for the given wallet address and upsert it.
     Any previous nonce for this wallet is overwritten.
-    Wallet address is normalised to lowercase before storage.
+    Wallet address is stored as-is (base58 is case-sensitive).
     """
-    normalised = wallet_address.lower()
+    normalised = wallet_address
     nonce = _generate_nonce()
     expires_at = datetime.now(timezone.utc) + timedelta(minutes=_NONCE_TTL_MINUTES)
 
@@ -108,9 +109,9 @@ async def consume_nonce(db: AsyncSession, wallet_address: str) -> AuthNonceModel
     """
     Retrieve the nonce for wallet_address and delete it atomically.
     Returns None if no nonce exists or if it has expired.
-    Wallet address is normalised to lowercase before lookup.
+    Wallet address is matched as-is (base58 is case-sensitive).
     """
-    normalised = wallet_address.lower()
+    normalised = wallet_address
     result = await db.execute(
         select(AuthNonceModel).where(AuthNonceModel.wallet_address == normalised)
     )
@@ -129,45 +130,76 @@ async def consume_nonce(db: AsyncSession, wallet_address: str) -> AuthNonceModel
 
 
 # ---------------------------------------------------------------------------
-# SIWE verification
+# Solana message helpers
 # ---------------------------------------------------------------------------
 
 
-def verify_siwe_signature(
+def build_solana_sign_in_message(wallet_address: str, nonce: str) -> str:
+    """
+    Build the plaintext message that Solana wallets sign for authentication.
+
+    Format:
+        SkillBridge wants you to sign in with your Solana account:
+        <base58_wallet_address>
+
+        Nonce: <nonce>
+        Issued At: <iso_timestamp>
+    """
+    issued_at = datetime.now(timezone.utc).isoformat()
+    return (
+        f"SkillBridge wants you to sign in with your Solana account:\n"
+        f"{wallet_address}\n"
+        f"\n"
+        f"Nonce: {nonce}\n"
+        f"Issued At: {issued_at}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Solana Ed25519 signature verification
+# ---------------------------------------------------------------------------
+
+
+def verify_solana_signature(
     wallet_address: str,
     message: str,
     signature: str,
     expected_nonce: str,
 ) -> bool:
     """
-    Verify a SIWE (EIP-4361) message and signature.
+    Verify an Ed25519 signature from a Solana wallet.
 
-    Uses the `siwe` package for full EIP-4361 compliance:
-    - Parses the structured SIWE message
-    - Verifies the cryptographic signature
-    - Checks domain matches settings.siwe_domain
-    - Checks nonce matches expected_nonce
+    Steps:
+    1. Decode the base58 public key from wallet_address
+    2. Decode the base64-encoded signature
+    3. Verify the Ed25519 signature over the UTF-8 message bytes
+    4. Check that the nonce in the message matches expected_nonce
 
     Returns True only if all checks pass; False on any failure.
     """
     try:
-        siwe_msg = SiweMessage.from_message(message=message)
-        siwe_msg.verify(
-            signature=signature,
-            domain=settings.siwe_domain,
-            nonce=expected_nonce,
-        )
-        # Extra check: recovered address must match the claimed wallet
-        if siwe_msg.address.lower() != wallet_address.lower():
+        # Check that the expected nonce appears in the message
+        if f"Nonce: {expected_nonce}" not in message:
             return False
+
+        # Check that the claimed wallet address appears in the signed message
+        if wallet_address not in message:
+            return False
+
+        # Decode the base58 public key
+        pubkey_bytes = base58.b58decode(wallet_address)
+        if len(pubkey_bytes) != 32:
+            return False
+
+        # Decode the base64 signature
+        sig_bytes = base64.b64decode(signature)
+
+        # Verify Ed25519 signature — raises BadSignatureError if invalid
+        verify_key = nacl.signing.VerifyKey(pubkey_bytes)
+        verify_key.verify(message.encode("utf-8"), sig_bytes)
+
         return True
-    except (
-        InvalidSignature,
-        DomainMismatch,
-        NonceMismatch,
-        ExpiredMessage,
-        Exception,  # noqa: BLE001 — catch all siwe parse errors
-    ):
+    except Exception:  # noqa: BLE001 — catch all verification errors
         return False
 
 
@@ -183,7 +215,7 @@ async def get_user_by_email(db: AsyncSession, email: str) -> UserModel | None:
 
 async def get_user_by_wallet(db: AsyncSession, wallet_address: str) -> UserModel | None:
     result = await db.execute(
-        select(UserModel).where(UserModel.wallet_address == wallet_address.lower())
+        select(UserModel).where(UserModel.wallet_address == wallet_address)
     )
     return result.scalar_one_or_none()
 
@@ -213,7 +245,7 @@ async def upsert_wallet_user(db: AsyncSession, wallet_address: str) -> UserModel
     if user is None:
         short = wallet_address[:6] + "…" + wallet_address[-4:]
         user = UserModel(
-            wallet_address=wallet_address.lower(),
+            wallet_address=wallet_address,
             name=short,
             role="USER_ROLE_FREELANCER",
             status="USER_STATUS_ACTIVE",

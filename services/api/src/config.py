@@ -32,7 +32,6 @@ class Settings(BaseSettings):
     jwt_secret: str
     jwt_expiry_seconds: int = 3600
     api_key: str
-    siwe_domain: str = "skillbridge.agarwalvivek.com"
 
     # GitHub — OpenReview integration
     github_token: str = ""

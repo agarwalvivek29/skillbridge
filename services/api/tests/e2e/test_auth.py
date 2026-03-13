@@ -4,39 +4,37 @@ e2e tests for all four auth endpoints.
 Runs against in-memory SQLite via conftest.py fixture.
 """
 
+import base64
 from datetime import datetime, timezone
 
+import base58
+import nacl.signing
 import pytest
-from eth_account import Account
-from eth_account.messages import encode_defunct
 from httpx import AsyncClient
-from siwe import SiweMessage
 
 
-# Deterministic test wallet (never use with real funds)
-_PRIVATE_KEY = "0x4c0883a69102937d6231471b5dbb6e538eba2ef5cf0e6e91a74b5e3e1e3a3c34"
-_WALLET = Account.from_key(_PRIVATE_KEY).address
-_DOMAIN = "skillbridge.agarwalvivek.com"
+# Deterministic test keypair (never use with real funds)
+_SIGNING_KEY = nacl.signing.SigningKey.generate()
+_VERIFY_KEY = _SIGNING_KEY.verify_key
+_WALLET = base58.b58encode(_VERIFY_KEY.encode()).decode()
 
 
-def _build_siwe_message(nonce: str, wallet: str = _WALLET) -> str:
-    """Construct a fully-compliant EIP-4361 SIWE message string."""
-    msg = SiweMessage(
-        domain=_DOMAIN,
-        address=wallet,
-        statement="Sign in to SkillBridge",
-        uri=f"https://{_DOMAIN}",
-        version="1",
-        chain_id=1,
-        nonce=nonce,
-        issued_at=datetime.now(timezone.utc).isoformat(),
+def _build_solana_message(nonce: str, wallet: str = _WALLET) -> str:
+    """Build the Solana sign-in message for testing."""
+    issued_at = datetime.now(timezone.utc).isoformat()
+    return (
+        f"SkillBridge wants you to sign in with your Solana account:\n"
+        f"{wallet}\n"
+        f"\n"
+        f"Nonce: {nonce}\n"
+        f"Issued At: {issued_at}"
     )
-    return msg.prepare_message()
 
 
-def _sign(private_key: str, message: str) -> str:
-    msg = encode_defunct(text=message)
-    return Account.sign_message(msg, private_key=private_key).signature.hex()
+def _sign(message: str) -> str:
+    """Sign a message with the test Ed25519 key and return base64 signature."""
+    signed = _SIGNING_KEY.sign(message.encode("utf-8"))
+    return base64.b64encode(signed.signature).decode()
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -106,9 +104,9 @@ class TestWalletLogin:
         r = await client.get(f"/v1/auth/nonce?wallet_address={_WALLET}")
         nonce = r.json()["nonce"]
 
-        # Step 2: build a valid EIP-4361 SIWE message, sign and login
-        message = _build_siwe_message(nonce)
-        sig = _sign(_PRIVATE_KEY, message)
+        # Step 2: build message, sign with Ed25519 and login
+        message = _build_solana_message(nonce)
+        sig = _sign(message)
         resp = await client.post(
             "/v1/auth/wallet",
             json={"wallet_address": _WALLET, "signature": sig, "message": message},
@@ -122,8 +120,8 @@ class TestWalletLogin:
 
     @pytest.mark.asyncio
     async def test_rejects_expired_or_missing_nonce(self, client: AsyncClient):
-        message = _build_siwe_message("fakeNonce12345678901234567890123")
-        sig = _sign(_PRIVATE_KEY, message)
+        message = _build_solana_message("fakeNonce12345678901234567890123")
+        sig = _sign(message)
         resp = await client.post(
             "/v1/auth/wallet",
             json={"wallet_address": _WALLET, "signature": sig, "message": message},
@@ -134,8 +132,8 @@ class TestWalletLogin:
     async def test_nonce_deleted_after_use(self, client: AsyncClient):
         r = await client.get(f"/v1/auth/nonce?wallet_address={_WALLET}")
         nonce = r.json()["nonce"]
-        message = _build_siwe_message(nonce)
-        sig = _sign(_PRIVATE_KEY, message)
+        message = _build_solana_message(nonce)
+        sig = _sign(message)
 
         # First use succeeds
         r1 = await client.post(
@@ -155,14 +153,19 @@ class TestWalletLogin:
     async def test_rejects_wrong_signature(self, client: AsyncClient):
         r = await client.get(f"/v1/auth/nonce?wallet_address={_WALLET}")
         nonce = r.json()["nonce"]
-        message = _build_siwe_message(nonce)
+        message = _build_solana_message(nonce)
 
         # Sign with a different key
-        other_key = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-        sig = _sign(other_key, message)
+        other_key = nacl.signing.SigningKey.generate()
+        other_signed = other_key.sign(message.encode("utf-8"))
+        wrong_sig = base64.b64encode(other_signed.signature).decode()
         resp = await client.post(
             "/v1/auth/wallet",
-            json={"wallet_address": _WALLET, "signature": sig, "message": message},
+            json={
+                "wallet_address": _WALLET,
+                "signature": wrong_sig,
+                "message": message,
+            },
         )
         assert resp.status_code == 401
 
@@ -350,14 +353,14 @@ class TestExpiredNonce:
         # Step 2: backdate the nonce in the DB
         await db_session.execute(
             update(AuthNonceModel)
-            .where(AuthNonceModel.wallet_address == _WALLET.lower())
+            .where(AuthNonceModel.wallet_address == _WALLET)
             .values(expires_at=datetime.now(timezone.utc) - timedelta(minutes=5))
         )
         await db_session.commit()
 
         # Step 3: attempt wallet login with the expired nonce
-        message = _build_siwe_message(nonce)
-        sig = _sign(_PRIVATE_KEY, message)
+        message = _build_solana_message(nonce)
+        sig = _sign(message)
         resp = await client.post(
             "/v1/auth/wallet",
             json={"wallet_address": _WALLET, "signature": sig, "message": message},

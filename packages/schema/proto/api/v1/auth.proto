@@ -8,7 +8,7 @@ option go_package = "github.com/agarwalvivek29/skillbridge/packages/schema/gener
 
 // ─── Domain Entity ────────────────────────────────────────────────────────────
 
-// Ephemeral nonce issued for SIWE (Sign-In with Ethereum).
+// Ephemeral nonce issued for Solana wallet message signing.
 // Stored in DB keyed by wallet_address, deleted on successful auth.
 message AuthNonce {
   string wallet_address = 1;
@@ -32,7 +32,7 @@ message GetNonceResponse {
 message WalletLoginRequest {
   string wallet_address = 1;
   string signature = 2;
-  // The full SIWE message that was signed
+  // The full message that was signed by the Solana wallet
   string message = 3;
 }
 

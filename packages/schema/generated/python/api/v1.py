@@ -114,8 +114,8 @@ class UserRole(betterproto.Enum):
 @dataclass
 class AuthNonce(betterproto.Message):
     """
-    Ephemeral nonce issued for SIWE (Sign-In with Ethereum). Stored in DB keyed
-    by wallet_address, deleted on successful auth.
+    Ephemeral nonce issued for Solana wallet message signing. Stored in DB
+    keyed by wallet_address, deleted on successful auth.
     """
 
     wallet_address: str = betterproto.string_field(1)
@@ -142,7 +142,7 @@ class WalletLoginRequest(betterproto.Message):
 
     wallet_address: str = betterproto.string_field(1)
     signature: str = betterproto.string_field(2)
-    # The full SIWE message that was signed
+    # The full message that was signed by the Solana wallet
     message: str = betterproto.string_field(3)
 
 

@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Ephemeral nonce issued for SIWE (Sign-In with Ethereum).
+// Ephemeral nonce issued for Solana wallet message signing.
 // Stored in DB keyed by wallet_address, deleted on successful auth.
 type AuthNonce struct {
 	state         protoimpl.MessageState
@@ -197,7 +197,7 @@ type WalletLoginRequest struct {
 
 	WalletAddress string `protobuf:"bytes,1,opt,name=wallet_address,json=walletAddress,proto3" json:"wallet_address,omitempty"`
 	Signature     string `protobuf:"bytes,2,opt,name=signature,proto3" json:"signature,omitempty"`
-	// The full SIWE message that was signed
+	// The full message that was signed by the Solana wallet
 	Message string `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
 }
 

@@ -11,6 +11,8 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+import base58
+
 from src.domain import auth as auth_domain
 from src.infra.database import get_db
 from src.infra.models import AuthNonceModel
@@ -75,16 +77,30 @@ class AuthResponse(BaseModel):
 
 @router.get("/nonce", response_model=NonceResponse)
 async def get_nonce(
-    wallet_address: str = Query(..., description="EVM wallet address (0x...)"),
+    wallet_address: str = Query(..., description="Solana wallet address (base58)"),
     db: AsyncSession = Depends(get_db),
 ) -> NonceResponse:
-    """Step 1 of SIWE: generate a one-time nonce for the given wallet address."""
-    if not wallet_address.startswith("0x") or len(wallet_address) != 42:
+    """Step 1 of wallet auth: generate a one-time nonce for the given Solana wallet address."""
+    # Solana base58 addresses are 32-44 characters
+    if not wallet_address or len(wallet_address) < 32 or len(wallet_address) > 44:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={
                 "code": "INVALID_WALLET_ADDRESS",
-                "message": "Must be a 42-char hex address starting with 0x",
+                "message": "Must be a valid base58 Solana address (32-44 characters)",
+            },
+        )
+    # Validate that it is valid base58
+    try:
+        decoded = base58.b58decode(wallet_address)
+        if len(decoded) != 32:
+            raise ValueError("Invalid public key length")
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "code": "INVALID_WALLET_ADDRESS",
+                "message": "Must be a valid base58 Solana address",
             },
         )
     record = await auth_domain.create_nonce(db, wallet_address)
@@ -99,11 +115,11 @@ async def wallet_login(
     body: WalletLoginRequest,
     db: AsyncSession = Depends(get_db),
 ) -> AuthResponse:
-    """Step 2 of SIWE: verify signature, delete nonce, upsert user, issue JWT."""
+    """Step 2 of wallet auth: verify Solana Ed25519 signature, delete nonce, upsert user, issue JWT."""
     # Fetch nonce record WITHOUT consuming it yet — consume only after sig is verified
     result = await db.execute(
         select(AuthNonceModel).where(
-            AuthNonceModel.wallet_address == body.wallet_address.lower()
+            AuthNonceModel.wallet_address == body.wallet_address
         )
     )
     nonce_record = result.scalar_one_or_none()
@@ -116,8 +132,8 @@ async def wallet_login(
             },
         )
 
-    # Verify signature BEFORE consuming the nonce (prevents DoS nonce-burning)
-    valid = auth_domain.verify_siwe_signature(
+    # Verify Ed25519 signature BEFORE consuming the nonce (prevents DoS nonce-burning)
+    valid = auth_domain.verify_solana_signature(
         wallet_address=body.wallet_address,
         message=body.message,
         signature=body.signature,
