@@ -89,22 +89,22 @@ type EscrowContract struct {
 
 	Id    string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	GigId string `protobuf:"bytes,2,opt,name=gig_id,json=gigId,proto3" json:"gig_id,omitempty"`
-	// Deployed GigEscrow contract address on Base L2
+	// Deployed escrow PDA address on Solana (base58 format)
 	ChainAddress string `protobuf:"bytes,3,opt,name=chain_address,json=chainAddress,proto3" json:"chain_address,omitempty"`
-	// "base-mainnet" or "base-sepolia"
+	// "solana-mainnet-beta", "solana-devnet", or "solana-localnet"
 	Network string `protobuf:"bytes,4,opt,name=network,proto3" json:"network,omitempty"`
-	// Total amount locked — in wei (ETH) or 6-decimal units (USDC)
+	// Total amount locked — in lamports (SOL) or 6-decimal units (USDC)
 	TotalAmount string `protobuf:"bytes,5,opt,name=total_amount,json=totalAmount,proto3" json:"total_amount,omitempty"`
 	// Amount released so far
 	ReleasedAmount string       `protobuf:"bytes,6,opt,name=released_amount,json=releasedAmount,proto3" json:"released_amount,omitempty"`
 	Status         EscrowStatus `protobuf:"varint,7,opt,name=status,proto3,enum=contracts.v1.EscrowStatus" json:"status,omitempty"`
-	// ETH: empty string (native asset). USDC: ERC-20 contract address on Base L2.
+	// SOL: empty string (native asset). USDC: SPL token mint address on Solana (base58).
 	TokenAddress string `protobuf:"bytes,8,opt,name=token_address,json=tokenAddress,proto3" json:"token_address,omitempty"`
 	// Platform fee in basis points (500 = 5%). Stored in the contract at deploy time.
 	PlatformFeeBasisPoints int32 `protobuf:"varint,9,opt,name=platform_fee_basis_points,json=platformFeeBasisPoints,proto3" json:"platform_fee_basis_points,omitempty"`
 	// Computed platform fee amount (total_amount * platform_fee_basis_points / 10000)
 	PlatformFeeAmount string `protobuf:"bytes,10,opt,name=platform_fee_amount,json=platformFeeAmount,proto3" json:"platform_fee_amount,omitempty"`
-	// Wallet that receives the platform fee on each completeMilestone call
+	// Solana wallet address (base58) that receives the platform fee on each completeMilestone call
 	PlatformFeeRecipient string `protobuf:"bytes,11,opt,name=platform_fee_recipient,json=platformFeeRecipient,proto3" json:"platform_fee_recipient,omitempty"`
 	// Transaction hash of the funding tx
 	FundingTxHash string                 `protobuf:"bytes,12,opt,name=funding_tx_hash,json=fundingTxHash,proto3" json:"funding_tx_hash,omitempty"`
