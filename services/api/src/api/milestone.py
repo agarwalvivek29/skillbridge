@@ -4,7 +4,7 @@ api/milestone.py — Milestone approval and fund release endpoints.
 Endpoints:
   POST /v1/milestones/{milestone_id}/approve          approve milestone (CLIENT role)
   POST /v1/milestones/{milestone_id}/request-revision request changes (CLIENT role)
-  GET  /v1/milestones/{milestone_id}/release-tx       get calldata for on-chain release (CLIENT role)
+  GET  /v1/milestones/{milestone_id}/release-tx       get Solana instruction data for on-chain release (CLIENT role)
   POST /v1/milestones/{milestone_id}/confirm-release  record tx_hash after broadcast (CLIENT role)
 """
 
@@ -63,11 +63,19 @@ class MilestoneOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class AccountMeta(BaseModel):
+    pubkey: str | None
+    is_signer: bool
+    is_writable: bool
+    is_escrow_pda: bool = False
+
+
 class ReleaseTxOut(BaseModel):
-    contract_address: str
+    program_id: str
+    escrow_seeds: list[str]
     milestone_index: int
-    chain_id: int
-    calldata: str
+    cluster: str
+    accounts: list[AccountMeta]
 
 
 # ---------------------------------------------------------------------------
@@ -171,7 +179,7 @@ async def get_release_tx_endpoint(
     db: AsyncSession = Depends(get_db),
 ) -> ReleaseTxOut:
     """
-    Return ABI-encoded calldata for GigEscrow.completeMilestone(index).
+    Return Solana instruction data for the escrow program's complete_milestone instruction.
     CLIENT role only. Milestone must be APPROVED and gig must have a contract_address.
     """
     try:

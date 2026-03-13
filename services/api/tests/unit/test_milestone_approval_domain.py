@@ -14,8 +14,8 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from src.domain.gig import CreateGigInput, MilestoneInput, create_gig
 from src.domain.milestone_approval import (
     MilestoneApprovalError,
-    _encode_complete_milestone_calldata,
     approve_milestone,
+    build_release_instruction_data,
     confirm_release,
     get_release_tx,
     request_revision,
@@ -26,6 +26,7 @@ from src.infra.models import (
     GigModel,
     MilestoneModel,
     NotificationModel,
+    UserModel,
 )
 
 _TEST_DB_URL = "sqlite+aiosqlite:///:memory:"
@@ -110,30 +111,89 @@ async def _set_milestone_status(
 
 
 # ---------------------------------------------------------------------------
-# _encode_complete_milestone_calldata (pure, no DB)
+# build_release_instruction_data (pure, no DB)
 # ---------------------------------------------------------------------------
 
+# A known base58-encoded Solana program ID for testing
+_TEST_PROGRAM_ID = "11111111111111111111111111111111"
 
-class TestEncodeCalldata:
-    def test_index_zero(self):
-        calldata = _encode_complete_milestone_calldata(0)
-        assert calldata.startswith("0x")
-        # 4-byte selector + 32-byte index = 36 bytes = 72 hex chars + "0x" prefix
-        assert len(calldata) == 2 + 72
-        assert calldata[:10] == "0x5a36fb08"
-        # index 0 → last 64 hex chars are all zeros
-        assert calldata[10:] == "0" * 64
 
-    def test_index_one(self):
-        calldata = _encode_complete_milestone_calldata(1)
-        assert calldata.startswith("0x5a36fb08")
-        # 32-byte big-endian 1 → 63 zeros then '01'
-        assert calldata[10:] == "0" * 62 + "01"
+class TestBuildReleaseInstructionData:
+    def test_basic_structure_with_all_wallets(self):
+        result = build_release_instruction_data(
+            gig_id="gig-1",
+            milestone_index=0,
+            freelancer_wallet="FrEeLaNcErPubKey1111111111111111111111111111",
+            client_wallet="CLiEnTwAlLeTpUbKeY111111111111111111111111111",
+            program_id=_TEST_PROGRAM_ID,
+        )
+        assert result["program_id"] == _TEST_PROGRAM_ID
+        assert result["milestone_index"] == 0
+        assert isinstance(result["escrow_seeds"], list)
+        assert result["escrow_seeds"][0] == "escrow"
+        assert isinstance(result["accounts"], list)
+        # escrow_pda + client_signer + freelancer + system_program = 4 accounts
+        assert len(result["accounts"]) == 4
 
-    def test_index_large(self):
-        calldata = _encode_complete_milestone_calldata(255)
-        assert calldata.startswith("0x5a36fb08")
-        assert calldata[10:] == "0" * 62 + "ff"
+    def test_no_freelancer_wallet(self):
+        result = build_release_instruction_data(
+            gig_id="gig-2",
+            milestone_index=1,
+            freelancer_wallet=None,
+            client_wallet="CLiEnTwAlLeTpUbKeY111111111111111111111111111",
+            program_id=_TEST_PROGRAM_ID,
+        )
+        # escrow_pda + client_signer + system_program = 3 accounts
+        assert len(result["accounts"]) == 3
+
+    def test_no_client_wallet(self):
+        result = build_release_instruction_data(
+            gig_id="gig-2",
+            milestone_index=1,
+            freelancer_wallet="FrEeLaNcErPubKey1111111111111111111111111111",
+            client_wallet=None,
+            program_id=_TEST_PROGRAM_ID,
+        )
+        # escrow_pda + freelancer + system_program = 3 accounts
+        assert len(result["accounts"]) == 3
+
+    def test_escrow_pda_placeholder_is_first_account(self):
+        result = build_release_instruction_data(
+            gig_id="gig-3",
+            milestone_index=0,
+            freelancer_wallet="SomeWallet111111111111111111111111111111111",
+            client_wallet="CLiEnTwAlLeTpUbKeY111111111111111111111111111",
+            program_id=_TEST_PROGRAM_ID,
+        )
+        assert result["accounts"][0]["is_escrow_pda"] is True
+        assert result["accounts"][0]["pubkey"] is None
+        assert result["accounts"][0]["is_writable"] is True
+
+    def test_client_is_signer(self):
+        result = build_release_instruction_data(
+            gig_id="gig-4",
+            milestone_index=0,
+            freelancer_wallet="FrEeLaNcErPubKey1111111111111111111111111111",
+            client_wallet="CLiEnTwAlLeTpUbKeY111111111111111111111111111",
+            program_id=_TEST_PROGRAM_ID,
+        )
+        # client should be second account and a signer
+        client_account = result["accounts"][1]
+        assert (
+            client_account["pubkey"] == "CLiEnTwAlLeTpUbKeY111111111111111111111111111"
+        )
+        assert client_account["is_signer"] is True
+
+    def test_escrow_seeds_contain_gig_id_hex(self):
+        result = build_release_instruction_data(
+            gig_id="gig-5",
+            milestone_index=0,
+            freelancer_wallet=None,
+            client_wallet=None,
+            program_id=_TEST_PROGRAM_ID,
+        )
+        assert result["escrow_seeds"][0] == "escrow"
+        assert result["escrow_seeds"][1] == "gig-5".encode("utf-8").hex()
 
 
 # ---------------------------------------------------------------------------
@@ -304,26 +364,95 @@ class TestRequestRevision:
 
 class TestGetReleaseTx:
     @pytest.mark.asyncio
-    async def test_returns_calldata_for_approved_milestone(self, db: AsyncSession):
+    async def test_returns_solana_instruction_data_for_approved_milestone(
+        self, db: AsyncSession, monkeypatch
+    ):
         gig_id, milestone_id = await _setup_in_progress_gig(db)
         await _set_milestone_status(db, milestone_id, "APPROVED")
-        # Set a contract address on the gig
+        # Set a contract address on the gig (Solana base58 pubkey)
         await db.execute(
             sa_update(GigModel)
             .where(GigModel.id == gig_id)
-            .values(contract_address="0xABCDEF1234567890AbcdEF1234567890aBcdef12")
+            .values(contract_address="EscrowOnChainAddr11111111111111111111111111")
         )
         await db.flush()
 
+        # Create user records with wallet addresses
+        db.add(
+            UserModel(
+                id=_CLIENT_ID,
+                name="Client",
+                wallet_address="CLiEnTwAlLeT1111111111111111111111111111111",
+            )
+        )
+        db.add(
+            UserModel(
+                id=_FREELANCER_ID,
+                name="Freelancer",
+                wallet_address="FrEeLaNcErWaLlEt1111111111111111111111111",
+            )
+        )
+        await db.flush()
+
+        # Patch settings for Solana config
+        from src.config import settings
+
+        monkeypatch.setattr(settings, "escrow_program_id", _TEST_PROGRAM_ID)
+        monkeypatch.setattr(settings, "solana_cluster", "devnet")
+
         result = await get_release_tx(db, milestone_id, _CLIENT_ID)
 
-        assert (
-            result["contract_address"] == "0xABCDEF1234567890AbcdEF1234567890aBcdef12"
-        )
+        assert result["program_id"] == _TEST_PROGRAM_ID
+        assert isinstance(result["escrow_seeds"], list)
+        assert result["escrow_seeds"][0] == "escrow"
         assert result["milestone_index"] == 0  # order=1, index=0
-        assert result["calldata"].startswith("0x5a36fb08")
-        assert len(result["calldata"]) == 2 + 72
-        assert isinstance(result["chain_id"], int)
+        assert result["cluster"] == "devnet"
+        assert isinstance(result["accounts"], list)
+        # escrow_pda + client_signer + freelancer + system_program = 4
+        assert len(result["accounts"]) == 4
+
+    @pytest.mark.asyncio
+    async def test_client_signer_in_accounts(self, db: AsyncSession, monkeypatch):
+        gig_id, milestone_id = await _setup_in_progress_gig(db)
+        await _set_milestone_status(db, milestone_id, "APPROVED")
+        await db.execute(
+            sa_update(GigModel)
+            .where(GigModel.id == gig_id)
+            .values(contract_address="EscrowOnChainAddr11111111111111111111111111")
+        )
+        await db.flush()
+
+        db.add(
+            UserModel(
+                id=_CLIENT_ID,
+                name="Client",
+                wallet_address="CLiEnTwAlLeT1111111111111111111111111111111",
+            )
+        )
+        db.add(
+            UserModel(
+                id=_FREELANCER_ID,
+                name="Freelancer",
+                wallet_address="FrEeLaNcErWaLlEt1111111111111111111111111",
+            )
+        )
+        await db.flush()
+
+        from src.config import settings
+
+        monkeypatch.setattr(settings, "escrow_program_id", _TEST_PROGRAM_ID)
+        monkeypatch.setattr(settings, "solana_cluster", "devnet")
+
+        result = await get_release_tx(db, milestone_id, _CLIENT_ID)
+
+        # client should be a signer in accounts
+        client_accounts = [
+            a
+            for a in result["accounts"]
+            if a.get("pubkey") == "CLiEnTwAlLeT1111111111111111111111111111111"
+        ]
+        assert len(client_accounts) == 1
+        assert client_accounts[0]["is_signer"] is True
 
     @pytest.mark.asyncio
     async def test_disputed_raises_409(self, db: AsyncSession):
@@ -332,7 +461,7 @@ class TestGetReleaseTx:
         await db.execute(
             sa_update(GigModel)
             .where(GigModel.id == gig_id)
-            .values(contract_address="0xABCDEF1234567890AbcdEF1234567890aBcdef12")
+            .values(contract_address="SomeSolanaAddress111111111111111111111111111")
         )
         await db.flush()
 
@@ -361,6 +490,26 @@ class TestGetReleaseTx:
             await get_release_tx(db, milestone_id, _CLIENT_ID)
 
         assert exc_info.value.code == "NO_CONTRACT_ADDRESS"
+
+    @pytest.mark.asyncio
+    async def test_no_program_id_raises_error(self, db: AsyncSession, monkeypatch):
+        gig_id, milestone_id = await _setup_in_progress_gig(db)
+        await _set_milestone_status(db, milestone_id, "APPROVED")
+        await db.execute(
+            sa_update(GigModel)
+            .where(GigModel.id == gig_id)
+            .values(contract_address="SomeSolanaAddress111111111111111111111111111")
+        )
+        await db.flush()
+
+        from src.config import settings
+
+        monkeypatch.setattr(settings, "escrow_program_id", "")
+
+        with pytest.raises(MilestoneApprovalError) as exc_info:
+            await get_release_tx(db, milestone_id, _CLIENT_ID)
+
+        assert exc_info.value.code == "NO_PROGRAM_ID"
 
 
 # ---------------------------------------------------------------------------

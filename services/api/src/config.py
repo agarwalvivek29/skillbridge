@@ -38,10 +38,10 @@ class Settings(BaseSettings):
     github_webhook_secret: str = ""
     openreview_bot_login: str = "openreview-bot"
 
-    # Blockchain
-    base_rpc_url: str = "https://sepolia.base.org"
-    escrow_factory_address: str = ""
-    base_chain_id: int = 84532  # Base Sepolia testnet
+    # Blockchain (Solana)
+    solana_rpc_url: str = "http://localhost:8899"
+    escrow_program_id: str = ""
+    solana_cluster: str = "localnet"
 
     # AWS / S3 — REQUIRED for file upload functionality
     aws_access_key_id: str

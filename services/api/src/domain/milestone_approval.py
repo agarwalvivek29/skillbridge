@@ -4,7 +4,8 @@ domain/milestone_approval.py — Business logic for milestone approval and fund 
 Implements:
 - approve_milestone: CLIENT manually approves a milestone
 - request_revision: CLIENT requests changes on a milestone
-- get_release_tx: returns ABI-encoded calldata for GigEscrow.completeMilestone(index)
+- get_release_tx: returns Solana escrow seeds, program_id, and accounts so the
+  frontend can derive the PDA via PublicKey.findProgramAddress() and build the tx
 - confirm_release: records tx_hash after client broadcasts the on-chain tx
 
 No FastAPI imports. All domain logic lives here; routers stay thin.
@@ -14,6 +15,7 @@ from __future__ import annotations
 
 import json
 import logging
+from typing import Any
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -24,6 +26,7 @@ from src.infra.models import (
     GigModel,
     MilestoneModel,
     NotificationModel,
+    UserModel,
 )
 
 logger = logging.getLogger(__name__)
@@ -39,8 +42,8 @@ _NOTIFICATION_TYPE_MILESTONE_APPROVED = "NOTIFICATION_TYPE_MILESTONE_APPROVED"
 _NOTIFICATION_TYPE_REVISION_REQUESTED = "NOTIFICATION_TYPE_REVISION_REQUESTED"
 _NOTIFICATION_TYPE_FUNDS_RELEASED = "NOTIFICATION_TYPE_FUNDS_RELEASED"
 
-# keccak256("completeMilestone(uint256)")[:4] = 0x5a36fb08
-_COMPLETE_MILESTONE_SELECTOR = bytes.fromhex("5a36fb08")
+# Well-known Solana program IDs
+_SYSTEM_PROGRAM_ID = "11111111111111111111111111111111"
 
 # ---------------------------------------------------------------------------
 # Custom exception
@@ -115,17 +118,59 @@ def _notify_freelancer(
     )
 
 
-def _encode_complete_milestone_calldata(milestone_index: int) -> str:
+def build_release_instruction_data(
+    gig_id: str,
+    milestone_index: int,
+    freelancer_wallet: str | None,
+    client_wallet: str | None,
+    program_id: str,
+) -> dict[str, Any]:
     """
-    ABI-encode a call to completeMilestone(uint256 index).
+    Build Solana instruction data for the escrow program's complete_milestone
+    instruction.
 
-    Encoding:
-      - 4-byte selector: 5a36fb08
-      - 32-byte big-endian uint256: milestone_index
-    Returns a 0x-prefixed hex string (36 bytes = 72 hex chars + 2 for '0x').
+    Instead of deriving the PDA on the backend (which cannot correctly replicate
+    Solana's findProgramAddress), this returns the seeds and program_id so the
+    frontend can call PublicKey.findProgramAddress() itself.
+
+    Returns a dict with:
+      - program_id: the escrow program (base58)
+      - escrow_seeds: list of seed strings for PDA derivation (["escrow", gig_id])
+      - milestone_index: 0-based index
+      - accounts: ordered list of account metas the instruction expects
     """
-    encoded_index = milestone_index.to_bytes(32, "big")
-    return "0x" + (_COMPLETE_MILESTONE_SELECTOR + encoded_index).hex()
+    gig_id_bytes_hex = gig_id.encode("utf-8").hex()
+
+    accounts: list[dict[str, Any]] = [
+        # escrow PDA — derived by frontend from seeds + program_id
+        {
+            "pubkey": None,
+            "is_signer": False,
+            "is_writable": True,
+            "is_escrow_pda": True,
+        },
+    ]
+
+    if client_wallet:
+        accounts.append(
+            {"pubkey": client_wallet, "is_signer": True, "is_writable": True}
+        )
+
+    if freelancer_wallet:
+        accounts.append(
+            {"pubkey": freelancer_wallet, "is_signer": False, "is_writable": True}
+        )
+
+    accounts.append(
+        {"pubkey": _SYSTEM_PROGRAM_ID, "is_signer": False, "is_writable": False}
+    )
+
+    return {
+        "program_id": program_id,
+        "escrow_seeds": ["escrow", gig_id_bytes_hex],
+        "milestone_index": milestone_index,
+        "accounts": accounts,
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -254,14 +299,17 @@ async def get_release_tx(
     client_id: str,
 ) -> dict:
     """
-    Return ABI-encoded calldata for GigEscrow.completeMilestone(index).
+    Return Solana instruction data for the escrow program's complete_milestone
+    instruction.
 
     Validates:
     - Milestone exists and caller is the gig's client
     - Milestone is APPROVED (not DISPUTED or any other status)
-    - Gig has a contract_address set
+    - Gig has a contract_address set (used as the on-chain escrow account)
+    - Escrow program ID is configured
 
-    Returns dict with: contract_address, milestone_index, chain_id, calldata
+    Returns dict with: program_id, escrow_seeds, milestone_index, cluster, accounts.
+    The frontend derives the PDA via PublicKey.findProgramAddress(escrow_seeds, program_id).
     """
     milestone, gig = await _fetch_milestone_and_gig(db, milestone_id, client_id)
 
@@ -283,22 +331,53 @@ async def get_release_tx(
             "This gig does not have a deployed escrow contract address",
         )
 
+    if not settings.escrow_program_id:
+        raise MilestoneApprovalError(
+            "NO_PROGRAM_ID",
+            "Escrow program ID is not configured",
+        )
+
+    # Look up freelancer wallet from the user record
+    freelancer_wallet: str | None = None
+    if gig.freelancer_id:
+        freelancer_result = await db.execute(
+            select(UserModel).where(UserModel.id == gig.freelancer_id)
+        )
+        freelancer_user = freelancer_result.scalar_one_or_none()
+        if freelancer_user:
+            freelancer_wallet = freelancer_user.wallet_address
+
+    # Look up client wallet from the user record
+    client_wallet: str | None = None
+    client_result = await db.execute(select(UserModel).where(UserModel.id == client_id))
+    client_user = client_result.scalar_one_or_none()
+    if client_user:
+        client_wallet = client_user.wallet_address
+
     # Contract is 0-indexed; DB order is 1-indexed
     milestone_index = milestone.order - 1
-    calldata = _encode_complete_milestone_calldata(milestone_index)
+
+    instruction_data = build_release_instruction_data(
+        gig_id=gig.id,
+        milestone_index=milestone_index,
+        freelancer_wallet=freelancer_wallet,
+        client_wallet=client_wallet,
+        program_id=settings.escrow_program_id,
+    )
 
     logger.info(
-        "release-tx generated milestone_id=%s index=%d contract=%s",
+        "release-tx generated milestone_id=%s index=%d program=%s",
         milestone_id,
         milestone_index,
-        gig.contract_address,
+        settings.escrow_program_id,
     )
 
     return {
-        "contract_address": gig.contract_address,
-        "milestone_index": milestone_index,
-        "chain_id": settings.base_chain_id,
-        "calldata": calldata,
+        "program_id": instruction_data["program_id"],
+        "escrow_seeds": instruction_data["escrow_seeds"],
+        "milestone_index": instruction_data["milestone_index"],
+        "cluster": settings.solana_cluster,
+        "accounts": instruction_data["accounts"],
     }
 
 
