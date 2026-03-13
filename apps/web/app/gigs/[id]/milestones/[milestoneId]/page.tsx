@@ -11,8 +11,7 @@ import {
   MessageSquare,
   ArrowRight,
 } from "lucide-react";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { useConnection } from "@solana/wallet-adapter-react";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { Transaction } from "@solana/web3.js";
 import { AuthGuard } from "@/components/layout/AuthGuard";
 import {
@@ -90,16 +89,18 @@ function MilestoneContent() {
       setApproveOpen(false);
 
       // API returns a base64-encoded serialized Solana transaction
-      const transaction = Transaction.from(
-        Buffer.from(calldata.serialized_tx, "base64"),
+      const txBytes = Uint8Array.from(atob(calldata.serialized_tx), (c) =>
+        c.charCodeAt(0),
       );
+      const transaction = Transaction.from(txBytes);
       const signed = await signTransaction(transaction);
       const rawTx = signed.serialize();
       const signature = await connection.sendRawTransaction(rawTx);
       setTxHash(signature);
 
+      const latestBlockhash = await connection.getLatestBlockhash("confirmed");
       const confirmation = await connection.confirmTransaction(
-        signature,
+        { signature, ...latestBlockhash },
         "confirmed",
       );
       if (confirmation.value.err) {

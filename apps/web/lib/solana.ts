@@ -1,6 +1,6 @@
 import { clusterApiUrl } from "@solana/web3.js";
 
-export type SolanaCluster = "mainnet-beta" | "devnet" | "localnet";
+export type SolanaCluster = "mainnet-beta" | "devnet" | "testnet" | "localnet";
 
 export function getSolanaEndpoint(): string {
   return process.env.NEXT_PUBLIC_SOLANA_RPC_URL || clusterApiUrl("devnet");

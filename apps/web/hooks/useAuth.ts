@@ -76,7 +76,7 @@ export function useAuth(): UseAuthReturn {
 
       const encodedMessage = new TextEncoder().encode(message);
       const signatureBytes = await signMessage(encodedMessage);
-      const signature = Buffer.from(signatureBytes).toString("base64");
+      const signature = btoa(String.fromCharCode(...signatureBytes));
 
       setStep("verify");
       const result = await authenticateSiwe(message, signature);

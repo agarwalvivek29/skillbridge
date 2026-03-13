@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
+import { WalletReadyState } from "@solana/wallet-adapter-base";
 import { Wallet, Mail, ArrowRight, Shield, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -44,7 +45,9 @@ export default function AuthPage() {
     }
   }, [connected, publicKey, step, reset]);
 
-  const hasWallet = typeof window !== "undefined" && wallets.length > 0;
+  const hasWallet =
+    typeof window !== "undefined" &&
+    wallets.some((w) => w.readyState === WalletReadyState.Installed);
 
   const address = publicKey?.toBase58();
 

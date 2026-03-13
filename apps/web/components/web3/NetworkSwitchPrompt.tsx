@@ -7,6 +7,7 @@ import { getSolanaCluster } from "@/lib/solana";
 const CLUSTER_LABELS: Record<string, string> = {
   "mainnet-beta": "Mainnet",
   devnet: "Devnet",
+  testnet: "Testnet",
   localnet: "Localnet",
 };
 

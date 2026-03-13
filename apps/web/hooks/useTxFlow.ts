@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { useConnection } from "@solana/wallet-adapter-react";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { Transaction } from "@solana/web3.js";
 
 type TxState = "idle" | "pending" | "confirming" | "success" | "error";
@@ -44,8 +43,10 @@ export function useTxFlow(): UseTxFlowReturn {
         setTxHash(signature);
         setState("confirming");
 
+        const latestBlockhash =
+          await connection.getLatestBlockhash("confirmed");
         const confirmation = await connection.confirmTransaction(
-          signature,
+          { signature, ...latestBlockhash },
           "confirmed",
         );
         if (confirmation.value.err) {
@@ -65,7 +66,8 @@ export function useTxFlow(): UseTxFlowReturn {
 
   const executeSerialized = useCallback(
     async (serializedTx: string) => {
-      const tx = Transaction.from(Buffer.from(serializedTx, "base64"));
+      const bytes = Uint8Array.from(atob(serializedTx), (c) => c.charCodeAt(0));
+      const tx = Transaction.from(bytes);
       await sendAndConfirm(tx);
     },
     [sendAndConfirm],
