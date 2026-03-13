@@ -1,18 +1,12 @@
 import { CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { getExplorerUrl } from "@/lib/solana";
 
 interface TxSuccessProps {
   txHash: string;
   onContinue?: () => void;
   className?: string;
-}
-
-function getExplorerUrl(hash: string) {
-  const chainId = Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID ?? 84532);
-  const base =
-    chainId === 8453 ? "https://basescan.org" : "https://sepolia.basescan.org";
-  return `${base}/tx/${hash}`;
 }
 
 export function TxSuccess({ txHash, onContinue, className }: TxSuccessProps) {
@@ -25,12 +19,12 @@ export function TxSuccess({ txHash, onContinue, className }: TxSuccessProps) {
         Transaction confirmed
       </p>
       <a
-        href={getExplorerUrl(txHash)}
+        href={getExplorerUrl("tx", txHash)}
         target="_blank"
         rel="noopener noreferrer"
         className="mt-1 text-sm text-primary-600 underline hover:text-primary-700"
       >
-        View on BaseScan
+        View on Solana Explorer
       </a>
       {onContinue && (
         <Button

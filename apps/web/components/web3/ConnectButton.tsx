@@ -1,28 +1,30 @@
 "use client";
 
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { Wallet } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { WalletStatus } from "./WalletStatus";
 
 export function ConnectButton() {
-  const { address, isConnected } = useAccount();
-  const { connect, connectors, isPending } = useConnect();
-  const { disconnect } = useDisconnect();
+  const { publicKey, connected, connecting, disconnect } = useWallet();
+  const { setVisible } = useWalletModal();
 
-  if (isConnected && address) {
-    return <WalletStatus address={address} onDisconnect={() => disconnect()} />;
+  if (connected && publicKey) {
+    return (
+      <WalletStatus
+        address={publicKey.toBase58()}
+        onDisconnect={() => disconnect()}
+      />
+    );
   }
 
   return (
     <Button
       variant="web3"
       size="sm"
-      loading={isPending}
-      onClick={() => {
-        const connector = connectors[0];
-        if (connector) connect({ connector });
-      }}
+      loading={connecting}
+      onClick={() => setVisible(true)}
     >
       <Wallet className="h-4 w-4" />
       Connect Wallet

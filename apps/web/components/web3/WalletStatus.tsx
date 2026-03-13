@@ -1,21 +1,18 @@
 "use client";
 
-import { useAccount } from "wagmi";
 import { LogOut } from "lucide-react";
 import { AddressDisplay } from "./AddressDisplay";
-import { ChainBadge } from "./ChainBadge";
+import { ClusterBadge } from "./ClusterBadge";
 
 interface WalletStatusProps {
-  address: `0x${string}`;
+  address: string;
   onDisconnect: () => void;
 }
 
 export function WalletStatus({ address, onDisconnect }: WalletStatusProps) {
-  const { chain } = useAccount();
-
   return (
     <div className="flex items-center gap-2">
-      {chain && <ChainBadge chainId={chain.id} chainName={chain.name} />}
+      <ClusterBadge />
       <AddressDisplay address={address} />
       <button
         onClick={onDisconnect}

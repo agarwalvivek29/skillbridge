@@ -45,12 +45,12 @@ const faqItems = [
   {
     question: "Which wallets are supported?",
     answer:
-      "We support MetaMask, Coinbase Wallet, and WalletConnect-compatible wallets. You can also sign up with email if you prefer traditional authentication — you'll need a wallet only when receiving or sending funds.",
+      "We support Phantom, Solflare, Backpack, and other Solana-compatible wallets. You can also sign up with email if you prefer traditional authentication — you'll need a wallet only when receiving or sending funds.",
   },
   {
     question: "What blockchain does SkillBridge use?",
     answer:
-      "SkillBridge runs on Base L2, an Ethereum Layer 2 built by Coinbase. Base offers near-instant transactions with gas fees around $0.01, making micro-payments for milestones practical.",
+      "SkillBridge runs on Solana, a high-performance blockchain with sub-second finality and transaction fees under $0.01, making micro-payments for milestones practical.",
   },
 ];
 

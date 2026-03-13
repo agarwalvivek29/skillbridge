@@ -1,11 +1,10 @@
 export interface EscrowTx {
-  to: string;
-  data: string;
-  value: string;
+  /** Base64-encoded serialized Solana transaction */
+  serialized_tx: string;
 }
 
 export interface EscrowInfo {
-  contract_address: string | null;
+  program_address: string | null;
   total_funded: string;
   balance: string;
   token: string;

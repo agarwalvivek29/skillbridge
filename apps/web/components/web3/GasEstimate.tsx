@@ -1,26 +1,22 @@
 import { Fuel } from "lucide-react";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { cn } from "@/lib/utils";
-import { formatEther } from "viem";
 
 interface GasEstimateProps {
-  gasEstimate: bigint;
-  gasPrice: bigint;
-  ethUsdPrice?: number;
+  /** Estimated fee in lamports */
+  feeLamports: bigint;
+  solUsdPrice?: number;
   className?: string;
 }
 
 export function GasEstimate({
-  gasEstimate,
-  gasPrice,
-  ethUsdPrice,
+  feeLamports,
+  solUsdPrice,
   className,
 }: GasEstimateProps) {
-  const costWei = gasEstimate * gasPrice;
-  const costEth = formatEther(costWei);
-  const costEthFormatted = parseFloat(costEth).toFixed(6);
-  const costUsd = ethUsdPrice
-    ? (parseFloat(costEth) * ethUsdPrice).toFixed(2)
-    : null;
+  const feeSol = Number(feeLamports) / LAMPORTS_PER_SOL;
+  const feeSolFormatted = feeSol.toFixed(6);
+  const feeUsd = solUsdPrice ? (feeSol * solUsdPrice).toFixed(4) : null;
 
   return (
     <div
@@ -31,8 +27,8 @@ export function GasEstimate({
     >
       <Fuel className="h-4 w-4 text-neutral-400" />
       <span className="text-neutral-600">
-        Est. gas: <span className="font-medium">{costEthFormatted} ETH</span>
-        {costUsd && <span className="text-neutral-400"> (~${costUsd})</span>}
+        Est. fee: <span className="font-medium">{feeSolFormatted} SOL</span>
+        {feeUsd && <span className="text-neutral-400"> (~${feeUsd})</span>}
       </span>
     </div>
   );
