@@ -16,7 +16,7 @@ from src.domain.auth import (
 from src.infra.database import Base
 
 TEST_DB_URL = "sqlite+aiosqlite:///:memory:"
-_WALLET = "0xabcdef1234567890abcdef1234567890abcdef12"
+_WALLET = "11111111111111111111111111111111"
 
 
 @pytest_asyncio.fixture
@@ -55,7 +55,7 @@ class TestCreateNonce:
 
     @pytest.mark.asyncio
     async def test_normalises_wallet_to_lowercase(self, db_session: AsyncSession):
-        mixed_case = "0xABCDEF1234567890ABCDEF1234567890ABCDEF12"
+        mixed_case = "ABCDef1234567890abcdef1234567890ab"
         record = await create_nonce(db_session, mixed_case)
         assert record.wallet_address == mixed_case.lower()
 
@@ -93,9 +93,7 @@ class TestConsumeNonce:
 
     @pytest.mark.asyncio
     async def test_returns_none_for_missing_nonce(self, db_session: AsyncSession):
-        result = await consume_nonce(
-            db_session, "0x0000000000000000000000000000000000000001"
-        )
+        result = await consume_nonce(db_session, "22222222222222222222222222222222")
         assert result is None
 
     @pytest.mark.asyncio
@@ -111,7 +109,7 @@ class TestConsumeNonce:
 
     @pytest.mark.asyncio
     async def test_normalises_wallet_on_lookup(self, db_session: AsyncSession):
-        mixed = "0xABCDEF1234567890ABCDEF1234567890ABCDEF12"
+        mixed = "ABCDef1234567890abcdef1234567890ab"
         await create_nonce(db_session, mixed)
         result = await consume_nonce(db_session, mixed.lower())
         assert result is not None

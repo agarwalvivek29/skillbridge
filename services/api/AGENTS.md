@@ -8,7 +8,7 @@
 ## Service Overview
 
 **Name**: `api`
-**Purpose**: The core backend for SkillBridge. Owns all business entities — Users, Gigs, Milestones, Submissions, Portfolio, and Disputes. Handles authentication (wallet SIWE + email/JWT), triggers smart contract calls on Base L2 for fund release, enqueues AI review jobs, and serves as the single source of truth for all mutable state.
+**Purpose**: The core backend for SkillBridge. Owns all business entities — Users, Gigs, Milestones, Submissions, Portfolio, and Disputes. Handles authentication (Solana wallet Ed25519 signing + email/JWT), triggers smart contract calls on Base L2 for fund release, enqueues AI review jobs, and serves as the single source of truth for all mutable state.
 **Language**: Python
 **Framework**: FastAPI
 **Created**: 2026-03-07
@@ -23,7 +23,7 @@
 - **Database**: PostgreSQL (via SQLAlchemy async + Alembic migrations)
 - **Queue**: Redis + Celery (producer only — enqueues review jobs for `ai-reviewer`)
 - **Blockchain**: web3.py (calls Base L2 smart contracts)
-- **Auth**: SIWE (Sign-In with Ethereum) for wallet auth; JWT (python-jose) for session tokens
+- **Auth**: Solana Ed25519 message signing (PyNaCl + base58) for wallet auth; JWT (python-jose) for session tokens
 - **File storage**: boto3 (S3 presigned URL generation)
 - **Protocol**: REST
 
@@ -82,8 +82,8 @@ See `.env.example` for all required variables.
 
 ### Exposes (REST)
 
-- `GET /v1/auth/nonce?wallet_address=<addr>` — generate SIWE nonce (public)
-- `POST /v1/auth/wallet` — SIWE wallet login, returns JWT (public)
+- `GET /v1/auth/nonce?wallet_address=<addr>` — generate nonce for Solana wallet auth (public)
+- `POST /v1/auth/wallet` — Solana Ed25519 wallet login, returns JWT (public)
 - `POST /v1/auth/email/register` — email registration, returns JWT (public)
 - `POST /v1/auth/email/login` — email/password login, returns JWT (public)
 - `GET/POST /v1/users` — user CRUD (auth required)
@@ -165,3 +165,4 @@ Agents may use any available MCP servers, skills, and tools as needed.
 
 - [ADR 0001](../../docs/adr/0001-monorepo-structure.md) — Monorepo structure
 - [ADR 0002](../../docs/adr/0002-tech-stack.md) — Tech stack decisions
+- [ADR 0003](../../docs/adr/0003-solana-auth.md) — Replace SIWE with Solana message signing
