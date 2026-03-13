@@ -2,6 +2,9 @@ use anchor_lang::prelude::*;
 use anchor_lang::system_program;
 use anchor_spl::token::{self, Token, TokenAccount, Transfer};
 
+// TODO: replace with your program's actual keypair address.
+// Run `solana-keygen grind --starts-with GIG:1` or `anchor keys list`
+// to obtain the deployed program ID, then paste it here.
 declare_id!("11111111111111111111111111111111");
 
 /// Maximum length of a gig_id string (used for account sizing).
@@ -124,6 +127,13 @@ pub mod gig_escrow {
 
         if escrow.token_mint.is_some() {
             // SPL token deposit
+            require!(
+                ctx.accounts.client_token_account.is_some()
+                    && ctx.accounts.vault_token_account.is_some()
+                    && ctx.accounts.token_program.is_some(),
+                EscrowError::MissingTokenAccount
+            );
+
             let client_token = ctx
                 .accounts
                 .client_token_account
@@ -140,6 +150,15 @@ pub mod gig_escrow {
                 .as_ref()
                 .ok_or(EscrowError::MissingTokenAccount)?;
 
+            // Validate SPL token account mint and owner
+            let mint = escrow.token_mint.unwrap();
+            require!(client_token.mint == mint, EscrowError::TokenMintMismatch);
+            require!(vault_token.mint == mint, EscrowError::TokenMintMismatch);
+            require!(
+                client_token.owner == ctx.accounts.client.key(),
+                EscrowError::TokenOwnerMismatch
+            );
+
             let transfer_accounts = Transfer {
                 from: client_token.to_account_info(),
                 to: vault_token.to_account_info(),
@@ -148,7 +167,22 @@ pub mod gig_escrow {
             let cpi_ctx = CpiContext::new(token_program.to_account_info(), transfer_accounts);
             token::transfer(cpi_ctx, amount)?;
         } else {
+            // Guard: reject SPL accounts on SOL-only escrows
+            require!(
+                ctx.accounts.client_token_account.is_none()
+                    && ctx.accounts.vault_token_account.is_none(),
+                EscrowError::UnexpectedTokenAccount
+            );
+
             // SOL deposit: transfer lamports from client to vault PDA
+            // Verify the client retains enough SOL for rent exemption after transfer
+            let rent = Rent::get()?;
+            let min_balance = rent.minimum_balance(ctx.accounts.client.data_len());
+            require!(
+                ctx.accounts.client.lamports() >= min_balance + amount,
+                EscrowError::InsufficientRentBalance
+            );
+
             system_program::transfer(
                 CpiContext::new(
                     ctx.accounts.system_program.to_account_info(),
@@ -204,6 +238,13 @@ pub mod gig_escrow {
 
         if escrow.token_mint.is_some() {
             // SPL token transfers
+            require!(
+                ctx.accounts.vault_token_account.is_some()
+                    && ctx.accounts.freelancer_token_account.is_some()
+                    && ctx.accounts.token_program.is_some(),
+                EscrowError::MissingTokenAccount
+            );
+
             let vault_token = ctx
                 .accounts
                 .vault_token_account
@@ -219,6 +260,18 @@ pub mod gig_escrow {
                 .token_program
                 .as_ref()
                 .ok_or(EscrowError::MissingTokenAccount)?;
+
+            // Validate SPL token account mint and owner
+            let mint = escrow.token_mint.unwrap();
+            require!(vault_token.mint == mint, EscrowError::TokenMintMismatch);
+            require!(
+                freelancer_token.mint == mint,
+                EscrowError::TokenMintMismatch
+            );
+            require!(
+                freelancer_token.owner == escrow.freelancer,
+                EscrowError::TokenOwnerMismatch
+            );
 
             // Pay freelancer
             let transfer_to_freelancer = Transfer {
@@ -242,6 +295,12 @@ pub mod gig_escrow {
                     .fee_recipient_token_account
                     .as_ref()
                     .ok_or(EscrowError::MissingTokenAccount)?;
+                require!(fee_token.mint == mint, EscrowError::TokenMintMismatch);
+                require!(
+                    fee_token.owner == escrow.fee_recipient,
+                    EscrowError::TokenOwnerMismatch
+                );
+
                 let transfer_fee = Transfer {
                     from: vault_token.to_account_info(),
                     to: fee_token.to_account_info(),
@@ -257,7 +316,23 @@ pub mod gig_escrow {
                 )?;
             }
         } else {
+            // Guard: reject SPL accounts on SOL-only escrows
+            require!(
+                ctx.accounts.vault_token_account.is_none()
+                    && ctx.accounts.freelancer_token_account.is_none()
+                    && ctx.accounts.fee_recipient_token_account.is_none(),
+                EscrowError::UnexpectedTokenAccount
+            );
+
             // SOL transfers from vault PDA
+            //
+            // Safety: `try_borrow_mut_lamports()` returns a RefMut<u64> to the
+            // account's lamport balance. We dereference it twice (`**`) to modify
+            // the underlying u64 value in-place. This is the standard Anchor/Solana
+            // pattern for direct lamport transfers from PDA-owned accounts without
+            // a CPI call to the System Program. The runtime will verify that total
+            // lamports are conserved across all accounts at the end of the instruction.
+            //
             // Pay freelancer
             **ctx
                 .accounts
@@ -382,6 +457,11 @@ pub mod gig_escrow {
         let vault_seeds: &[&[u8]] = &[b"vault", escrow_key.as_ref(), &[vault_bump]];
 
         if escrow.token_mint.is_some() {
+            require!(
+                ctx.accounts.vault_token_account.is_some() && ctx.accounts.token_program.is_some(),
+                EscrowError::MissingTokenAccount
+            );
+
             let vault_token = ctx
                 .accounts
                 .vault_token_account
@@ -393,12 +473,24 @@ pub mod gig_escrow {
                 .as_ref()
                 .ok_or(EscrowError::MissingTokenAccount)?;
 
+            // Validate SPL token account mint
+            let mint = escrow.token_mint.unwrap();
+            require!(vault_token.mint == mint, EscrowError::TokenMintMismatch);
+
             if freelancer_pay > 0 {
                 let freelancer_token = ctx
                     .accounts
                     .freelancer_token_account
                     .as_ref()
                     .ok_or(EscrowError::MissingTokenAccount)?;
+                require!(
+                    freelancer_token.mint == mint,
+                    EscrowError::TokenMintMismatch
+                );
+                require!(
+                    freelancer_token.owner == escrow.freelancer,
+                    EscrowError::TokenOwnerMismatch
+                );
                 let xfer = Transfer {
                     from: vault_token.to_account_info(),
                     to: freelancer_token.to_account_info(),
@@ -419,6 +511,11 @@ pub mod gig_escrow {
                     .client_token_account
                     .as_ref()
                     .ok_or(EscrowError::MissingTokenAccount)?;
+                require!(client_token.mint == mint, EscrowError::TokenMintMismatch);
+                require!(
+                    client_token.owner == escrow.client,
+                    EscrowError::TokenOwnerMismatch
+                );
                 let xfer = Transfer {
                     from: vault_token.to_account_info(),
                     to: client_token.to_account_info(),
@@ -434,7 +531,20 @@ pub mod gig_escrow {
                 )?;
             }
         } else {
+            // Guard: reject SPL accounts on SOL-only escrows
+            require!(
+                ctx.accounts.vault_token_account.is_none()
+                    && ctx.accounts.freelancer_token_account.is_none()
+                    && ctx.accounts.client_token_account.is_none(),
+                EscrowError::UnexpectedTokenAccount
+            );
+
             // SOL transfers
+            //
+            // Safety: `try_borrow_mut_lamports()` returns a RefMut<u64> to the
+            // account's lamport balance. We dereference twice (`**`) to mutate
+            // the underlying u64. The Solana runtime enforces lamport conservation
+            // across all accounts at instruction end.
             if freelancer_pay > 0 {
                 **ctx
                     .accounts
@@ -529,6 +639,13 @@ pub mod gig_escrow {
         let vault_seeds: &[&[u8]] = &[b"vault", escrow_key.as_ref(), &[vault_bump]];
 
         if escrow.token_mint.is_some() {
+            require!(
+                ctx.accounts.vault_token_account.is_some()
+                    && ctx.accounts.client_token_account.is_some()
+                    && ctx.accounts.token_program.is_some(),
+                EscrowError::MissingTokenAccount
+            );
+
             let vault_token = ctx
                 .accounts
                 .vault_token_account
@@ -545,6 +662,15 @@ pub mod gig_escrow {
                 .as_ref()
                 .ok_or(EscrowError::MissingTokenAccount)?;
 
+            // Validate SPL token account mint and owner
+            let mint = escrow.token_mint.unwrap();
+            require!(vault_token.mint == mint, EscrowError::TokenMintMismatch);
+            require!(client_token.mint == mint, EscrowError::TokenMintMismatch);
+            require!(
+                client_token.owner == escrow.client,
+                EscrowError::TokenOwnerMismatch
+            );
+
             let balance = vault_token.amount;
             require!(balance > 0, EscrowError::NoFundsToWithdraw);
 
@@ -558,9 +684,20 @@ pub mod gig_escrow {
                 balance,
             )?;
         } else {
+            // Guard: reject SPL accounts on SOL-only escrows
+            require!(
+                ctx.accounts.vault_token_account.is_none()
+                    && ctx.accounts.client_token_account.is_none(),
+                EscrowError::UnexpectedTokenAccount
+            );
+
             let vault_lamports = ctx.accounts.vault.to_account_info().lamports();
             require!(vault_lamports > 0, EscrowError::NoFundsToWithdraw);
 
+            // Safety: `try_borrow_mut_lamports()` returns a RefMut<u64> to the
+            // account's lamport balance. We dereference twice (`**`) to mutate
+            // the underlying u64. The Solana runtime enforces lamport conservation
+            // across all accounts at instruction end.
             **ctx
                 .accounts
                 .vault
@@ -572,6 +709,9 @@ pub mod gig_escrow {
                 .to_account_info()
                 .try_borrow_mut_lamports()? += vault_lamports;
         }
+
+        // Mark escrow as unfunded so state is consistent after withdrawal
+        escrow.is_funded = false;
 
         emit!(EmergencyWithdrawal {
             escrow: escrow.key(),
@@ -637,7 +777,8 @@ impl Escrow {
         + 1                         // is_funded
         + 1                         // client_emergency_signed
         + 1                         // freelancer_emergency_signed
-        + 1 // bump
+        + 1                         // bump
+        + 128 // buffer for future fields
     }
 }
 
@@ -983,4 +1124,12 @@ pub enum EscrowError {
     NotBothSigned,
     #[msg("No funds to withdraw")]
     NoFundsToWithdraw,
+    #[msg("SPL token accounts must not be provided for SOL-only escrows")]
+    UnexpectedTokenAccount,
+    #[msg("Transfer would leave account below rent-exempt minimum")]
+    InsufficientRentBalance,
+    #[msg("Token account mint does not match escrow token_mint")]
+    TokenMintMismatch,
+    #[msg("Token account owner does not match expected owner")]
+    TokenOwnerMismatch,
 }

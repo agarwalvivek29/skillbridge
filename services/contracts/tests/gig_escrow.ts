@@ -267,6 +267,218 @@ describe("gig_escrow", () => {
     });
   });
 
+  // ─── Unauthorized caller tests ─────────────────────────────────────────────
+
+  describe("unauthorized callers", () => {
+    const outsider = Keypair.generate();
+
+    before(async () => {
+      const airdropAmount = 10 * LAMPORTS_PER_SOL;
+      const outsiderAirdrop = await provider.connection.requestAirdrop(
+        outsider.publicKey,
+        airdropAmount,
+      );
+      await provider.connection.confirmTransaction(outsiderAirdrop);
+    });
+
+    it("rejects deposit from non-client", async () => {
+      // Create a fresh escrow for this test
+      const gidUnauth = "gig-unauth-deposit";
+      const [escrowU] = PublicKey.findProgramAddressSync(
+        [Buffer.from("escrow"), Buffer.from(gidUnauth)],
+        program.programId,
+      );
+      const [vaultU] = PublicKey.findProgramAddressSync(
+        [Buffer.from("vault"), escrowU.toBuffer()],
+        program.programId,
+      );
+
+      await program.methods
+        .initializeEscrow(
+          gidUnauth,
+          freelancer.publicKey,
+          arbitrator.publicKey,
+          null,
+          [new anchor.BN(1 * LAMPORTS_PER_SOL)],
+          platformFeeBps,
+          feeRecipient.publicKey,
+        )
+        .accounts({
+          escrow: escrowU,
+          client: client.publicKey,
+          systemProgram: SystemProgram.programId,
+        })
+        .signers([client])
+        .rpc();
+
+      try {
+        await program.methods
+          .deposit(new anchor.BN(1 * LAMPORTS_PER_SOL))
+          .accounts({
+            escrow: escrowU,
+            client: outsider.publicKey,
+            vault: vaultU,
+            clientTokenAccount: null,
+            vaultTokenAccount: null,
+            tokenProgram: null,
+            systemProgram: SystemProgram.programId,
+          })
+          .signers([outsider])
+          .rpc();
+        expect.fail("should have thrown");
+      } catch (err) {
+        // has_one = client constraint should reject non-client signers
+        expect(err).to.exist;
+      }
+    });
+
+    it("rejects complete_milestone from non-client", async () => {
+      try {
+        await program.methods
+          .completeMilestone(0)
+          .accounts({
+            escrow: escrowPda,
+            client: outsider.publicKey,
+            freelancer: freelancer.publicKey,
+            feeRecipient: feeRecipient.publicKey,
+            vault: vaultPda,
+            vaultTokenAccount: null,
+            freelancerTokenAccount: null,
+            feeRecipientTokenAccount: null,
+            tokenProgram: null,
+            systemProgram: SystemProgram.programId,
+          })
+          .signers([outsider])
+          .rpc();
+        expect.fail("should have thrown");
+      } catch (err) {
+        expect(err).to.exist;
+      }
+    });
+
+    it("rejects raise_dispute from outsider (non-client, non-freelancer)", async () => {
+      // Create another escrow to have a pending milestone
+      const gidUnauth2 = "gig-unauth-dispute";
+      const [escrowU2] = PublicKey.findProgramAddressSync(
+        [Buffer.from("escrow"), Buffer.from(gidUnauth2)],
+        program.programId,
+      );
+      const [vaultU2] = PublicKey.findProgramAddressSync(
+        [Buffer.from("vault"), escrowU2.toBuffer()],
+        program.programId,
+      );
+
+      await program.methods
+        .initializeEscrow(
+          gidUnauth2,
+          freelancer.publicKey,
+          arbitrator.publicKey,
+          null,
+          [new anchor.BN(1 * LAMPORTS_PER_SOL)],
+          platformFeeBps,
+          feeRecipient.publicKey,
+        )
+        .accounts({
+          escrow: escrowU2,
+          client: client.publicKey,
+          systemProgram: SystemProgram.programId,
+        })
+        .signers([client])
+        .rpc();
+
+      await program.methods
+        .deposit(new anchor.BN(1 * LAMPORTS_PER_SOL))
+        .accounts({
+          escrow: escrowU2,
+          client: client.publicKey,
+          vault: vaultU2,
+          clientTokenAccount: null,
+          vaultTokenAccount: null,
+          tokenProgram: null,
+          systemProgram: SystemProgram.programId,
+        })
+        .signers([client])
+        .rpc();
+
+      try {
+        await program.methods
+          .raiseDispute(0)
+          .accounts({
+            escrow: escrowU2,
+            signer: outsider.publicKey,
+          })
+          .signers([outsider])
+          .rpc();
+        expect.fail("should have thrown");
+      } catch (err) {
+        expect(err.toString()).to.include("Unauthorized");
+      }
+    });
+
+    it("rejects resolve_dispute from non-arbitrator", async () => {
+      try {
+        await program.methods
+          .resolveDispute(0, 0, new anchor.BN(0))
+          .accounts({
+            escrow: escrowPda,
+            arbitrator: outsider.publicKey,
+            freelancer: freelancer.publicKey,
+            client: client.publicKey,
+            vault: vaultPda,
+            vaultTokenAccount: null,
+            freelancerTokenAccount: null,
+            clientTokenAccount: null,
+            tokenProgram: null,
+            systemProgram: SystemProgram.programId,
+          })
+          .signers([outsider])
+          .rpc();
+        expect.fail("should have thrown");
+      } catch (err) {
+        // has_one = arbitrator constraint should reject non-arbitrator
+        expect(err).to.exist;
+      }
+    });
+
+    it("rejects sign_emergency_withdrawal from outsider", async () => {
+      try {
+        await program.methods
+          .signEmergencyWithdrawal()
+          .accounts({
+            escrow: escrowPda,
+            signer: outsider.publicKey,
+          })
+          .signers([outsider])
+          .rpc();
+        expect.fail("should have thrown");
+      } catch (err) {
+        expect(err.toString()).to.include("Unauthorized");
+      }
+    });
+
+    it("rejects emergency_withdraw from outsider", async () => {
+      try {
+        await program.methods
+          .emergencyWithdraw()
+          .accounts({
+            escrow: escrowPda,
+            signer: outsider.publicKey,
+            client: client.publicKey,
+            vault: vaultPda,
+            vaultTokenAccount: null,
+            clientTokenAccount: null,
+            tokenProgram: null,
+            systemProgram: SystemProgram.programId,
+          })
+          .signers([outsider])
+          .rpc();
+        expect.fail("should have thrown");
+      } catch (err) {
+        expect(err.toString()).to.include("Unauthorized");
+      }
+    });
+  });
+
   // ─── Dispute flow: use milestone 1 (still PENDING) ────────────────────────
 
   describe("raise_dispute", () => {
@@ -647,6 +859,7 @@ describe("gig_escrow", () => {
       const escrow = await program.account.escrow.fetch(escrowPda3);
       expect(escrow.clientEmergencySigned).to.be.false;
       expect(escrow.freelancerEmergencySigned).to.be.false;
+      expect(escrow.isFunded).to.be.false;
     });
   });
 });
