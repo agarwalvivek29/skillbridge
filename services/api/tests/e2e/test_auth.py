@@ -353,7 +353,7 @@ class TestExpiredNonce:
         # Step 2: backdate the nonce in the DB
         await db_session.execute(
             update(AuthNonceModel)
-            .where(AuthNonceModel.wallet_address == _WALLET.lower())
+            .where(AuthNonceModel.wallet_address == _WALLET)
             .values(expires_at=datetime.now(timezone.utc) - timedelta(minutes=5))
         )
         await db_session.commit()

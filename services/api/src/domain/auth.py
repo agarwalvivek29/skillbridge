@@ -85,9 +85,9 @@ async def create_nonce(db: AsyncSession, wallet_address: str) -> AuthNonceModel:
     """
     Generate a fresh nonce for the given wallet address and upsert it.
     Any previous nonce for this wallet is overwritten.
-    Wallet address is normalised to lowercase before storage.
+    Wallet address is stored as-is (base58 is case-sensitive).
     """
-    normalised = wallet_address.lower()
+    normalised = wallet_address
     nonce = _generate_nonce()
     expires_at = datetime.now(timezone.utc) + timedelta(minutes=_NONCE_TTL_MINUTES)
 
@@ -109,9 +109,9 @@ async def consume_nonce(db: AsyncSession, wallet_address: str) -> AuthNonceModel
     """
     Retrieve the nonce for wallet_address and delete it atomically.
     Returns None if no nonce exists or if it has expired.
-    Wallet address is normalised to lowercase before lookup.
+    Wallet address is matched as-is (base58 is case-sensitive).
     """
-    normalised = wallet_address.lower()
+    normalised = wallet_address
     result = await db.execute(
         select(AuthNonceModel).where(AuthNonceModel.wallet_address == normalised)
     )
@@ -182,6 +182,10 @@ def verify_solana_signature(
         if f"Nonce: {expected_nonce}" not in message:
             return False
 
+        # Check that the claimed wallet address appears in the signed message
+        if wallet_address not in message:
+            return False
+
         # Decode the base58 public key
         pubkey_bytes = base58.b58decode(wallet_address)
         if len(pubkey_bytes) != 32:
@@ -211,7 +215,7 @@ async def get_user_by_email(db: AsyncSession, email: str) -> UserModel | None:
 
 async def get_user_by_wallet(db: AsyncSession, wallet_address: str) -> UserModel | None:
     result = await db.execute(
-        select(UserModel).where(UserModel.wallet_address == wallet_address.lower())
+        select(UserModel).where(UserModel.wallet_address == wallet_address)
     )
     return result.scalar_one_or_none()
 
@@ -241,7 +245,7 @@ async def upsert_wallet_user(db: AsyncSession, wallet_address: str) -> UserModel
     if user is None:
         short = wallet_address[:6] + "…" + wallet_address[-4:]
         user = UserModel(
-            wallet_address=wallet_address.lower(),
+            wallet_address=wallet_address,
             name=short,
             role="USER_ROLE_FREELANCER",
             status="USER_STATUS_ACTIVE",

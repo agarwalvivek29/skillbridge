@@ -11,6 +11,8 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+import base58
+
 from src.domain import auth as auth_domain
 from src.infra.database import get_db
 from src.infra.models import AuthNonceModel
@@ -90,8 +92,6 @@ async def get_nonce(
         )
     # Validate that it is valid base58
     try:
-        import base58
-
         decoded = base58.b58decode(wallet_address)
         if len(decoded) != 32:
             raise ValueError("Invalid public key length")
@@ -119,7 +119,7 @@ async def wallet_login(
     # Fetch nonce record WITHOUT consuming it yet — consume only after sig is verified
     result = await db.execute(
         select(AuthNonceModel).where(
-            AuthNonceModel.wallet_address == body.wallet_address.lower()
+            AuthNonceModel.wallet_address == body.wallet_address
         )
     )
     nonce_record = result.scalar_one_or_none()

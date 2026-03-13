@@ -51,13 +51,14 @@ class TestCreateNonce:
     @pytest.mark.asyncio
     async def test_creates_record_with_correct_wallet(self, db_session: AsyncSession):
         record = await create_nonce(db_session, _WALLET)
-        assert record.wallet_address == _WALLET.lower()
+        assert record.wallet_address == _WALLET
 
     @pytest.mark.asyncio
-    async def test_normalises_wallet_to_lowercase(self, db_session: AsyncSession):
+    async def test_preserves_wallet_case(self, db_session: AsyncSession):
+        """Base58 is case-sensitive — wallet address must be stored as-is."""
         mixed_case = "ABCDef1234567890abcdef1234567890ab"
         record = await create_nonce(db_session, mixed_case)
-        assert record.wallet_address == mixed_case.lower()
+        assert record.wallet_address == mixed_case
 
     @pytest.mark.asyncio
     async def test_nonce_expires_in_future(self, db_session: AsyncSession):
@@ -81,7 +82,7 @@ class TestConsumeNonce:
         await create_nonce(db_session, _WALLET)
         record = await consume_nonce(db_session, _WALLET)
         assert record is not None
-        assert record.wallet_address == _WALLET.lower()
+        assert record.wallet_address == _WALLET
 
     @pytest.mark.asyncio
     async def test_deletes_nonce_on_consumption(self, db_session: AsyncSession):
@@ -108,8 +109,9 @@ class TestConsumeNonce:
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_normalises_wallet_on_lookup(self, db_session: AsyncSession):
-        mixed = "ABCDef1234567890abcdef1234567890ab"
-        await create_nonce(db_session, mixed)
-        result = await consume_nonce(db_session, mixed.lower())
+    async def test_exact_match_on_lookup(self, db_session: AsyncSession):
+        """Base58 is case-sensitive — lookup must use exact address."""
+        addr = "ABCDef1234567890abcdef1234567890ab"
+        await create_nonce(db_session, addr)
+        result = await consume_nonce(db_session, addr)
         assert result is not None
