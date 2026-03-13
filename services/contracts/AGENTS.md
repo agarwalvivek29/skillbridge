@@ -8,22 +8,23 @@
 ## Service Overview
 
 **Name**: `contracts`
-**Purpose**: Solidity smart contracts deployed on Base L2. Owns the trustless escrow logic for SkillBridge gigs. `EscrowFactory` deploys a `GigEscrow` per gig; `GigEscrow` locks client funds on creation, tracks milestones, and releases funds when milestones are completed. Called by the `api` service via web3.py.
-**Language**: Solidity ^0.8.24
-**Toolchain**: Foundry (forge, cast, anvil)
-**Network**: Base L2 (Base Sepolia for dev/testing, Base Mainnet for production)
-**Created**: 2026-03-07
-**ADR**: `docs/adr/0002-tech-stack.md`
+**Purpose**: Anchor smart program deployed on Solana. Owns the trustless escrow logic for SkillBridge gigs. A single `gig_escrow` program uses PDAs (Program Derived Addresses) to create per-gig escrow accounts. Each escrow locks client funds on deposit, tracks milestones, and releases funds when milestones are completed or disputes are resolved. Called by the `api` service via @solana/web3.js or anchor client.
+**Language**: Rust
+**Toolchain**: Anchor 0.30.1 (anchor build, anchor test, anchor deploy)
+**Network**: Solana (localhost for dev, Devnet for staging, Mainnet-beta for production)
+**Created**: 2026-03-07 (migrated from Solidity on 2026-03-13)
+**ADR**: `docs/adr/0002-tech-stack.md`, `docs/adr/0003-solana-migration.md`
 
 ---
 
 ## Tech Stack
 
-- **Language**: Solidity ^0.8.24
-- **Toolchain**: Foundry (forge test, forge build, forge deploy)
-- **Network**: Base L2 (EVM-compatible, low gas fees)
-- **Testing**: Foundry (forge test with fuzzing)
-- **Protocol**: On-chain (no HTTP server — called via ABI + web3.py from api)
+- **Language**: Rust (2021 edition)
+- **Framework**: Anchor 0.30.1
+- **Token support**: anchor-spl 0.30.1 (for SPL token escrows)
+- **Network**: Solana (sub-second finality, ~$0.00025/tx)
+- **Testing**: TypeScript with @coral-xyz/anchor + mocha
+- **Protocol**: On-chain (no HTTP server — called via Anchor IDL client from api)
 
 ---
 
@@ -31,80 +32,71 @@
 
 ```
 services/contracts/
-├── src/
-│   ├── EscrowFactory.sol   # Deploys GigEscrow instances
-│   ├── GigEscrow.sol       # Per-gig escrow: deposit, milestone tracking, fund release
-│   └── interfaces/         # IEscrowFactory.sol, IGigEscrow.sol
-├── test/
-│   ├── EscrowFactory.t.sol
-│   └── GigEscrow.t.sol     # Includes fuzz tests for fund accounting
-├── script/
-│   ├── Deploy.s.sol        # Foundry deploy script
-│   └── DeployBase.s.sol    # Base Sepolia / Mainnet deployment config
-├── out/                    # Compiled artifacts (gitignored)
-├── abi/                    # Exported ABIs for web3.py (committed)
-│   ├── EscrowFactory.json
-│   └── GigEscrow.json
-├── foundry.toml
+├── Anchor.toml                 # Anchor workspace config
+├── Cargo.toml                  # Rust workspace (members = programs/*)
+├── programs/
+│   └── gig_escrow/
+│       ├── Cargo.toml          # Program crate config
+│       └── src/
+│           └── lib.rs          # All escrow instructions + accounts + errors
+├── tests/
+│   └── gig_escrow.ts           # TypeScript integration tests
 ├── .env.example
-└── README.md
+├── .gitignore
+└── AGENTS.md
 ```
 
 ---
 
 ## Key Entry Points
 
-- **EscrowFactory**: `src/EscrowFactory.sol` — single deployed instance; creates GigEscrow contracts
-- **GigEscrow**: `src/GigEscrow.sol` — per-gig contract; holds funds; `completeMilestone()` releases payment
-- **ABIs**: `abi/` — JSON ABIs imported by the `api` service
+- **Program**: `programs/gig_escrow/src/lib.rs` — all 7 instructions, account structs, events, errors
+- **Tests**: `tests/gig_escrow.ts` — full lifecycle integration tests
+
+---
+
+## Instructions
+
+| Instruction                 | Who can call         | Description                                                |
+| --------------------------- | -------------------- | ---------------------------------------------------------- |
+| `initialize_escrow`         | Client               | Create escrow PDA for a gig with milestones                |
+| `deposit`                   | Client               | Lock SOL or SPL tokens in the vault PDA                    |
+| `complete_milestone`        | Client               | Release milestone funds to freelancer (minus platform fee) |
+| `raise_dispute`             | Client or Freelancer | Lock a milestone in DISPUTED status                        |
+| `resolve_dispute`           | Arbitrator           | Resolve: PAY_FREELANCER / REFUND_CLIENT / SPLIT            |
+| `sign_emergency_withdrawal` | Client or Freelancer | Sign 2-of-2 consent for emergency withdrawal               |
+| `emergency_withdraw`        | Client or Freelancer | Execute after both sign — returns all funds to client      |
+
+---
+
+## PDA Seeds
+
+| PDA    | Seeds                               | Purpose                  |
+| ------ | ----------------------------------- | ------------------------ |
+| Escrow | `[b"escrow", gig_id.as_bytes()]`    | Per-gig escrow metadata  |
+| Vault  | `[b"vault", escrow.key().as_ref()]` | Holds SOL for the escrow |
 
 ---
 
 ## Environment Variables
 
-| Variable | Description |
-|---|---|
-| `PRIVATE_KEY` | Deployer wallet private key (never commit) |
-| `BASE_RPC_URL` | Base L2 RPC endpoint |
-| `BASESCAN_API_KEY` | For contract verification on Basescan |
+| Variable            | Description                                          |
+| ------------------- | ---------------------------------------------------- |
+| `SOLANA_RPC_URL`    | Solana RPC endpoint (default: http://localhost:8899) |
+| `ESCROW_PROGRAM_ID` | Deployed program address (base58)                    |
+| `ANCHOR_WALLET`     | Path to keypair JSON file                            |
+| `FEE_RECIPIENT`     | Platform fee recipient wallet (base58)               |
 
 ---
 
-## Contract Interfaces
-
-### EscrowFactory
-```solidity
-function createEscrow(
-    address client,
-    address freelancer,
-    uint256 milestoneCount,
-    uint256[] calldata amounts  // wei per milestone
-) external returns (address escrowAddress);
-```
-
-### GigEscrow
-```solidity
-function deposit() external payable;
-function completeMilestone(uint256 index) external;  // called by client or api oracle
-function raiseDispute(uint256 index) external;
-function resolveDispute(uint256 index, bool payFreelancer) external;  // arbitration
-function getBalance() external view returns (uint256);
-```
-
----
-
-## ABI Export
-
-After any contract change, regenerate ABIs for the api service:
+## Building
 
 ```bash
 cd services/contracts
-forge build
-cp out/EscrowFactory.sol/EscrowFactory.json abi/
-cp out/GigEscrow.sol/GigEscrow.json abi/
+anchor build
 ```
 
-Commit the updated ABI files — the `api` service reads from `abi/`.
+This compiles the program to `target/deploy/gig_escrow.so` and generates the IDL at `target/idl/gig_escrow.json`.
 
 ---
 
@@ -112,44 +104,43 @@ Commit the updated ABI files — the `api` service reads from `abi/`.
 
 ```bash
 cd services/contracts
-forge test          # run all tests
-forge test -vvv     # verbose output
-forge coverage      # coverage report
+anchor test
 ```
 
-**Required**: All fund-handling functions must have fuzz tests. No PR merges if `forge test` fails.
+This starts a local Solana validator, deploys the program, and runs the TypeScript tests.
 
 ---
 
 ## Deployment
 
 ```bash
-# Base Sepolia (testnet)
-forge script script/DeployBase.s.sol --rpc-url $BASE_SEPOLIA_RPC_URL --broadcast --verify
+# Devnet
+anchor deploy --provider.cluster devnet
 
-# Base Mainnet — REQUIRES human approval before running
-forge script script/DeployBase.s.sol --rpc-url $BASE_RPC_URL --broadcast --verify
+# Mainnet-beta — REQUIRES human approval before running
+anchor deploy --provider.cluster mainnet
 ```
 
-Store deployed contract addresses in `api`'s `.env` (`ESCROW_FACTORY_ADDRESS`).
+Store the deployed program ID in `api`'s `.env` (`ESCROW_PROGRAM_ID`).
 
 ---
 
 ## Constraints
 
-- No upgradeable proxies in v1 — keep contracts simple and auditable
-- Emergency withdrawal function allowed only with both client + freelancer signatures
+- No upgradeable programs in v1 — keep the program simple and auditable
+- Emergency withdrawal function requires both client + freelancer 2-of-2 consent
 - All state transitions must emit events (for the api to index)
-- Never store off-chain data (URLs, text) in contract storage — only addresses and amounts
+- Never store off-chain data (URLs, text) in account storage — only addresses and amounts
+- Maximum 20 milestones per escrow (account size constraint)
 
 ---
 
 ## Forbidden Actions for Agents
 
-- Deploying to Base Mainnet without explicit human approval
-- Removing the emergency withdrawal function
-- Adding upgradeable proxy patterns without an ADR
-- Changing function signatures without updating ABI files and the api service
+- Deploying to Mainnet-beta without explicit human approval
+- Removing the emergency withdrawal instruction
+- Adding upgradeable program patterns without an ADR
+- Changing instruction interfaces without updating the api service integration
 
 ---
 
@@ -160,8 +151,8 @@ Agents may use any available MCP servers, skills, and tools as needed.
 ### MCP Servers in Use
 
 | MCP Server | Purpose | Added by |
-|---|---|---|
-| (none yet) | | |
+| ---------- | ------- | -------- |
+| (none yet) |         |          |
 
 ---
 
@@ -169,3 +160,4 @@ Agents may use any available MCP servers, skills, and tools as needed.
 
 - [ADR 0001](../../docs/adr/0001-monorepo-structure.md) — Monorepo structure
 - [ADR 0002](../../docs/adr/0002-tech-stack.md) — Tech stack decisions
+- [ADR 0003](../../docs/adr/0003-solana-migration.md) — Solana migration

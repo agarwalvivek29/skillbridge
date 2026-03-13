@@ -1,6 +1,19 @@
-# Foundry compilation artifacts (rebuilt on forge build)
-out/
-cache/
+# Anchor build artifacts
+target/
+
+# Node modules (for TypeScript tests)
+node_modules/
 
 # Local environment
 .env
+
+# Anchor keypair
+*.json
+!Anchor.toml
+!Cargo.toml
+!programs/*/Cargo.toml
+!tsconfig.json
+!package.json
+
+# Solana test validator ledger
+test-ledger/
