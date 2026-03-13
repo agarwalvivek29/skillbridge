@@ -1,14 +1,20 @@
 import { cn } from "@/lib/utils";
-import { base } from "wagmi/chains";
+import { getSolanaCluster } from "@/lib/solana";
 
-interface ChainBadgeProps {
-  chainId: number;
-  chainName: string;
+interface ClusterBadgeProps {
   className?: string;
 }
 
-export function ChainBadge({ chainId, chainName, className }: ChainBadgeProps) {
-  const isMainnet = chainId === base.id;
+const CLUSTER_LABELS: Record<string, string> = {
+  "mainnet-beta": "Mainnet",
+  devnet: "Devnet",
+  localnet: "Localnet",
+};
+
+export function ClusterBadge({ className }: ClusterBadgeProps) {
+  const cluster = getSolanaCluster();
+  const isMainnet = cluster === "mainnet-beta";
+  const label = CLUSTER_LABELS[cluster] ?? cluster;
 
   return (
     <span
@@ -23,7 +29,7 @@ export function ChainBadge({ chainId, chainName, className }: ChainBadgeProps) {
           isMainnet ? "bg-success-500" : "bg-warning-500",
         )}
       />
-      {chainName}
+      {label}
     </span>
   );
 }

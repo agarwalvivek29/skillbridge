@@ -2,25 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAccount, useConnect } from "wagmi";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { Wallet, Mail, ArrowRight, Shield, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { Spinner } from "@/components/ui/Spinner";
 import { InstallWalletPrompt } from "@/components/web3/InstallWalletPrompt";
-import { NetworkSwitchPrompt } from "@/components/web3/NetworkSwitchPrompt";
 import { useAuth } from "@/hooks/useAuth";
 import { useAuthStore } from "@/lib/stores/auth";
-
-const TARGET_CHAIN_ID = Number(process.env.NEXT_PUBLIC_BASE_CHAIN_ID ?? 84532);
 
 export default function AuthPage() {
   const router = useRouter();
   const token = useAuthStore((s) => s.token);
   const user = useAuthStore((s) => s.user);
-  const { address, isConnected, chain } = useAccount();
-  const { connect, connectors, isPending: isConnecting } = useConnect();
+  const { publicKey, connected, connecting, wallets } = useWallet();
+  const { setVisible } = useWalletModal();
   const { step, error, isLoading, startSiwe, login, reset } = useAuth();
 
   const [showEmail, setShowEmail] = useState(false);
@@ -39,16 +37,16 @@ export default function AuthPage() {
     }
   }, [token, user, router]);
 
-  // Auto-advance to SIWE signing when wallet connects
+  // Auto-advance to signing when wallet connects
   useEffect(() => {
-    if (isConnected && address && step === "connect") {
+    if (connected && publicKey && step === "connect") {
       reset();
     }
-  }, [isConnected, address, step, reset]);
+  }, [connected, publicKey, step, reset]);
 
-  const hasWallet =
-    typeof window !== "undefined" && typeof window.ethereum !== "undefined";
-  const wrongNetwork = isConnected && chain && chain.id !== TARGET_CHAIN_ID;
+  const hasWallet = typeof window !== "undefined" && wallets.length > 0;
+
+  const address = publicKey?.toBase58();
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,27 +95,22 @@ export default function AuthPage() {
 
           {!hasWallet ? (
             <InstallWalletPrompt />
-          ) : wrongNetwork ? (
-            <NetworkSwitchPrompt />
-          ) : !isConnected ? (
+          ) : !connected ? (
             /* Step 1: Connect wallet */
             <div className="space-y-3">
-              {connectors.map((connector) => (
-                <Button
-                  key={connector.uid}
-                  variant="web3"
-                  size="lg"
-                  className="w-full"
-                  loading={isConnecting}
-                  onClick={() => connect({ connector })}
-                >
-                  <Wallet className="h-5 w-5" />
-                  Connect with {connector.name}
-                </Button>
-              ))}
+              <Button
+                variant="web3"
+                size="lg"
+                className="w-full"
+                loading={connecting}
+                onClick={() => setVisible(true)}
+              >
+                <Wallet className="h-5 w-5" />
+                Select Wallet
+              </Button>
             </div>
           ) : step === "sign" || step === "connect" ? (
-            /* Step 2: Sign SIWE message */
+            /* Step 2: Sign message */
             <div className="space-y-4">
               <div className="rounded-lg border border-neutral-200 bg-neutral-50 p-4">
                 <div className="flex items-start gap-3">
@@ -129,7 +122,7 @@ export default function AuthPage() {
                     <p className="mt-1 text-sm text-neutral-500">
                       Sign a message with your wallet to prove ownership of{" "}
                       <span className="font-mono text-xs text-neutral-600">
-                        {address?.slice(0, 6)}...{address?.slice(-4)}
+                        {address?.slice(0, 4)}...{address?.slice(-4)}
                       </span>
                     </p>
                   </div>
@@ -156,7 +149,7 @@ export default function AuthPage() {
             </div>
           ) : null}
 
-          {/* Wallet error display — only show for wallet-related errors */}
+          {/* Wallet error display -- only show for wallet-related errors */}
           {error && step !== "connect" && (
             <div className="flex items-start gap-2 rounded-md border border-error-500 bg-error-50 p-3">
               <AlertCircle className="mt-0.5 h-4 w-4 text-error-500" />

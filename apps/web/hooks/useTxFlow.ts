@@ -1,119 +1,88 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import {
-  useWriteContract,
-  useWaitForTransactionReceipt,
-  useSendTransaction,
-  useAccount,
-} from "wagmi";
-import type { Abi, Address } from "viem";
+import { useState, useCallback } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useConnection } from "@solana/wallet-adapter-react";
+import { Transaction } from "@solana/web3.js";
 
 type TxState = "idle" | "pending" | "confirming" | "success" | "error";
 
-const EXPECTED_CHAIN_ID = parseInt(
-  process.env.NEXT_PUBLIC_BASE_CHAIN_ID ?? "84532",
-);
-
 interface UseTxFlowReturn {
   state: TxState;
-  txHash: `0x${string}` | undefined;
+  txHash: string | undefined;
   error: string | null;
-  execute: (params: {
-    address: Address;
-    abi: Abi;
-    functionName: string;
-    args?: readonly unknown[];
-    value?: bigint;
-  }) => void;
-  executeRaw: (params: {
-    to: Address;
-    data?: `0x${string}`;
-    value?: bigint;
-  }) => void;
+  /** Send a serialized transaction (base64-encoded) from the API */
+  executeSerialized: (serializedTx: string) => Promise<void>;
+  /** Send a pre-built Transaction object */
+  executeTransaction: (transaction: Transaction) => Promise<void>;
   reset: () => void;
 }
 
 export function useTxFlow(): UseTxFlowReturn {
   const [state, setState] = useState<TxState>("idle");
   const [error, setError] = useState<string | null>(null);
-  const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
+  const [txHash, setTxHash] = useState<string | undefined>(undefined);
 
-  const { chain } = useAccount();
-  const { writeContract, reset: resetWrite } = useWriteContract();
-  const { sendTransaction, reset: resetSend } = useSendTransaction();
+  const { publicKey, signTransaction } = useWallet();
+  const { connection } = useConnection();
 
-  const {
-    isSuccess,
-    isError,
-    error: receiptError,
-  } = useWaitForTransactionReceipt({
-    hash: txHash,
-  });
-
-  useEffect(() => {
-    if (isSuccess && state === "confirming") {
-      setState("success");
-    }
-    if (isError && state === "confirming") {
-      setState("error");
-      setError(receiptError?.message ?? "Transaction failed");
-    }
-  }, [isSuccess, isError, state, receiptError]);
-
-  const execute: UseTxFlowReturn["execute"] = useCallback(
-    (params) => {
-      if (chain?.id !== EXPECTED_CHAIN_ID) {
+  const sendAndConfirm = useCallback(
+    async (transaction: Transaction) => {
+      if (!publicKey || !signTransaction) {
         setState("error");
-        setError("Please switch to the Base network");
+        setError("Wallet not connected or does not support signing");
         return;
       }
+
       setState("pending");
       setError(null);
-      writeContract(params, {
-        onSuccess: (hash) => {
-          setTxHash(hash);
-          setState("confirming");
-        },
-        onError: (err) => {
+
+      try {
+        const signed = await signTransaction(transaction);
+        const rawTx = signed.serialize();
+        const signature = await connection.sendRawTransaction(rawTx);
+        setTxHash(signature);
+        setState("confirming");
+
+        const confirmation = await connection.confirmTransaction(
+          signature,
+          "confirmed",
+        );
+        if (confirmation.value.err) {
           setState("error");
-          setError(err.message ?? "Transaction rejected");
-        },
-      });
+          setError("Transaction failed on chain");
+        } else {
+          setState("success");
+        }
+      } catch (err) {
+        setState("error");
+        const msg = err instanceof Error ? err.message : "Transaction rejected";
+        setError(msg);
+      }
     },
-    [writeContract, chain],
+    [publicKey, signTransaction, connection],
   );
 
-  const executeRaw = useCallback(
-    (params: { to: Address; data?: `0x${string}`; value?: bigint }) => {
-      if (chain?.id !== EXPECTED_CHAIN_ID) {
-        setState("error");
-        setError("Please switch to the Base network");
-        return;
-      }
-      setState("pending");
-      setError(null);
-      sendTransaction(params, {
-        onSuccess: (hash) => {
-          setTxHash(hash);
-          setState("confirming");
-        },
-        onError: (err) => {
-          setState("error");
-          setError(err.message ?? "Transaction rejected");
-        },
-      });
+  const executeSerialized = useCallback(
+    async (serializedTx: string) => {
+      const tx = Transaction.from(Buffer.from(serializedTx, "base64"));
+      await sendAndConfirm(tx);
     },
-    [sendTransaction, chain],
+    [sendAndConfirm],
+  );
+
+  const executeTransaction = useCallback(
+    async (transaction: Transaction) => {
+      await sendAndConfirm(transaction);
+    },
+    [sendAndConfirm],
   );
 
   const reset = useCallback(() => {
     setState("idle");
     setError(null);
     setTxHash(undefined);
-    resetWrite();
-    resetSend();
-  }, [resetWrite, resetSend]);
+  }, []);
 
-  return { state, txHash, error, execute, executeRaw, reset };
+  return { state, txHash, error, executeSerialized, executeTransaction, reset };
 }

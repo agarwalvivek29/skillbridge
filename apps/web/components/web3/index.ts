@@ -1,7 +1,7 @@
 export { ConnectButton } from "./ConnectButton";
 export { WalletStatus } from "./WalletStatus";
 export { AddressDisplay } from "./AddressDisplay";
-export { ChainBadge } from "./ChainBadge";
+export { ClusterBadge } from "./ClusterBadge";
 export { NetworkSwitchPrompt } from "./NetworkSwitchPrompt";
 export { InstallWalletPrompt } from "./InstallWalletPrompt";
 export { TxPending } from "./TxPending";

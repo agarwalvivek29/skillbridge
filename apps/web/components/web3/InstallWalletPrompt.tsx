@@ -9,16 +9,16 @@ export function InstallWalletPrompt() {
         No Wallet Detected
       </h3>
       <p className="mt-1 text-sm text-neutral-500">
-        You need a Web3 wallet to use SkillBridge. Install MetaMask to get
+        You need a Solana wallet to use SkillBridge. Install Phantom to get
         started.
       </p>
       <a
-        href="https://metamask.io/download/"
+        href="https://phantom.app/download"
         target="_blank"
         rel="noopener noreferrer"
       >
         <Button variant="web3" size="md" className="mt-4">
-          Install MetaMask
+          Install Phantom
         </Button>
       </a>
     </div>

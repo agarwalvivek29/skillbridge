@@ -40,7 +40,6 @@ export interface MilestoneDetail {
 }
 
 export interface ReleaseTx {
-  to: string;
-  data: string;
-  value: string;
+  /** Base64-encoded serialized Solana transaction */
+  serialized_tx: string;
 }

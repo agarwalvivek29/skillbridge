@@ -11,7 +11,9 @@ import {
   MessageSquare,
   ArrowRight,
 } from "lucide-react";
-import { useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useConnection } from "@solana/wallet-adapter-react";
+import { Transaction } from "@solana/web3.js";
 import { AuthGuard } from "@/components/layout/AuthGuard";
 import {
   Button,
@@ -49,6 +51,7 @@ function MilestoneContent() {
   const [txState, setTxState] = useState<
     "idle" | "pending" | "success" | "error"
   >("idle");
+  const [txHash, setTxHash] = useState<string | undefined>(undefined);
   const [txError, setTxError] = useState<string | null>(null);
 
   // Revision flow state
@@ -56,15 +59,8 @@ function MilestoneContent() {
   const [revisionFeedback, setRevisionFeedback] = useState("");
   const [revising, setRevising] = useState(false);
 
-  const {
-    sendTransaction,
-    data: txHash,
-    reset: resetTx,
-    isPending: isSending,
-  } = useSendTransaction();
-
-  const { isSuccess: txConfirmed, isError: txFailed } =
-    useWaitForTransactionReceipt({ hash: txHash });
+  const { publicKey, signTransaction } = useWallet();
+  const { connection } = useConnection();
 
   const load = useCallback(async () => {
     try {
@@ -81,45 +77,46 @@ function MilestoneContent() {
     load();
   }, [load]);
 
-  // Watch tx confirmation
-  useEffect(() => {
-    if (txConfirmed && txHash && txState === "pending") {
-      setTxState("success");
-      confirmRelease(params.milestoneId, txHash)
-        .then(() => {
-          toast.success("Funds released successfully");
-          load();
-        })
-        .catch(() => toast.error("Failed to confirm release on server"));
-    }
-    if (txFailed && txState === "pending") {
-      setTxState("error");
-      setTxError("Transaction failed on chain");
-    }
-  }, [txConfirmed, txFailed, txHash, txState, params.milestoneId, toast, load]);
-
   async function handleApprove() {
+    if (!publicKey || !signTransaction) {
+      toast.error("Wallet not connected");
+      return;
+    }
+
     setApproving(true);
     try {
       const calldata = await getReleaseTx(params.milestoneId);
       setTxState("pending");
       setApproveOpen(false);
-      sendTransaction(
-        {
-          to: calldata.to as `0x${string}`,
-          data: calldata.data as `0x${string}`,
-          value: BigInt(calldata.value ?? "0"),
-        },
-        {
-          onError: (err) => {
-            setTxState("error");
-            setTxError(err.message ?? "Transaction rejected");
-          },
-        },
+
+      // API returns a base64-encoded serialized Solana transaction
+      const transaction = Transaction.from(
+        Buffer.from(calldata.serialized_tx, "base64"),
       );
-    } catch {
-      toast.error("Failed to prepare release transaction");
-      setTxState("idle");
+      const signed = await signTransaction(transaction);
+      const rawTx = signed.serialize();
+      const signature = await connection.sendRawTransaction(rawTx);
+      setTxHash(signature);
+
+      const confirmation = await connection.confirmTransaction(
+        signature,
+        "confirmed",
+      );
+      if (confirmation.value.err) {
+        setTxState("error");
+        setTxError("Transaction failed on chain");
+      } else {
+        setTxState("success");
+        confirmRelease(params.milestoneId, signature)
+          .then(() => {
+            toast.success("Funds released successfully");
+            load();
+          })
+          .catch(() => toast.error("Failed to confirm release on server"));
+      }
+    } catch (err) {
+      setTxState("error");
+      setTxError(err instanceof Error ? err.message : "Transaction rejected");
     } finally {
       setApproving(false);
     }
@@ -177,11 +174,6 @@ function MilestoneContent() {
     (isClient || isFreelancer) &&
     (milestone.status === "SUBMITTED" || milestone.status === "UNDER_REVIEW");
 
-  const latestSubmission =
-    milestone.submissions.length > 0
-      ? milestone.submissions[milestone.submissions.length - 1]
-      : null;
-
   // If tx is in progress, show tx states
   if (txState === "pending") {
     return (
@@ -197,7 +189,7 @@ function MilestoneContent() {
           txHash={txHash}
           onContinue={() => {
             setTxState("idle");
-            resetTx();
+            setTxHash(undefined);
             load();
           }}
         />
@@ -212,7 +204,7 @@ function MilestoneContent() {
           onRetry={() => {
             setTxState("idle");
             setTxError(null);
-            resetTx();
+            setTxHash(undefined);
           }}
         />
       </div>
@@ -487,11 +479,7 @@ function MilestoneContent() {
             <Button variant="ghost" onClick={() => setApproveOpen(false)}>
               Cancel
             </Button>
-            <Button
-              variant="web3"
-              loading={approving || isSending}
-              onClick={handleApprove}
-            >
+            <Button variant="web3" loading={approving} onClick={handleApprove}>
               Release Funds
             </Button>
           </>

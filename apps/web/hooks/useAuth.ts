@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { useAccount, useSignMessage } from "wagmi";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { useAuthStore } from "@/lib/stores/auth";
 import { fetchNonce, authenticateSiwe, loginWithEmail } from "@/lib/api/auth";
 
@@ -16,48 +16,37 @@ interface UseAuthReturn {
   reset: () => void;
 }
 
-function buildSiweMessage(params: {
+function buildSignInMessage(params: {
   domain: string;
   address: string;
   uri: string;
-  chainId: number;
   nonce: string;
   issuedAt: string;
 }): string {
   return [
-    `${params.domain} wants you to sign in with your Ethereum account:`,
+    `${params.domain} wants you to sign in with your Solana account:`,
     params.address,
     "",
     "Sign in to SkillBridge",
     "",
     `URI: ${params.uri}`,
     `Version: 1`,
-    `Chain ID: ${params.chainId}`,
     `Nonce: ${params.nonce}`,
     `Issued At: ${params.issuedAt}`,
   ].join("\n");
 }
 
 export function useAuth(): UseAuthReturn {
-  const { address, chainId, isConnected } = useAccount();
-  const { signMessageAsync } = useSignMessage();
+  const { publicKey, connected, signMessage } = useWallet();
   const setAuth = useAuthStore((s) => s.setAuth);
 
-  const [step, setStep] = useState<AuthStep>(isConnected ? "sign" : "connect");
+  const [step, setStep] = useState<AuthStep>(connected ? "sign" : "connect");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const startSiwe = useCallback(async () => {
-    if (!address || !chainId) {
-      setError("Wallet not connected");
-      return;
-    }
-
-    const expectedChainId = parseInt(
-      process.env.NEXT_PUBLIC_BASE_CHAIN_ID ?? "84532",
-    );
-    if (chainId !== expectedChainId) {
-      setError("Please switch to the Base network before signing in");
+    if (!publicKey || !signMessage) {
+      setError("Wallet not connected or does not support message signing");
       return;
     }
 
@@ -69,23 +58,25 @@ export function useAuth(): UseAuthReturn {
       const { nonce } = await fetchNonce();
 
       const domain =
-        process.env.NEXT_PUBLIC_SIWE_DOMAIN ??
+        process.env.NEXT_PUBLIC_AUTH_DOMAIN ??
         (typeof window !== "undefined" ? window.location.host : "localhost");
       const uri =
         typeof window !== "undefined"
           ? window.location.origin
           : "http://localhost:3000";
 
-      const message = buildSiweMessage({
+      const address = publicKey.toBase58();
+      const message = buildSignInMessage({
         domain,
         address,
         uri,
-        chainId,
         nonce,
         issuedAt: new Date().toISOString(),
       });
 
-      const signature = await signMessageAsync({ message });
+      const encodedMessage = new TextEncoder().encode(message);
+      const signatureBytes = await signMessage(encodedMessage);
+      const signature = Buffer.from(signatureBytes).toString("base64");
 
       setStep("verify");
       const result = await authenticateSiwe(message, signature);
@@ -103,7 +94,7 @@ export function useAuth(): UseAuthReturn {
     } finally {
       setIsLoading(false);
     }
-  }, [address, chainId, signMessageAsync, setAuth]);
+  }, [publicKey, signMessage, setAuth]);
 
   const login = useCallback(
     async (email: string, password: string) => {
@@ -128,8 +119,8 @@ export function useAuth(): UseAuthReturn {
 
   const reset = useCallback(() => {
     setError(null);
-    setStep(isConnected ? "sign" : "connect");
-  }, [isConnected]);
+    setStep(connected ? "sign" : "connect");
+  }, [connected]);
 
   return { step, error, isLoading, startSiwe, login, reset };
 }

@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useAccount } from "wagmi";
-import { parseEther, isAddress, type Address } from "viem";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { Wallet, ArrowRight, CheckCircle2, Coins } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AuthGuard } from "@/components/layout/AuthGuard";
@@ -32,13 +31,13 @@ function FundFlowContent() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const toast = useToast();
-  const { isConnected } = useAccount();
+  const { connected } = useWallet();
   const tx = useTxFlow();
 
   const [gig, setGig] = useState<Gig | null>(null);
   const [loading, setLoading] = useState(true);
   const [step, setStep] = useState<FundStep>("summary");
-  const [selectedToken, setSelectedToken] = useState<"ETH" | "USDC">("ETH");
+  const [selectedToken, setSelectedToken] = useState<"SOL" | "USDC">("SOL");
   const [confirming, setConfirming] = useState(false);
   const [confirmError, setConfirmError] = useState<string | null>(null);
 
@@ -71,18 +70,8 @@ function FundFlowContent() {
   async function handleDeposit() {
     try {
       const escrowTx = await fetchEscrowTx(params.id);
-      if (!isAddress(escrowTx.to)) {
-        toast.error("Invalid escrow contract address");
-        return;
-      }
-      tx.executeRaw({
-        to: escrowTx.to as Address,
-        data: escrowTx.data as `0x${string}`,
-        value:
-          selectedToken === "ETH"
-            ? parseEther(escrowTx.value || "0")
-            : undefined,
-      });
+      // The API returns a base64-encoded serialized Solana transaction
+      await tx.executeSerialized(escrowTx.serialized_tx);
     } catch {
       toast.error("Failed to prepare transaction");
     }
@@ -98,7 +87,7 @@ function FundFlowContent() {
       toast.success("Escrow funded successfully!");
     } catch {
       setConfirmError(
-        "Failed to confirm escrow on SkillBridge. Your on-chain transaction succeeded — click Retry to try again.",
+        "Failed to confirm escrow on SkillBridge. Your on-chain transaction succeeded -- click Retry to try again.",
       );
     } finally {
       setConfirming(false);
@@ -119,7 +108,7 @@ function FundFlowContent() {
     );
   }
 
-  // Sum in integer units (×1e8) to avoid floating-point accumulation errors
+  // Sum in integer units (x1e8) to avoid floating-point accumulation errors
   const total =
     gig.milestones.reduce(
       (sum, m) => sum + Math.round(parseFloat(m.amount || "0") * 1e8),
@@ -209,7 +198,7 @@ function FundFlowContent() {
               Select Payment Token
             </h2>
             <div className="grid grid-cols-2 gap-4">
-              {(["ETH", "USDC"] as const).map((token) => (
+              {(["SOL", "USDC"] as const).map((token) => (
                 <button
                   key={token}
                   onClick={() => setSelectedToken(token)}
@@ -251,7 +240,7 @@ function FundFlowContent() {
                   <Button
                     variant="web3"
                     onClick={handleDeposit}
-                    disabled={!isConnected}
+                    disabled={!connected}
                     className="w-full"
                   >
                     Deposit to Escrow
