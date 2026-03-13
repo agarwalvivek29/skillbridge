@@ -14,12 +14,9 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from src.domain.gig import CreateGigInput, MilestoneInput, create_gig
 from src.domain.milestone_approval import (
     MilestoneApprovalError,
-    _b58decode,
-    _b58encode,
     approve_milestone,
     build_release_instruction_data,
     confirm_release,
-    derive_escrow_pda,
     get_release_tx,
     request_revision,
 )
@@ -29,6 +26,7 @@ from src.infra.models import (
     GigModel,
     MilestoneModel,
     NotificationModel,
+    UserModel,
 )
 
 _TEST_DB_URL = "sqlite+aiosqlite:///:memory:"
@@ -113,80 +111,89 @@ async def _set_milestone_status(
 
 
 # ---------------------------------------------------------------------------
-# Base58 helpers and PDA derivation (pure, no DB)
+# build_release_instruction_data (pure, no DB)
 # ---------------------------------------------------------------------------
 
 # A known base58-encoded Solana program ID for testing
 _TEST_PROGRAM_ID = "11111111111111111111111111111111"
 
 
-class TestBase58:
-    def test_roundtrip(self):
-        original = b"\x00\x01\x02\x03\xff"
-        encoded = _b58encode(original)
-        decoded = _b58decode(encoded)
-        assert decoded == original
-
-    def test_known_value(self):
-        # System program: all zeros (32 bytes) encodes to 32 '1' chars
-        decoded = _b58decode(_TEST_PROGRAM_ID)
-        assert decoded == b"\x00" * 32
-
-
-class TestDeriveEscrowPda:
-    def test_returns_base58_string(self):
-        pda = derive_escrow_pda("gig-123", _TEST_PROGRAM_ID)
-        assert isinstance(pda, str)
-        assert len(pda) > 0
-        # Must be valid base58 (roundtrip)
-        decoded = _b58decode(pda)
-        assert len(decoded) == 32  # Solana public key is 32 bytes
-
-    def test_deterministic(self):
-        pda1 = derive_escrow_pda("gig-abc", _TEST_PROGRAM_ID)
-        pda2 = derive_escrow_pda("gig-abc", _TEST_PROGRAM_ID)
-        assert pda1 == pda2
-
-    def test_different_gig_ids_produce_different_pdas(self):
-        pda1 = derive_escrow_pda("gig-aaa", _TEST_PROGRAM_ID)
-        pda2 = derive_escrow_pda("gig-bbb", _TEST_PROGRAM_ID)
-        assert pda1 != pda2
-
-
 class TestBuildReleaseInstructionData:
-    def test_basic_structure(self):
+    def test_basic_structure_with_all_wallets(self):
         result = build_release_instruction_data(
             gig_id="gig-1",
             milestone_index=0,
             freelancer_wallet="FrEeLaNcErPubKey1111111111111111111111111111",
+            client_wallet="CLiEnTwAlLeTpUbKeY111111111111111111111111111",
             program_id=_TEST_PROGRAM_ID,
         )
         assert result["program_id"] == _TEST_PROGRAM_ID
         assert result["milestone_index"] == 0
-        assert isinstance(result["escrow_pda"], str)
+        assert isinstance(result["escrow_seeds"], list)
+        assert result["escrow_seeds"][0] == "escrow"
         assert isinstance(result["accounts"], list)
-        # escrow_pda + freelancer + system_program = 3 accounts
-        assert len(result["accounts"]) == 3
+        # escrow_pda + client_signer + freelancer + system_program = 4 accounts
+        assert len(result["accounts"]) == 4
 
     def test_no_freelancer_wallet(self):
         result = build_release_instruction_data(
             gig_id="gig-2",
             milestone_index=1,
             freelancer_wallet=None,
+            client_wallet="CLiEnTwAlLeTpUbKeY111111111111111111111111111",
             program_id=_TEST_PROGRAM_ID,
         )
-        # escrow_pda + system_program = 2 accounts (no freelancer)
-        assert len(result["accounts"]) == 2
+        # escrow_pda + client_signer + system_program = 3 accounts
+        assert len(result["accounts"]) == 3
 
-    def test_escrow_pda_is_first_account(self):
+    def test_no_client_wallet(self):
+        result = build_release_instruction_data(
+            gig_id="gig-2",
+            milestone_index=1,
+            freelancer_wallet="FrEeLaNcErPubKey1111111111111111111111111111",
+            client_wallet=None,
+            program_id=_TEST_PROGRAM_ID,
+        )
+        # escrow_pda + freelancer + system_program = 3 accounts
+        assert len(result["accounts"]) == 3
+
+    def test_escrow_pda_placeholder_is_first_account(self):
         result = build_release_instruction_data(
             gig_id="gig-3",
             milestone_index=0,
             freelancer_wallet="SomeWallet111111111111111111111111111111111",
+            client_wallet="CLiEnTwAlLeTpUbKeY111111111111111111111111111",
             program_id=_TEST_PROGRAM_ID,
         )
-        assert result["accounts"][0]["pubkey"] == result["escrow_pda"]
+        assert result["accounts"][0]["is_escrow_pda"] is True
+        assert result["accounts"][0]["pubkey"] is None
         assert result["accounts"][0]["is_writable"] is True
+
+    def test_client_is_signer(self):
+        result = build_release_instruction_data(
+            gig_id="gig-4",
+            milestone_index=0,
+            freelancer_wallet="FrEeLaNcErPubKey1111111111111111111111111111",
+            client_wallet="CLiEnTwAlLeTpUbKeY111111111111111111111111111",
+            program_id=_TEST_PROGRAM_ID,
+        )
+        # client should be second account and a signer
+        client_account = result["accounts"][1]
+        assert (
+            client_account["pubkey"] == "CLiEnTwAlLeTpUbKeY111111111111111111111111111"
+        )
+        assert client_account["is_signer"] is True
+
+    def test_escrow_seeds_contain_gig_id_hex(self):
+        result = build_release_instruction_data(
+            gig_id="gig-5",
+            milestone_index=0,
+            freelancer_wallet=None,
+            client_wallet=None,
+            program_id=_TEST_PROGRAM_ID,
+        )
+        assert result["escrow_seeds"][0] == "escrow"
+        assert result["escrow_seeds"][1] == "gig-5".encode("utf-8").hex()
 
 
 # ---------------------------------------------------------------------------
@@ -366,7 +373,24 @@ class TestGetReleaseTx:
         await db.execute(
             sa_update(GigModel)
             .where(GigModel.id == gig_id)
-            .values(contract_address="FrEeLaNcErPubKey1111111111111111111111111111")
+            .values(contract_address="EscrowOnChainAddr11111111111111111111111111")
+        )
+        await db.flush()
+
+        # Create user records with wallet addresses
+        db.add(
+            UserModel(
+                id=_CLIENT_ID,
+                name="Client",
+                wallet_address="CLiEnTwAlLeT1111111111111111111111111111111",
+            )
+        )
+        db.add(
+            UserModel(
+                id=_FREELANCER_ID,
+                name="Freelancer",
+                wallet_address="FrEeLaNcErWaLlEt1111111111111111111111111",
+            )
         )
         await db.flush()
 
@@ -379,11 +403,56 @@ class TestGetReleaseTx:
         result = await get_release_tx(db, milestone_id, _CLIENT_ID)
 
         assert result["program_id"] == _TEST_PROGRAM_ID
-        assert isinstance(result["escrow_pda"], str)
+        assert isinstance(result["escrow_seeds"], list)
+        assert result["escrow_seeds"][0] == "escrow"
         assert result["milestone_index"] == 0  # order=1, index=0
         assert result["cluster"] == "devnet"
         assert isinstance(result["accounts"], list)
-        assert len(result["accounts"]) >= 2  # escrow_pda + freelancer + system_program
+        # escrow_pda + client_signer + freelancer + system_program = 4
+        assert len(result["accounts"]) == 4
+
+    @pytest.mark.asyncio
+    async def test_client_signer_in_accounts(self, db: AsyncSession, monkeypatch):
+        gig_id, milestone_id = await _setup_in_progress_gig(db)
+        await _set_milestone_status(db, milestone_id, "APPROVED")
+        await db.execute(
+            sa_update(GigModel)
+            .where(GigModel.id == gig_id)
+            .values(contract_address="EscrowOnChainAddr11111111111111111111111111")
+        )
+        await db.flush()
+
+        db.add(
+            UserModel(
+                id=_CLIENT_ID,
+                name="Client",
+                wallet_address="CLiEnTwAlLeT1111111111111111111111111111111",
+            )
+        )
+        db.add(
+            UserModel(
+                id=_FREELANCER_ID,
+                name="Freelancer",
+                wallet_address="FrEeLaNcErWaLlEt1111111111111111111111111",
+            )
+        )
+        await db.flush()
+
+        from src.config import settings
+
+        monkeypatch.setattr(settings, "escrow_program_id", _TEST_PROGRAM_ID)
+        monkeypatch.setattr(settings, "solana_cluster", "devnet")
+
+        result = await get_release_tx(db, milestone_id, _CLIENT_ID)
+
+        # client should be a signer in accounts
+        client_accounts = [
+            a
+            for a in result["accounts"]
+            if a.get("pubkey") == "CLiEnTwAlLeT1111111111111111111111111111111"
+        ]
+        assert len(client_accounts) == 1
+        assert client_accounts[0]["is_signer"] is True
 
     @pytest.mark.asyncio
     async def test_disputed_raises_409(self, db: AsyncSession):

@@ -4,8 +4,8 @@ domain/milestone_approval.py — Business logic for milestone approval and fund 
 Implements:
 - approve_milestone: CLIENT manually approves a milestone
 - request_revision: CLIENT requests changes on a milestone
-- get_release_tx: returns Solana instruction data for the escrow program's
-  complete_milestone instruction (PDA + accounts list for client wallet to sign)
+- get_release_tx: returns Solana escrow seeds, program_id, and accounts so the
+  frontend can derive the PDA via PublicKey.findProgramAddress() and build the tx
 - confirm_release: records tx_hash after client broadcasts the on-chain tx
 
 No FastAPI imports. All domain logic lives here; routers stay thin.
@@ -13,7 +13,6 @@ No FastAPI imports. All domain logic lives here; routers stay thin.
 
 from __future__ import annotations
 
-import hashlib
 import json
 import logging
 from typing import Any
@@ -27,6 +26,7 @@ from src.infra.models import (
     GigModel,
     MilestoneModel,
     NotificationModel,
+    UserModel,
 )
 
 logger = logging.getLogger(__name__)
@@ -44,7 +44,6 @@ _NOTIFICATION_TYPE_FUNDS_RELEASED = "NOTIFICATION_TYPE_FUNDS_RELEASED"
 
 # Well-known Solana program IDs
 _SYSTEM_PROGRAM_ID = "11111111111111111111111111111111"
-_TOKEN_PROGRAM_ID = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
 
 # ---------------------------------------------------------------------------
 # Custom exception
@@ -119,92 +118,43 @@ def _notify_freelancer(
     )
 
 
-def _b58encode(data: bytes) -> str:
-    """Minimal Base58 encoder (Bitcoin alphabet) — no external dependency."""
-    alphabet = b"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
-    num = int.from_bytes(data, "big")
-    encoded = bytearray()
-    while num > 0:
-        num, rem = divmod(num, 58)
-        encoded.append(alphabet[rem])
-    # Preserve leading zero-bytes as '1' characters
-    for byte in data:
-        if byte == 0:
-            encoded.append(alphabet[0])
-        else:
-            break
-    return bytes(reversed(encoded)).decode("ascii")
-
-
-def _b58decode(s: str) -> bytes:
-    """Minimal Base58 decoder (Bitcoin alphabet) — no external dependency."""
-    alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
-    num = 0
-    for char in s:
-        num = num * 58 + alphabet.index(char)
-    # Convert to bytes, preserving leading zero-bytes for leading '1' chars
-    byte_length = (num.bit_length() + 7) // 8
-    result = num.to_bytes(byte_length, "big") if byte_length else b""
-    leading_ones = len(s) - len(s.lstrip("1"))
-    return b"\x00" * leading_ones + result
-
-
-def derive_escrow_pda(gig_id: str, program_id: str) -> str:
-    """
-    Derive the escrow PDA address from [b"escrow", gig_id_bytes] + program_id.
-
-    Uses SHA-256 (matching Solana's findProgramAddress algorithm) and returns a
-    base58-encoded public key string.
-
-    The derivation tries bump seeds from 255 down to 0, returning the first
-    address that falls off the ed25519 curve (i.e. is a valid PDA).
-    In practice Solana checks against the ed25519 curve; here we use a
-    simplified approach: SHA-256 of seeds + program_id + "ProgramDerivedAddress"
-    with the first valid bump.
-    """
-    program_id_bytes = _b58decode(program_id)
-    gig_id_bytes = gig_id.encode("utf-8")
-
-    for bump in range(255, -1, -1):
-        hasher = hashlib.sha256()
-        hasher.update(b"escrow")
-        hasher.update(gig_id_bytes)
-        hasher.update(bytes([bump]))
-        hasher.update(program_id_bytes)
-        hasher.update(b"ProgramDerivedAddress")
-        hash_bytes = hasher.digest()
-        # A valid PDA must NOT be a valid ed25519 point.
-        # Ed25519 points have specific structure; as a heuristic used in many
-        # off-chain SDKs, we accept the hash if the high bit of byte 31 is 0.
-        # This mirrors the Solana SDK behaviour for >99.6% of cases.
-        if hash_bytes[31] & 0x80 == 0:
-            return _b58encode(hash_bytes)
-
-    raise RuntimeError("Failed to derive PDA — no valid bump seed found")
-
-
 def build_release_instruction_data(
     gig_id: str,
     milestone_index: int,
     freelancer_wallet: str | None,
+    client_wallet: str | None,
     program_id: str,
 ) -> dict[str, Any]:
     """
     Build Solana instruction data for the escrow program's complete_milestone
     instruction.
 
-    Returns a dict with all the information the frontend needs to build and
-    sign the transaction via a Solana wallet adapter:
+    Instead of deriving the PDA on the backend (which cannot correctly replicate
+    Solana's findProgramAddress), this returns the seeds and program_id so the
+    frontend can call PublicKey.findProgramAddress() itself.
+
+    Returns a dict with:
       - program_id: the escrow program (base58)
-      - escrow_pda: derived PDA for this gig (base58)
+      - escrow_seeds: list of seed strings for PDA derivation (["escrow", gig_id])
       - milestone_index: 0-based index
-      - accounts: ordered list of account pubkeys the instruction expects
+      - accounts: ordered list of account metas the instruction expects
     """
-    escrow_pda = derive_escrow_pda(gig_id, program_id)
+    gig_id_bytes_hex = gig_id.encode("utf-8").hex()
 
     accounts: list[dict[str, Any]] = [
-        {"pubkey": escrow_pda, "is_signer": False, "is_writable": True},
+        # escrow PDA — derived by frontend from seeds + program_id
+        {
+            "pubkey": None,
+            "is_signer": False,
+            "is_writable": True,
+            "is_escrow_pda": True,
+        },
     ]
+
+    if client_wallet:
+        accounts.append(
+            {"pubkey": client_wallet, "is_signer": True, "is_writable": True}
+        )
 
     if freelancer_wallet:
         accounts.append(
@@ -217,7 +167,7 @@ def build_release_instruction_data(
 
     return {
         "program_id": program_id,
-        "escrow_pda": escrow_pda,
+        "escrow_seeds": ["escrow", gig_id_bytes_hex],
         "milestone_index": milestone_index,
         "accounts": accounts,
     }
@@ -358,7 +308,8 @@ async def get_release_tx(
     - Gig has a contract_address set (used as the on-chain escrow account)
     - Escrow program ID is configured
 
-    Returns dict with: program_id, escrow_pda, milestone_index, cluster, accounts
+    Returns dict with: program_id, escrow_seeds, milestone_index, cluster, accounts.
+    The frontend derives the PDA via PublicKey.findProgramAddress(escrow_seeds, program_id).
     """
     milestone, gig = await _fetch_milestone_and_gig(db, milestone_id, client_id)
 
@@ -386,27 +337,44 @@ async def get_release_tx(
             "Escrow program ID is not configured",
         )
 
+    # Look up freelancer wallet from the user record
+    freelancer_wallet: str | None = None
+    if gig.freelancer_id:
+        freelancer_result = await db.execute(
+            select(UserModel).where(UserModel.id == gig.freelancer_id)
+        )
+        freelancer_user = freelancer_result.scalar_one_or_none()
+        if freelancer_user:
+            freelancer_wallet = freelancer_user.wallet_address
+
+    # Look up client wallet from the user record
+    client_wallet: str | None = None
+    client_result = await db.execute(select(UserModel).where(UserModel.id == client_id))
+    client_user = client_result.scalar_one_or_none()
+    if client_user:
+        client_wallet = client_user.wallet_address
+
     # Contract is 0-indexed; DB order is 1-indexed
     milestone_index = milestone.order - 1
 
     instruction_data = build_release_instruction_data(
         gig_id=gig.id,
         milestone_index=milestone_index,
-        freelancer_wallet=gig.contract_address,  # contract_address stores the on-chain escrow account
+        freelancer_wallet=freelancer_wallet,
+        client_wallet=client_wallet,
         program_id=settings.escrow_program_id,
     )
 
     logger.info(
-        "release-tx generated milestone_id=%s index=%d escrow_pda=%s program=%s",
+        "release-tx generated milestone_id=%s index=%d program=%s",
         milestone_id,
         milestone_index,
-        instruction_data["escrow_pda"],
         settings.escrow_program_id,
     )
 
     return {
         "program_id": instruction_data["program_id"],
-        "escrow_pda": instruction_data["escrow_pda"],
+        "escrow_seeds": instruction_data["escrow_seeds"],
         "milestone_index": instruction_data["milestone_index"],
         "cluster": settings.solana_cluster,
         "accounts": instruction_data["accounts"],

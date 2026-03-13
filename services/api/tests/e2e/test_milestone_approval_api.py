@@ -265,8 +265,8 @@ class TestRequestRevisionEndpoint:
 
 class TestGetReleaseTxEndpoint:
     @pytest.mark.asyncio
-    async def test_returns_calldata_for_approved_milestone(
-        self, client: AsyncClient, db_session: AsyncSession
+    async def test_returns_solana_instruction_data_for_approved_milestone(
+        self, client: AsyncClient, db_session: AsyncSession, monkeypatch
     ):
         (
             client_token,
@@ -282,9 +282,17 @@ class TestGetReleaseTxEndpoint:
         await db_session.execute(
             sa_update(GigModel)
             .where(GigModel.id == gig_id)
-            .values(contract_address="0xABCDEF1234567890AbcdEF1234567890aBcdef12")
+            .values(contract_address="EscrowOnChainAddr11111111111111111111111111")
         )
         await db_session.flush()
+
+        # Patch settings for Solana config
+        from src.config import settings
+
+        monkeypatch.setattr(
+            settings, "escrow_program_id", "11111111111111111111111111111111"
+        )
+        monkeypatch.setattr(settings, "solana_cluster", "devnet")
 
         resp = await client.get(
             f"/v1/milestones/{milestone_id}/release-tx",
@@ -293,11 +301,12 @@ class TestGetReleaseTxEndpoint:
 
         assert resp.status_code == 200, resp.text
         data = resp.json()
-        assert data["contract_address"] == "0xABCDEF1234567890AbcdEF1234567890aBcdef12"
+        assert data["program_id"] == "11111111111111111111111111111111"
         assert data["milestone_index"] == 0
-        assert data["calldata"].startswith("0x5a36fb08")
-        assert len(data["calldata"]) == 74  # "0x" + 72 hex chars
-        assert isinstance(data["chain_id"], int)
+        assert isinstance(data["escrow_seeds"], list)
+        assert data["escrow_seeds"][0] == "escrow"
+        assert data["cluster"] == "devnet"
+        assert isinstance(data["accounts"], list)
 
     @pytest.mark.asyncio
     async def test_release_tx_requires_client_role(
