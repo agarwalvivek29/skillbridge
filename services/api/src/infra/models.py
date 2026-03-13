@@ -286,7 +286,7 @@ class EscrowContractModel(Base):
         nullable=False,
         unique=True,
     )
-    # On-chain contract address of the deployed GigEscrow
+    # On-chain escrow account address (Solana base58 public key)
     contract_address: Mapped[str] = mapped_column(Text, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()

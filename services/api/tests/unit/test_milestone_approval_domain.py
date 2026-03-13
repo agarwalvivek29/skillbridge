@@ -14,9 +14,12 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from src.domain.gig import CreateGigInput, MilestoneInput, create_gig
 from src.domain.milestone_approval import (
     MilestoneApprovalError,
-    _encode_complete_milestone_calldata,
+    _b58decode,
+    _b58encode,
     approve_milestone,
+    build_release_instruction_data,
     confirm_release,
+    derive_escrow_pda,
     get_release_tx,
     request_revision,
 )
@@ -110,30 +113,80 @@ async def _set_milestone_status(
 
 
 # ---------------------------------------------------------------------------
-# _encode_complete_milestone_calldata (pure, no DB)
+# Base58 helpers and PDA derivation (pure, no DB)
 # ---------------------------------------------------------------------------
 
+# A known base58-encoded Solana program ID for testing
+_TEST_PROGRAM_ID = "11111111111111111111111111111111"
 
-class TestEncodeCalldata:
-    def test_index_zero(self):
-        calldata = _encode_complete_milestone_calldata(0)
-        assert calldata.startswith("0x")
-        # 4-byte selector + 32-byte index = 36 bytes = 72 hex chars + "0x" prefix
-        assert len(calldata) == 2 + 72
-        assert calldata[:10] == "0x5a36fb08"
-        # index 0 → last 64 hex chars are all zeros
-        assert calldata[10:] == "0" * 64
 
-    def test_index_one(self):
-        calldata = _encode_complete_milestone_calldata(1)
-        assert calldata.startswith("0x5a36fb08")
-        # 32-byte big-endian 1 → 63 zeros then '01'
-        assert calldata[10:] == "0" * 62 + "01"
+class TestBase58:
+    def test_roundtrip(self):
+        original = b"\x00\x01\x02\x03\xff"
+        encoded = _b58encode(original)
+        decoded = _b58decode(encoded)
+        assert decoded == original
 
-    def test_index_large(self):
-        calldata = _encode_complete_milestone_calldata(255)
-        assert calldata.startswith("0x5a36fb08")
-        assert calldata[10:] == "0" * 62 + "ff"
+    def test_known_value(self):
+        # System program: all zeros (32 bytes) encodes to 32 '1' chars
+        decoded = _b58decode(_TEST_PROGRAM_ID)
+        assert decoded == b"\x00" * 32
+
+
+class TestDeriveEscrowPda:
+    def test_returns_base58_string(self):
+        pda = derive_escrow_pda("gig-123", _TEST_PROGRAM_ID)
+        assert isinstance(pda, str)
+        assert len(pda) > 0
+        # Must be valid base58 (roundtrip)
+        decoded = _b58decode(pda)
+        assert len(decoded) == 32  # Solana public key is 32 bytes
+
+    def test_deterministic(self):
+        pda1 = derive_escrow_pda("gig-abc", _TEST_PROGRAM_ID)
+        pda2 = derive_escrow_pda("gig-abc", _TEST_PROGRAM_ID)
+        assert pda1 == pda2
+
+    def test_different_gig_ids_produce_different_pdas(self):
+        pda1 = derive_escrow_pda("gig-aaa", _TEST_PROGRAM_ID)
+        pda2 = derive_escrow_pda("gig-bbb", _TEST_PROGRAM_ID)
+        assert pda1 != pda2
+
+
+class TestBuildReleaseInstructionData:
+    def test_basic_structure(self):
+        result = build_release_instruction_data(
+            gig_id="gig-1",
+            milestone_index=0,
+            freelancer_wallet="FrEeLaNcErPubKey1111111111111111111111111111",
+            program_id=_TEST_PROGRAM_ID,
+        )
+        assert result["program_id"] == _TEST_PROGRAM_ID
+        assert result["milestone_index"] == 0
+        assert isinstance(result["escrow_pda"], str)
+        assert isinstance(result["accounts"], list)
+        # escrow_pda + freelancer + system_program = 3 accounts
+        assert len(result["accounts"]) == 3
+
+    def test_no_freelancer_wallet(self):
+        result = build_release_instruction_data(
+            gig_id="gig-2",
+            milestone_index=1,
+            freelancer_wallet=None,
+            program_id=_TEST_PROGRAM_ID,
+        )
+        # escrow_pda + system_program = 2 accounts (no freelancer)
+        assert len(result["accounts"]) == 2
+
+    def test_escrow_pda_is_first_account(self):
+        result = build_release_instruction_data(
+            gig_id="gig-3",
+            milestone_index=0,
+            freelancer_wallet="SomeWallet111111111111111111111111111111111",
+            program_id=_TEST_PROGRAM_ID,
+        )
+        assert result["accounts"][0]["pubkey"] == result["escrow_pda"]
+        assert result["accounts"][0]["is_writable"] is True
 
 
 # ---------------------------------------------------------------------------
@@ -304,26 +357,33 @@ class TestRequestRevision:
 
 class TestGetReleaseTx:
     @pytest.mark.asyncio
-    async def test_returns_calldata_for_approved_milestone(self, db: AsyncSession):
+    async def test_returns_solana_instruction_data_for_approved_milestone(
+        self, db: AsyncSession, monkeypatch
+    ):
         gig_id, milestone_id = await _setup_in_progress_gig(db)
         await _set_milestone_status(db, milestone_id, "APPROVED")
-        # Set a contract address on the gig
+        # Set a contract address on the gig (Solana base58 pubkey)
         await db.execute(
             sa_update(GigModel)
             .where(GigModel.id == gig_id)
-            .values(contract_address="0xABCDEF1234567890AbcdEF1234567890aBcdef12")
+            .values(contract_address="FrEeLaNcErPubKey1111111111111111111111111111")
         )
         await db.flush()
 
+        # Patch settings for Solana config
+        from src.config import settings
+
+        monkeypatch.setattr(settings, "escrow_program_id", _TEST_PROGRAM_ID)
+        monkeypatch.setattr(settings, "solana_cluster", "devnet")
+
         result = await get_release_tx(db, milestone_id, _CLIENT_ID)
 
-        assert (
-            result["contract_address"] == "0xABCDEF1234567890AbcdEF1234567890aBcdef12"
-        )
+        assert result["program_id"] == _TEST_PROGRAM_ID
+        assert isinstance(result["escrow_pda"], str)
         assert result["milestone_index"] == 0  # order=1, index=0
-        assert result["calldata"].startswith("0x5a36fb08")
-        assert len(result["calldata"]) == 2 + 72
-        assert isinstance(result["chain_id"], int)
+        assert result["cluster"] == "devnet"
+        assert isinstance(result["accounts"], list)
+        assert len(result["accounts"]) >= 2  # escrow_pda + freelancer + system_program
 
     @pytest.mark.asyncio
     async def test_disputed_raises_409(self, db: AsyncSession):
@@ -332,7 +392,7 @@ class TestGetReleaseTx:
         await db.execute(
             sa_update(GigModel)
             .where(GigModel.id == gig_id)
-            .values(contract_address="0xABCDEF1234567890AbcdEF1234567890aBcdef12")
+            .values(contract_address="SomeSolanaAddress111111111111111111111111111")
         )
         await db.flush()
 
@@ -361,6 +421,26 @@ class TestGetReleaseTx:
             await get_release_tx(db, milestone_id, _CLIENT_ID)
 
         assert exc_info.value.code == "NO_CONTRACT_ADDRESS"
+
+    @pytest.mark.asyncio
+    async def test_no_program_id_raises_error(self, db: AsyncSession, monkeypatch):
+        gig_id, milestone_id = await _setup_in_progress_gig(db)
+        await _set_milestone_status(db, milestone_id, "APPROVED")
+        await db.execute(
+            sa_update(GigModel)
+            .where(GigModel.id == gig_id)
+            .values(contract_address="SomeSolanaAddress111111111111111111111111111")
+        )
+        await db.flush()
+
+        from src.config import settings
+
+        monkeypatch.setattr(settings, "escrow_program_id", "")
+
+        with pytest.raises(MilestoneApprovalError) as exc_info:
+            await get_release_tx(db, milestone_id, _CLIENT_ID)
+
+        assert exc_info.value.code == "NO_PROGRAM_ID"
 
 
 # ---------------------------------------------------------------------------
