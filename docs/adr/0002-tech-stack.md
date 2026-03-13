@@ -8,6 +8,7 @@
 ## Context
 
 SkillBridge requires four distinct technical layers:
+
 1. A user-facing web application with wallet integration
 2. A backend API managing business entities and on-chain interactions
 3. An async AI worker for code review jobs
@@ -37,6 +38,8 @@ The `ai-reviewer` service will run as a Celery worker consuming from Redis, usin
 
 ### Blockchain: Solidity on Base L2 (Foundry)
 
+> **Note**: The blockchain decision in this ADR has been superseded by [ADR 0003](./0003-solana-migration.md). The project now uses Solana (Rust/Anchor) instead of Base L2 (Solidity/Foundry).
+
 We will write contracts in Solidity ^0.8.24 and use Foundry for testing and deployment. Base L2 is the target network.
 
 **Rationale**: Base L2 provides gas costs ~100x lower than Ethereum mainnet (~$0.01/tx), is EVM-compatible (standard Solidity tooling works), and is backed by Coinbase — aligned with the target user base of crypto-native freelancers. Foundry is preferred over Hardhat for its faster compilation, native fuzz testing, and Solidity-native test writing.
@@ -62,6 +65,7 @@ Submission files and portfolio assets are stored in S3 with presigned URLs for d
 ## Consequences
 
 ### Positive
+
 - Python shared between `api` and `ai-reviewer` reduces library duplication
 - FastAPI + Pydantic integrates naturally with betterproto schema types
 - Foundry's fuzz testing catches edge cases in financial contract logic
@@ -69,24 +73,30 @@ Submission files and portfolio assets are stored in S3 with presigned URLs for d
 - Celery worker can be scaled horizontally without touching the API
 
 ### Negative
+
 - Python is slower than Go/Rust for raw throughput — acceptable at MVP scale
 - No native TypeScript types for smart contract ABIs (use viem's ABI typing instead)
 - Celery requires Redis to be available — single dependency for job queue reliability
 
 ### Neutral
+
 - betterproto generates Python dataclasses, not Pydantic models directly — requires a small compatibility shim
 - Base L2 requires users to bridge ETH from mainnet or buy directly on Coinbase
 
 ## Alternatives Considered
 
 ### TypeScript for API instead of Python
+
 TypeScript would provide end-to-end type safety from frontend to backend. Rejected because: the `ai-reviewer` worker requires Python for AI library compatibility (Anthropic SDK, subprocess management), and running two languages adds more cognitive overhead than the type safety benefit at this scale.
 
 ### Hardhat instead of Foundry
+
 Hardhat is more widely used and has a larger plugin ecosystem. Rejected because: Foundry's native fuzz testing is critical for financial contract correctness, and Foundry compilation is significantly faster. The team does not need Hardhat's JS/TS test compatibility.
 
 ### Kafka instead of Redis+Celery
+
 Kafka provides event replay, multiple independent consumers, and higher throughput. Rejected because: at MVP scale, there is only one consumer (ai-reviewer) and no replay requirement. The operational overhead of Kafka (broker management, partition tuning) is not justified until job volume exceeds ~1000/hour. This decision should be revisited at that point.
 
 ### Polygon or Arbitrum instead of Base L2
+
 Both are valid EVM L2s with low fees. Base is preferred because: Coinbase integration aligns with the target user base (crypto-native but mainstream-adjacent), Coinbase Smart Wallet provides the best onboarding UX for non-crypto users, and Base has strong EVM tooling support.
