@@ -29,7 +29,9 @@ const freelancerLinks = [
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const user = useAuthStore((s) => s.user);
-  const links = user?.role === "FREELANCER" ? freelancerLinks : clientLinks;
+  const isFl =
+    user?.role === "FREELANCER" || user?.role === "USER_ROLE_FREELANCER";
+  const links = isFl ? freelancerLinks : clientLinks;
 
   return (
     <div className="flex min-h-[calc(100vh-64px)]">
