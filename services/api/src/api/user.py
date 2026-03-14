@@ -33,6 +33,8 @@ router = APIRouter(prefix="/v1/users", tags=["users"])
 _URL_RE = re.compile(r"^https?://\S+$")
 
 
+# API accepts both short forms ("CLIENT", "FREELANCER") and proto enum forms
+# ("USER_ROLE_CLIENT", "USER_ROLE_FREELANCER") for backward compatibility
 _VALID_ROLES = {UserRole.CLIENT, UserRole.FREELANCER, "CLIENT", "FREELANCER"}
 
 

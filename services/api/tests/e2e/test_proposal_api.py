@@ -546,7 +546,7 @@ class TestGigFilters:
     async def test_currency_filter(self, client: AsyncClient, db_session: AsyncSession):
         client_token = await _register_and_get_token(client, _CLIENT_PAYLOAD)
 
-        # ETH gig
+        # SOL gig (default currency from _valid_gig_payload)
         await _create_open_gig(client, db_session, client_token)
 
         # USDC gig
@@ -565,7 +565,7 @@ class TestGigFilters:
         )
         await db_session.commit()
 
-        resp = await client.get("/v1/gigs?currency=ETH")
+        resp = await client.get("/v1/gigs?currency=SOL")
         assert resp.status_code == 200
         data = resp.json()
         assert all(g["currency"] == "SOL" for g in data["gigs"])
