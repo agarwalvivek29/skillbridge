@@ -12,6 +12,7 @@ import logging
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.domain.enums import MilestoneStatus, ReviewVerdict, SubmissionStatus
 from src.infra.models import (
     GigModel,
     MilestoneModel,
@@ -58,7 +59,7 @@ async def process_openreview_verdict(
         logger.warning("openreview webhook: no submission found for pr_url=%s", pr_url)
         return
 
-    if submission.status in ("APPROVED", "REJECTED"):
+    if submission.status in (SubmissionStatus.APPROVED, SubmissionStatus.REJECTED):
         logger.info(
             "openreview webhook: submission_id=%s already in terminal status %s — skipping",
             submission.id,
@@ -104,14 +105,14 @@ async def process_openreview_verdict(
         return
 
     if state == "approved":
-        submission.status = "APPROVED"
-        milestone.status = "APPROVED"
-        verdict = "PASS"
+        submission.status = SubmissionStatus.APPROVED
+        milestone.status = MilestoneStatus.APPROVED
+        verdict = ReviewVerdict.PASS
         score = 100
     else:  # changes_requested
-        submission.status = "REJECTED"
-        milestone.status = "REVISION_REQUESTED"
-        verdict = "FAIL"
+        submission.status = SubmissionStatus.REJECTED
+        milestone.status = MilestoneStatus.REVISION_REQUESTED
+        verdict = ReviewVerdict.FAIL
         score = 0
 
     await db.flush()

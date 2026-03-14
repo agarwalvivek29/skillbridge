@@ -40,7 +40,7 @@ def _valid_gig_payload() -> dict:
         "title": "Escrow test gig",
         "description": "Testing escrow endpoints",
         "total_amount": "5000",
-        "currency": "ETH",
+        "currency": "SOL",
         "required_skills": ["Rust"],
         "milestones": [
             {
@@ -195,7 +195,7 @@ class TestGetEscrowTxEndpoint:
         assert data["program_id"] == "EscrowProgramId1111111111111111111111111111"
         assert data["escrow_seeds"][0] == "escrow"
         assert data["amount"] == "5000"
-        assert data["currency"] == "ETH"
+        assert data["currency"] == "SOL"
         assert data["token_mint"] is None
 
     @pytest.mark.asyncio

@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.domain.enums import GigStatus, ProposalStatus, UserRole
 from src.infra.models import GigModel, NotificationModel, ProposalModel
 
 logger = logging.getLogger(__name__)
@@ -20,16 +21,16 @@ logger = logging.getLogger(__name__)
 # Constants
 # ---------------------------------------------------------------------------
 
-_FREELANCER_ROLE = "USER_ROLE_FREELANCER"
-_CLIENT_ROLE = "USER_ROLE_CLIENT"
+_FREELANCER_ROLE = UserRole.FREELANCER
+_CLIENT_ROLE = UserRole.CLIENT
 
-_PROPOSAL_PENDING = "PENDING"
-_PROPOSAL_ACCEPTED = "ACCEPTED"
-_PROPOSAL_REJECTED = "REJECTED"
-_PROPOSAL_WITHDRAWN = "WITHDRAWN"
+_PROPOSAL_PENDING = ProposalStatus.PENDING
+_PROPOSAL_ACCEPTED = ProposalStatus.ACCEPTED
+_PROPOSAL_REJECTED = ProposalStatus.REJECTED
+_PROPOSAL_WITHDRAWN = ProposalStatus.WITHDRAWN
 
-_GIG_OPEN = "OPEN"
-_GIG_IN_PROGRESS = "IN_PROGRESS"
+_GIG_OPEN = GigStatus.OPEN
+_GIG_IN_PROGRESS = GigStatus.IN_PROGRESS
 
 _NOTIF_PROPOSAL_RECEIVED = "NOTIFICATION_TYPE_PROPOSAL_RECEIVED"
 _NOTIF_PROPOSAL_ACCEPTED = "NOTIFICATION_TYPE_PROPOSAL_ACCEPTED"

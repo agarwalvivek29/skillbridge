@@ -13,6 +13,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.config import settings
+from src.domain.enums import MilestoneStatus, SubmissionStatus
 from src.infra.github import post_openreview_comment
 from src.infra.models import (
     GigModel,
@@ -27,12 +28,20 @@ logger = logging.getLogger(__name__)
 # Constants
 # ---------------------------------------------------------------------------
 
-_SUBMITTABLE_MILESTONE_STATUSES = {"PENDING", "IN_PROGRESS", "REVISION_REQUESTED"}
+_SUBMITTABLE_MILESTONE_STATUSES = {
+    MilestoneStatus.PENDING,
+    MilestoneStatus.IN_PROGRESS,
+    MilestoneStatus.REVISION_REQUESTED,
+}
 _NOTIFICATION_TYPE_SUBMISSION_RECEIVED = "NOTIFICATION_TYPE_SUBMISSION_RECEIVED"
 
 # Statuses that a previous submission may be in to allow chaining a new one.
 # Prevents chaining onto an already-APPROVED or UNDER_REVIEW submission (fix #5).
-_VALID_PREVIOUS_SUBMISSION_STATUSES = {"REJECTED", "UNDER_REVIEW", "PENDING"}
+_VALID_PREVIOUS_SUBMISSION_STATUSES = {
+    SubmissionStatus.REJECTED,
+    SubmissionStatus.UNDER_REVIEW,
+    SubmissionStatus.PENDING,
+}
 
 # ---------------------------------------------------------------------------
 # Custom exception
@@ -145,7 +154,7 @@ async def create_submission(
     revision_number = existing_count + 1
 
     # For resubmissions, validate previous_submission_id
-    if milestone.status == "REVISION_REQUESTED":
+    if milestone.status == MilestoneStatus.REVISION_REQUESTED:
         if not previous_submission_id:
             raise SubmissionValidationError(
                 "PREVIOUS_SUBMISSION_REQUIRED",
@@ -177,7 +186,7 @@ async def create_submission(
         repo_url=repo_url or None,
         file_keys=file_keys or [],
         notes=notes,
-        status="PENDING",
+        status=SubmissionStatus.PENDING,
         revision_number=revision_number,
         previous_submission_id=previous_submission_id or None,
     )
@@ -185,7 +194,7 @@ async def create_submission(
     await db.flush()  # populate submission.id
 
     # Transition milestone: → SUBMITTED
-    milestone.status = "SUBMITTED"
+    milestone.status = MilestoneStatus.SUBMITTED
     milestone.revision_count = milestone.revision_count + 1
     await db.flush()
 
@@ -201,8 +210,8 @@ async def create_submission(
             )
 
     # Transition submission and milestone: → UNDER_REVIEW
-    submission.status = "UNDER_REVIEW"
-    milestone.status = "UNDER_REVIEW"
+    submission.status = SubmissionStatus.UNDER_REVIEW
+    milestone.status = MilestoneStatus.UNDER_REVIEW
     await db.flush()
 
     # Notify client.

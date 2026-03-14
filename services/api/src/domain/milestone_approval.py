@@ -21,6 +21,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.config import settings
+from src.domain.enums import MilestoneStatus
 from src.infra.models import (
     EscrowContractModel,
     GigModel,
@@ -36,7 +37,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 # Statuses that allow a client to approve or request a revision
-_REVIEWABLE_STATUSES = {"UNDER_REVIEW", "SUBMITTED"}
+_REVIEWABLE_STATUSES = {MilestoneStatus.UNDER_REVIEW, MilestoneStatus.SUBMITTED}
 
 _NOTIFICATION_TYPE_MILESTONE_APPROVED = "NOTIFICATION_TYPE_MILESTONE_APPROVED"
 _NOTIFICATION_TYPE_REVISION_REQUESTED = "NOTIFICATION_TYPE_REVISION_REQUESTED"
@@ -197,20 +198,23 @@ async def approve_milestone(
     """
     milestone, gig = await _fetch_milestone_and_gig(db, milestone_id, client_id)
 
-    if milestone.status == "DISPUTED":
+    if milestone.status == MilestoneStatus.DISPUTED:
         raise MilestoneApprovalError(
             "MILESTONE_DISPUTED",
             "Cannot approve a disputed milestone",
         )
 
-    if milestone.status not in _REVIEWABLE_STATUSES and milestone.status != "APPROVED":
+    if (
+        milestone.status not in _REVIEWABLE_STATUSES
+        and milestone.status != MilestoneStatus.APPROVED
+    ):
         raise MilestoneApprovalError(
             "MILESTONE_NOT_APPROVABLE",
             f"Milestone cannot be approved in status {milestone.status}",
         )
 
-    if milestone.status != "APPROVED":
-        milestone.status = "APPROVED"
+    if milestone.status != MilestoneStatus.APPROVED:
+        milestone.status = MilestoneStatus.APPROVED
         await db.flush()
 
         if gig.freelancer_id:
@@ -262,7 +266,7 @@ async def request_revision(
             f"Revision cannot be requested in status {milestone.status}",
         )
 
-    milestone.status = "REVISION_REQUESTED"
+    milestone.status = MilestoneStatus.REVISION_REQUESTED
     await db.flush()
 
     if gig.freelancer_id:
@@ -313,13 +317,13 @@ async def get_release_tx(
     """
     milestone, gig = await _fetch_milestone_and_gig(db, milestone_id, client_id)
 
-    if milestone.status == "DISPUTED":
+    if milestone.status == MilestoneStatus.DISPUTED:
         raise MilestoneApprovalError(
             "MILESTONE_DISPUTED",
             "Cannot release funds for a disputed milestone",
         )
 
-    if milestone.status != "APPROVED":
+    if milestone.status != MilestoneStatus.APPROVED:
         raise MilestoneApprovalError(
             "MILESTONE_NOT_APPROVED",
             f"Milestone must be APPROVED before releasing funds; current status: {milestone.status}",
@@ -402,7 +406,7 @@ async def confirm_release(
     """
     milestone, gig = await _fetch_milestone_and_gig(db, milestone_id, client_id)
 
-    if milestone.status != "APPROVED":
+    if milestone.status != MilestoneStatus.APPROVED:
         raise MilestoneApprovalError(
             "MILESTONE_NOT_APPROVED",
             f"Milestone must be APPROVED to confirm release; current status: {milestone.status}",
@@ -418,7 +422,7 @@ async def confirm_release(
             "This gig does not have a deployed escrow contract; cannot confirm release",
         )
 
-    milestone.status = "PAID"
+    milestone.status = MilestoneStatus.PAID
     milestone.release_tx_hash = tx_hash
     await db.flush()
 

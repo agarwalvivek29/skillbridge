@@ -16,6 +16,7 @@ from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.config import settings
+from src.domain.enums import UserRole, UserStatus
 from src.infra.models import AuthNonceModel, UserModel
 
 # ---------------------------------------------------------------------------
@@ -228,7 +229,7 @@ async def create_user_email(
         name=name,
         password_hash=password_hash,
         role=role,
-        status="USER_STATUS_ACTIVE",
+        status=UserStatus.ACTIVE,
     )
     db.add(user)
     await db.flush()
@@ -247,8 +248,8 @@ async def upsert_wallet_user(db: AsyncSession, wallet_address: str) -> UserModel
         user = UserModel(
             wallet_address=wallet_address,
             name=short,
-            role="USER_ROLE_FREELANCER",
-            status="USER_STATUS_ACTIVE",
+            role=UserRole.FREELANCER,
+            status=UserStatus.ACTIVE,
         )
         db.add(user)
         await db.flush()

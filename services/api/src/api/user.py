@@ -15,6 +15,7 @@ from pydantic import BaseModel, EmailStr, field_validator
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.domain.enums import GigStatus, MilestoneStatus, UserRole
 from src.infra.database import get_db
 from src.infra.models import (
     GigModel,
@@ -32,7 +33,7 @@ router = APIRouter(prefix="/v1/users", tags=["users"])
 _URL_RE = re.compile(r"^https?://\S+$")
 
 
-_VALID_ROLES = {"USER_ROLE_CLIENT", "USER_ROLE_FREELANCER", "CLIENT", "FREELANCER"}
+_VALID_ROLES = {UserRole.CLIENT, UserRole.FREELANCER, "CLIENT", "FREELANCER"}
 
 
 class ProfileUpdateRequest(BaseModel):
@@ -140,9 +141,9 @@ async def update_profile(
         # Normalise short form to proto enum
         role = body.role
         if role == "CLIENT":
-            role = "USER_ROLE_CLIENT"
+            role = UserRole.CLIENT
         elif role == "FREELANCER":
-            role = "USER_ROLE_FREELANCER"
+            role = UserRole.FREELANCER
         user.role = role
     if body.name is not None:
         user.name = body.name
@@ -287,7 +288,7 @@ async def get_profile(
         select(func.count())
         .select_from(GigModel)
         .where(
-            GigModel.status == "COMPLETED",
+            GigModel.status == GigStatus.COMPLETED,
             (GigModel.client_id == user.id) | (GigModel.freelancer_id == user.id),
         )
     )
@@ -295,7 +296,7 @@ async def get_profile(
 
     # Active gigs
     active_q = select(GigModel).where(
-        GigModel.status.in_(["OPEN", "IN_PROGRESS"]),
+        GigModel.status.in_([GigStatus.OPEN, GigStatus.IN_PROGRESS]),
         (GigModel.client_id == user.id) | (GigModel.freelancer_id == user.id),
     )
     active_gigs_rows = (await db.execute(active_q)).scalars().all()
@@ -306,11 +307,14 @@ async def get_profile(
 
     # Total earned (sum of PAID milestone amounts for freelancer)
     total_earned = None
-    if user.role == "USER_ROLE_FREELANCER":
+    if user.role == UserRole.FREELANCER:
         paid_q = (
             select(MilestoneModel.amount)
             .join(GigModel, GigModel.id == MilestoneModel.gig_id)
-            .where(GigModel.freelancer_id == user.id, MilestoneModel.status == "PAID")
+            .where(
+                GigModel.freelancer_id == user.id,
+                MilestoneModel.status == MilestoneStatus.PAID,
+            )
         )
         paid_rows = (await db.execute(paid_q)).scalars().all()
         total_earned = str(sum(int(a) for a in paid_rows if a.isdigit()))
