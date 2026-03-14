@@ -13,6 +13,8 @@ import {
   AlertTriangle,
   ExternalLink,
   BadgeCheck,
+  Github,
+  FolderOpen,
 } from "lucide-react";
 import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
@@ -220,42 +222,104 @@ export default function PublicProfilePage() {
               <h2 className="mb-4 text-lg font-semibold text-neutral-800">
                 Portfolio
               </h2>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {profile.portfolio_items.map((item) => (
-                  <Card key={item.id} className="relative overflow-hidden">
-                    {item.cover_image_url && (
-                      <div className="mb-3 h-40 overflow-hidden rounded-md bg-neutral-100">
+                  <Card
+                    key={item.id}
+                    className="flex flex-col overflow-hidden border border-neutral-200 p-0 transition-shadow hover:shadow-md"
+                  >
+                    {/* Cover image / URL preview / placeholder */}
+                    <div className="relative h-44 bg-gradient-to-br from-primary-50 to-web3-50">
+                      {item.cover_image_url ? (
                         <Image
                           src={item.cover_image_url}
                           alt={item.title}
-                          width={400}
-                          height={160}
-                          className="h-full w-full object-cover"
+                          fill
+                          className="object-cover"
                         />
-                      </div>
-                    )}
-                    <h3 className="text-sm font-semibold text-neutral-800">
-                      {item.title}
-                    </h3>
-                    {item.verified_delivery && (
-                      <span
-                        className="mt-1 inline-flex items-center gap-1 text-xs text-success-600"
-                        title="Verified on-chain delivery"
-                      >
-                        <BadgeCheck className="h-3.5 w-3.5" />
-                        Verified Delivery
-                      </span>
-                    )}
-                    {item.project_url && (
-                      <a
-                        href={item.project_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-2 inline-flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700"
-                      >
-                        View Project <ExternalLink className="h-3 w-3" />
-                      </a>
-                    )}
+                      ) : item.external_url || item.project_url ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                          src={`https://api.microlink.io/?url=${encodeURIComponent((item.external_url || item.project_url)!)}&screenshot=true&meta=false&embed=screenshot.url`}
+                          alt={`Preview of ${item.title}`}
+                          className="h-full w-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                          }}
+                        />
+                      ) : item.github_url ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                          src={`https://opengraph.githubassets.com/1/${item.github_url.replace("https://github.com/", "")}`}
+                          alt={`GitHub preview of ${item.title}`}
+                          className="h-full w-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                          }}
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center">
+                          <FolderOpen className="h-12 w-12 text-primary-200" />
+                        </div>
+                      )}
+                      {item.verified_delivery && (
+                        <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-green-500 px-2.5 py-1 text-xs font-medium text-white shadow-sm">
+                          <BadgeCheck className="h-3.5 w-3.5" />
+                          Verified
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex flex-1 flex-col p-4">
+                      <h3 className="text-base font-semibold text-neutral-800">
+                        {item.title}
+                      </h3>
+                      <p className="mt-1.5 line-clamp-3 flex-1 text-sm leading-relaxed text-neutral-500">
+                        {item.description}
+                      </p>
+
+                      {/* Tags */}
+                      {item.tags && item.tags.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                          {item.tags.map((tag) => (
+                            <Badge key={tag} variant="default">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Links */}
+                      {(item.external_url ||
+                        item.project_url ||
+                        item.github_url) && (
+                        <div className="mt-4 flex items-center gap-3 border-t border-neutral-100 pt-3">
+                          {(item.external_url || item.project_url) && (
+                            <a
+                              href={(item.external_url || item.project_url)!}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 text-sm font-medium text-primary-600 transition-colors hover:text-primary-700"
+                            >
+                              <ExternalLink className="h-4 w-4" />
+                              Live Demo
+                            </a>
+                          )}
+                          {item.github_url && (
+                            <a
+                              href={item.github_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-800"
+                            >
+                              <Github className="h-4 w-4" />
+                              Source
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </Card>
                 ))}
               </div>
