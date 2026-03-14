@@ -12,6 +12,7 @@ import {
   Github,
   X,
 } from "lucide-react";
+import { useAuthStore } from "@/lib/stores/auth";
 import { AuthGuard } from "@/components/layout/AuthGuard";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/Button";
@@ -142,6 +143,7 @@ function PortfolioForm({
 }
 
 function PortfolioContent() {
+  const user = useAuthStore((s) => s.user);
   const [items, setItems] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -150,12 +152,13 @@ function PortfolioContent() {
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(() => {
+    if (!user?.id) return;
     setLoading(true);
-    getMyPortfolio()
+    getMyPortfolio(user.id)
       .then(setItems)
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     load();
