@@ -273,7 +273,7 @@ When a new service, module, route, or model is created (via `scripts/new-service
 
 **Never use raw string literals for status, role, or currency values.**
 
-- Backend: import from `services/api/src/domain/enums.py` (or the equivalent enum module for other services). Never write `"OPEN"`, `"CLIENT"`, or `"SOL"` as bare strings in business logic.
+- Backend: import from `services/api/src/domain/enums.py` (or the equivalent enum module for other services). See `services/api/src/domain/enums.py` for all enum definitions. Never write `"OPEN"`, `"CLIENT"`, or `"SOL"` as bare strings in business logic.
 - Frontend: define typed string union types that match proto enum values (e.g., `type GigStatus = "DRAFT" | "OPEN" | "IN_PROGRESS" | ...`). Never use untyped strings for enum-like values.
 - If a new enum value is needed, add it to the proto first, regenerate, then update `domain/enums.py` and frontend types.
 

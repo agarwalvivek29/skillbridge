@@ -7,11 +7,9 @@
 
 **Name**: `web`
 **Framework**: nextjs (TypeScript)
-**Purpose**: [Describe what this app does]
-**Owner**: [team or person]
+**Purpose**: Next.js 14 frontend for SkillBridge — gig discovery, wallet auth, portfolio management, escrow funding
+**Owner**: agarwalvivek29
 **Created**: 2026-03-07
-**Issue**: #TBD
-**Spec**: `docs/specs/TBD-web.md`
 
 ---
 
@@ -20,17 +18,17 @@
 - **Framework**: nextjs
 - **Language**: TypeScript (strict mode)
 - **Package manager**: pnpm
-- **Styling**: [Tailwind / CSS Modules / styled-components]
-- **State management**: [Zustand / TanStack Query / Context / etc.]
-- **Testing**: [Vitest / Jest + Testing Library / Playwright]
+- **Styling**: Tailwind CSS
+- **State management**: TanStack Query + React Context
+- **Testing**: Vitest + Testing Library
 
 ---
 
 ## Key Entry Points
 
-- **Main**: `src/app/page.tsx` (Next.js) or `src/main.tsx` (Vite)
-- **Config**: `src/config/env.ts` — validated env vars, import this not `process.env`
-- **API client**: `src/lib/api.ts`
+- **Main**: `app/page.tsx` (Next.js App Router)
+- **Config**: environment variables via `next.config.mjs`
+- **API client**: `lib/api/*.ts`
 
 ---
 
