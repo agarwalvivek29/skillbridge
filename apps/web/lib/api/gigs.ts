@@ -133,8 +133,15 @@ export function fetchEscrowTx(gigId: string): Promise<EscrowTx> {
   return apiGet<EscrowTx>(`/v1/gigs/${gigId}/escrow-tx`);
 }
 
-export function confirmEscrow(gigId: string, txHash: string): Promise<Gig> {
-  return apiPost<Gig>(`/v1/gigs/${gigId}/confirm-escrow`, { tx_hash: txHash });
+export function confirmEscrow(
+  gigId: string,
+  txSignature: string,
+  contractAddress?: string,
+): Promise<Gig> {
+  return apiPost<Gig>(`/v1/gigs/${gigId}/confirm-escrow`, {
+    tx_signature: txSignature,
+    contract_address: contractAddress || txSignature,
+  });
 }
 
 export function fetchGigProposals(
