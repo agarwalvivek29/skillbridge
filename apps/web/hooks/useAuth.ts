@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useAuthStore } from "@/lib/stores/auth";
-import { fetchNonce, authenticateSiwe, loginWithEmail } from "@/lib/api/auth";
+import { fetchNonce, authenticateWallet, loginWithEmail } from "@/lib/api/auth";
 
 type AuthStep = "connect" | "sign" | "verify" | "done";
 
@@ -55,7 +55,8 @@ export function useAuth(): UseAuthReturn {
 
     try {
       setStep("sign");
-      const { nonce } = await fetchNonce();
+      const address = publicKey.toBase58();
+      const { nonce } = await fetchNonce(address);
 
       const domain =
         process.env.NEXT_PUBLIC_AUTH_DOMAIN ??
@@ -65,7 +66,6 @@ export function useAuth(): UseAuthReturn {
           ? window.location.origin
           : "http://localhost:3000";
 
-      const address = publicKey.toBase58();
       const message = buildSignInMessage({
         domain,
         address,
@@ -79,7 +79,7 @@ export function useAuth(): UseAuthReturn {
       const signature = btoa(String.fromCharCode(...signatureBytes));
 
       setStep("verify");
-      const result = await authenticateSiwe(message, signature);
+      const result = await authenticateWallet(address, message, signature);
 
       setAuth(result.access_token, result.user);
       setStep("done");

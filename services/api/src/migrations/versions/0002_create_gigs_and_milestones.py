@@ -10,7 +10,6 @@ from typing import Sequence, Union
 
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.dialects import postgresql
 
 revision: str = "0002"
 down_revision: Union[str, None] = "0001"
@@ -21,16 +20,16 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     op.create_table(
         "gigs",
-        sa.Column("id", postgresql.UUID(as_uuid=False), primary_key=True),
+        sa.Column("id", sa.String(36), primary_key=True),
         sa.Column(
             "client_id",
-            postgresql.UUID(as_uuid=False),
+            sa.String(36),
             sa.ForeignKey("users.id"),
             nullable=False,
         ),
         sa.Column(
             "freelancer_id",
-            postgresql.UUID(as_uuid=False),
+            sa.String(36),
             sa.ForeignKey("users.id"),
             nullable=True,
         ),
@@ -48,13 +47,13 @@ def upgrade() -> None:
         ),
         sa.Column(
             "tags",
-            postgresql.ARRAY(sa.Text),
+            sa.JSON,
             nullable=False,
             server_default="{}",
         ),
         sa.Column(
             "required_skills",
-            postgresql.ARRAY(sa.Text),
+            sa.JSON,
             nullable=False,
             server_default="{}",
         ),
@@ -75,10 +74,10 @@ def upgrade() -> None:
 
     op.create_table(
         "milestones",
-        sa.Column("id", postgresql.UUID(as_uuid=False), primary_key=True),
+        sa.Column("id", sa.String(36), primary_key=True),
         sa.Column(
             "gig_id",
-            postgresql.UUID(as_uuid=False),
+            sa.String(36),
             sa.ForeignKey("gigs.id", ondelete="CASCADE"),
             nullable=False,
         ),

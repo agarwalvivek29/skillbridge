@@ -10,7 +10,6 @@ from typing import Sequence, Union
 
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.dialects import postgresql
 
 revision: str = "0005"
 down_revision: Union[str, None] = "0004"
@@ -21,16 +20,16 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     op.create_table(
         "proposals",
-        sa.Column("id", postgresql.UUID(as_uuid=False), primary_key=True),
+        sa.Column("id", sa.String(36), primary_key=True),
         sa.Column(
             "gig_id",
-            postgresql.UUID(as_uuid=False),
+            sa.String(36),
             sa.ForeignKey("gigs.id", ondelete="CASCADE"),
             nullable=False,
         ),
         sa.Column(
             "freelancer_id",
-            postgresql.UUID(as_uuid=False),
+            sa.String(36),
             sa.ForeignKey("users.id"),
             nullable=False,
         ),
@@ -59,27 +58,6 @@ def upgrade() -> None:
         ),
     )
 
-    op.create_table(
-        "notifications",
-        sa.Column("id", postgresql.UUID(as_uuid=False), primary_key=True),
-        sa.Column(
-            "user_id",
-            postgresql.UUID(as_uuid=False),
-            sa.ForeignKey("users.id"),
-            nullable=False,
-        ),
-        sa.Column("type", sa.String(64), nullable=False),
-        sa.Column("payload_json", sa.Text, nullable=False, server_default="{}"),
-        sa.Column("read_at", sa.DateTime(timezone=True), nullable=True),
-        sa.Column(
-            "created_at",
-            sa.DateTime(timezone=True),
-            nullable=False,
-            server_default=sa.text("now()"),
-        ),
-    )
-
 
 def downgrade() -> None:
-    op.drop_table("notifications")
     op.drop_table("proposals")

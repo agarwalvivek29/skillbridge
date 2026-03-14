@@ -10,7 +10,6 @@ from typing import Sequence, Union
 
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.dialects import postgresql
 
 revision: str = "0006"
 down_revision: Union[str, None] = "0005"
@@ -21,10 +20,10 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     op.create_table(
         "review_reports",
-        sa.Column("id", postgresql.UUID(as_uuid=False), primary_key=True),
+        sa.Column("id", sa.String(36), primary_key=True),
         sa.Column(
             "submission_id",
-            postgresql.UUID(as_uuid=False),
+            sa.String(36),
             sa.ForeignKey("submissions.id", ondelete="CASCADE"),
             nullable=False,
         ),
