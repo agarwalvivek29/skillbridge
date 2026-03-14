@@ -3,6 +3,7 @@ export interface PortfolioItem {
   user_id: string;
   title: string;
   description: string;
+  external_url: string | null;
   project_url: string | null;
   github_url: string | null;
   cover_image_url: string | null;
