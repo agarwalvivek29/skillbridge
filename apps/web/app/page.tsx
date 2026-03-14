@@ -17,7 +17,6 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import Link from "next/link";
 import { GigCard } from "@/components/gigs/GigCard";
 import { GigCardSkeleton } from "@/components/gigs/GigCardSkeleton";
 import { Footer } from "@/components/layout/Footer";
