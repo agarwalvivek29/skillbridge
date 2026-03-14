@@ -7,6 +7,12 @@
 export interface EscrowTx {
   /** Base64-encoded serialized Solana transaction */
   serialized_tx: string;
+  /** Solana program ID for the escrow contract */
+  program_id: string;
+  /** PDA derivation seeds */
+  escrow_seeds: string[];
+  /** Amount in lamports */
+  amount: string;
 }
 
 /**
