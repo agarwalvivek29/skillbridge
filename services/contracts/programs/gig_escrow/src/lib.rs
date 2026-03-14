@@ -5,7 +5,7 @@ use anchor_spl::token::{self, Token, TokenAccount, Transfer};
 // TODO: replace with your program's actual keypair address.
 // Run `solana-keygen grind --starts-with GIG:1` or `anchor keys list`
 // to obtain the deployed program ID, then paste it here.
-declare_id!("11111111111111111111111111111111");
+declare_id!("3X7iYXhNtwX6QH8Bf6dKgQTEyVkvyHgKLGhozzTD4suo");
 
 /// Maximum length of a gig_id string (used for account sizing).
 const MAX_GIG_ID_LEN: usize = 64;
