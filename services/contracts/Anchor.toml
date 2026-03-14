@@ -5,13 +5,16 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-gig_escrow = "11111111111111111111111111111111"
+gig_escrow = "3X7iYXhNtwX6QH8Bf6dKgQTEyVkvyHgKLGhozzTD4suo"
+
+[programs.devnet]
+gig_escrow = "3X7iYXhNtwX6QH8Bf6dKgQTEyVkvyHgKLGhozzTD4suo"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "Devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
