@@ -151,7 +151,7 @@ export default function PublicProfilePage() {
                 {isFreelancer(profile.role)
                   ? (profile.total_earned ?? "0")
                   : (profile.total_spent ?? "0")}{" "}
-                ETH
+                SOL
               </div>
               <div className="text-xs text-neutral-500">
                 {isFreelancer(profile.role) ? "Total Earned" : "Total Spent"}
@@ -400,7 +400,7 @@ export default function PublicProfilePage() {
                       <div className="mt-2 flex items-center justify-between">
                         <StatusBadge status={gig.status} />
                         <span className="text-sm font-semibold text-neutral-700">
-                          {gig.budget} ETH
+                          {gig.budget} SOL
                         </span>
                       </div>
                     </Card>

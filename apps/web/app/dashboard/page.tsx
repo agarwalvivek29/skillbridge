@@ -21,7 +21,7 @@ import { Spinner } from "@/components/ui/Spinner";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Badge } from "@/components/ui/Badge";
 import { useAuthStore } from "@/lib/stores/auth";
-import { isFreelancer } from "@/lib/format";
+import { isFreelancer, formatAmount } from "@/lib/format";
 import {
   getClientDashboard,
   getFreelancerDashboard,
@@ -141,7 +141,7 @@ function ClientDashboardView() {
                   <div className="mt-3 flex items-center justify-between text-xs text-neutral-500">
                     <span>{gig.proposal_count} proposals</span>
                     <span className="font-medium text-neutral-700">
-                      {gig.escrow_balance} ETH locked
+                      {formatAmount(gig.escrow_balance)} SOL locked
                     </span>
                   </div>
                 </Card>
@@ -186,7 +186,7 @@ function ClientDashboardView() {
           <div className="mb-4 text-center">
             <DollarSign className="mx-auto h-6 w-6 text-web3-500" />
             <div className="mt-1 text-2xl font-bold text-neutral-800">
-              {data.escrow_overview.total_locked} ETH
+              {formatAmount(data.escrow_overview.total_locked)} SOL
             </div>
             <div className="text-xs text-neutral-500">Total Locked</div>
           </div>
@@ -199,7 +199,7 @@ function ClientDashboardView() {
                 >
                   <span className="text-neutral-600">{g.title}</span>
                   <span className="font-medium text-neutral-800">
-                    {g.amount} ETH
+                    {formatAmount(g.amount)} SOL
                   </span>
                 </div>
               ))}
@@ -270,14 +270,14 @@ function FreelancerDashboardView() {
         <Card className="text-center">
           <DollarSign className="mx-auto h-5 w-5 text-success-500" />
           <div className="mt-2 text-2xl font-bold text-neutral-800">
-            {data.earnings.total_earned} ETH
+            {formatAmount(data.earnings.total_earned)} SOL
           </div>
           <div className="text-xs text-neutral-500">Total Earned</div>
         </Card>
         <Card className="text-center">
           <Clock className="mx-auto h-5 w-5 text-web3-500" />
           <div className="mt-2 text-2xl font-bold text-neutral-800">
-            {data.earnings.pending_payment} ETH
+            {formatAmount(data.earnings.pending_payment)} SOL
           </div>
           <div className="text-xs text-neutral-500">Pending Payment</div>
         </Card>
@@ -314,7 +314,7 @@ function FreelancerDashboardView() {
                   key={i}
                   className="flex-1 rounded-t bg-primary-400 transition-all hover:bg-primary-500"
                   style={{ height: `${Math.max(height, 2)}%` }}
-                  title={`${day.date}: ${day.amount} ETH`}
+                  title={`${day.date}: ${formatAmount(day.amount)} SOL`}
                 />
               );
             })}
@@ -351,7 +351,7 @@ function FreelancerDashboardView() {
                   <div className="mt-3 flex items-center justify-between">
                     <StatusBadge status={m.status} />
                     <span className="text-sm font-medium text-neutral-700">
-                      {m.budget} ETH
+                      {formatAmount(m.budget)} SOL
                     </span>
                   </div>
                   {m.deadline && (
