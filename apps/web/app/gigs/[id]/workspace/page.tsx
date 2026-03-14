@@ -45,10 +45,12 @@ function MilestoneTimeline({
   milestones,
   submissions,
   gigId,
+  currency,
 }: {
   milestones: WorkspaceData["gig"]["milestones"];
   submissions: WorkspaceSubmission[];
   gigId: string;
+  currency: string;
 }) {
   const [expanded, setExpanded] = useState<string | null>(
     milestones.find(
@@ -113,10 +115,7 @@ function MilestoneTimeline({
                   <StatusBadge status={m.status} />
                 </div>
                 <p className="mt-0.5 text-xs text-neutral-500">
-                  {formatAmountWithCurrency(
-                    m.amount,
-                    m.currency || gig.currency,
-                  )}
+                  {formatAmountWithCurrency(m.amount, m.currency || currency)}
                 </p>
               </div>
               {isExpanded ? (
@@ -283,6 +282,7 @@ function WorkspaceContent() {
               milestones={gig.milestones}
               submissions={submissions}
               gigId={gig.id}
+              currency={gig.currency}
             />
           </Card>
         </div>
