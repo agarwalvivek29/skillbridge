@@ -59,8 +59,38 @@ export interface CreateGigPayload {
   }[];
 }
 
+// Solana devnet USDC mint address
+const USDC_DEVNET_MINT = "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU";
+
 export function createGig(payload: CreateGigPayload): Promise<Gig> {
-  return apiPost<Gig>("/v1/gigs", payload);
+  // Map frontend shape to API shape
+  const currency = payload.milestones[0]?.currency || "USDC";
+  // Convert human-readable amounts to smallest unit (USDC has 6 decimals, SOL has 9)
+  const decimals = currency === "USDC" ? 1_000_000 : 1_000_000_000;
+  const totalAmount = payload.milestones
+    .reduce(
+      (sum, m) => sum + Math.round(parseFloat(m.amount || "0") * decimals),
+      0,
+    )
+    .toString();
+
+  return apiPost<Gig>("/v1/gigs", {
+    title: payload.title,
+    description: payload.description,
+    total_amount: totalAmount,
+    currency,
+    token_address: currency === "USDC" ? USDC_DEVNET_MINT : undefined,
+    tags: payload.category ? [payload.category] : [],
+    required_skills: payload.skills,
+    deadline: payload.deadline || undefined,
+    milestones: payload.milestones.map((m, i) => ({
+      title: m.title,
+      description: m.description,
+      acceptance_criteria: m.acceptance_criteria,
+      amount: Math.round(parseFloat(m.amount || "0") * decimals).toString(),
+      order: i + 1,
+    })),
+  });
 }
 
 export function updateGig(
