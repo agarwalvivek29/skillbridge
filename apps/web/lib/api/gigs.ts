@@ -107,14 +107,14 @@ export function fetchMyProposal(gigId: string): Promise<Proposal | null> {
 }
 
 export function acceptProposal(proposalId: string): Promise<Proposal> {
-  return apiPut<Proposal>(`/v1/proposals/${proposalId}/accept`);
+  return apiPost<Proposal>(`/v1/proposals/${proposalId}/accept`);
 }
 
 export function rejectProposal(
   proposalId: string,
   message?: string,
 ): Promise<Proposal> {
-  return apiPut<Proposal>(`/v1/proposals/${proposalId}/reject`, { message });
+  return apiPost<Proposal>(`/v1/proposals/${proposalId}/reject`, { message });
 }
 
 export interface GigSubmission {

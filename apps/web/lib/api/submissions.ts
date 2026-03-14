@@ -20,7 +20,11 @@ export interface CreateSubmissionPayload {
 export function createSubmission(
   payload: CreateSubmissionPayload,
 ): Promise<Submission> {
-  return apiPost<Submission>("/v1/submissions", payload);
+  const { milestone_id, ...body } = payload;
+  return apiPost<Submission>(
+    `/v1/milestones/${milestone_id}/submissions`,
+    body,
+  );
 }
 
 export function getUploadUrl(
@@ -52,7 +56,7 @@ export function requestRevision(
   milestoneId: string,
   feedback: string,
 ): Promise<void> {
-  return apiPost<void>(`/v1/milestones/${milestoneId}/revision`, {
+  return apiPost<void>(`/v1/milestones/${milestoneId}/request-revision`, {
     feedback,
   });
 }
