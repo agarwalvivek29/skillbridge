@@ -89,7 +89,7 @@ class GigModel(Base):
     # Stored as string (wei for ETH, smallest unit for USDC) to avoid float errors
     total_amount: Mapped[str] = mapped_column(Text, nullable=False)
     # "ETH" or "USDC" — mirrors Currency proto enum names
-    currency: Mapped[str] = mapped_column(String(16), nullable=False, default="ETH")
+    currency: Mapped[str] = mapped_column(String(16), nullable=False, default="SOL")
     token_address: Mapped[str | None] = mapped_column(Text, nullable=True)
     contract_address: Mapped[str | None] = mapped_column(Text, nullable=True)
     # "DRAFT", "OPEN", "IN_PROGRESS", "COMPLETED", "CANCELLED", "DISPUTED"
