@@ -2,10 +2,11 @@
 api/submission.py — Submission endpoints.
 
 Endpoints:
-  POST   /v1/milestones/{milestone_id}/submissions  create submission (FREELANCER role)
-  GET    /v1/milestones/{milestone_id}/submissions  list submissions for milestone (auth required)
-  GET    /v1/submissions/{submission_id}            get single submission (auth required)
-  POST   /v1/submissions/upload-url                 generate presigned S3 upload URL (auth required)
+  POST   /v1/milestones/{milestone_id}/submissions          create submission (FREELANCER role)
+  GET    /v1/milestones/{milestone_id}/submissions          list submissions for milestone (auth required)
+  GET    /v1/submissions/{submission_id}                    get single submission (auth required)
+  GET    /v1/submissions/{submission_id}/review-report      get AI review report (auth required)
+  POST   /v1/submissions/upload-url                         generate presigned S3 upload URL (auth required)
 """
 
 from __future__ import annotations
@@ -17,6 +18,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel, field_validator
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.domain.submission import (
@@ -26,7 +28,12 @@ from src.domain.submission import (
     list_submissions_checked,
 )
 from src.infra.database import get_db
-from src.infra.models import SubmissionModel
+from src.infra.models import (
+    GigModel,
+    MilestoneModel,
+    ReviewReportModel,
+    SubmissionModel,
+)
 from src.infra.s3 import (
     PRESIGNED_URL_EXPIRY_SECONDS,
     S3Error,
@@ -306,4 +313,110 @@ async def get_upload_url_endpoint(
         upload_url=upload_url,
         file_key=file_key,
         expires_in_seconds=PRESIGNED_URL_EXPIRY_SECONDS,
+    )
+
+
+# ---------------------------------------------------------------------------
+# GET /v1/submissions/{submission_id}/review-report
+# ---------------------------------------------------------------------------
+
+
+class ReviewReportOut(BaseModel):
+    id: str
+    submission_id: str
+    verdict: str
+    score: int
+    body: str
+    model_version: str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+@submission_router.get(
+    "/{submission_id}/review-report",
+    response_model=ReviewReportOut,
+)
+async def get_review_report_endpoint(
+    submission_id: str,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+) -> ReviewReportOut:
+    """
+    Get the AI review report for a submission.
+    Auth required; caller must be the gig's client or assigned freelancer.
+    """
+    user_id = _require_auth(request)
+
+    # Fetch submission
+    submission_result = await db.execute(
+        select(SubmissionModel).where(SubmissionModel.id == submission_id)
+    )
+    submission = submission_result.scalar_one_or_none()
+    if submission is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "SUBMISSION_NOT_FOUND",
+                "message": f"Submission {submission_id} not found",
+            },
+        )
+
+    # Check access: caller must be gig participant
+    milestone_result = await db.execute(
+        select(MilestoneModel).where(MilestoneModel.id == submission.milestone_id)
+    )
+    milestone = milestone_result.scalar_one_or_none()
+    if milestone is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "MILESTONE_NOT_FOUND",
+                "message": "Associated milestone not found",
+            },
+        )
+
+    gig_result = await db.execute(
+        select(GigModel).where(GigModel.id == milestone.gig_id)
+    )
+    gig = gig_result.scalar_one_or_none()
+    if gig is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "GIG_NOT_FOUND", "message": "Associated gig not found"},
+        )
+
+    if gig.client_id != user_id and gig.freelancer_id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "code": "FORBIDDEN",
+                "message": "You do not have access to this review report",
+            },
+        )
+
+    # Fetch review report
+    report_result = await db.execute(
+        select(ReviewReportModel).where(
+            ReviewReportModel.submission_id == submission_id
+        )
+    )
+    report = report_result.scalar_one_or_none()
+    if report is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "REPORT_NOT_FOUND",
+                "message": f"No review report exists for submission {submission_id}",
+            },
+        )
+
+    return ReviewReportOut(
+        id=report.id,
+        submission_id=report.submission_id,
+        verdict=report.verdict,
+        score=report.score,
+        body=report.body,
+        model_version=report.model_version,
+        created_at=report.created_at,
     )
