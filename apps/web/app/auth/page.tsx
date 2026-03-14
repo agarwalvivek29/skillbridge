@@ -17,7 +17,7 @@ export default function AuthPage() {
   const router = useRouter();
   const token = useAuthStore((s) => s.token);
   const user = useAuthStore((s) => s.user);
-  const { publicKey, connected, wallets } = useWallet();
+  const { publicKey, connected, wallets, signMessage } = useWallet();
   const { setVisible } = useWalletModal();
   const { step, error, isLoading, startSiwe, reset } = useAuth();
 
@@ -41,11 +41,12 @@ export default function AuthPage() {
     }
   }, [token, user, router]);
 
-  // Auto-sign as soon as wallet connects — single step for the user
+  // Auto-sign as soon as wallet connects AND signMessage is available
   useEffect(() => {
     if (
       connected &&
       publicKey &&
+      signMessage &&
       !token &&
       !isLoading &&
       !autoSignTriggered.current
@@ -53,7 +54,7 @@ export default function AuthPage() {
       autoSignTriggered.current = true;
       startSiwe();
     }
-  }, [connected, publicKey, token, isLoading, startSiwe]);
+  }, [connected, publicKey, signMessage, token, isLoading, startSiwe]);
 
   // Reset the auto-sign guard if there's an error so retry works
   useEffect(() => {
