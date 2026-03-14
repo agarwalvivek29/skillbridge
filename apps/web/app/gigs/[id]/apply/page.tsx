@@ -214,7 +214,7 @@ function ApplyContent() {
 
         <Input
           label="Proposed Rate"
-          placeholder="e.g. 2.5 ETH total (optional)"
+          placeholder="e.g. 2.5 SOL total (optional)"
           value={proposedRate}
           onChange={(e) => setProposedRate(e.target.value)}
           helperText="Override the listed budget with your own rate"
