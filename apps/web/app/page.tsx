@@ -17,7 +17,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { ConnectButton } from "@/components/web3/ConnectButton";
+import Link from "next/link";
 import { GigCard } from "@/components/gigs/GigCard";
 import { GigCardSkeleton } from "@/components/gigs/GigCardSkeleton";
 import { Footer } from "@/components/layout/Footer";
@@ -250,7 +250,15 @@ export default function HomePage() {
             Connect your wallet and join the future of freelancing.
           </p>
           <div className="mt-8 flex justify-center">
-            <ConnectButton />
+            <Link href="/auth">
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-white text-white hover:bg-white hover:text-primary-600"
+              >
+                Let&apos;s Go
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
