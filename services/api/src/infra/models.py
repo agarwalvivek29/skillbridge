@@ -91,7 +91,7 @@ class GigModel(Base):
     # "ETH" or "USDC" — mirrors Currency proto enum names
     currency: Mapped[str] = mapped_column(String(16), nullable=False, default="SOL")
     token_address: Mapped[str | None] = mapped_column(Text, nullable=True)
-    contract_address: Mapped[str | None] = mapped_column(Text, nullable=True)
+    escrow_pda: Mapped[str | None] = mapped_column(Text, nullable=True)
     # "DRAFT", "OPEN", "IN_PROGRESS", "COMPLETED", "CANCELLED", "DISPUTED"
     status: Mapped[str] = mapped_column(String(32), nullable=False, default="DRAFT")
     # JSON works in both PostgreSQL and SQLite (test env)
@@ -141,6 +141,7 @@ class MilestoneModel(Base):
     # "PENDING", "IN_PROGRESS", "SUBMITTED", "APPROVED", "DISPUTED", "RESOLVED", "PAID", "REVISION_REQUESTED"
     status: Mapped[str] = mapped_column(String(32), nullable=False, default="PENDING")
     revision_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    contract_index: Mapped[int | None] = mapped_column(Integer, nullable=True)
     # tx_hash of the completeMilestone() call after client confirms fund release
     release_tx_hash: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
@@ -289,9 +290,29 @@ class EscrowContractModel(Base):
         unique=True,
     )
     # On-chain escrow account address (Solana base58 public key)
-    contract_address: Mapped[str] = mapped_column(Text, nullable=False)
+    chain_address: Mapped[str] = mapped_column(Text, nullable=False)
     # Solana transaction signature confirming escrow deposit
-    tx_signature: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    funding_tx_hash: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    network: Mapped[str | None] = mapped_column(Text, nullable=True)
+    total_amount: Mapped[str | None] = mapped_column(Text, nullable=True)
+    released_amount: Mapped[str | None] = mapped_column(
+        Text, nullable=True, default="0"
+    )
+    status: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    token_address: Mapped[str | None] = mapped_column(Text, nullable=True)
+    platform_fee_basis_points: Mapped[int | None] = mapped_column(
+        Integer, nullable=True, default=500
+    )
+    platform_fee_amount: Mapped[str | None] = mapped_column(
+        Text, nullable=True, default="0"
+    )
+    platform_fee_recipient: Mapped[str | None] = mapped_column(Text, nullable=True)
+    funded_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    settled_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )

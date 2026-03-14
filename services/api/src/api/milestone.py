@@ -65,6 +65,7 @@ class MilestoneOut(BaseModel):
     due_date: Optional[datetime]
     status: str
     revision_count: int
+    contract_index: int | None = None
     created_at: datetime
     updated_at: datetime
 
@@ -108,6 +109,7 @@ class MilestoneDetailOut(BaseModel):
     due_date: Optional[datetime] = None
     status: str
     revision_count: int
+    contract_index: int | None = None
     revision_feedback: Optional[str] = None
     submissions: list[SubmissionOut] = []
     latest_review: Optional[ReviewReportOut] = None
@@ -291,6 +293,7 @@ async def get_milestone_endpoint(
         due_date=milestone.due_date,
         status=milestone.status,
         revision_count=milestone.revision_count,
+        contract_index=milestone.contract_index,
         submissions=submission_outs,
         latest_review=latest_review,
         created_at=milestone.created_at,

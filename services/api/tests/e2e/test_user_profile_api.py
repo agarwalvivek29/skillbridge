@@ -43,15 +43,15 @@ def _auth_headers(token: str) -> dict:
 
 class TestUpdateProfile:
     @pytest.mark.asyncio
-    async def test_update_display_name(self, client: AsyncClient):
+    async def test_update_name(self, client: AsyncClient):
         token, _ = await _register_and_get_token(client, _FREELANCER_PAYLOAD)
         resp = await client.post(
             "/v1/users/profile",
-            json={"display_name": "New Name"},
+            json={"name": "New Name"},
             headers=_auth_headers(token),
         )
         assert resp.status_code == 200
-        assert resp.json()["display_name"] == "New Name"
+        assert resp.json()["name"] == "New Name"
 
     @pytest.mark.asyncio
     async def test_update_bio(self, client: AsyncClient):
@@ -75,7 +75,7 @@ class TestUpdateProfile:
         assert resp.status_code == 200
         data = resp.json()
         assert data["skills"] == ["rust", "python"]
-        assert data["hourly_rate"] == "50000000000000000"
+        assert data["hourly_rate_wei"] == "50000000000000000"
 
     @pytest.mark.asyncio
     async def test_update_avatar_url(self, client: AsyncClient):
@@ -89,11 +89,11 @@ class TestUpdateProfile:
         assert resp.json()["avatar_url"] == "https://example.com/avatar.png"
 
     @pytest.mark.asyncio
-    async def test_display_name_too_long(self, client: AsyncClient):
+    async def test_name_too_long(self, client: AsyncClient):
         token, _ = await _register_and_get_token(client, _FREELANCER_PAYLOAD)
         resp = await client.post(
             "/v1/users/profile",
-            json={"display_name": "x" * 101},
+            json={"name": "x" * 101},
             headers=_auth_headers(token),
         )
         assert resp.status_code == 422
@@ -132,7 +132,7 @@ class TestUpdateProfile:
     async def test_unauthenticated_returns_401(self, client: AsyncClient):
         resp = await client.post(
             "/v1/users/profile",
-            json={"display_name": "Hacker"},
+            json={"name": "Hacker"},
         )
         assert resp.status_code == 401
 
@@ -165,7 +165,7 @@ class TestGetProfile:
         data = resp.json()
         assert data["id"] == user_id
         assert data["wallet_address"] == "11111111111111111111111111111111"
-        assert data["display_name"] == "Alice Profile"
+        assert data["name"] == "Alice Profile"
         assert data["role"] == "USER_ROLE_FREELANCER"
 
     @pytest.mark.asyncio

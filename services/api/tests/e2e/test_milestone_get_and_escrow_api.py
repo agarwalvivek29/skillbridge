@@ -300,7 +300,7 @@ class TestConfirmEscrowEndpoint:
             f"/v1/gigs/{gig['id']}/confirm-escrow",
             json={
                 "tx_signature": "5UzVrMBKdLk...",
-                "contract_address": "EscrowAddr11111111111111111111111111111111",
+                "chain_address": "EscrowAddr11111111111111111111111111111111",
             },
             headers=_auth(token),
         )
@@ -308,7 +308,7 @@ class TestConfirmEscrowEndpoint:
         assert resp.status_code == 200, resp.text
         data = resp.json()
         assert data["status"] == "OPEN"
-        assert data["contract_address"] == "EscrowAddr11111111111111111111111111111111"
+        assert data["escrow_pda"] == "EscrowAddr11111111111111111111111111111111"
 
     @pytest.mark.asyncio
     async def test_confirm_idempotent_on_open_gig(
@@ -320,7 +320,7 @@ class TestConfirmEscrowEndpoint:
 
         body = {
             "tx_signature": "5UzVrMBKdLk...",
-            "contract_address": "EscrowAddr11111111111111111111111111111111",
+            "chain_address": "EscrowAddr11111111111111111111111111111111",
         }
 
         resp1 = await client.post(
@@ -331,7 +331,7 @@ class TestConfirmEscrowEndpoint:
         assert resp1.status_code == 200
 
         # Second confirm with updated address
-        body["contract_address"] = "EscrowAddr22222222222222222222222222222222"
+        body["chain_address"] = "EscrowAddr22222222222222222222222222222222"
         resp2 = await client.post(
             f"/v1/gigs/{gig['id']}/confirm-escrow",
             json=body,
@@ -339,8 +339,7 @@ class TestConfirmEscrowEndpoint:
         )
         assert resp2.status_code == 200
         assert (
-            resp2.json()["contract_address"]
-            == "EscrowAddr22222222222222222222222222222222"
+            resp2.json()["escrow_pda"] == "EscrowAddr22222222222222222222222222222222"
         )
 
     @pytest.mark.asyncio
@@ -361,7 +360,7 @@ class TestConfirmEscrowEndpoint:
             f"/v1/gigs/{gig['id']}/confirm-escrow",
             json={
                 "tx_signature": "5UzVrMBKdLk...",
-                "contract_address": "EscrowAddr11111111111111111111111111111111",
+                "chain_address": "EscrowAddr11111111111111111111111111111111",
             },
             headers=_auth(token),
         )
@@ -381,7 +380,7 @@ class TestConfirmEscrowEndpoint:
             f"/v1/gigs/{gig['id']}/confirm-escrow",
             json={
                 "tx_signature": "sig",
-                "contract_address": "addr",
+                "chain_address": "addr",
             },
             headers=_auth(freelancer_token),
         )
@@ -406,7 +405,7 @@ class TestConfirmEscrowEndpoint:
             f"/v1/gigs/{gig['id']}/confirm-escrow",
             json={
                 "tx_signature": "sig",
-                "contract_address": "addr",
+                "chain_address": "addr",
             },
             headers=_auth(token2),
         )
@@ -421,7 +420,7 @@ class TestConfirmEscrowEndpoint:
             "/v1/gigs/00000000-0000-0000-0000-000000000000/confirm-escrow",
             json={
                 "tx_signature": "sig",
-                "contract_address": "addr",
+                "chain_address": "addr",
             },
             headers=_auth(token),
         )

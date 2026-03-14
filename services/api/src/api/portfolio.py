@@ -50,7 +50,6 @@ class CreatePortfolioItemRequest(BaseModel):
     description: str
     file_keys: list[str] = []
     external_url: Optional[str] = None
-    project_url: Optional[str] = None  # alias for external_url from frontend
     github_url: Optional[str] = None
     cover_image_url: Optional[str] = None
     tags: list[str] = []
@@ -62,7 +61,6 @@ class UpdatePortfolioItemRequest(BaseModel):
     description: Optional[str] = None
     file_keys: Optional[list[str]] = None
     external_url: Optional[str] = None
-    project_url: Optional[str] = None  # alias for external_url from frontend
     github_url: Optional[str] = None
     cover_image_url: Optional[str] = None
     tags: Optional[list[str]] = None
@@ -75,13 +73,11 @@ class PortfolioItemOut(BaseModel):
     description: str
     file_keys: list[str]
     external_url: Optional[str] = None
-    project_url: Optional[str] = None
     github_url: Optional[str] = None
     cover_image_url: Optional[str] = None
     tags: list[str]
     verified_gig_id: Optional[str] = None
     is_verified: bool
-    verified_delivery: bool = False
     created_at: datetime
     updated_at: datetime
 
@@ -114,13 +110,11 @@ def _item_to_out(item: PortfolioItemModel, is_verified: bool) -> PortfolioItemOu
         description=item.description,
         file_keys=item.file_keys or [],
         external_url=item.external_url,
-        project_url=item.external_url,  # alias for frontend compatibility
         github_url=item.github_url,
         cover_image_url=item.cover_image_url,
         tags=item.tags or [],
         verified_gig_id=item.verified_gig_id,
         is_verified=is_verified,
-        verified_delivery=is_verified,
         created_at=item.created_at,
         updated_at=item.updated_at,
     )
@@ -238,7 +232,7 @@ async def create_portfolio_item_endpoint(
         title=body.title,
         description=body.description,
         file_keys=body.file_keys,
-        external_url=body.project_url or body.external_url,
+        external_url=body.external_url,
         github_url=body.github_url,
         cover_image_url=body.cover_image_url,
         tags=body.tags,
@@ -266,7 +260,7 @@ async def update_portfolio_item_endpoint(
         title=body.title,
         description=body.description,
         file_keys=body.file_keys,
-        external_url=body.project_url or body.external_url,
+        external_url=body.external_url,
         github_url=body.github_url,
         cover_image_url=body.cover_image_url,
         tags=body.tags,

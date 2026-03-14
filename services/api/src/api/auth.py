@@ -67,7 +67,7 @@ class UserOut(BaseModel):
     id: str
     wallet_address: str | None = None
     email: str | None = None
-    display_name: str | None = None
+    name: str | None = None
     bio: str | None = None
     avatar_url: str | None = None
     role: str
@@ -91,7 +91,7 @@ def _auth_response(token: str, expires_in: int, user) -> AuthResponse:
             id=user.id,
             wallet_address=user.wallet_address,
             email=user.email,
-            display_name=user.name,
+            name=user.name,
             bio=user.bio,
             avatar_url=user.avatar_url,
             role=user.role,

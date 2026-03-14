@@ -325,7 +325,7 @@ async def get_release_tx(
             f"Milestone must be APPROVED before releasing funds; current status: {milestone.status}",
         )
 
-    if not gig.contract_address:
+    if not gig.escrow_pda:
         raise MilestoneApprovalError(
             "NO_CONTRACT_ADDRESS",
             "This gig does not have a deployed escrow contract address",
