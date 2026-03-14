@@ -18,3 +18,13 @@ export interface ProfilePayload {
 export function createProfile(payload: ProfilePayload): Promise<User> {
   return apiPost<User>("/v1/users/profile", payload);
 }
+
+export function linkEmail(
+  email: string,
+  password: string,
+): Promise<{ ok: boolean; email: string }> {
+  return apiPost<{ ok: boolean; email: string }>("/v1/users/link-email", {
+    email,
+    password,
+  });
+}
