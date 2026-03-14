@@ -24,7 +24,7 @@ export function fetchGigs(
   if (params.sort) query.set("sort", params.sort);
   if (params.search) query.set("search", params.search);
   if (params.category) query.set("category", params.category);
-  if (params.status) query.set("status", params.status);
+  if (params.status) query.set("status_filter", params.status);
   if (params.min_budget) query.set("min_budget", params.min_budget);
   if (params.max_budget) query.set("max_budget", params.max_budget);
   if (params.skills?.length) query.set("skills", params.skills.join(","));
