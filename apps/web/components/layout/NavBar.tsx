@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, User } from "lucide-react";
-import { ConnectButton } from "@/components/web3/ConnectButton";
+import { Button } from "@/components/ui/Button";
 import { NotificationBell } from "@/components/layout/NotificationBell";
 import { useAuthStore } from "@/lib/stores/auth";
 import { cn } from "@/lib/utils";
@@ -93,7 +93,13 @@ export function NavBar() {
 
           {!token &&
             !pathname.startsWith("/auth") &&
-            !pathname.startsWith("/link-email") && <ConnectButton />}
+            !pathname.startsWith("/link-email") && (
+              <Link href="/auth">
+                <Button variant="primary" size="sm">
+                  Log In
+                </Button>
+              </Link>
+            )}
 
           {/* Hamburger */}
           <button
@@ -131,13 +137,21 @@ export function NavBar() {
               </Link>
             );
           })}
-          {token && (
+          {token ? (
             <Link
               href="/dashboard"
               onClick={() => setMobileOpen(false)}
               className="flex min-h-[44px] items-center py-3 text-base font-medium text-neutral-600 hover:text-neutral-900"
             >
               Dashboard
+            </Link>
+          ) : (
+            <Link
+              href="/auth"
+              onClick={() => setMobileOpen(false)}
+              className="flex min-h-[44px] items-center py-3 text-base font-medium text-primary-600"
+            >
+              Log In
             </Link>
           )}
         </nav>
