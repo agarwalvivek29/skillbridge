@@ -141,6 +141,7 @@ class MilestoneOut(BaseModel):
     due_date: Optional[datetime]
     status: str
     revision_count: int
+    contract_index: int | None = None
     created_at: datetime
     updated_at: datetime
 
@@ -159,7 +160,7 @@ class GigOut(BaseModel):
     total_amount: str
     currency: str
     token_address: Optional[str] = None
-    contract_address: Optional[str] = None
+    escrow_pda: Optional[str] = None
     status: str
     tags: list[str] = []
     required_skills: list[str] = []
@@ -188,7 +189,7 @@ class EscrowTxOut(BaseModel):
 
 class ConfirmEscrowBody(BaseModel):
     tx_signature: str
-    contract_address: str
+    chain_address: str
 
 
 # ---------------------------------------------------------------------------
@@ -209,7 +210,7 @@ def _gig_to_out(gig: GigModel, client: "UserModel | None" = None) -> GigOut:
         total_amount=gig.total_amount,
         currency=gig.currency,
         token_address=gig.token_address,
-        contract_address=gig.contract_address,
+        escrow_pda=gig.escrow_pda,
         status=gig.status,
         tags=gig.tags or [],
         required_skills=gig.required_skills or [],
@@ -234,6 +235,7 @@ def _milestone_to_out(m: MilestoneModel) -> MilestoneOut:
         due_date=m.due_date,
         status=m.status,
         revision_count=m.revision_count,
+        contract_index=m.contract_index,
         created_at=m.created_at,
         updated_at=m.updated_at,
     )
@@ -576,16 +578,16 @@ async def confirm_escrow_endpoint(
     if escrow is None:
         escrow = EscrowContractModel(
             gig_id=gig_id,
-            contract_address=body.contract_address,
-            tx_signature=body.tx_signature,
+            chain_address=body.chain_address,
+            funding_tx_hash=body.tx_signature,
         )
         db.add(escrow)
     else:
-        escrow.contract_address = body.contract_address
-        escrow.tx_signature = body.tx_signature
+        escrow.chain_address = body.chain_address
+        escrow.funding_tx_hash = body.tx_signature
 
-    # Update gig with contract_address and status
-    gig.contract_address = body.contract_address
+    # Update gig with escrow_pda and status
+    gig.escrow_pda = body.chain_address
     gig.status = "OPEN"
     await db.flush()
 

@@ -93,7 +93,7 @@ async def _add_escrow_contract(db: AsyncSession, gig_id: str) -> None:
         EscrowContractModel(
             id=str(uuid.uuid4()),
             gig_id=gig_id,
-            contract_address="0xABCDEF1234567890AbcdEF1234567890aBcdef12",
+            chain_address="0xABCDEF1234567890AbcdEF1234567890aBcdef12",
         )
     )
     await db.flush()
@@ -373,7 +373,7 @@ class TestGetReleaseTx:
         await db.execute(
             sa_update(GigModel)
             .where(GigModel.id == gig_id)
-            .values(contract_address="EscrowOnChainAddr11111111111111111111111111")
+            .values(escrow_pda="EscrowOnChainAddr11111111111111111111111111")
         )
         await db.flush()
 
@@ -418,7 +418,7 @@ class TestGetReleaseTx:
         await db.execute(
             sa_update(GigModel)
             .where(GigModel.id == gig_id)
-            .values(contract_address="EscrowOnChainAddr11111111111111111111111111")
+            .values(escrow_pda="EscrowOnChainAddr11111111111111111111111111")
         )
         await db.flush()
 
@@ -461,7 +461,7 @@ class TestGetReleaseTx:
         await db.execute(
             sa_update(GigModel)
             .where(GigModel.id == gig_id)
-            .values(contract_address="SomeSolanaAddress111111111111111111111111111")
+            .values(escrow_pda="SomeSolanaAddress111111111111111111111111111")
         )
         await db.flush()
 
@@ -481,10 +481,10 @@ class TestGetReleaseTx:
         assert exc_info.value.code == "MILESTONE_NOT_APPROVED"
 
     @pytest.mark.asyncio
-    async def test_no_contract_address_raises_error(self, db: AsyncSession):
+    async def test_no_escrow_pda_raises_error(self, db: AsyncSession):
         _, milestone_id = await _setup_in_progress_gig(db)
         await _set_milestone_status(db, milestone_id, "APPROVED")
-        # Gig has no contract_address (default is None)
+        # Gig has no escrow_pda (default is None)
 
         with pytest.raises(MilestoneApprovalError) as exc_info:
             await get_release_tx(db, milestone_id, _CLIENT_ID)
@@ -498,7 +498,7 @@ class TestGetReleaseTx:
         await db.execute(
             sa_update(GigModel)
             .where(GigModel.id == gig_id)
-            .values(contract_address="SomeSolanaAddress111111111111111111111111111")
+            .values(escrow_pda="SomeSolanaAddress111111111111111111111111111")
         )
         await db.flush()
 

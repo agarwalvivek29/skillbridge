@@ -37,7 +37,8 @@ _VALID_ROLES = {"USER_ROLE_CLIENT", "USER_ROLE_FREELANCER", "CLIENT", "FREELANCE
 
 class ProfileUpdateRequest(BaseModel):
     role: str | None = None
-    display_name: str | None = None
+    name: str | None = None
+    display_name: str | None = None  # legacy alias, prefer `name`
     bio: str | None = None
     avatar_url: str | None = None
     skills: list[str] | None = None
@@ -49,6 +50,13 @@ class ProfileUpdateRequest(BaseModel):
     def validate_role(cls, v: str | None) -> str | None:
         if v is not None and v not in _VALID_ROLES:
             raise ValueError(f"role must be one of {_VALID_ROLES}")
+        return v
+
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, v: str | None) -> str | None:
+        if v is not None and len(v) > 100:
+            raise ValueError("name must be at most 100 characters")
         return v
 
     @field_validator("display_name")
@@ -83,12 +91,12 @@ class ProfileUpdateRequest(BaseModel):
 class ProfileOut(BaseModel):
     id: str
     wallet_address: str | None = None
-    display_name: str | None = None
+    name: str | None = None
     bio: str | None = None
     avatar_url: str | None = None
     role: str
     skills: list[str]
-    hourly_rate: str
+    hourly_rate_wei: str
     created_at: str
 
 
@@ -96,12 +104,12 @@ def _profile_out(user: UserModel) -> ProfileOut:
     return ProfileOut(
         id=user.id,
         wallet_address=user.wallet_address,
-        display_name=user.name,
+        name=user.name,
         bio=user.bio,
         avatar_url=user.avatar_url,
         role=user.role,
         skills=user.skills or [],
-        hourly_rate=user.hourly_rate_wei,
+        hourly_rate_wei=user.hourly_rate_wei,
         created_at=user.created_at.isoformat() if user.created_at else "",
     )
 
@@ -136,7 +144,9 @@ async def update_profile(
         elif role == "FREELANCER":
             role = "USER_ROLE_FREELANCER"
         user.role = role
-    if body.display_name is not None:
+    if body.name is not None:
+        user.name = body.name
+    elif body.display_name is not None:
         user.name = body.display_name
     if body.bio is not None:
         user.bio = body.bio
@@ -237,7 +247,7 @@ class PortfolioItemOut(BaseModel):
 class PublicProfileOut(BaseModel):
     id: str
     wallet_address: str | None = None
-    display_name: str | None = None
+    name: str | None = None
     bio: str | None = None
     avatar_url: str | None = None
     role: str
@@ -330,7 +340,7 @@ async def get_profile(
     return PublicProfileOut(
         id=user.id,
         wallet_address=user.wallet_address,
-        display_name=user.name,
+        name=user.name,
         bio=user.bio,
         avatar_url=user.avatar_url,
         role=user.role,
