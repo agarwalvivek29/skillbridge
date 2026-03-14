@@ -231,7 +231,7 @@ function PortfolioContent() {
               key={item.id}
               className="group relative flex flex-col overflow-hidden border border-neutral-200 p-0 transition-shadow hover:shadow-md"
             >
-              {/* Cover image / placeholder */}
+              {/* Cover image / URL preview / placeholder */}
               <div className="relative h-44 bg-gradient-to-br from-primary-50 to-web3-50">
                 {item.cover_image_url ? (
                   <Image
@@ -239,6 +239,37 @@ function PortfolioContent() {
                     alt={item.title}
                     fill
                     className="object-cover"
+                  />
+                ) : item.project_url ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={`https://api.microlink.io/?url=${encodeURIComponent(item.project_url)}&screenshot=true&meta=false&embed=screenshot.url`}
+                    alt={`Preview of ${item.title}`}
+                    className="h-full w-full object-cover"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.style.display = "none";
+                      target.parentElement?.classList.add(
+                        "items-center",
+                        "justify-center",
+                      );
+                      const fallback = document.createElement("div");
+                      fallback.className =
+                        "flex h-full w-full items-center justify-center";
+                      fallback.innerHTML =
+                        '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-primary-200"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/><polygon points="12 15 17 21 7 21 12 15"/></svg>';
+                      target.parentElement?.appendChild(fallback);
+                    }}
+                  />
+                ) : item.github_url ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={`https://opengraph.githubassets.com/1/${item.github_url.replace("https://github.com/", "")}`}
+                    alt={`GitHub preview of ${item.title}`}
+                    className="h-full w-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center">
