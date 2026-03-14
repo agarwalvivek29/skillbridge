@@ -170,6 +170,8 @@ class PortfolioItemModel(Base):
     # JSON type works in both PostgreSQL and SQLite (test env)
     file_keys: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     external_url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    github_url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    cover_image_url: Mapped[str | None] = mapped_column(Text, nullable=True)
     tags: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     # If set and the linked gig is COMPLETED, a "Verified Delivery" badge is shown
     verified_gig_id: Mapped[str | None] = mapped_column(

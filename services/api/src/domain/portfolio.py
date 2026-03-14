@@ -33,6 +33,8 @@ class CreatePortfolioItemInput:
     description: str
     file_keys: list[str] = field(default_factory=list)
     external_url: Optional[str] = None
+    github_url: Optional[str] = None
+    cover_image_url: Optional[str] = None
     tags: list[str] = field(default_factory=list)
     verified_gig_id: Optional[str] = None
 
@@ -43,6 +45,8 @@ class UpdatePortfolioItemInput:
     description: Optional[str] = None
     file_keys: Optional[list[str]] = None
     external_url: Optional[str] = None
+    github_url: Optional[str] = None
+    cover_image_url: Optional[str] = None
     tags: Optional[list[str]] = None
 
 
@@ -113,6 +117,8 @@ async def create_portfolio_item(
         description=data.description,
         file_keys=data.file_keys or [],
         external_url=data.external_url or None,
+        github_url=data.github_url or None,
+        cover_image_url=data.cover_image_url or None,
         tags=data.tags or [],
         verified_gig_id=data.verified_gig_id or None,
     )
@@ -204,6 +210,10 @@ async def update_portfolio_item(
         item.file_keys = data.file_keys
     if data.external_url is not None:
         item.external_url = data.external_url
+    if data.github_url is not None:
+        item.github_url = data.github_url
+    if data.cover_image_url is not None:
+        item.cover_image_url = data.cover_image_url
     if data.tags is not None:
         item.tags = data.tags
 
