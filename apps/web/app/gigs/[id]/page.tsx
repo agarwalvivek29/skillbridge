@@ -95,8 +95,8 @@ export default function GigDetailPage() {
     year: "numeric",
   });
 
-  const milestones = milestones ?? [];
-  const skills = skills ?? gig.required_skills ?? [];
+  const milestones = gig.milestones ?? [];
+  const skills = gig.skills ?? gig.required_skills ?? [];
   const totalMilestoneBudget = milestones.reduce(
     (sum, m) => sum + parseFloat(m.amount || "0"),
     0,
