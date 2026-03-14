@@ -14,9 +14,7 @@ from sqlalchemy import update as sa_update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.infra.models import (
-    EscrowContractModel,
     GigModel,
-    ProposalModel,
     ReviewReportModel,
 )
 
@@ -118,10 +116,8 @@ class TestGetWorkspace:
         assert resp.status_code == 200
         data = resp.json()
         assert data["gig"]["id"] == gig_id
-        assert len(data["milestones"]) == 1
-        assert data["milestones"][0]["submissions"] == []
-        assert data["proposal"] is None
-        assert data["escrow"] is None
+        assert len(data["gig"]["milestones"]) == 1
+        assert data["submissions"] == []
 
     @pytest.mark.asyncio
     async def test_freelancer_can_access_workspace(
@@ -186,55 +182,45 @@ class TestGetWorkspace:
         resp = await client.get(f"/v1/gigs/{gig_id}/workspace", headers=_auth(cl_token))
         assert resp.status_code == 200
         data = resp.json()
-        assert len(data["milestones"][0]["submissions"]) == 1
+        assert len(data["submissions"]) == 1
+        sub = data["submissions"][0]
+        assert sub["milestone_id"] == milestone_id
+        assert sub["review_verdict"] is None
+        assert sub["review_score"] is None
 
     @pytest.mark.asyncio
-    async def test_workspace_includes_accepted_proposal(
+    async def test_workspace_submissions_include_review_fields(
         self, client: AsyncClient, db_session: AsyncSession
     ):
-        cl_token, _, freelancer_id, gig_id, _ = await _setup_in_progress_gig(
-            client, db_session
+        with patch("src.infra.github.post_openreview_comment", new_callable=AsyncMock):
+            cl_token, fl_token, _, gig_id, milestone_id = await _setup_in_progress_gig(
+                client, db_session
+            )
+            create_resp = await client.post(
+                f"/v1/milestones/{milestone_id}/submissions",
+                json={"repo_url": "https://github.com/user/repo/pull/1"},
+                headers=_auth(fl_token),
+            )
+        submission_id = create_resp.json()["id"]
+
+        # Insert a review report
+        report = ReviewReportModel(
+            submission_id=submission_id,
+            verdict="PASS",
+            score=100,
+            body="Looks good!",
+            model_version="openreview",
         )
-        # Insert an accepted proposal directly in DB
-        proposal = ProposalModel(
-            gig_id=gig_id,
-            freelancer_id=freelancer_id,
-            cover_letter="I am the best",
-            estimated_days=7,
-            status="ACCEPTED",
-        )
-        db_session.add(proposal)
+        db_session.add(report)
         await db_session.commit()
 
         resp = await client.get(f"/v1/gigs/{gig_id}/workspace", headers=_auth(cl_token))
         assert resp.status_code == 200
         data = resp.json()
-        assert data["proposal"] is not None
-        assert data["proposal"]["freelancer_name"] == "Test Freelancer"
-        assert data["proposal"]["cover_letter"] == "I am the best"
-        assert data["proposal"]["estimated_days"] == 7
-
-    @pytest.mark.asyncio
-    async def test_workspace_includes_escrow(
-        self, client: AsyncClient, db_session: AsyncSession
-    ):
-        cl_token, _, _, gig_id, _ = await _setup_in_progress_gig(client, db_session)
-        # Insert an escrow contract directly in DB
-        escrow = EscrowContractModel(
-            gig_id=gig_id,
-            contract_address="EscrowAddr123456789012345678901234567890ab",
-        )
-        db_session.add(escrow)
-        await db_session.commit()
-
-        resp = await client.get(f"/v1/gigs/{gig_id}/workspace", headers=_auth(cl_token))
-        assert resp.status_code == 200
-        data = resp.json()
-        assert data["escrow"] is not None
-        assert (
-            data["escrow"]["contract_address"]
-            == "EscrowAddr123456789012345678901234567890ab"
-        )
+        assert len(data["submissions"]) == 1
+        sub = data["submissions"][0]
+        assert sub["review_verdict"] == "PASS"
+        assert sub["review_score"] == 100
 
 
 # ---------------------------------------------------------------------------

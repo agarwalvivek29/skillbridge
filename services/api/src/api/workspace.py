@@ -19,11 +19,9 @@ from sqlalchemy.orm import selectinload
 
 from src.infra.database import get_db
 from src.infra.models import (
-    EscrowContractModel,
     GigModel,
-    ProposalModel,
+    ReviewReportModel,
     SubmissionModel,
-    UserModel,
 )
 
 logger = logging.getLogger(__name__)
@@ -33,32 +31,6 @@ router = APIRouter(prefix="/v1/gigs", tags=["workspace"])
 # ---------------------------------------------------------------------------
 # Pydantic response models
 # ---------------------------------------------------------------------------
-
-
-class WorkspaceGigOut(BaseModel):
-    id: str
-    title: str
-    description: str
-    status: str
-    client_id: str
-    freelancer_id: Optional[str]
-    currency: str
-    total_amount: str
-
-    model_config = {"from_attributes": True}
-
-
-class WorkspaceSubmissionOut(BaseModel):
-    id: str
-    freelancer_id: str
-    repo_url: Optional[str]
-    file_keys: list[str]
-    notes: str
-    status: str
-    revision_number: int
-    created_at: datetime
-
-    model_config = {"from_attributes": True}
 
 
 class WorkspaceMilestoneOut(BaseModel):
@@ -71,27 +43,40 @@ class WorkspaceMilestoneOut(BaseModel):
     due_date: Optional[datetime]
     status: str
     revision_count: int
-    submissions: list[WorkspaceSubmissionOut]
 
     model_config = {"from_attributes": True}
 
 
-class WorkspaceProposalOut(BaseModel):
-    freelancer_name: str
-    cover_letter: str
-    estimated_days: int
+class WorkspaceGigOut(BaseModel):
+    id: str
+    title: str
+    description: str
+    status: str
+    client_id: str
+    freelancer_id: Optional[str]
+    currency: str
+    total_amount: str
+    milestones: list[WorkspaceMilestoneOut]
+
+    model_config = {"from_attributes": True}
 
 
-class WorkspaceEscrowOut(BaseModel):
-    contract_address: str
+class WorkspaceSubmissionOut(BaseModel):
+    id: str
+    milestone_id: str
+    repo_url: Optional[str]
+    file_keys: list[str]
+    notes: Optional[str]
+    review_verdict: Optional[str]
+    review_score: Optional[int]
     created_at: datetime
+
+    model_config = {"from_attributes": True}
 
 
 class WorkspaceOut(BaseModel):
     gig: WorkspaceGigOut
-    milestones: list[WorkspaceMilestoneOut]
-    proposal: Optional[WorkspaceProposalOut]
-    escrow: Optional[WorkspaceEscrowOut]
+    submissions: list[WorkspaceSubmissionOut]
 
 
 # ---------------------------------------------------------------------------
@@ -150,74 +135,62 @@ async def get_workspace(
             },
         )
 
-    # Build milestones with recent submissions (latest 3 per milestone)
-    milestones_out: list[WorkspaceMilestoneOut] = []
-    for m in sorted(gig.milestones, key=lambda x: x.order):
+    # Build milestones list (without submissions — submissions are returned flat)
+    milestones_out = [
+        WorkspaceMilestoneOut(
+            id=m.id,
+            title=m.title,
+            description=m.description,
+            acceptance_criteria=m.acceptance_criteria,
+            amount=m.amount,
+            order=m.order,
+            due_date=m.due_date,
+            status=m.status,
+            revision_count=m.revision_count,
+        )
+        for m in sorted(gig.milestones, key=lambda x: x.order)
+    ]
+
+    # Batch-load all submissions for this gig's milestones in one query
+    milestone_ids = [m.id for m in gig.milestones]
+    submissions_out: list[WorkspaceSubmissionOut] = []
+    if milestone_ids:
         sub_result = await db.execute(
             select(SubmissionModel)
-            .where(SubmissionModel.milestone_id == m.id)
+            .where(SubmissionModel.milestone_id.in_(milestone_ids))
             .order_by(SubmissionModel.created_at.desc())
-            .limit(3)
         )
         submissions = list(sub_result.scalars().all())
-        milestones_out.append(
-            WorkspaceMilestoneOut(
-                id=m.id,
-                title=m.title,
-                description=m.description,
-                acceptance_criteria=m.acceptance_criteria,
-                amount=m.amount,
-                order=m.order,
-                due_date=m.due_date,
-                status=m.status,
-                revision_count=m.revision_count,
-                submissions=[
-                    WorkspaceSubmissionOut(
-                        id=s.id,
-                        freelancer_id=s.freelancer_id,
-                        repo_url=s.repo_url,
-                        file_keys=s.file_keys or [],
-                        notes=s.notes,
-                        status=s.status,
-                        revision_number=s.revision_number,
-                        created_at=s.created_at,
-                    )
-                    for s in submissions
-                ],
+
+        # Batch-load review reports for all fetched submissions
+        submission_ids = [s.id for s in submissions]
+        report_by_sub: dict[str, ReviewReportModel] = {}
+        if submission_ids:
+            report_result = await db.execute(
+                select(ReviewReportModel).where(
+                    ReviewReportModel.submission_id.in_(submission_ids)
+                )
             )
-        )
+            for report in report_result.scalars().all():
+                report_by_sub[report.submission_id] = report
 
-    # Accepted proposal info
-    proposal_out: Optional[WorkspaceProposalOut] = None
-    proposal_result = await db.execute(
-        select(ProposalModel).where(
-            ProposalModel.gig_id == gig_id,
-            ProposalModel.status == "ACCEPTED",
-        )
-    )
-    proposal = proposal_result.scalar_one_or_none()
-    if proposal is not None:
-        user_result = await db.execute(
-            select(UserModel).where(UserModel.id == proposal.freelancer_id)
-        )
-        freelancer = user_result.scalar_one_or_none()
-        proposal_out = WorkspaceProposalOut(
-            freelancer_name=freelancer.name if freelancer else "Unknown",
-            cover_letter=proposal.cover_letter,
-            estimated_days=proposal.estimated_days,
-        )
-
-    # Escrow info
-    escrow_out: Optional[WorkspaceEscrowOut] = None
-    escrow_result = await db.execute(
-        select(EscrowContractModel).where(EscrowContractModel.gig_id == gig_id)
-    )
-    escrow = escrow_result.scalar_one_or_none()
-    if escrow is not None:
-        escrow_out = WorkspaceEscrowOut(
-            contract_address=escrow.contract_address,
-            created_at=escrow.created_at,
-        )
+        submissions_out = [
+            WorkspaceSubmissionOut(
+                id=s.id,
+                milestone_id=s.milestone_id,
+                repo_url=s.repo_url,
+                file_keys=s.file_keys or [],
+                notes=s.notes,
+                review_verdict=report_by_sub[s.id].verdict
+                if s.id in report_by_sub
+                else None,
+                review_score=report_by_sub[s.id].score
+                if s.id in report_by_sub
+                else None,
+                created_at=s.created_at,
+            )
+            for s in submissions
+        ]
 
     return WorkspaceOut(
         gig=WorkspaceGigOut(
@@ -229,8 +202,7 @@ async def get_workspace(
             freelancer_id=gig.freelancer_id,
             currency=gig.currency,
             total_amount=gig.total_amount,
+            milestones=milestones_out,
         ),
-        milestones=milestones_out,
-        proposal=proposal_out,
-        escrow=escrow_out,
+        submissions=submissions_out,
     )
