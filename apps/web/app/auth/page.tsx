@@ -45,6 +45,15 @@ export default function AuthPage() {
   // Short delay lets the wallet connection modal fully close before
   // triggering the signature popup — Edge drops it without the delay.
   useEffect(() => {
+    console.log("[auth] effect check:", {
+      connected,
+      publicKey: publicKey?.toBase58()?.slice(0, 8),
+      signMessage: typeof signMessage,
+      token: !!token,
+      isLoading,
+      autoSignTriggered: autoSignTriggered.current,
+    });
+
     if (
       connected &&
       publicKey &&
@@ -53,8 +62,12 @@ export default function AuthPage() {
       !isLoading &&
       !autoSignTriggered.current
     ) {
+      console.log("[auth] all conditions met — scheduling startSiwe in 500ms");
       autoSignTriggered.current = true;
-      const timer = setTimeout(() => startSiwe(), 500);
+      const timer = setTimeout(() => {
+        console.log("[auth] firing startSiwe now");
+        startSiwe();
+      }, 500);
       return () => clearTimeout(timer);
     }
   }, [connected, publicKey, signMessage, token, isLoading, startSiwe]);
@@ -62,6 +75,7 @@ export default function AuthPage() {
   // Reset the auto-sign guard if there's an error so retry works
   useEffect(() => {
     if (error) {
+      console.log("[auth] error detected, resetting autoSignTriggered:", error);
       autoSignTriggered.current = false;
     }
   }, [error]);
