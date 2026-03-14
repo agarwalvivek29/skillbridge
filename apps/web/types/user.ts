@@ -2,7 +2,7 @@
  * @proto packages/schema/proto/api/v1/user.proto — User, UserPublic
  *
  * Field mappings:
- *   display_name     ← proto User.name / UserPublic.name
+ *   name             = proto User.name / UserPublic.name
  *   wallet_address   = proto User.wallet_address
  *   email            = proto User.email (not on UserPublic)
  *   bio              = proto User.bio
@@ -20,7 +20,7 @@ export interface User {
   id: string;
   wallet_address: string;
   email: string | null;
-  display_name: string | null;
+  name: string | null;
   bio: string | null;
   avatar_url: string | null;
   role: "CLIENT" | "FREELANCER";

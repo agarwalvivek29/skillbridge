@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils";
 type Role = "CLIENT" | "FREELANCER";
 
 interface FormState {
-  display_name: string;
+  name: string;
   bio: string;
   skills: string[];
   location: string;
@@ -35,7 +35,7 @@ interface FormState {
 }
 
 const INITIAL_FORM: FormState = {
-  display_name: "",
+  name: "",
   bio: "",
   skills: [],
   location: "",
@@ -132,8 +132,8 @@ function OnboardingContent() {
   const validateProfile = (): boolean => {
     const newErrors: Partial<Record<keyof FormState, string>> = {};
 
-    if (!form.display_name.trim()) {
-      newErrors.display_name = "Display name is required";
+    if (!form.name.trim()) {
+      newErrors.name = "Display name is required";
     }
     if (!form.bio.trim()) {
       newErrors.bio = "Bio is required";
@@ -158,7 +158,7 @@ function OnboardingContent() {
     try {
       const payload: ProfilePayload = {
         role,
-        display_name: form.display_name.trim(),
+        name: form.name.trim(),
         bio: form.bio.trim(),
         skills: form.skills,
         ...(form.location && { location: form.location.trim() }),
@@ -295,9 +295,9 @@ function OnboardingContent() {
               <Input
                 label="Display Name"
                 placeholder="Your name or username"
-                value={form.display_name}
-                onChange={(e) => updateField("display_name", e.target.value)}
-                error={errors.display_name}
+                value={form.name}
+                onChange={(e) => updateField("name", e.target.value)}
+                error={errors.name}
               />
 
               <Textarea

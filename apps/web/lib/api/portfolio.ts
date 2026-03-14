@@ -4,7 +4,7 @@ import type { PortfolioItem } from "@/types/portfolio";
 export interface PortfolioPayload {
   title: string;
   description: string;
-  project_url?: string;
+  external_url?: string;
   github_url?: string;
   cover_image_url?: string;
   tags: string[];

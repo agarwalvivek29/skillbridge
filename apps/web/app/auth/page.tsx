@@ -33,7 +33,7 @@ export default function AuthPage() {
     if (token && user) {
       if (!user.email) {
         router.replace("/link-email");
-      } else if (!user.display_name) {
+      } else if (!user.name) {
         router.replace("/onboarding");
       } else {
         router.replace("/dashboard");
