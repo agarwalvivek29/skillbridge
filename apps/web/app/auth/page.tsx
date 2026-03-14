@@ -41,7 +41,9 @@ export default function AuthPage() {
     }
   }, [token, user, router]);
 
-  // Auto-sign as soon as wallet connects AND signMessage is available
+  // Auto-sign as soon as wallet connects AND signMessage is available.
+  // Short delay lets the wallet connection modal fully close before
+  // triggering the signature popup — Edge drops it without the delay.
   useEffect(() => {
     if (
       connected &&
@@ -52,7 +54,8 @@ export default function AuthPage() {
       !autoSignTriggered.current
     ) {
       autoSignTriggered.current = true;
-      startSiwe();
+      const timer = setTimeout(() => startSiwe(), 500);
+      return () => clearTimeout(timer);
     }
   }, [connected, publicKey, signMessage, token, isLoading, startSiwe]);
 
