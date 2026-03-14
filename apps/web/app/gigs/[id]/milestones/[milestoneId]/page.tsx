@@ -1,4 +1,5 @@
 "use client";
+import { formatAmountWithCurrency } from "@/lib/format";
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -231,7 +232,7 @@ function MilestoneContent() {
           <div className="mt-2 flex items-center gap-3">
             <StatusBadge status={milestone.status} />
             <span className="text-sm text-neutral-500">
-              {milestone.amount} {milestone.currency}
+              {formatAmountWithCurrency(milestone.amount, milestone.currency)}
             </span>
           </div>
         </div>
@@ -489,7 +490,7 @@ function MilestoneContent() {
         <p className="text-sm text-neutral-600">
           This will release{" "}
           <strong>
-            {milestone.amount} {milestone.currency}
+            {formatAmountWithCurrency(milestone.amount, milestone.currency)}
           </strong>{" "}
           to the freelancer. This action is irreversible.
         </p>

@@ -1,4 +1,5 @@
 "use client";
+import { formatAmountWithCurrency } from "@/lib/format";
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -148,12 +149,8 @@ function FundFlowContent() {
   }
 
   const milestones = gig.milestones ?? [];
-  // Sum in integer units (x1e8) to avoid floating-point accumulation errors
-  const total =
-    milestones.reduce(
-      (sum, m) => sum + Math.round(parseFloat(m.amount || "0") * 1e8),
-      0,
-    ) / 1e8;
+  // total_amount is already in smallest unit from the API
+  const totalRaw = gig.total_amount;
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8 md:px-6">
@@ -212,14 +209,17 @@ function FundFlowContent() {
                     {i + 1}. {m.title}
                   </span>
                   <span className="font-medium text-neutral-900">
-                    {m.amount} {m.currency}
+                    {formatAmountWithCurrency(
+                      m.amount,
+                      m.currency || gig.currency,
+                    )}
                   </span>
                 </div>
               ))}
               <div className="flex items-center justify-between border-t border-neutral-200 pt-3">
                 <span className="font-semibold text-neutral-700">Total</span>
                 <span className="text-xl font-bold text-neutral-900">
-                  {total.toFixed(2)} {gig.currency || "USDC"}
+                  {formatAmountWithCurrency(totalRaw, gig.currency || "USDC")}
                 </span>
               </div>
             </div>
@@ -271,7 +271,8 @@ function FundFlowContent() {
                   <Wallet className="h-12 w-12 text-web3-500" />
                   <div className="text-center">
                     <h2 className="text-lg font-semibold text-neutral-800">
-                      Deposit {total.toFixed(2)} {selectedToken}
+                      Deposit{" "}
+                      {formatAmountWithCurrency(totalRaw, selectedToken)}
                     </h2>
                     <p className="mt-1 text-sm text-neutral-500">
                       This will create a secure escrow for your gig

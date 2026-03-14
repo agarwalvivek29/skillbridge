@@ -1,4 +1,5 @@
 "use client";
+import { formatAmountWithCurrency } from "@/lib/format";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -112,7 +113,7 @@ function MilestoneTimeline({
                   <StatusBadge status={m.status} />
                 </div>
                 <p className="mt-0.5 text-xs text-neutral-500">
-                  {m.amount} {m.currency}
+                  {formatAmountWithCurrency(m.amount, m.currency)}
                 </p>
               </div>
               {isExpanded ? (
@@ -259,7 +260,7 @@ function WorkspaceContent() {
           </div>
           <div className="text-right">
             <div className="text-lg font-bold text-neutral-800">
-              {gig.total_amount} {gig.currency}
+              {formatAmountWithCurrency(gig.total_amount, gig.currency)}
             </div>
             <p className="text-xs text-neutral-500">
               {completedCount}/{gig.milestones.length} milestones completed
@@ -293,7 +294,7 @@ function WorkspaceContent() {
               <div className="flex justify-between">
                 <span className="text-neutral-500">Total Budget</span>
                 <span className="font-medium text-neutral-700">
-                  {gig.total_amount} {gig.currency}
+                  {formatAmountWithCurrency(gig.total_amount, gig.currency)}
                 </span>
               </div>
               <div className="flex justify-between">

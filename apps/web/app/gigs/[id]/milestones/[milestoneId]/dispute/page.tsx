@@ -1,4 +1,5 @@
 "use client";
+import { formatAmountWithCurrency } from "@/lib/format";
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -343,7 +344,8 @@ function DisputeFormContent() {
             Raise a Dispute
           </h1>
           <p className="text-sm text-neutral-500">
-            {milestone.title} &middot; {milestone.amount} {milestone.currency}
+            {milestone.title} &middot;{" "}
+            {formatAmountWithCurrency(milestone.amount, milestone.currency)}
           </p>
         </div>
       </div>

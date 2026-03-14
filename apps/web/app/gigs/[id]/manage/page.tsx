@@ -1,4 +1,5 @@
 "use client";
+import { formatAmountWithCurrency } from "@/lib/format";
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -127,7 +128,7 @@ function ManageContent() {
         <Card variant="flat">
           <p className="text-sm text-neutral-500">Total Budget</p>
           <p className="mt-1 text-xl font-bold text-neutral-900">
-            {gig.total_amount} {gig.currency}
+            {formatAmountWithCurrency(gig.total_amount, gig.currency)}
           </p>
         </Card>
         <Card variant="flat">
@@ -175,7 +176,7 @@ function ManageContent() {
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-sm font-medium text-neutral-900">
-                  {m.amount} {m.currency}
+                  {formatAmountWithCurrency(m.amount, m.currency)}
                 </span>
                 <StatusBadge status={m.status} />
               </div>
