@@ -21,6 +21,8 @@ export interface Gig {
   description: string;
   category: string | null;
   skills: string[];
+  required_skills: string[];
+  tags: string[];
   total_amount: string;
   currency: string;
   status: string;

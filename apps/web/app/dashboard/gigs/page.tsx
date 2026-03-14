@@ -125,10 +125,11 @@ function GigsContent() {
       ) : (
         <div className="space-y-3">
           {gigs.map((gig) => {
-            const milestonesDone = gig.milestones.filter(
+            const milestones = gig.milestones ?? [];
+            const milestonesDone = milestones.filter(
               (m) => m.status === "APPROVED" || m.status === "PAID",
             ).length;
-            const totalMilestones = gig.milestones.length;
+            const totalMilestones = milestones.length;
             const progress =
               totalMilestones > 0
                 ? Math.round((milestonesDone / totalMilestones) * 100)
@@ -169,13 +170,15 @@ function GigsContent() {
                           <span>{progress}%</span>
                         </div>
                       )}
-                      {gig.skills.length > 0 && (
+                      {(gig.skills ?? gig.required_skills ?? []).length > 0 && (
                         <div className="flex gap-1">
-                          {gig.skills.slice(0, 3).map((s) => (
-                            <Badge key={s} variant="default">
-                              {s}
-                            </Badge>
-                          ))}
+                          {(gig.skills ?? gig.required_skills ?? [])
+                            .slice(0, 3)
+                            .map((s) => (
+                              <Badge key={s} variant="default">
+                                {s}
+                              </Badge>
+                            ))}
                         </div>
                       )}
                     </div>
