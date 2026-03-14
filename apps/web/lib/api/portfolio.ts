@@ -10,8 +10,11 @@ export interface PortfolioPayload {
   tags: string[];
 }
 
-export function getMyPortfolio(userId: string): Promise<PortfolioItem[]> {
-  return apiGet<PortfolioItem[]>(`/v1/portfolio/${userId}`);
+export async function getMyPortfolio(userId: string): Promise<PortfolioItem[]> {
+  const res = await apiGet<{ items: PortfolioItem[] }>(
+    `/v1/portfolio/${userId}`,
+  );
+  return res.items ?? [];
 }
 
 export function createPortfolioItem(
