@@ -28,8 +28,8 @@ export function Footer() {
               <span className="font-bold text-primary-600">Bridge</span>
             </Link>
             <p className="mt-3 text-sm text-neutral-500">
-              AI-powered freelance platform with smart contract escrow on Base
-              L2.
+              AI-powered freelance platform with smart contract escrow on
+              Solana.
             </p>
           </div>
 

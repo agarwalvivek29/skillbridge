@@ -12,11 +12,11 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 export const metadata: Metadata = {
   title: "SkillBridge — AI-Powered Freelance Platform",
   description:
-    "Hire top freelancers with smart contract escrow and AI-powered code review on Base L2.",
+    "Hire top freelancers with smart contract escrow and AI-powered code review on Solana.",
   openGraph: {
     title: "SkillBridge — AI-Powered Freelance Platform",
     description:
-      "Hire top freelancers with smart contract escrow and AI-powered code review on Base L2.",
+      "Hire top freelancers with smart contract escrow and AI-powered code review on Solana.",
     type: "website",
   },
 };

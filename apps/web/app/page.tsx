@@ -52,7 +52,7 @@ const trustBadges = [
   {
     icon: Shield,
     title: "Smart Contract Escrow",
-    description: "Funds locked on Base L2 until milestones are approved.",
+    description: "Funds locked on Solana until milestones are approved.",
   },
   {
     icon: Bot,

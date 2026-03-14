@@ -25,7 +25,7 @@ const faqItems = [
   {
     question: "How does the escrow work?",
     answer:
-      "When a client creates a gig, they deposit the total budget into a smart contract on Base L2. Funds are locked and only released when milestones are approved — either by the client or through AI review verification. Neither party can withdraw funds unilaterally.",
+      "When a client creates a gig, they deposit the total budget into a smart contract on Solana. Funds are locked and only released when milestones are approved — either by the client or through AI review verification. Neither party can withdraw funds unilaterally.",
   },
   {
     question: "What happens if there's a dispute?",
@@ -59,8 +59,8 @@ const fees = [
   { item: "Browsing & applying", fee: "Free" },
   { item: "Posting a gig", fee: "Free" },
   { item: "Platform fee (per milestone)", fee: "5%" },
-  { item: "Escrow deposit gas", fee: "~$0.01 (Base L2)" },
-  { item: "Fund release gas", fee: "~$0.01 (Base L2)" },
+  { item: "Escrow deposit gas", fee: "~$0.001 (Solana)" },
+  { item: "Fund release gas", fee: "~$0.001 (Solana)" },
 ];
 
 function FAQItem({ question, answer }: { question: string; answer: string }) {
@@ -134,7 +134,7 @@ export default function AboutPage() {
                 {
                   icon: Lock,
                   title: "Funds Deposited to Escrow",
-                  desc: "Client sends total budget to a smart contract on Base L2. Funds are locked — neither party can withdraw.",
+                  desc: "Client sends total budget to a smart contract on Solana. Funds are locked — neither party can withdraw.",
                 },
                 {
                   icon: Code,
