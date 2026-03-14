@@ -5,30 +5,35 @@ interface NonceResponse {
   nonce: string;
 }
 
-interface SiweAuthResponse {
+interface AuthResponse {
   access_token: string;
+  token_type: string;
+  expires_in: number;
+  user_id: string;
   user: User;
 }
 
-interface LoginResponse {
-  access_token: string;
-  user: User;
+export function fetchNonce(walletAddress: string): Promise<NonceResponse> {
+  return apiGet<NonceResponse>(
+    `/v1/auth/nonce?wallet_address=${encodeURIComponent(walletAddress)}`,
+  );
 }
 
-export function fetchNonce(): Promise<NonceResponse> {
-  return apiGet<NonceResponse>("/v1/auth/nonce");
-}
-
-export function authenticateSiwe(
+export function authenticateWallet(
+  walletAddress: string,
   message: string,
   signature: string,
-): Promise<SiweAuthResponse> {
-  return apiPost<SiweAuthResponse>("/v1/auth/siwe", { message, signature });
+): Promise<AuthResponse> {
+  return apiPost<AuthResponse>("/v1/auth/wallet", {
+    wallet_address: walletAddress,
+    message,
+    signature,
+  });
 }
 
 export function loginWithEmail(
   email: string,
   password: string,
-): Promise<LoginResponse> {
-  return apiPost<LoginResponse>("/v1/auth/login", { email, password });
+): Promise<AuthResponse> {
+  return apiPost<AuthResponse>("/v1/auth/email/login", { email, password });
 }

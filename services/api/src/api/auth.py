@@ -63,11 +63,41 @@ class EmailLoginRequest(BaseModel):
     password: str
 
 
+class UserOut(BaseModel):
+    id: str
+    wallet_address: str | None = None
+    email: str | None = None
+    display_name: str | None = None
+    bio: str | None = None
+    avatar_url: str | None = None
+    role: str
+    created_at: str
+
+
 class AuthResponse(BaseModel):
     access_token: str
     token_type: str = "Bearer"
     expires_in: int
     user_id: str
+    user: UserOut
+
+
+def _auth_response(token: str, expires_in: int, user) -> AuthResponse:
+    return AuthResponse(
+        access_token=token,
+        expires_in=expires_in,
+        user_id=user.id,
+        user=UserOut(
+            id=user.id,
+            wallet_address=user.wallet_address,
+            email=user.email,
+            display_name=user.name,
+            bio=user.bio,
+            avatar_url=user.avatar_url,
+            role=user.role,
+            created_at=user.created_at.isoformat() if user.created_at else "",
+        ),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -162,7 +192,7 @@ async def wallet_login(
 
     user = await auth_domain.upsert_wallet_user(db, body.wallet_address)
     token, expires_in = auth_domain.create_access_token(user.id, user.role)
-    return AuthResponse(access_token=token, expires_in=expires_in, user_id=user.id)
+    return _auth_response(token, expires_in, user)
 
 
 @router.post(
@@ -202,7 +232,7 @@ async def email_register(
             },
         )
     token, expires_in = auth_domain.create_access_token(user.id, user.role)
-    return AuthResponse(access_token=token, expires_in=expires_in, user_id=user.id)
+    return _auth_response(token, expires_in, user)
 
 
 @router.post("/email/login", response_model=AuthResponse)
@@ -231,4 +261,4 @@ async def email_login(
         )
 
     token, expires_in = auth_domain.create_access_token(user.id, user.role)
-    return AuthResponse(access_token=token, expires_in=expires_in, user_id=user.id)
+    return _auth_response(token, expires_in, user)

@@ -26,6 +26,11 @@ export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -46,8 +51,7 @@ export default function AuthPage() {
   }, [connected, publicKey, step, reset]);
 
   const hasWallet =
-    typeof window !== "undefined" &&
-    wallets.some((w) => w.readyState === WalletReadyState.Installed);
+    mounted && wallets.some((w) => w.readyState === WalletReadyState.Installed);
 
   const address = publicKey?.toBase58();
 

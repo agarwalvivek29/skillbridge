@@ -48,6 +48,10 @@ class AuthMiddleware(BaseHTTPMiddleware):
     ) -> Response:
         path = request.url.path
 
+        # Let CORS preflight through unconditionally
+        if request.method == "OPTIONS":
+            return await call_next(request)
+
         # Exempt paths (all methods)
         for prefix in _EXEMPT_PREFIXES:
             if path.startswith(prefix):

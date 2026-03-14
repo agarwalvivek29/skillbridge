@@ -11,6 +11,7 @@ Add auth middleware LAST in the `add_middleware` chain so it executes FIRST.
 import logging
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from src.config import settings
@@ -23,6 +24,7 @@ from src.api.proposal import router as proposal_router
 from src.api.milestone import router as milestone_approval_router
 from src.api.submission import milestone_router as submission_milestone_router
 from src.api.submission import submission_router
+from src.api.notification import router as notification_router
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -46,6 +48,13 @@ async def _startup_checks() -> None:
 
 # ── Middleware (add_middleware inserts at front of stack — last added = first executed) ──
 app.add_middleware(AuthMiddleware)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # ── Routers ──────────────────────────────────────────────────────────────────
 app.include_router(auth_router)
@@ -55,6 +64,7 @@ app.include_router(proposal_router)
 app.include_router(submission_milestone_router)
 app.include_router(submission_router)
 app.include_router(milestone_approval_router)
+app.include_router(notification_router)
 app.include_router(webhooks_router)
 
 
