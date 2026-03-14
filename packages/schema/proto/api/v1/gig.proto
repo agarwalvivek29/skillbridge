@@ -39,8 +39,8 @@ message Gig {
   // For USDC: the ERC-20 contract address on Base L2.
   // For ETH: empty (native asset, no contract).
   string token_address = 8;
-  // Base L2 GigEscrow contract address — set after client funds
-  string contract_address = 9;
+  // Solana escrow PDA — set after client funds
+  string escrow_pda = 9;
   GigStatus status = 10;
   repeated string tags = 11;
   repeated string required_skills = 12;
@@ -48,6 +48,9 @@ message Gig {
   google.protobuf.Timestamp deadline = 13;
   google.protobuf.Timestamp created_at = 14;
   google.protobuf.Timestamp updated_at = 15;
+  string client_name = 16;
+  string client_avatar_url = 17;
+  string client_wallet_address = 18;
 }
 
 // ─── Events ──────────────────────────────────────────────────────────────────

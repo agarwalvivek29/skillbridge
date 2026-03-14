@@ -22,6 +22,8 @@ message PortfolioItem {
   string verified_gig_id = 8;
   google.protobuf.Timestamp created_at = 9;
   google.protobuf.Timestamp updated_at = 10;
+  string github_url = 11;
+  string cover_image_url = 12;
 }
 
 // ─── API Shapes ───────────────────────────────────────────────────────────────
@@ -34,6 +36,8 @@ message CreatePortfolioItemRequest {
   repeated string tags = 5;
   // Optionally link to a completed gig for verification badge
   string verified_gig_id = 6;
+  string github_url = 7;
+  string cover_image_url = 8;
 }
 
 message UpdatePortfolioItemRequest {
@@ -43,6 +47,8 @@ message UpdatePortfolioItemRequest {
   repeated string file_keys = 4;
   string external_url = 5;
   repeated string tags = 6;
+  string github_url = 7;
+  string cover_image_url = 8;
 }
 
 message GetPortfolioItemsRequest {

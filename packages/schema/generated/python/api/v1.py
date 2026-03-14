@@ -304,8 +304,8 @@ class Gig(betterproto.Message):
     # For USDC: the ERC-20 contract address on Base L2. For ETH: empty (native
     # asset, no contract).
     token_address: str = betterproto.string_field(8)
-    # Base L2 GigEscrow contract address — set after client funds
-    contract_address: str = betterproto.string_field(9)
+    # Solana escrow PDA — set after client funds
+    escrow_pda: str = betterproto.string_field(9)
     status: "GigStatus" = betterproto.enum_field(10)
     tags: List[str] = betterproto.string_field(11)
     required_skills: List[str] = betterproto.string_field(12)
@@ -313,6 +313,9 @@ class Gig(betterproto.Message):
     deadline: datetime = betterproto.message_field(13)
     created_at: datetime = betterproto.message_field(14)
     updated_at: datetime = betterproto.message_field(15)
+    client_name: str = betterproto.string_field(16)
+    client_avatar_url: str = betterproto.string_field(17)
+    client_wallet_address: str = betterproto.string_field(18)
 
 
 @dataclass
@@ -582,6 +585,8 @@ class PortfolioItem(betterproto.Message):
     verified_gig_id: str = betterproto.string_field(8)
     created_at: datetime = betterproto.message_field(9)
     updated_at: datetime = betterproto.message_field(10)
+    github_url: str = betterproto.string_field(11)
+    cover_image_url: str = betterproto.string_field(12)
 
 
 @dataclass
@@ -593,6 +598,8 @@ class CreatePortfolioItemRequest(betterproto.Message):
     tags: List[str] = betterproto.string_field(5)
     # Optionally link to a completed gig for verification badge
     verified_gig_id: str = betterproto.string_field(6)
+    github_url: str = betterproto.string_field(7)
+    cover_image_url: str = betterproto.string_field(8)
 
 
 @dataclass
@@ -603,6 +610,8 @@ class UpdatePortfolioItemRequest(betterproto.Message):
     file_keys: List[str] = betterproto.string_field(4)
     external_url: str = betterproto.string_field(5)
     tags: List[str] = betterproto.string_field(6)
+    github_url: str = betterproto.string_field(7)
+    cover_image_url: str = betterproto.string_field(8)
 
 
 @dataclass
@@ -1280,6 +1289,8 @@ class PortfolioServiceStub(betterproto.ServiceStub):
         external_url: str = "",
         tags: List[str] = [],
         verified_gig_id: str = "",
+        github_url: str = "",
+        cover_image_url: str = "",
     ) -> CreatePortfolioItemResponse:
         request = CreatePortfolioItemRequest()
         request.title = title
@@ -1288,6 +1299,8 @@ class PortfolioServiceStub(betterproto.ServiceStub):
         request.external_url = external_url
         request.tags = tags
         request.verified_gig_id = verified_gig_id
+        request.github_url = github_url
+        request.cover_image_url = cover_image_url
 
         return await self._unary_unary(
             "/api.v1.PortfolioService/CreatePortfolioItem",
@@ -1304,6 +1317,8 @@ class PortfolioServiceStub(betterproto.ServiceStub):
         file_keys: List[str] = [],
         external_url: str = "",
         tags: List[str] = [],
+        github_url: str = "",
+        cover_image_url: str = "",
     ) -> UpdatePortfolioItemResponse:
         request = UpdatePortfolioItemRequest()
         request.id = id
@@ -1312,6 +1327,8 @@ class PortfolioServiceStub(betterproto.ServiceStub):
         request.file_keys = file_keys
         request.external_url = external_url
         request.tags = tags
+        request.github_url = github_url
+        request.cover_image_url = cover_image_url
 
         return await self._unary_unary(
             "/api.v1.PortfolioService/UpdatePortfolioItem",
