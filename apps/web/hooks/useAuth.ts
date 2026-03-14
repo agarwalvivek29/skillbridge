@@ -45,7 +45,13 @@ export function useAuth(): UseAuthReturn {
   const [isLoading, setIsLoading] = useState(false);
 
   const startSiwe = useCallback(async () => {
+    console.log("[useAuth] startSiwe called", {
+      publicKey: publicKey?.toBase58()?.slice(0, 8),
+      signMessage: typeof signMessage,
+    });
+
     if (!publicKey || !signMessage) {
+      console.log("[useAuth] BAIL — missing publicKey or signMessage");
       setError("Wallet not connected or does not support message signing");
       return;
     }
@@ -56,7 +62,9 @@ export function useAuth(): UseAuthReturn {
     try {
       setStep("sign");
       const address = publicKey.toBase58();
+      console.log("[useAuth] fetching nonce for", address.slice(0, 8));
       const { nonce } = await fetchNonce(address);
+      console.log("[useAuth] got nonce:", nonce.slice(0, 8));
 
       const domain =
         process.env.NEXT_PUBLIC_AUTH_DOMAIN ??
@@ -75,18 +83,36 @@ export function useAuth(): UseAuthReturn {
       });
 
       const encodedMessage = new TextEncoder().encode(message);
+      console.log("[useAuth] requesting signature from wallet...");
       const signatureBytes = await signMessage(encodedMessage);
+      console.log(
+        "[useAuth] signature received, length:",
+        signatureBytes.length,
+      );
       const signature = btoa(String.fromCharCode(...signatureBytes));
 
       setStep("verify");
+      console.log("[useAuth] verifying with backend...");
       const result = await authenticateWallet(address, message, signature);
+      console.log(
+        "[useAuth] authenticated, user:",
+        result.user?.id?.slice(0, 8),
+      );
 
       setAuth(result.access_token, result.user);
       setStep("done");
     } catch (err) {
+      console.error("[useAuth] error:", err);
       const msg = err instanceof Error ? err.message : "Authentication failed";
       if (msg.includes("User rejected") || msg.includes("denied")) {
         setError("Signature rejected. Please try again.");
+      } else if (
+        msg.includes("disconnected port") ||
+        msg.includes("service worker")
+      ) {
+        setError(
+          "Wallet extension disconnected. Please refresh the page and try again.",
+        );
       } else {
         setError(msg);
       }
