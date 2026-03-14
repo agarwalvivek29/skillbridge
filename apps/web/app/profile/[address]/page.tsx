@@ -22,6 +22,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { AddressDisplay } from "@/components/web3/AddressDisplay";
 import { getPublicProfile } from "@/lib/api/profile";
+import { formatRole, isFreelancer } from "@/lib/format";
 import type { PublicProfile } from "@/types/profile";
 
 const tierColors: Record<string, { bg: string; text: string; border: string }> =
@@ -101,10 +102,8 @@ export default function PublicProfilePage() {
               <h1 className="text-2xl font-bold text-neutral-800">
                 {profile.display_name ?? "Anonymous"}
               </h1>
-              <Badge
-                variant={profile.role === "FREELANCER" ? "primary" : "info"}
-              >
-                {profile.role}
+              <Badge variant={isFreelancer(profile.role) ? "primary" : "info"}>
+                {formatRole(profile.role)}
               </Badge>
             </div>
             <div className="mt-2">
@@ -147,13 +146,13 @@ export default function PublicProfilePage() {
             <Card className="text-center">
               <DollarSign className="mx-auto h-5 w-5 text-neutral-400" />
               <div className="mt-2 text-2xl font-bold text-neutral-800">
-                {profile.role === "FREELANCER"
+                {isFreelancer(profile.role)
                   ? (profile.total_earned ?? "0")
                   : (profile.total_spent ?? "0")}{" "}
                 ETH
               </div>
               <div className="text-xs text-neutral-500">
-                {profile.role === "FREELANCER" ? "Total Earned" : "Total Spent"}
+                {isFreelancer(profile.role) ? "Total Earned" : "Total Spent"}
               </div>
             </Card>
             <Card className="text-center">

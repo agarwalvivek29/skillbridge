@@ -21,6 +21,7 @@ import { Spinner } from "@/components/ui/Spinner";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Badge } from "@/components/ui/Badge";
 import { useAuthStore } from "@/lib/stores/auth";
+import { isFreelancer } from "@/lib/format";
 import {
   getClientDashboard,
   getFreelancerDashboard,
@@ -483,7 +484,7 @@ function DashboardContent() {
     );
   }
 
-  return user.role === "FREELANCER" ? (
+  return isFreelancer(user.role) ? (
     <FreelancerDashboardView />
   ) : (
     <ClientDashboardView />
