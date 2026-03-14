@@ -1,4 +1,5 @@
 "use client";
+import { formatAmountWithCurrency } from "@/lib/format";
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -243,7 +244,7 @@ export default function GigDetailPage() {
                             )}
                           </td>
                           <td className="py-3 text-neutral-600">
-                            {m.amount} {m.currency}
+                            {formatAmountWithCurrency(m.amount, m.currency)}
                           </td>
                           <td className="py-3">
                             <StatusBadge status={m.status} />
@@ -267,14 +268,17 @@ export default function GigDetailPage() {
                   <span className="text-sm text-neutral-500">Total Budget</span>
                   <span className="flex items-center gap-1 text-lg font-bold text-neutral-900">
                     <DollarSign className="h-4 w-4" />
-                    {gig.total_amount} {gig.currency}
+                    {formatAmountWithCurrency(gig.total_amount, gig.currency)}
                   </span>
                 </div>
                 {milestones.length > 0 && (
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-neutral-500">Across milestones</span>
                     <span className="text-neutral-600">
-                      {totalMilestoneBudget} {gig.currency}
+                      {formatAmountWithCurrency(
+                        String(totalMilestoneBudget),
+                        gig.currency,
+                      )}
                     </span>
                   </div>
                 )}

@@ -19,7 +19,7 @@ import { Spinner } from "@/components/ui/Spinner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { useAuthStore } from "@/lib/stores/auth";
-import { isFreelancer } from "@/lib/format";
+import { isFreelancer, formatAmountWithCurrency } from "@/lib/format";
 import { fetchGigs, type GigQueryParams } from "@/lib/api/gigs";
 import type { Gig } from "@/types/gig";
 
@@ -152,7 +152,10 @@ function GigsContent() {
                     <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-neutral-500">
                       <span className="inline-flex items-center gap-1">
                         <DollarSign className="h-3.5 w-3.5" />
-                        {gig.total_amount} {gig.currency}
+                        {formatAmountWithCurrency(
+                          gig.total_amount,
+                          gig.currency,
+                        )}
                       </span>
                       {totalMilestones > 0 && (
                         <span>
