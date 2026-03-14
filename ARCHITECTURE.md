@@ -128,5 +128,5 @@ SkillBridge is a freelance marketplace where trust is enforced by technology, no
 | ADR                                         | Decision                                                           | Status   |
 | ------------------------------------------- | ------------------------------------------------------------------ | -------- |
 | [0001](docs/adr/0001-monorepo-structure.md) | Monorepo with per-service isolation                                | Accepted |
-| [0002](docs/adr/0002-tech-stack.md)         | Core tech stack: FastAPI, Base L2, PostgreSQL, Redis+Celery        | Accepted |
+| [0002](docs/adr/0002-tech-stack.md)         | Core tech stack: FastAPI, Solana, PostgreSQL, Redis+Celery         | Accepted |
 | [0003](docs/adr/0003-solana-migration.md)   | Migrate blockchain from Base L2 (Solidity) to Solana (Rust/Anchor) | Accepted |

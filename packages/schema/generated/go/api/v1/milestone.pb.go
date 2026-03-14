@@ -96,7 +96,7 @@ type Milestone struct {
 	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	// Acceptance criteria in markdown — fed directly to the AI reviewer as the evaluation spec
 	AcceptanceCriteria string `protobuf:"bytes,5,opt,name=acceptance_criteria,json=acceptanceCriteria,proto3" json:"acceptance_criteria,omitempty"`
-	// Amount in wei (ETH) or smallest unit (USDC). Must sum to gig.total_amount.
+	// Amount in lamports (SOL) or smallest unit (USDC). Must sum to gig.total_amount.
 	Amount string `protobuf:"bytes,6,opt,name=amount,proto3" json:"amount,omitempty"`
 	// 1-indexed position within the gig
 	Order  int32           `protobuf:"varint,7,opt,name=order,proto3" json:"order,omitempty"`

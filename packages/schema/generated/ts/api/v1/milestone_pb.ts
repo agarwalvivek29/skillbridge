@@ -46,7 +46,7 @@ export type Milestone = Message<"api.v1.Milestone"> & {
   acceptanceCriteria: string;
 
   /**
-   * Amount in wei (ETH) or smallest unit (USDC). Must sum to gig.total_amount.
+   * Amount in lamports (SOL) or smallest unit (USDC). Must sum to gig.total_amount.
    *
    * @generated from field: string amount = 6;
    */

@@ -28,7 +28,7 @@ message Milestone {
   string description = 4;
   // Acceptance criteria in markdown — fed directly to the AI reviewer as the evaluation spec
   string acceptance_criteria = 5;
-  // Amount in wei (ETH) or smallest unit (USDC). Must sum to gig.total_amount.
+  // Amount in lamports (SOL) or smallest unit (USDC). Must sum to gig.total_amount.
   string amount = 6;
   // 1-indexed position within the gig
   int32 order = 7;

@@ -38,7 +38,7 @@ class GigStatus(betterproto.Enum):
 
 class Currency(betterproto.Enum):
     CURRENCY_UNSPECIFIED = 0
-    CURRENCY_ETH = 1
+    CURRENCY_SOL = 1
     CURRENCY_USDC = 2
 
 
@@ -298,11 +298,11 @@ class Gig(betterproto.Message):
     freelancer_id: str = betterproto.string_field(3)
     title: str = betterproto.string_field(4)
     description: str = betterproto.string_field(5)
-    # Total budget in wei (ETH) or smallest unit (USDC = 6 decimals)
+    # Total budget in lamports (SOL) or smallest unit (USDC = 6 decimals)
     total_amount: str = betterproto.string_field(6)
     currency: "Currency" = betterproto.enum_field(7)
-    # For USDC: the ERC-20 contract address on Base L2. For ETH: empty (native
-    # asset, no contract).
+    # For USDC: the SPL token mint address on Solana. For SOL: empty (native
+    # asset).
     token_address: str = betterproto.string_field(8)
     # Solana escrow PDA — set after client funds
     escrow_pda: str = betterproto.string_field(9)
@@ -408,7 +408,8 @@ class Milestone(betterproto.Message):
     # Acceptance criteria in markdown — fed directly to the AI reviewer as the
     # evaluation spec
     acceptance_criteria: str = betterproto.string_field(5)
-    # Amount in wei (ETH) or smallest unit (USDC). Must sum to gig.total_amount.
+    # Amount in lamports (SOL) or smallest unit (USDC). Must sum to
+    # gig.total_amount.
     amount: str = betterproto.string_field(6)
     # 1-indexed position within the gig
     order: int = betterproto.int32_field(7)
