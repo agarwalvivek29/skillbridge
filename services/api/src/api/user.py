@@ -32,12 +32,24 @@ router = APIRouter(prefix="/v1/users", tags=["users"])
 _URL_RE = re.compile(r"^https?://\S+$")
 
 
+_VALID_ROLES = {"USER_ROLE_CLIENT", "USER_ROLE_FREELANCER", "CLIENT", "FREELANCER"}
+
+
 class ProfileUpdateRequest(BaseModel):
+    role: str | None = None
     display_name: str | None = None
     bio: str | None = None
     avatar_url: str | None = None
     skills: list[str] | None = None
     hourly_rate_wei: str | None = None
+    hourly_rate: float | None = None  # frontend sends this, map to hourly_rate_wei
+
+    @field_validator("role")
+    @classmethod
+    def validate_role(cls, v: str | None) -> str | None:
+        if v is not None and v not in _VALID_ROLES:
+            raise ValueError(f"role must be one of {_VALID_ROLES}")
+        return v
 
     @field_validator("display_name")
     @classmethod
@@ -116,6 +128,14 @@ async def update_profile(
             detail={"code": "USER_NOT_FOUND", "message": "User not found"},
         )
 
+    if body.role is not None:
+        # Normalise short form to proto enum
+        role = body.role
+        if role == "CLIENT":
+            role = "USER_ROLE_CLIENT"
+        elif role == "FREELANCER":
+            role = "USER_ROLE_FREELANCER"
+        user.role = role
     if body.display_name is not None:
         user.name = body.display_name
     if body.bio is not None:
@@ -126,6 +146,8 @@ async def update_profile(
         user.skills = body.skills
     if body.hourly_rate_wei is not None:
         user.hourly_rate_wei = body.hourly_rate_wei
+    if body.hourly_rate is not None:
+        user.hourly_rate_wei = str(int(body.hourly_rate * 1_000_000_000))
 
     db.add(user)
     await db.flush()
