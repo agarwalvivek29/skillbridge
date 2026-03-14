@@ -24,7 +24,9 @@ from src.api.proposal import router as proposal_router
 from src.api.milestone import router as milestone_approval_router
 from src.api.submission import milestone_router as submission_milestone_router
 from src.api.submission import submission_router
+from src.api.dashboard import router as dashboard_router
 from src.api.notification import router as notification_router
+from src.api.user import router as user_router
 from src.api.workspace import router as workspace_router
 
 logging.basicConfig(level=logging.INFO)
@@ -65,7 +67,9 @@ app.include_router(proposal_router)
 app.include_router(submission_milestone_router)
 app.include_router(submission_router)
 app.include_router(milestone_approval_router)
+app.include_router(dashboard_router)
 app.include_router(notification_router)
+app.include_router(user_router)
 app.include_router(workspace_router)
 app.include_router(webhooks_router)
 
