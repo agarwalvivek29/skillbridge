@@ -97,7 +97,32 @@ export function updateGig(
   id: string,
   payload: Partial<CreateGigPayload>,
 ): Promise<Gig> {
-  return apiPut<Gig>(`/v1/gigs/${id}`, payload);
+  const mapped: Record<string, unknown> = {};
+  if (payload.title !== undefined) mapped.title = payload.title;
+  if (payload.description !== undefined)
+    mapped.description = payload.description;
+  if (payload.category !== undefined) mapped.tags = [payload.category];
+  if (payload.skills !== undefined) mapped.required_skills = payload.skills;
+  if (payload.deadline !== undefined) mapped.deadline = payload.deadline;
+  if (payload.milestones !== undefined) {
+    const currency = payload.milestones[0]?.currency || "USDC";
+    const decimals = currency === "USDC" ? 1_000_000 : 1_000_000_000;
+    mapped.milestones = payload.milestones.map((m, i) => ({
+      title: m.title,
+      description: m.description,
+      acceptance_criteria: m.acceptance_criteria,
+      amount: Math.round(parseFloat(m.amount || "0") * decimals).toString(),
+      order: i + 1,
+    }));
+    mapped.total_amount = payload.milestones
+      .reduce(
+        (sum, m) => sum + Math.round(parseFloat(m.amount || "0") * decimals),
+        0,
+      )
+      .toString();
+    mapped.currency = currency;
+  }
+  return apiPut<Gig>(`/v1/gigs/${id}`, mapped);
 }
 
 export function deleteGig(id: string): Promise<void> {

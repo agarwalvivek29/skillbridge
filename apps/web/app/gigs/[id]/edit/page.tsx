@@ -45,6 +45,15 @@ function EditGigContent() {
   const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState("");
   const [deadline, setDeadline] = useState("");
+  const [editMilestones, setEditMilestones] = useState<
+    {
+      title: string;
+      description: string;
+      acceptance_criteria: string;
+      amount: string;
+      currency: string;
+    }[]
+  >([]);
 
   useEffect(() => {
     if (!id) return;
@@ -56,8 +65,17 @@ function EditGigContent() {
         setCategory(
           (g as unknown as { tags?: string[] }).tags?.[0] ?? g.category ?? "",
         );
-        setSkills(g.skills ?? []);
+        setSkills(g.skills ?? g.required_skills ?? []);
         setDeadline(g.deadline?.split("T")[0] ?? "");
+        setEditMilestones(
+          (g.milestones ?? []).map((m) => ({
+            title: m.title,
+            description: m.description || "",
+            acceptance_criteria: "",
+            amount: m.amount,
+            currency: m.currency || g.currency || "USDC",
+          })),
+        );
       })
       .catch(() => toast.error("Failed to load gig"))
       .finally(() => setLoading(false));
@@ -118,13 +136,7 @@ function EditGigContent() {
         category,
         skills,
         deadline: deadline || null,
-        milestones: gig.milestones.map((m) => ({
-          title: m.title,
-          description: m.description,
-          acceptance_criteria: "",
-          amount: m.amount,
-          currency: m.currency,
-        })),
+        milestones: editMilestones,
       });
       toast.success("Gig updated");
       router.push(`/gigs/${gig.id}`);
@@ -207,6 +219,116 @@ function EditGigContent() {
           value={deadline}
           onChange={(e) => setDeadline(e.target.value)}
         />
+      </Card>
+
+      {/* Milestones */}
+      <Card className="mt-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-neutral-800">Milestones</h2>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              setEditMilestones([
+                ...editMilestones,
+                {
+                  title: "",
+                  description: "",
+                  acceptance_criteria: "",
+                  amount: "",
+                  currency: gig.currency || "USDC",
+                },
+              ])
+            }
+          >
+            <Plus className="mr-1 h-4 w-4" />
+            Add
+          </Button>
+        </div>
+        {editMilestones.map((m, i) => (
+          <div
+            key={i}
+            className="space-y-3 rounded-lg border border-neutral-200 p-4"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-neutral-500">
+                Milestone {i + 1}
+              </span>
+              {editMilestones.length > 1 && (
+                <button
+                  onClick={() =>
+                    setEditMilestones(editMilestones.filter((_, j) => j !== i))
+                  }
+                  className="text-xs text-error-500 hover:underline"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+            <Input
+              label="Title"
+              value={m.title}
+              onChange={(e) => {
+                const updated = [...editMilestones];
+                updated[i] = { ...updated[i], title: e.target.value };
+                setEditMilestones(updated);
+              }}
+              required
+            />
+            <Textarea
+              label="Description"
+              value={m.description}
+              onChange={(e) => {
+                const updated = [...editMilestones];
+                updated[i] = { ...updated[i], description: e.target.value };
+                setEditMilestones(updated);
+              }}
+              rows={2}
+            />
+            <Textarea
+              label="Acceptance Criteria"
+              value={m.acceptance_criteria}
+              onChange={(e) => {
+                const updated = [...editMilestones];
+                updated[i] = {
+                  ...updated[i],
+                  acceptance_criteria: e.target.value,
+                };
+                setEditMilestones(updated);
+              }}
+              rows={2}
+              placeholder="What must be true for this milestone to be approved?"
+            />
+            <div className="grid grid-cols-2 gap-3">
+              <Input
+                label={`Amount (${m.currency})`}
+                type="number"
+                step="0.01"
+                value={m.amount}
+                onChange={(e) => {
+                  const updated = [...editMilestones];
+                  updated[i] = { ...updated[i], amount: e.target.value };
+                  setEditMilestones(updated);
+                }}
+                required
+              />
+              <Select
+                label="Currency"
+                value={m.currency}
+                onChange={(e) => {
+                  const updated = [...editMilestones];
+                  updated[i] = { ...updated[i], currency: e.target.value };
+                  setEditMilestones(updated);
+                }}
+                options={[
+                  { value: "USDC", label: "USDC" },
+                  { value: "SOL", label: "SOL" },
+                ]}
+              />
+            </div>
+          </div>
+        ))}
       </Card>
 
       <div className="mt-6 flex justify-end gap-3">
