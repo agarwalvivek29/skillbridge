@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { WalletReadyState } from "@solana/wallet-adapter-base";
-import { Wallet, Mail, ArrowRight, Shield, AlertCircle } from "lucide-react";
+import { Wallet, ArrowRight, Shield, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { Spinner } from "@/components/ui/Spinner";
 import { InstallWalletPrompt } from "@/components/web3/InstallWalletPrompt";
@@ -20,12 +19,8 @@ export default function AuthPage() {
   const user = useAuthStore((s) => s.user);
   const { publicKey, connected, connecting, wallets } = useWallet();
   const { setVisible } = useWalletModal();
-  const { step, error, isLoading, startSiwe, login, reset } = useAuth();
+  const { step, error, isLoading, startSiwe, reset } = useAuth();
 
-  const [showEmail, setShowEmail] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -35,10 +30,12 @@ export default function AuthPage() {
   // Redirect if already authenticated
   useEffect(() => {
     if (token && user) {
-      if (user.display_name) {
-        router.replace("/dashboard");
-      } else {
+      if (!user.email) {
+        router.replace("/link-email");
+      } else if (!user.display_name) {
         router.replace("/onboarding");
+      } else {
+        router.replace("/dashboard");
       }
     }
   }, [token, user, router]);
@@ -55,22 +52,6 @@ export default function AuthPage() {
 
   const address = publicKey?.toBase58();
 
-  const handleEmailLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setEmailError(null);
-
-    if (!email.trim()) {
-      setEmailError("Email is required");
-      return;
-    }
-    if (!password) {
-      setEmailError("Password is required");
-      return;
-    }
-
-    await login(email, password);
-  };
-
   return (
     <div className="flex min-h-[calc(100vh-64px)] items-center justify-center px-4 py-16">
       <div className="w-full max-w-[640px] space-y-8">
@@ -80,8 +61,26 @@ export default function AuthPage() {
             Sign in to SkillBridge
           </h1>
           <p className="mt-2 text-sm text-neutral-500">
-            Connect your wallet or use email to get started
+            Connect your Solana wallet to get started
           </p>
+        </div>
+
+        {/* Step indicator */}
+        <div className="flex items-center justify-center gap-2 text-xs text-neutral-400">
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-500 text-white font-medium">
+            1
+          </span>
+          <span className="font-medium text-primary-500">Connect Wallet</span>
+          <div className="h-px w-8 bg-neutral-300" />
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-neutral-200 text-neutral-500 font-medium">
+            2
+          </span>
+          <span>Link Email</span>
+          <div className="h-px w-8 bg-neutral-300" />
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-neutral-200 text-neutral-500 font-medium">
+            3
+          </span>
+          <span>Set Up Profile</span>
         </div>
 
         {/* Wallet Auth */}
@@ -95,7 +94,7 @@ export default function AuthPage() {
                 Wallet Sign-In
               </h2>
               <p className="text-sm text-neutral-500">
-                Recommended for Web3 users
+                Sign a message to prove wallet ownership
               </p>
             </div>
           </div>
@@ -103,7 +102,6 @@ export default function AuthPage() {
           {!hasWallet ? (
             <InstallWalletPrompt />
           ) : !connected ? (
-            /* Step 1: Connect wallet */
             <div className="space-y-3">
               <Button
                 variant="web3"
@@ -117,7 +115,6 @@ export default function AuthPage() {
               </Button>
             </div>
           ) : step === "sign" || step === "connect" ? (
-            /* Step 2: Sign message */
             <div className="space-y-4">
               <div className="rounded-lg border border-neutral-200 bg-neutral-50 p-4">
                 <div className="flex items-start gap-3">
@@ -147,7 +144,6 @@ export default function AuthPage() {
               </Button>
             </div>
           ) : step === "verify" ? (
-            /* Step 3: Verifying */
             <div className="flex flex-col items-center gap-3 py-4">
               <Spinner size="lg" />
               <p className="text-sm text-neutral-500">
@@ -156,7 +152,6 @@ export default function AuthPage() {
             </div>
           ) : null}
 
-          {/* Wallet error display -- only show for wallet-related errors */}
           {error && step !== "connect" && (
             <div className="flex items-start gap-2 rounded-md border border-error-500 bg-error-50 p-3">
               <AlertCircle className="mt-0.5 h-4 w-4 text-error-500" />
@@ -170,75 +165,6 @@ export default function AuthPage() {
                 </button>
               </div>
             </div>
-          )}
-        </Card>
-
-        {/* Divider */}
-        <div className="flex items-center gap-4">
-          <div className="h-px flex-1 bg-neutral-200" />
-          <span className="text-sm text-neutral-400">or</span>
-          <div className="h-px flex-1 bg-neutral-200" />
-        </div>
-
-        {/* Email Auth */}
-        <Card variant="bordered" className="space-y-4">
-          <button
-            onClick={() => setShowEmail(!showEmail)}
-            className="flex w-full items-center gap-3"
-          >
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50">
-              <Mail className="h-5 w-5 text-primary-500" />
-            </div>
-            <div className="text-left">
-              <h2 className="text-lg font-semibold text-neutral-800">
-                Email Sign-In
-              </h2>
-              <p className="text-sm text-neutral-500">Use email and password</p>
-            </div>
-            <ArrowRight
-              className={`ml-auto h-5 w-5 text-neutral-400 transition-transform ${
-                showEmail ? "rotate-90" : ""
-              }`}
-            />
-          </button>
-
-          {showEmail && (
-            <form onSubmit={handleEmailLogin} className="space-y-4">
-              <Input
-                label="Email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                error={
-                  emailError && !email.trim() ? "Email is required" : undefined
-                }
-              />
-              <Input
-                label="Password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                error={
-                  emailError && email.trim() && !password
-                    ? "Password is required"
-                    : undefined
-                }
-              />
-              {error && step === "connect" && (
-                <p className="text-sm text-error-500">{error}</p>
-              )}
-              <Button
-                type="submit"
-                variant="primary"
-                size="lg"
-                className="w-full"
-                loading={isLoading}
-              >
-                Sign In
-              </Button>
-            </form>
           )}
         </Card>
       </div>

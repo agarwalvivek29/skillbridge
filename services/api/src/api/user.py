@@ -9,8 +9,9 @@ from __future__ import annotations
 
 import re
 
+import bcrypt
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, EmailStr, field_validator
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -130,6 +131,67 @@ async def update_profile(
     await db.flush()
     await db.refresh(user)
     return _profile_out(user)
+
+
+class LinkEmailRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, v: str) -> str:
+        if len(v) < 8:
+            raise ValueError("password must be at least 8 characters")
+        return v
+
+
+class LinkEmailOut(BaseModel):
+    ok: bool
+    email: str
+
+
+@router.post("/link-email", response_model=LinkEmailOut)
+async def link_email(
+    body: LinkEmailRequest,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+) -> LinkEmailOut:
+    """Link an email + password to an existing wallet-authenticated user."""
+    user_id: str = request.state.user_id
+
+    result = await db.execute(select(UserModel).where(UserModel.id == user_id))
+    user = result.scalar_one_or_none()
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "USER_NOT_FOUND", "message": "User not found"},
+        )
+
+    if user.email is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "EMAIL_ALREADY_LINKED",
+                "message": "Email is already linked to this account",
+            },
+        )
+
+    # Check email not taken by another user
+    existing = await db.execute(select(UserModel).where(UserModel.email == body.email))
+    if existing.scalar_one_or_none() is not None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"code": "EMAIL_TAKEN", "message": "This email is already in use"},
+        )
+
+    user.email = body.email
+    user.password_hash = bcrypt.hashpw(
+        body.password.encode(), bcrypt.gensalt()
+    ).decode()
+    db.add(user)
+    await db.flush()
+
+    return LinkEmailOut(ok=True, email=body.email)
 
 
 class ActiveGigOut(BaseModel):
