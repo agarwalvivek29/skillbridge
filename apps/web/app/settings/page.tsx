@@ -19,7 +19,7 @@ function ProfileSettings() {
   const user = useAuthStore((s) => s.user);
   const setAuth = useAuthStore((s) => s.setAuth);
   const token = useAuthStore((s) => s.token);
-  const [displayName, setDisplayName] = useState(user?.display_name ?? "");
+  const [displayName, setDisplayName] = useState(user?.name ?? "");
   const [bio, setBio] = useState(user?.bio ?? "");
   const [skills, setSkills] = useState("");
   const [saving, setSaving] = useState(false);
@@ -30,7 +30,7 @@ function ProfileSettings() {
     setSaving(true);
     try {
       const updated = await apiPut<typeof user>("/v1/users/profile", {
-        display_name: displayName,
+        name: displayName,
         bio,
         skills: skills
           .split(",")

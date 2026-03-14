@@ -56,7 +56,7 @@ export interface Milestone {
  *   category               — API-enriched (not in proto)
  *
  * Proto fields NOT mapped:
- *   Gig.token_address, Gig.contract_address, Gig.updated_at
+ *   Gig.token_address, Gig.escrow_pda, Gig.updated_at
  */
 export interface Gig {
   id: string;

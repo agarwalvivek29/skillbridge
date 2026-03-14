@@ -136,11 +136,11 @@ export function fetchEscrowTx(gigId: string): Promise<EscrowTx> {
 export function confirmEscrow(
   gigId: string,
   txSignature: string,
-  contractAddress?: string,
+  chainAddress?: string,
 ): Promise<Gig> {
   return apiPost<Gig>(`/v1/gigs/${gigId}/confirm-escrow`, {
     tx_signature: txSignature,
-    contract_address: contractAddress || txSignature,
+    chain_address: chainAddress || txSignature,
   });
 }
 

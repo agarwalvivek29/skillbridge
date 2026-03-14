@@ -3,7 +3,7 @@ import type { User } from "@/types/user";
 
 export interface ProfilePayload {
   role: "CLIENT" | "FREELANCER";
-  display_name: string;
+  name: string;
   bio: string;
   skills: string[];
   location?: string;

@@ -86,7 +86,7 @@ export function NavBar() {
                 )}
               </div>
               <span className="max-w-[120px] truncate text-sm font-medium text-neutral-700">
-                {user.display_name || "Account"}
+                {user.name || "Account"}
               </span>
             </Link>
           )}

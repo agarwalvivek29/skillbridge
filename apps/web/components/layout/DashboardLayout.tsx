@@ -65,7 +65,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               </div>
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-neutral-800">
-                  {user.display_name || "Anonymous"}
+                  {user.name || "Anonymous"}
                 </p>
                 <p className="truncate text-xs text-neutral-500">
                   {user.wallet_address

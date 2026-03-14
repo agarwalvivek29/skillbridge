@@ -46,7 +46,7 @@ function PortfolioForm({
 }) {
   const [title, setTitle] = useState(initial?.title ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
-  const [projectUrl, setProjectUrl] = useState(initial?.project_url ?? "");
+  const [projectUrl, setProjectUrl] = useState(initial?.external_url ?? "");
   const [githubUrl, setGithubUrl] = useState(initial?.github_url ?? "");
   const [tags, setTags] = useState(initial?.tags.join(", ") ?? "");
   const [coverUrl, setCoverUrl] = useState(initial?.cover_image_url ?? "");
@@ -70,7 +70,7 @@ function PortfolioForm({
     onSubmit({
       title,
       description,
-      project_url: projectUrl || undefined,
+      external_url: projectUrl || undefined,
       github_url: githubUrl || undefined,
       cover_image_url: coverUrl || undefined,
       tags: tags
@@ -240,10 +240,10 @@ function PortfolioContent() {
                     fill
                     className="object-cover"
                   />
-                ) : item.project_url ? (
+                ) : item.external_url ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img
-                    src={`https://api.microlink.io/?url=${encodeURIComponent(item.project_url)}&screenshot=true&meta=false&embed=screenshot.url`}
+                    src={`https://api.microlink.io/?url=${encodeURIComponent(item.external_url)}&screenshot=true&meta=false&embed=screenshot.url`}
                     alt={`Preview of ${item.title}`}
                     className="h-full w-full object-cover"
                     onError={(e) => {
@@ -276,7 +276,7 @@ function PortfolioContent() {
                     <FolderOpen className="h-12 w-12 text-primary-200" />
                   </div>
                 )}
-                {item.verified_delivery && (
+                {item.is_verified && (
                   <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-green-500 px-2.5 py-1 text-xs font-medium text-white shadow-sm">
                     <BadgeCheck className="h-3.5 w-3.5" />
                     Verified
@@ -325,11 +325,11 @@ function PortfolioContent() {
                 )}
 
                 {/* Links */}
-                {(item.project_url || item.github_url) && (
+                {(item.external_url || item.github_url) && (
                   <div className="mt-4 flex items-center gap-3 border-t border-neutral-100 pt-3">
-                    {item.project_url && (
+                    {item.external_url && (
                       <a
-                        href={item.project_url}
+                        href={item.external_url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 text-sm font-medium text-primary-600 transition-colors hover:text-primary-700"

@@ -60,7 +60,7 @@ export interface Review {
  * Composite type — aggregates from multiple proto sources.
  *
  * From user.proto UserPublic:
- *   id, wallet_address, display_name (← name), bio, avatar_url, role, skills
+ *   id, wallet_address, name, bio, avatar_url, role, skills
  *
  * From reputation.proto Reputation:
  *   reputation_score  ← proto Reputation.average_ai_score (or composite)
@@ -81,7 +81,7 @@ export interface Review {
 export interface PublicProfile {
   id: string;
   wallet_address: string;
-  display_name: string | null;
+  name: string | null;
   bio: string | null;
   avatar_url: string | null;
   role: "CLIENT" | "FREELANCER";
