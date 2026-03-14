@@ -175,8 +175,8 @@ export default function PublicProfilePage() {
             </Card>
           </div>
 
-          {/* Skills */}
-          {profile.skills.length > 0 && (
+          {/* Skills — only for freelancers */}
+          {isFreelancer(profile.role) && profile.skills.length > 0 && (
             <section>
               <h2 className="mb-4 text-lg font-semibold text-neutral-800">
                 Skills
@@ -216,8 +216,8 @@ export default function PublicProfilePage() {
             </section>
           )}
 
-          {/* Portfolio */}
-          {profile.portfolio_items.length > 0 && (
+          {/* Portfolio — only for freelancers */}
+          {isFreelancer(profile.role) && profile.portfolio_items.length > 0 && (
             <section>
               <h2 className="mb-4 text-lg font-semibold text-neutral-800">
                 Portfolio
