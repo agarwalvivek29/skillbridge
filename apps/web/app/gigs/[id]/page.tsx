@@ -95,7 +95,9 @@ export default function GigDetailPage() {
     year: "numeric",
   });
 
-  const totalMilestoneBudget = gig.milestones.reduce(
+  const milestones = milestones ?? [];
+  const skills = skills ?? gig.required_skills ?? [];
+  const totalMilestoneBudget = milestones.reduce(
     (sum, m) => sum + parseFloat(m.amount || "0"),
     0,
   );
@@ -162,13 +164,13 @@ export default function GigDetailPage() {
             </Card>
 
             {/* Skills */}
-            {gig.skills.length > 0 && (
+            {skills.length > 0 && (
               <Card>
                 <h2 className="text-lg font-semibold text-neutral-800">
                   Skills Required
                 </h2>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {gig.skills.map((skill) => (
+                  {skills.map((skill) => (
                     <Badge key={skill} variant="primary">
                       {skill}
                     </Badge>
@@ -178,7 +180,7 @@ export default function GigDetailPage() {
             )}
 
             {/* Milestones */}
-            {gig.milestones.length > 0 && (
+            {milestones.length > 0 && (
               <Card>
                 <h2 className="text-lg font-semibold text-neutral-800">
                   Milestones
@@ -200,7 +202,7 @@ export default function GigDetailPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-neutral-100">
-                      {gig.milestones.map((m, i) => (
+                      {milestones.map((m, i) => (
                         <tr key={m.id}>
                           <td className="py-3 text-neutral-400">{i + 1}</td>
                           <td className="py-3">
@@ -241,7 +243,7 @@ export default function GigDetailPage() {
                     {gig.total_amount} {gig.currency}
                   </span>
                 </div>
-                {gig.milestones.length > 0 && (
+                {milestones.length > 0 && (
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-neutral-500">Across milestones</span>
                     <span className="text-neutral-600">
@@ -278,7 +280,7 @@ export default function GigDetailPage() {
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-neutral-500">Milestones</dt>
-                  <dd className="text-neutral-700">{gig.milestones.length}</dd>
+                  <dd className="text-neutral-700">{milestones.length}</dd>
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-neutral-500">Status</dt>
