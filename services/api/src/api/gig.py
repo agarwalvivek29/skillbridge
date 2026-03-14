@@ -486,7 +486,9 @@ async def get_escrow_tx_endpoint(
             },
         )
 
-    gig_id_bytes_hex = gig_id.encode("utf-8").hex()
+    # Strip hyphens from UUID to fit within Solana's 32-byte seed limit
+    # "7ce34a2f-eaf4-4bde-823d-bd067a027d65" → "7ce34a2feaf44bde823dbd067a027d65" (32 chars = 32 bytes)
+    gig_id_compact = gig_id.replace("-", "")
 
     token_mint: str | None = None
     if gig.currency == "USDC":
@@ -494,7 +496,7 @@ async def get_escrow_tx_endpoint(
 
     return EscrowTxOut(
         program_id=settings.escrow_program_id,
-        escrow_seeds=["escrow", gig_id_bytes_hex],
+        escrow_seeds=["escrow", gig_id_compact],
         amount=gig.total_amount,
         currency=gig.currency,
         token_mint=token_mint,
