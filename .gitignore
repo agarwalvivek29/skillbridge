@@ -101,3 +101,4 @@ agent-orchestrator.yaml
 .cache/
 tmp/
 temp/
+.env.postgres
