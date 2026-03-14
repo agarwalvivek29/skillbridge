@@ -11,11 +11,16 @@ import re
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel, field_validator
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.infra.database import get_db
-from src.infra.models import UserModel
+from src.infra.models import (
+    GigModel,
+    MilestoneModel,
+    PortfolioItemModel,
+    UserModel,
+)
 
 router = APIRouter(prefix="/v1/users", tags=["users"])
 
@@ -127,11 +132,51 @@ async def update_profile(
     return _profile_out(user)
 
 
-@router.get("/{address}/profile", response_model=ProfileOut)
+class ActiveGigOut(BaseModel):
+    id: str
+    title: str
+    status: str
+    budget: str
+
+
+class PortfolioItemOut(BaseModel):
+    id: str
+    title: str
+    description: str
+    file_keys: list[str]
+    external_url: str | None = None
+    tags: list[str]
+    verified_gig_id: str | None = None
+    created_at: str
+
+
+class PublicProfileOut(BaseModel):
+    id: str
+    wallet_address: str | None = None
+    display_name: str | None = None
+    bio: str | None = None
+    avatar_url: str | None = None
+    role: str
+    skills: list[str]
+    reputation_score: int = 0
+    badge_tier: str = "BRONZE"
+    gigs_completed: int = 0
+    total_earned: str | None = None
+    total_spent: str | None = None
+    avg_rating: float | None = None
+    dispute_rate: float | None = None
+    on_chain_badges: list = []
+    portfolio_items: list[PortfolioItemOut] = []
+    reviews: list = []
+    active_gigs: list[ActiveGigOut] = []
+    member_since: str = ""
+
+
+@router.get("/{address}/profile", response_model=PublicProfileOut)
 async def get_profile(
     address: str,
     db: AsyncSession = Depends(get_db),
-) -> ProfileOut:
+) -> PublicProfileOut:
     """Public endpoint: look up a user profile by wallet address."""
     result = await db.execute(
         select(UserModel).where(UserModel.wallet_address == address)
@@ -142,4 +187,73 @@ async def get_profile(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"code": "USER_NOT_FOUND", "message": "No user with that address"},
         )
-    return _profile_out(user)
+
+    # Gigs completed count
+    completed_q = (
+        select(func.count())
+        .select_from(GigModel)
+        .where(
+            GigModel.status == "COMPLETED",
+            (GigModel.client_id == user.id) | (GigModel.freelancer_id == user.id),
+        )
+    )
+    gigs_completed = (await db.execute(completed_q)).scalar() or 0
+
+    # Active gigs
+    active_q = select(GigModel).where(
+        GigModel.status.in_(["OPEN", "IN_PROGRESS"]),
+        (GigModel.client_id == user.id) | (GigModel.freelancer_id == user.id),
+    )
+    active_gigs_rows = (await db.execute(active_q)).scalars().all()
+    active_gigs = [
+        ActiveGigOut(id=g.id, title=g.title, status=g.status, budget=g.total_amount)
+        for g in active_gigs_rows
+    ]
+
+    # Total earned (sum of PAID milestone amounts for freelancer)
+    total_earned = None
+    if user.role == "USER_ROLE_FREELANCER":
+        paid_q = (
+            select(MilestoneModel.amount)
+            .join(GigModel, GigModel.id == MilestoneModel.gig_id)
+            .where(GigModel.freelancer_id == user.id, MilestoneModel.status == "PAID")
+        )
+        paid_rows = (await db.execute(paid_q)).scalars().all()
+        total_earned = str(sum(int(a) for a in paid_rows if a.isdigit()))
+
+    # Portfolio items
+    portfolio_q = (
+        select(PortfolioItemModel)
+        .where(PortfolioItemModel.user_id == user.id)
+        .order_by(PortfolioItemModel.created_at.desc())
+        .limit(10)
+    )
+    portfolio_rows = (await db.execute(portfolio_q)).scalars().all()
+    portfolio_items = [
+        PortfolioItemOut(
+            id=p.id,
+            title=p.title,
+            description=p.description,
+            file_keys=p.file_keys or [],
+            external_url=p.external_url,
+            tags=p.tags or [],
+            verified_gig_id=p.verified_gig_id,
+            created_at=p.created_at.isoformat() if p.created_at else "",
+        )
+        for p in portfolio_rows
+    ]
+
+    return PublicProfileOut(
+        id=user.id,
+        wallet_address=user.wallet_address,
+        display_name=user.name,
+        bio=user.bio,
+        avatar_url=user.avatar_url,
+        role=user.role,
+        skills=user.skills or [],
+        gigs_completed=gigs_completed,
+        total_earned=total_earned,
+        active_gigs=active_gigs,
+        portfolio_items=portfolio_items,
+        member_since=user.created_at.isoformat() if user.created_at else "",
+    )
