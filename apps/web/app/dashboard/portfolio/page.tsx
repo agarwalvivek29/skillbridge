@@ -225,83 +225,101 @@ function PortfolioContent() {
           onAction={() => setModalOpen(true)}
         />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {items.map((item) => (
-            <Card key={item.id} className="relative">
-              {item.cover_image_url && (
-                <div className="mb-3 h-40 overflow-hidden rounded-md bg-neutral-100">
+            <Card
+              key={item.id}
+              className="group relative flex flex-col overflow-hidden border border-neutral-200 p-0 transition-shadow hover:shadow-md"
+            >
+              {/* Cover image / placeholder */}
+              <div className="relative h-44 bg-gradient-to-br from-primary-50 to-web3-50">
+                {item.cover_image_url ? (
                   <Image
                     src={item.cover_image_url}
                     alt={item.title}
-                    width={400}
-                    height={160}
-                    className="h-full w-full object-cover"
+                    fill
+                    className="object-cover"
                   />
-                </div>
-              )}
-              <h3 className="text-sm font-semibold text-neutral-800">
-                {item.title}
-              </h3>
-              <p className="mt-1 line-clamp-2 text-xs text-neutral-500">
-                {item.description}
-              </p>
-              {item.verified_delivery && (
-                <span
-                  className="mt-2 inline-flex items-center gap-1 text-xs text-success-600"
-                  title="Verified on-chain delivery"
-                >
-                  <BadgeCheck className="h-3.5 w-3.5" />
-                  Verified Delivery
-                </span>
-              )}
-              {item.tags.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {item.tags.map((tag) => (
-                    <Badge key={tag} variant="default">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              )}
-              <div className="mt-3 flex items-center gap-2">
-                {item.project_url && (
-                  <a
-                    href={item.project_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-neutral-400 hover:text-primary-600"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
+                ) : (
+                  <div className="flex h-full items-center justify-center">
+                    <FolderOpen className="h-12 w-12 text-primary-200" />
+                  </div>
                 )}
-                {item.github_url && (
-                  <a
-                    href={item.github_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-neutral-400 hover:text-primary-600"
-                  >
-                    <Github className="h-4 w-4" />
-                  </a>
+                {item.verified_delivery && (
+                  <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-green-500 px-2.5 py-1 text-xs font-medium text-white shadow-sm">
+                    <BadgeCheck className="h-3.5 w-3.5" />
+                    Verified
+                  </span>
                 )}
-                <div className="flex-1" />
-                <button
-                  onClick={() => {
-                    setEditItem(item);
-                    setModalOpen(true);
-                  }}
-                  className="rounded-md p-1 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600"
-                  aria-label="Edit"
-                >
-                  <Pencil className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => setDeleteConfirm(item.id)}
-                  className="rounded-md p-1 text-neutral-400 hover:bg-error-50 hover:text-error-500"
-                  aria-label="Delete"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
+                {/* Edit/delete overlay */}
+                <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                  <button
+                    onClick={() => {
+                      setEditItem(item);
+                      setModalOpen(true);
+                    }}
+                    className="rounded-md bg-white/90 p-1.5 text-neutral-600 shadow-sm backdrop-blur hover:bg-white hover:text-primary-600"
+                    aria-label="Edit"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => setDeleteConfirm(item.id)}
+                    className="rounded-md bg-white/90 p-1.5 text-neutral-600 shadow-sm backdrop-blur hover:bg-white hover:text-error-500"
+                    aria-label="Delete"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="flex flex-1 flex-col p-4">
+                <h3 className="text-base font-semibold text-neutral-800">
+                  {item.title}
+                </h3>
+                <p className="mt-1.5 line-clamp-3 flex-1 text-sm leading-relaxed text-neutral-500">
+                  {item.description}
+                </p>
+
+                {/* Tags */}
+                {item.tags.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {item.tags.map((tag) => (
+                      <Badge key={tag} variant="default">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                {/* Links */}
+                {(item.project_url || item.github_url) && (
+                  <div className="mt-4 flex items-center gap-3 border-t border-neutral-100 pt-3">
+                    {item.project_url && (
+                      <a
+                        href={item.project_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-sm font-medium text-primary-600 transition-colors hover:text-primary-700"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                        Live Demo
+                      </a>
+                    )}
+                    {item.github_url && (
+                      <a
+                        href={item.github_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-800"
+                      >
+                        <Github className="h-4 w-4" />
+                        Source
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
             </Card>
           ))}
