@@ -244,7 +244,10 @@ export default function GigDetailPage() {
                             )}
                           </td>
                           <td className="py-3 text-neutral-600">
-                            {formatAmountWithCurrency(m.amount, m.currency)}
+                            {formatAmountWithCurrency(
+                              m.amount,
+                              m.currency || gig.currency,
+                            )}
                           </td>
                           <td className="py-3">
                             <StatusBadge status={m.status} />

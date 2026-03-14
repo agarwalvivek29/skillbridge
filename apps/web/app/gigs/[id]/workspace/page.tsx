@@ -113,7 +113,10 @@ function MilestoneTimeline({
                   <StatusBadge status={m.status} />
                 </div>
                 <p className="mt-0.5 text-xs text-neutral-500">
-                  {formatAmountWithCurrency(m.amount, m.currency)}
+                  {formatAmountWithCurrency(
+                    m.amount,
+                    m.currency || gig.currency,
+                  )}
                 </p>
               </div>
               {isExpanded ? (

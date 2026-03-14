@@ -176,7 +176,10 @@ function ManageContent() {
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-sm font-medium text-neutral-900">
-                  {formatAmountWithCurrency(m.amount, m.currency)}
+                  {formatAmountWithCurrency(
+                    m.amount,
+                    m.currency || gig?.currency,
+                  )}
                 </span>
                 <StatusBadge status={m.status} />
               </div>
