@@ -8,7 +8,7 @@
 ## Service Overview
 
 **Name**: `api`
-**Purpose**: The core backend for SkillBridge. Owns all business entities — Users, Gigs, Milestones, Submissions, Portfolio, and Disputes. Handles authentication (Solana wallet Ed25519 signing + email/JWT), triggers smart contract calls on Base L2 for fund release, enqueues AI review jobs, and serves as the single source of truth for all mutable state.
+**Purpose**: The core backend for SkillBridge. Owns all business entities — Users, Gigs, Milestones, Submissions, Portfolio, and Disputes. Handles authentication (Solana wallet Ed25519 signing + email/JWT), triggers smart contract calls on Solana for fund release, enqueues AI review jobs, and serves as the single source of truth for all mutable state.
 **Language**: Python
 **Framework**: FastAPI
 **Created**: 2026-03-07
@@ -22,7 +22,7 @@
 - **Framework**: FastAPI (async)
 - **Database**: PostgreSQL (via SQLAlchemy async + Alembic migrations)
 - **Queue**: Redis + Celery (producer only — enqueues review jobs for `ai-reviewer`)
-- **Blockchain**: web3.py (calls Base L2 smart contracts)
+- **Blockchain**: solana-py / PyNaCl (calls Solana smart contracts)
 - **Auth**: Solana Ed25519 message signing (PyNaCl + base58) for wallet auth; JWT (python-jose) for session tokens
 - **File storage**: boto3 (S3 presigned URL generation)
 - **Protocol**: REST
@@ -36,7 +36,7 @@ services/api/
 ├── src/
 │   ├── api/           # FastAPI routers (users, gigs, milestones, submissions, portfolio)
 │   ├── domain/        # Business logic — no FastAPI imports here
-│   ├── infra/         # DB session, S3 client, Celery producer, web3 client
+│   ├── infra/         # DB session, S3 client, Celery producer, Solana client
 │   ├── migrations/    # Alembic migrations
 │   └── config.py      # Pydantic Settings — all env vars validated here
 ├── tests/
@@ -70,7 +70,7 @@ See `.env.example` for all required variables.
 | `JWT_SECRET`             | Min 32 chars — JWT signing key          |
 | `JWT_EXPIRY_SECONDS`     | Default 3600                            |
 | `API_KEY`                | Min 16 chars — service-to-service key   |
-| `BASE_RPC_URL`           | Base L2 RPC endpoint                    |
+| `SOLANA_RPC_URL`         | Solana RPC endpoint                     |
 | `ESCROW_FACTORY_ADDRESS` | Deployed EscrowFactory contract address |
 | `AWS_ACCESS_KEY_ID`      | S3 access key                           |
 | `AWS_SECRET_ACCESS_KEY`  | S3 secret key                           |
@@ -111,7 +111,7 @@ See `.env.example` for all required variables.
 
 ### Blockchain Calls (outbound)
 
-- `GigEscrow.completeMilestone(index)` on Base L2 — called on milestone approval
+- `GigEscrow.completeMilestone(index)` on Solana — called on milestone approval
 
 ---
 
@@ -139,12 +139,32 @@ Never define `class`, `dataclass`, or `TypedDict` for business domain concepts i
 
 ---
 
+## Domain Enums
+
+All status, role, and currency constants are defined in `src/domain/enums.py`. Import from there — never use raw string literals like `"OPEN"`, `"CLIENT"`, or `"SOL"` in business logic or route handlers.
+
+---
+
+## Field Naming Convention
+
+Pydantic request/response models MUST use the same field names as the proto definitions in `packages/schema/proto/api/v1/`. Never create alias fields (e.g., do not use `project_url` when proto calls it `external_url`). If a frontend needs a different name, the mapping happens in the frontend API client, not in the API layer.
+
+---
+
+## Currency and Amounts
+
+- **Valid currencies**: SOL and USDC only. ETH is not supported (Solana migration, ADR 0003).
+- **Amount storage**: all monetary amounts are stored in the smallest unit of the currency — lamports for SOL (10^9), smallest unit for USDC (10^6).
+- API responses transmit raw smallest-unit values. The frontend is responsible for human-readable formatting.
+
+---
+
 ## Forbidden Actions for Agents
 
 - Modifying Alembic migrations after they've been applied
 - Adding unprotected routes
 - Committing secrets or private keys
-- Calling smart contracts with real ETH on mainnet without human approval
+- Calling smart contracts with real SOL on mainnet without human approval
 - Defining domain types locally (use schema package)
 
 ---
@@ -165,4 +185,4 @@ Agents may use any available MCP servers, skills, and tools as needed.
 
 - [ADR 0001](../../docs/adr/0001-monorepo-structure.md) — Monorepo structure
 - [ADR 0002](../../docs/adr/0002-tech-stack.md) — Tech stack decisions
-- [ADR 0003](../../docs/adr/0003-solana-auth.md) — Replace SIWE with Solana message signing
+- [ADR 0003](../../docs/adr/0003-solana-migration.md) — Solana migration
