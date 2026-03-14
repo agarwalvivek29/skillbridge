@@ -17,7 +17,9 @@ from src.domain.proposal import (
     ProposalError,
     accept_proposal,
     create_proposal,
+    get_my_proposal,
     list_proposals,
+    reject_proposal,
     withdraw_proposal,
 )
 from src.infra.database import Base
@@ -377,3 +379,95 @@ class TestWithdrawProposal:
         with pytest.raises(ProposalError) as exc_info:
             await withdraw_proposal(db, proposal.id, _TEST_FREELANCER_ID)
         assert exc_info.value.code == "PROPOSAL_NOT_PENDING"
+
+
+# ---------------------------------------------------------------------------
+# reject_proposal
+# ---------------------------------------------------------------------------
+
+
+class TestRejectProposal:
+    @pytest.mark.asyncio
+    async def test_reject_sets_status_rejected(self, db: AsyncSession):
+        gig = await _create_open_gig(db)
+        proposal = await create_proposal(
+            db, _TEST_FREELANCER_ID, _proposal_input(gig.id)
+        )
+
+        rejected = await reject_proposal(db, proposal.id, _TEST_CLIENT_ID)
+        assert rejected.status == "REJECTED"
+
+    @pytest.mark.asyncio
+    async def test_reject_creates_notification(self, db: AsyncSession):
+        from sqlalchemy import select
+
+        gig = await _create_open_gig(db)
+        proposal = await create_proposal(
+            db, _TEST_FREELANCER_ID, _proposal_input(gig.id)
+        )
+
+        await reject_proposal(db, proposal.id, _TEST_CLIENT_ID)
+
+        result = await db.execute(
+            select(NotificationModel).where(
+                NotificationModel.user_id == _TEST_FREELANCER_ID,
+                NotificationModel.type == "NOTIFICATION_TYPE_PROPOSAL_REJECTED",
+            )
+        )
+        notif = result.scalar_one_or_none()
+        assert notif is not None
+
+    @pytest.mark.asyncio
+    async def test_forbidden_for_non_owner(self, db: AsyncSession):
+        other_client = "cccccccc-0000-0000-0000-000000000001"
+        gig = await _create_open_gig(db)
+        proposal = await create_proposal(
+            db, _TEST_FREELANCER_ID, _proposal_input(gig.id)
+        )
+        with pytest.raises(ProposalError) as exc_info:
+            await reject_proposal(db, proposal.id, other_client)
+        assert exc_info.value.code == "FORBIDDEN"
+
+    @pytest.mark.asyncio
+    async def test_proposal_not_found_raises_error(self, db: AsyncSession):
+        with pytest.raises(ProposalError) as exc_info:
+            await reject_proposal(
+                db, "00000000-0000-0000-0000-000000000000", _TEST_CLIENT_ID
+            )
+        assert exc_info.value.code == "PROPOSAL_NOT_FOUND"
+
+    @pytest.mark.asyncio
+    async def test_cannot_reject_non_pending_proposal(self, db: AsyncSession):
+        gig = await _create_open_gig(db)
+        proposal = await create_proposal(
+            db, _TEST_FREELANCER_ID, _proposal_input(gig.id)
+        )
+        await accept_proposal(db, proposal.id, _TEST_CLIENT_ID)
+
+        with pytest.raises(ProposalError) as exc_info:
+            await reject_proposal(db, proposal.id, _TEST_CLIENT_ID)
+        assert exc_info.value.code == "PROPOSAL_NOT_PENDING"
+
+
+# ---------------------------------------------------------------------------
+# get_my_proposal
+# ---------------------------------------------------------------------------
+
+
+class TestGetMyProposal:
+    @pytest.mark.asyncio
+    async def test_returns_proposal_when_exists(self, db: AsyncSession):
+        gig = await _create_open_gig(db)
+        created = await create_proposal(
+            db, _TEST_FREELANCER_ID, _proposal_input(gig.id)
+        )
+
+        result = await get_my_proposal(db, gig.id, _TEST_FREELANCER_ID)
+        assert result is not None
+        assert result.id == created.id
+
+    @pytest.mark.asyncio
+    async def test_returns_none_when_no_proposal(self, db: AsyncSession):
+        gig = await _create_open_gig(db)
+        result = await get_my_proposal(db, gig.id, _TEST_FREELANCER_ID)
+        assert result is None

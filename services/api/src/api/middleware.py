@@ -39,7 +39,11 @@ _EXEMPT_PREFIXES = (
 #   GET /v1/portfolio/<uuid>      — single portfolio item
 # Any sub-resource (e.g. /v1/gigs/<uuid>/proposals) still requires auth.
 _UUID_SEGMENT = r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-_PUBLIC_GET_RE = re.compile(rf"^/v1/(gigs|portfolio)(/{_UUID_SEGMENT})?$")
+_SOLANA_ADDR_SEGMENT = r"[A-Za-z0-9]{32,44}"
+_PUBLIC_GET_RE = re.compile(
+    rf"^/v1/(gigs|portfolio)(/{_UUID_SEGMENT})?$"
+    rf"|^/v1/users/{_SOLANA_ADDR_SEGMENT}/profile$"
+)
 
 
 class AuthMiddleware(BaseHTTPMiddleware):
