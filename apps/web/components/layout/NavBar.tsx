@@ -91,7 +91,9 @@ export function NavBar() {
             </Link>
           )}
 
-          {!token && <ConnectButton />}
+          {!token &&
+            !pathname.startsWith("/auth") &&
+            !pathname.startsWith("/link-email") && <ConnectButton />}
 
           {/* Hamburger */}
           <button
