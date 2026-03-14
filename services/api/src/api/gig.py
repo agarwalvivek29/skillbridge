@@ -35,7 +35,7 @@ from src.domain.gig import (
 )
 from src.config import settings
 from src.infra.database import get_db
-from src.infra.models import EscrowContractModel, GigModel, MilestoneModel
+from src.infra.models import EscrowContractModel, GigModel, MilestoneModel, UserModel
 
 logger = logging.getLogger(__name__)
 
@@ -150,18 +150,21 @@ class MilestoneOut(BaseModel):
 class GigOut(BaseModel):
     id: str
     client_id: str
-    freelancer_id: Optional[str]
+    client_name: Optional[str] = None
+    client_avatar_url: Optional[str] = None
+    client_wallet_address: Optional[str] = None
+    freelancer_id: Optional[str] = None
     title: str
     description: str
     total_amount: str
     currency: str
-    token_address: Optional[str]
-    contract_address: Optional[str]
+    token_address: Optional[str] = None
+    contract_address: Optional[str] = None
     status: str
-    tags: list[str]
-    required_skills: list[str]
-    deadline: Optional[datetime]
-    milestones: list[MilestoneOut]
+    tags: list[str] = []
+    required_skills: list[str] = []
+    deadline: Optional[datetime] = None
+    milestones: list[MilestoneOut] = []
     created_at: datetime
     updated_at: datetime
 
@@ -193,10 +196,13 @@ class ConfirmEscrowBody(BaseModel):
 # ---------------------------------------------------------------------------
 
 
-def _gig_to_out(gig: GigModel) -> GigOut:
+def _gig_to_out(gig: GigModel, client: "UserModel | None" = None) -> GigOut:
     return GigOut(
         id=gig.id,
         client_id=gig.client_id,
+        client_name=client.name if client else None,
+        client_avatar_url=client.avatar_url if client else None,
+        client_wallet_address=client.wallet_address if client else None,
         freelancer_id=gig.freelancer_id,
         title=gig.title,
         description=gig.description,
@@ -355,8 +361,17 @@ async def list_gigs_endpoint(
         min_amount=min_amount,
         max_amount=max_amount,
     )
+    # Batch-fetch client users to populate names
+    client_ids = list({g.client_id for g in gigs})
+    clients_map: dict[str, UserModel] = {}
+    if client_ids:
+        clients_result = await db.execute(
+            select(UserModel).where(UserModel.id.in_(client_ids))
+        )
+        clients_map = {u.id: u for u in clients_result.scalars().all()}
+
     return GigListOut(
-        gigs=[_gig_to_out(g) for g in gigs],
+        gigs=[_gig_to_out(g, clients_map.get(g.client_id)) for g in gigs],
         total=total,
         page=page,
         page_size=page_size,
@@ -375,7 +390,11 @@ async def get_gig_endpoint(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"code": "GIG_NOT_FOUND", "message": f"Gig {gig_id} not found"},
         )
-    return _gig_to_out(gig)
+    client_result = await db.execute(
+        select(UserModel).where(UserModel.id == gig.client_id)
+    )
+    client = client_result.scalar_one_or_none()
+    return _gig_to_out(gig, client)
 
 
 @router.put("/{gig_id}", response_model=GigOut)
