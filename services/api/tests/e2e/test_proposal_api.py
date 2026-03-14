@@ -394,6 +394,149 @@ class TestWithdrawProposal:
 
 
 # ---------------------------------------------------------------------------
+# POST /v1/proposals/{proposal_id}/reject
+# ---------------------------------------------------------------------------
+
+
+class TestRejectProposal:
+    @pytest.mark.asyncio
+    async def test_client_can_reject_proposal(
+        self, client: AsyncClient, db_session: AsyncSession
+    ):
+        client_token = await _register_and_get_token(client, _CLIENT_PAYLOAD)
+        freelancer_token = await _register_and_get_token(client, _FREELANCER_PAYLOAD)
+        gig_id = await _create_open_gig(client, db_session, client_token)
+
+        pr = await client.post(
+            "/v1/proposals",
+            json={"gig_id": gig_id, "cover_letter": "Hello", "estimated_days": 5},
+            headers=_auth_headers(freelancer_token),
+        )
+        proposal_id = pr.json()["id"]
+
+        resp = await client.post(
+            f"/v1/proposals/{proposal_id}/reject",
+            headers=_auth_headers(client_token),
+        )
+        assert resp.status_code == 200
+        assert resp.json()["status"] == "REJECTED"
+
+    @pytest.mark.asyncio
+    async def test_freelancer_cannot_reject_proposal(
+        self, client: AsyncClient, db_session: AsyncSession
+    ):
+        client_token = await _register_and_get_token(client, _CLIENT_PAYLOAD)
+        freelancer_token = await _register_and_get_token(client, _FREELANCER_PAYLOAD)
+        gig_id = await _create_open_gig(client, db_session, client_token)
+
+        pr = await client.post(
+            "/v1/proposals",
+            json={"gig_id": gig_id, "cover_letter": "Hello", "estimated_days": 5},
+            headers=_auth_headers(freelancer_token),
+        )
+        proposal_id = pr.json()["id"]
+
+        resp = await client.post(
+            f"/v1/proposals/{proposal_id}/reject",
+            headers=_auth_headers(freelancer_token),
+        )
+        assert resp.status_code == 403
+
+    @pytest.mark.asyncio
+    async def test_reject_not_found_returns_404(
+        self, client: AsyncClient, db_session: AsyncSession
+    ):
+        client_token = await _register_and_get_token(client, _CLIENT_PAYLOAD)
+        resp = await client.post(
+            "/v1/proposals/00000000-0000-0000-0000-000000000000/reject",
+            headers=_auth_headers(client_token),
+        )
+        assert resp.status_code == 404
+
+    @pytest.mark.asyncio
+    async def test_reject_already_accepted_returns_409(
+        self, client: AsyncClient, db_session: AsyncSession
+    ):
+        client_token = await _register_and_get_token(client, _CLIENT_PAYLOAD)
+        freelancer_token = await _register_and_get_token(client, _FREELANCER_PAYLOAD)
+        gig_id = await _create_open_gig(client, db_session, client_token)
+
+        pr = await client.post(
+            "/v1/proposals",
+            json={"gig_id": gig_id, "cover_letter": "Hello", "estimated_days": 5},
+            headers=_auth_headers(freelancer_token),
+        )
+        proposal_id = pr.json()["id"]
+
+        await client.post(
+            f"/v1/proposals/{proposal_id}/accept",
+            headers=_auth_headers(client_token),
+        )
+
+        resp = await client.post(
+            f"/v1/proposals/{proposal_id}/reject",
+            headers=_auth_headers(client_token),
+        )
+        assert resp.status_code == 409
+        assert resp.json()["detail"]["code"] == "PROPOSAL_NOT_PENDING"
+
+
+# ---------------------------------------------------------------------------
+# GET /v1/gigs/{gig_id}/proposals/mine
+# ---------------------------------------------------------------------------
+
+
+class TestGetMyProposal:
+    @pytest.mark.asyncio
+    async def test_freelancer_can_get_own_proposal(
+        self, client: AsyncClient, db_session: AsyncSession
+    ):
+        client_token = await _register_and_get_token(client, _CLIENT_PAYLOAD)
+        freelancer_token = await _register_and_get_token(client, _FREELANCER_PAYLOAD)
+        gig_id = await _create_open_gig(client, db_session, client_token)
+
+        await client.post(
+            "/v1/proposals",
+            json={"gig_id": gig_id, "cover_letter": "Hello", "estimated_days": 5},
+            headers=_auth_headers(freelancer_token),
+        )
+
+        resp = await client.get(
+            f"/v1/gigs/{gig_id}/proposals/mine",
+            headers=_auth_headers(freelancer_token),
+        )
+        assert resp.status_code == 200
+        assert resp.json()["gig_id"] == gig_id
+
+    @pytest.mark.asyncio
+    async def test_returns_404_when_no_proposal(
+        self, client: AsyncClient, db_session: AsyncSession
+    ):
+        client_token = await _register_and_get_token(client, _CLIENT_PAYLOAD)
+        freelancer_token = await _register_and_get_token(client, _FREELANCER_PAYLOAD)
+        gig_id = await _create_open_gig(client, db_session, client_token)
+
+        resp = await client.get(
+            f"/v1/gigs/{gig_id}/proposals/mine",
+            headers=_auth_headers(freelancer_token),
+        )
+        assert resp.status_code == 404
+
+    @pytest.mark.asyncio
+    async def test_client_cannot_use_mine_endpoint(
+        self, client: AsyncClient, db_session: AsyncSession
+    ):
+        client_token = await _register_and_get_token(client, _CLIENT_PAYLOAD)
+        gig_id = await _create_open_gig(client, db_session, client_token)
+
+        resp = await client.get(
+            f"/v1/gigs/{gig_id}/proposals/mine",
+            headers=_auth_headers(client_token),
+        )
+        assert resp.status_code == 403
+
+
+# ---------------------------------------------------------------------------
 # GET /v1/gigs with filters
 # ---------------------------------------------------------------------------
 

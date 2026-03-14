@@ -4,7 +4,9 @@ api/proposal.py — Proposal endpoints.
 Endpoints:
   POST   /v1/proposals                          submit proposal (FREELANCER role)
   GET    /v1/gigs/{gig_id}/proposals            list proposals for a gig (CLIENT, gig owner)
+  GET    /v1/gigs/{gig_id}/proposals/mine       get own proposal for a gig (FREELANCER)
   POST   /v1/proposals/{proposal_id}/accept     accept a proposal (CLIENT, gig owner)
+  POST   /v1/proposals/{proposal_id}/reject     reject a proposal (CLIENT, gig owner)
   POST   /v1/proposals/{proposal_id}/withdraw   withdraw a proposal (FREELANCER, proposal owner)
 """
 
@@ -22,7 +24,9 @@ from src.domain.proposal import (
     ProposalError,
     accept_proposal,
     create_proposal,
+    get_my_proposal,
     list_proposals,
+    reject_proposal,
     withdraw_proposal,
 )
 from src.infra.database import get_db
@@ -237,6 +241,52 @@ async def accept_proposal_endpoint(
         raise _handle_proposal_error(exc)
 
     logger.info("proposal accepted proposal_id=%s client_id=%s", proposal.id, client_id)
+    return _proposal_to_out(proposal)
+
+
+@router.get(
+    "/v1/gigs/{gig_id}/proposals/mine",
+    response_model=ProposalOut,
+)
+async def get_my_proposal_endpoint(
+    gig_id: str,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+) -> ProposalOut:
+    """Get the caller's own proposal for a gig. Requires FREELANCER role."""
+    freelancer_id = _require_freelancer(request)
+
+    proposal = await get_my_proposal(db, gig_id, freelancer_id)
+    if proposal is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "PROPOSAL_NOT_FOUND",
+                "message": "You have not submitted a proposal for this gig",
+            },
+        )
+
+    return _proposal_to_out(proposal)
+
+
+@router.post(
+    "/v1/proposals/{proposal_id}/reject",
+    response_model=ProposalOut,
+)
+async def reject_proposal_endpoint(
+    proposal_id: str,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+) -> ProposalOut:
+    """Reject a PENDING proposal. Requires CLIENT role and gig ownership."""
+    client_id = _require_client(request)
+
+    try:
+        proposal = await reject_proposal(db, proposal_id, client_id)
+    except ProposalError as exc:
+        raise _handle_proposal_error(exc)
+
+    logger.info("proposal rejected proposal_id=%s client_id=%s", proposal.id, client_id)
     return _proposal_to_out(proposal)
 
 

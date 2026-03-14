@@ -285,6 +285,77 @@ async def accept_proposal(
     return proposal
 
 
+async def reject_proposal(
+    db: AsyncSession,
+    proposal_id: str,
+    client_id: str,
+) -> ProposalModel:
+    """
+    Reject a PENDING proposal.
+
+    Raises ProposalError if:
+    - proposal not found
+    - caller is not the gig client
+    - proposal is not PENDING
+    """
+    proposal_result = await db.execute(
+        select(ProposalModel).where(ProposalModel.id == proposal_id)
+    )
+    proposal = proposal_result.scalar_one_or_none()
+    if proposal is None:
+        raise ProposalError("PROPOSAL_NOT_FOUND", f"Proposal {proposal_id} not found")
+
+    gig_result = await db.execute(
+        select(GigModel).where(GigModel.id == proposal.gig_id)
+    )
+    gig = gig_result.scalar_one_or_none()
+    if gig is None:
+        raise ProposalError("GIG_NOT_FOUND", f"Gig {proposal.gig_id} not found")
+    if gig.client_id != client_id:
+        raise ProposalError("FORBIDDEN", "Only the gig owner may reject proposals")
+    if proposal.status != _PROPOSAL_PENDING:
+        raise ProposalError(
+            "PROPOSAL_NOT_PENDING",
+            f"Only PENDING proposals can be rejected (current status: {proposal.status})",
+        )
+
+    proposal.status = _PROPOSAL_REJECTED
+
+    db.add(
+        _notification(
+            proposal.freelancer_id,
+            _NOTIF_PROPOSAL_REJECTED,
+            {"gig_id": gig.id, "proposal_id": proposal.id},
+        )
+    )
+
+    await db.flush()
+    await db.refresh(proposal)
+    logger.info(
+        "proposal rejected proposal_id=%s client_id=%s",
+        proposal.id,
+        client_id,
+    )
+    return proposal
+
+
+async def get_my_proposal(
+    db: AsyncSession,
+    gig_id: str,
+    freelancer_id: str,
+) -> ProposalModel | None:
+    """
+    Return the freelancer's proposal for a given gig, or None if not found.
+    """
+    result = await db.execute(
+        select(ProposalModel).where(
+            ProposalModel.gig_id == gig_id,
+            ProposalModel.freelancer_id == freelancer_id,
+        )
+    )
+    return result.scalar_one_or_none()
+
+
 async def withdraw_proposal(
     db: AsyncSession,
     proposal_id: str,
