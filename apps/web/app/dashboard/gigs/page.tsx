@@ -59,8 +59,10 @@ function GigsContent() {
 
   useEffect(() => {
     setLoading(true);
-    const params: GigQueryParams = { page_size: 50 };
-    if (filter !== "all") params.status = filter;
+    const params: GigQueryParams = {
+      page_size: 50,
+      status: filter === "all" ? "ALL" : filter,
+    };
     fetchGigs(params)
       .then((res) => {
         // Filter to only gigs where user is client or freelancer

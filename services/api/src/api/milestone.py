@@ -28,7 +28,12 @@ from src.domain.milestone_approval import (
     request_revision,
 )
 from src.infra.database import get_db
-from src.infra.models import GigModel, MilestoneModel
+from src.infra.models import (
+    GigModel,
+    MilestoneModel,
+    ReviewReportModel,
+    SubmissionModel,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -66,20 +71,46 @@ class MilestoneOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class SubmissionOut(BaseModel):
+    id: str
+    milestone_id: str
+    freelancer_id: str
+    repo_url: Optional[str] = None
+    file_keys: list[str] = []
+    notes: str = ""
+    revision_number: int = 1
+    status: str
+    created_at: str
+
+
+class ReviewReportOut(BaseModel):
+    id: str
+    submission_id: str
+    verdict: str
+    score: int
+    body: str
+    model_version: str
+    created_at: str
+
+
 class MilestoneDetailOut(BaseModel):
     id: str
     gig_id: str
     gig_title: str
     client_id: str
-    freelancer_id: Optional[str]
+    freelancer_id: Optional[str] = None
     title: str
     description: str
     acceptance_criteria: str
     amount: str
+    currency: str = "ETH"
     order: int
-    due_date: Optional[datetime]
+    due_date: Optional[datetime] = None
     status: str
     revision_count: int
+    revision_feedback: Optional[str] = None
+    submissions: list[SubmissionOut] = []
+    latest_review: Optional[ReviewReportOut] = None
     created_at: datetime
     updated_at: datetime
 
@@ -202,6 +233,49 @@ async def get_milestone_endpoint(
             },
         )
 
+    # Fetch submissions for this milestone
+    sub_result = await db.execute(
+        select(SubmissionModel)
+        .where(SubmissionModel.milestone_id == milestone_id)
+        .order_by(SubmissionModel.created_at.desc())
+    )
+    submissions = list(sub_result.scalars().all())
+    submission_outs = [
+        SubmissionOut(
+            id=s.id,
+            milestone_id=s.milestone_id,
+            freelancer_id=s.freelancer_id,
+            repo_url=s.repo_url,
+            file_keys=s.file_keys or [],
+            notes=s.notes or "",
+            revision_number=s.revision_number,
+            status=s.status,
+            created_at=s.created_at.isoformat() if s.created_at else "",
+        )
+        for s in submissions
+    ]
+
+    # Fetch latest review report (from the most recent submission)
+    latest_review = None
+    if submissions:
+        review_result = await db.execute(
+            select(ReviewReportModel)
+            .where(ReviewReportModel.submission_id.in_([s.id for s in submissions]))
+            .order_by(ReviewReportModel.created_at.desc())
+            .limit(1)
+        )
+        report = review_result.scalar_one_or_none()
+        if report:
+            latest_review = ReviewReportOut(
+                id=report.id,
+                submission_id=report.submission_id,
+                verdict=report.verdict,
+                score=report.score,
+                body=report.body,
+                model_version=report.model_version,
+                created_at=report.created_at.isoformat() if report.created_at else "",
+            )
+
     return MilestoneDetailOut(
         id=milestone.id,
         gig_id=gig.id,
@@ -212,10 +286,13 @@ async def get_milestone_endpoint(
         description=milestone.description,
         acceptance_criteria=milestone.acceptance_criteria,
         amount=milestone.amount,
+        currency=gig.currency,
         order=milestone.order,
         due_date=milestone.due_date,
         status=milestone.status,
         revision_count=milestone.revision_count,
+        submissions=submission_outs,
+        latest_review=latest_review,
         created_at=milestone.created_at,
         updated_at=milestone.updated_at,
     )

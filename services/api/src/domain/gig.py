@@ -244,9 +244,11 @@ async def list_gigs(
     """
     page_size = min(page_size, 100)
     offset = (page - 1) * page_size
-    effective_status = status if status else "OPEN"
-
-    base_where = [GigModel.status == effective_status]
+    base_where: list = []
+    if status and status.upper() != "ALL":
+        base_where.append(GigModel.status == status)
+    elif not status:
+        base_where.append(GigModel.status == "OPEN")
     if currency:
         base_where.append(GigModel.currency == currency)
     if min_amount is not None:
