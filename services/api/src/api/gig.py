@@ -91,7 +91,7 @@ class CreateGigRequest(BaseModel):
     @field_validator("currency")
     @classmethod
     def validate_currency(cls, v: str) -> str:
-        allowed = {"ETH", "USDC"}
+        allowed = {"SOL", "USDC"}
         if v not in allowed:
             raise ValueError(f"currency must be one of {allowed}")
         return v
@@ -124,7 +124,7 @@ class UpdateGigRequest(BaseModel):
     def validate_currency(cls, v: Optional[str]) -> Optional[str]:
         if v is None:
             return v
-        allowed = {"ETH", "USDC"}
+        allowed = {"SOL", "USDC"}
         if v not in allowed:
             raise ValueError(f"currency must be one of {allowed}")
         return v
