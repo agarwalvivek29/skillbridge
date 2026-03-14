@@ -2,6 +2,7 @@
 api/milestone.py — Milestone approval and fund release endpoints.
 
 Endpoints:
+  GET  /v1/milestones/{milestone_id}                  get single milestone with gig context (auth required)
   POST /v1/milestones/{milestone_id}/approve          approve milestone (CLIENT role)
   POST /v1/milestones/{milestone_id}/request-revision request changes (CLIENT role)
   GET  /v1/milestones/{milestone_id}/release-tx       get Solana instruction data for on-chain release (CLIENT role)
@@ -16,6 +17,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.domain.milestone_approval import (
@@ -26,6 +28,7 @@ from src.domain.milestone_approval import (
     request_revision,
 )
 from src.infra.database import get_db
+from src.infra.models import GigModel, MilestoneModel
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +52,26 @@ class ConfirmReleaseBody(BaseModel):
 class MilestoneOut(BaseModel):
     id: str
     gig_id: str
+    title: str
+    description: str
+    acceptance_criteria: str
+    amount: str
+    order: int
+    due_date: Optional[datetime]
+    status: str
+    revision_count: int
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class MilestoneDetailOut(BaseModel):
+    id: str
+    gig_id: str
+    gig_title: str
+    client_id: str
+    freelancer_id: Optional[str]
     title: str
     description: str
     acceptance_criteria: str
@@ -103,6 +126,17 @@ def require_client(request: Request) -> str:
     return user_id
 
 
+def _require_auth(request: Request) -> str:
+    """FastAPI dependency: extracts user_id and enforces authentication."""
+    user_id: str = getattr(request.state, "user_id", "")
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={"code": "MISSING_TOKEN", "message": "Authentication required"},
+        )
+    return user_id
+
+
 _STATUS_CODE_MAP = {
     "MILESTONE_NOT_FOUND": 404,
     "GIG_NOT_FOUND": 404,
@@ -126,6 +160,65 @@ def _handle_approval_error(exc: MilestoneApprovalError) -> HTTPException:
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
+
+
+@router.get(
+    "/{milestone_id}",
+    response_model=MilestoneDetailOut,
+    status_code=status.HTTP_200_OK,
+)
+async def get_milestone_endpoint(
+    milestone_id: str,
+    _user_id: str = Depends(_require_auth),
+    db: AsyncSession = Depends(get_db),
+) -> MilestoneDetailOut:
+    """
+    Return a single milestone with its parent gig context.
+    Auth required (any role).
+    """
+    result = await db.execute(
+        select(MilestoneModel).where(MilestoneModel.id == milestone_id)
+    )
+    milestone = result.scalar_one_or_none()
+    if milestone is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "MILESTONE_NOT_FOUND",
+                "message": f"Milestone {milestone_id} not found",
+            },
+        )
+
+    gig_result = await db.execute(
+        select(GigModel).where(GigModel.id == milestone.gig_id)
+    )
+    gig = gig_result.scalar_one_or_none()
+    if gig is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "GIG_NOT_FOUND",
+                "message": f"Gig for milestone {milestone_id} not found",
+            },
+        )
+
+    return MilestoneDetailOut(
+        id=milestone.id,
+        gig_id=gig.id,
+        gig_title=gig.title,
+        client_id=gig.client_id,
+        freelancer_id=gig.freelancer_id,
+        title=milestone.title,
+        description=milestone.description,
+        acceptance_criteria=milestone.acceptance_criteria,
+        amount=milestone.amount,
+        order=milestone.order,
+        due_date=milestone.due_date,
+        status=milestone.status,
+        revision_count=milestone.revision_count,
+        created_at=milestone.created_at,
+        updated_at=milestone.updated_at,
+    )
 
 
 @router.post(

@@ -2,11 +2,13 @@
 api/gig.py — Gig and milestone endpoints.
 
 Endpoints:
-  POST   /v1/gigs             create gig (auth required, CLIENT role)
-  GET    /v1/gigs             list open gigs for discovery (public)
-  GET    /v1/gigs/{gig_id}    get single gig with milestones (public)
-  PUT    /v1/gigs/{gig_id}    update gig (auth required, must be owner, must be DRAFT)
-  DELETE /v1/gigs/{gig_id}    delete gig (auth required, must be owner, must be DRAFT)
+  POST   /v1/gigs                      create gig (auth required, CLIENT role)
+  GET    /v1/gigs                      list open gigs for discovery (public)
+  GET    /v1/gigs/{gig_id}             get single gig with milestones (public)
+  PUT    /v1/gigs/{gig_id}             update gig (auth required, must be owner, must be DRAFT)
+  DELETE /v1/gigs/{gig_id}             delete gig (auth required, must be owner, must be DRAFT)
+  GET    /v1/gigs/{gig_id}/escrow-tx   get Solana escrow deposit tx data (CLIENT, owner)
+  POST   /v1/gigs/{gig_id}/confirm-escrow  confirm escrow funded on-chain (CLIENT, owner)
 """
 
 from __future__ import annotations
@@ -17,6 +19,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from pydantic import BaseModel, field_validator
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.domain.gig import (
@@ -30,8 +33,9 @@ from src.domain.gig import (
     list_gigs,
     update_gig,
 )
+from src.config import settings
 from src.infra.database import get_db
-from src.infra.models import GigModel, MilestoneModel
+from src.infra.models import EscrowContractModel, GigModel, MilestoneModel
 
 logger = logging.getLogger(__name__)
 
@@ -169,6 +173,19 @@ class GigListOut(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class EscrowTxOut(BaseModel):
+    program_id: str
+    escrow_seeds: list[str]
+    amount: str
+    currency: str
+    token_mint: Optional[str] = None
+
+
+class ConfirmEscrowBody(BaseModel):
+    tx_signature: str
+    contract_address: str
 
 
 # ---------------------------------------------------------------------------
@@ -418,3 +435,137 @@ async def delete_gig_endpoint(
         await delete_gig(db, gig_id, client_id)
     except GigValidationError as exc:
         raise _handle_validation_error(exc)
+
+
+# ---------------------------------------------------------------------------
+# Escrow endpoints
+# ---------------------------------------------------------------------------
+
+# USDC token mint on Solana (mainnet-beta / devnet share this address)
+_USDC_TOKEN_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+
+
+@router.get(
+    "/{gig_id}/escrow-tx",
+    response_model=EscrowTxOut,
+    status_code=status.HTTP_200_OK,
+)
+async def get_escrow_tx_endpoint(
+    gig_id: str,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+) -> EscrowTxOut:
+    """
+    Return Solana transaction data for escrow deposit.
+    CLIENT role only; must be the gig owner.
+    """
+    client_id = _require_client(request)
+
+    gig = await get_gig(db, gig_id)
+    if gig is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "GIG_NOT_FOUND", "message": f"Gig {gig_id} not found"},
+        )
+
+    if gig.client_id != client_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "code": "FORBIDDEN",
+                "message": "Only the gig owner may request escrow tx data",
+            },
+        )
+
+    if not settings.escrow_program_id:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "code": "NO_PROGRAM_ID",
+                "message": "Escrow program ID is not configured",
+            },
+        )
+
+    gig_id_bytes_hex = gig_id.encode("utf-8").hex()
+
+    token_mint: str | None = None
+    if gig.currency == "USDC":
+        token_mint = gig.token_address or _USDC_TOKEN_MINT
+
+    return EscrowTxOut(
+        program_id=settings.escrow_program_id,
+        escrow_seeds=["escrow", gig_id_bytes_hex],
+        amount=gig.total_amount,
+        currency=gig.currency,
+        token_mint=token_mint,
+    )
+
+
+_FUNDABLE_STATUSES = {"DRAFT", "OPEN"}
+
+
+@router.post(
+    "/{gig_id}/confirm-escrow",
+    response_model=GigOut,
+    status_code=status.HTTP_200_OK,
+)
+async def confirm_escrow_endpoint(
+    gig_id: str,
+    body: ConfirmEscrowBody,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+) -> GigOut:
+    """
+    Confirm that the escrow was funded on-chain.
+    Creates/updates EscrowContractModel and transitions gig status.
+    CLIENT role only; must be the gig owner.
+    """
+    client_id = _require_client(request)
+
+    gig = await get_gig(db, gig_id)
+    if gig is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "GIG_NOT_FOUND", "message": f"Gig {gig_id} not found"},
+        )
+
+    if gig.client_id != client_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "code": "FORBIDDEN",
+                "message": "Only the gig owner may confirm escrow",
+            },
+        )
+
+    if gig.status not in _FUNDABLE_STATUSES:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "GIG_NOT_FUNDABLE",
+                "message": f"Gig cannot be funded in status {gig.status}",
+            },
+        )
+
+    # Create or update EscrowContractModel
+    escrow_result = await db.execute(
+        select(EscrowContractModel).where(EscrowContractModel.gig_id == gig_id)
+    )
+    escrow = escrow_result.scalar_one_or_none()
+    if escrow is None:
+        escrow = EscrowContractModel(
+            gig_id=gig_id,
+            contract_address=body.contract_address,
+        )
+        db.add(escrow)
+    else:
+        escrow.contract_address = body.contract_address
+
+    # Update gig with contract_address and status
+    gig.contract_address = body.contract_address
+    gig.status = "OPEN"
+    await db.flush()
+
+    # Re-fetch to get updated state
+    refreshed = await get_gig(db, gig_id)
+    return _gig_to_out(refreshed)  # type: ignore[arg-type]
