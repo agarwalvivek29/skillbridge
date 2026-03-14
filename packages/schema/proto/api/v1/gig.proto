@@ -21,7 +21,7 @@ enum GigStatus {
 
 enum Currency {
   CURRENCY_UNSPECIFIED = 0;
-  CURRENCY_ETH = 1;
+  CURRENCY_SOL = 1;
   CURRENCY_USDC = 2;
 }
 
@@ -33,11 +33,11 @@ message Gig {
   string freelancer_id = 3;    // empty until a proposal is accepted
   string title = 4;
   string description = 5;
-  // Total budget in wei (ETH) or smallest unit (USDC = 6 decimals)
+  // Total budget in lamports (SOL) or smallest unit (USDC = 6 decimals)
   string total_amount = 6;
   Currency currency = 7;
-  // For USDC: the ERC-20 contract address on Base L2.
-  // For ETH: empty (native asset, no contract).
+  // For USDC: the SPL token mint address on Solana.
+  // For SOL: empty (native asset).
   string token_address = 8;
   // Solana escrow PDA — set after client funds
   string escrow_pda = 9;
