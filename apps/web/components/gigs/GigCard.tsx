@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Calendar, Layers, DollarSign } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatAmountWithCurrency } from "@/lib/format";
 import { Avatar } from "@/components/ui/Avatar";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import type { Gig } from "@/types/gig";
@@ -14,6 +15,7 @@ interface GigCardProps {
 
 export function GigCard({ gig, className }: GigCardProps) {
   const milestoneCount = gig.milestones?.length ?? 0;
+  const skills = skills ?? gig.required_skills ?? [];
   const postedDate = new Date(gig.created_at).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -47,9 +49,9 @@ export function GigCard({ gig, className }: GigCardProps) {
         </span>
       </div>
 
-      {gig.skills.length > 0 && (
+      {skills.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-1.5">
-          {gig.skills.slice(0, 4).map((skill) => (
+          {skills.slice(0, 4).map((skill) => (
             <span
               key={skill}
               className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600"
@@ -57,9 +59,9 @@ export function GigCard({ gig, className }: GigCardProps) {
               {skill}
             </span>
           ))}
-          {gig.skills.length > 4 && (
+          {skills.length > 4 && (
             <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-400">
-              +{gig.skills.length - 4}
+              +{skills.length - 4}
             </span>
           )}
         </div>
@@ -68,7 +70,7 @@ export function GigCard({ gig, className }: GigCardProps) {
       <div className="mt-4 flex items-center gap-4 text-sm text-neutral-500">
         <span className="inline-flex items-center gap-1">
           <DollarSign className="h-4 w-4" />
-          {gig.total_amount} {gig.currency}
+          {formatAmountWithCurrency(gig.total_amount, gig.currency)}
         </span>
         {milestoneCount > 0 && (
           <span className="inline-flex items-center gap-1">
