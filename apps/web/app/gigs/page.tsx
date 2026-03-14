@@ -38,6 +38,7 @@ export default function GigDiscoveryPage() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
@@ -70,9 +71,11 @@ export default function GigDiscoveryPage() {
       const res = await fetchGigs(params);
       setGigs(res.gigs);
       setTotalPages(res.total_pages);
+      setTotal(res.total);
     } catch {
       setGigs([]);
       setTotalPages(1);
+      setTotal(0);
     } finally {
       setLoading(false);
     }
@@ -106,6 +109,7 @@ export default function GigDiscoveryPage() {
   return (
     <>
       <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-6 md:py-12">
+        {/* Header */}
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-bold text-neutral-800 md:text-3xl">
             Browse Gigs
@@ -115,8 +119,8 @@ export default function GigDiscoveryPage() {
           </p>
         </div>
 
-        {/* Search + Sort bar */}
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+        {/* Search + Sort + Filter toggle */}
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
             <input
@@ -124,106 +128,76 @@ export default function GigDiscoveryPage() {
               placeholder="Search gigs by title or description..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-10 w-full rounded-md border border-neutral-300 pl-9 pr-3 text-base placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+              className="h-10 w-full rounded-lg border border-neutral-300 bg-white pl-9 pr-3 text-sm placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
             />
           </div>
 
-          <Select
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-            options={sortOptions}
-            className="w-full sm:w-48"
-          />
-
-          <Button
-            variant="outline"
-            size="md"
-            onClick={() => setFiltersOpen(!filtersOpen)}
-            className="sm:hidden"
-          >
-            <SlidersHorizontal className="h-4 w-4" />
-            Filters
-          </Button>
+          <div className="flex gap-2">
+            <Select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              options={sortOptions}
+              className="w-44"
+            />
+            <Button
+              variant={filtersOpen ? "primary" : "outline"}
+              size="md"
+              onClick={() => setFiltersOpen(!filtersOpen)}
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+              <span className="hidden sm:inline">Filters</span>
+            </Button>
+          </div>
         </div>
 
-        <div className="mt-6 flex gap-6">
-          {/* Filters Sidebar — desktop visible, mobile drawer */}
-          <aside
-            className={`${
-              filtersOpen
-                ? "fixed inset-0 z-40 block bg-black/50 sm:static sm:z-auto sm:bg-transparent"
-                : "hidden"
-            } sm:block sm:w-64 sm:shrink-0`}
-          >
-            <div
-              className={`${
-                filtersOpen
-                  ? "fixed bottom-0 left-0 right-0 z-50 max-h-[80vh] overflow-y-auto rounded-t-xl bg-white p-4 shadow-xl sm:static sm:max-h-none sm:rounded-t-none sm:p-0 sm:shadow-none"
-                  : ""
-              }`}
-            >
-              <div className="flex items-center justify-between sm:hidden">
-                <h3 className="text-lg font-semibold text-neutral-800">
-                  Filters
-                </h3>
-                <button
-                  onClick={() => setFiltersOpen(false)}
-                  className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-neutral-100"
-                >
-                  <X className="h-5 w-5" />
-                </button>
+        {/* Collapsible Filters — horizontal bar instead of sidebar */}
+        {filtersOpen && (
+          <div className="mt-4 rounded-lg border border-neutral-200 bg-neutral-50 p-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-neutral-600">
+                  Category
+                </label>
+                <Select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  options={categories.map((cat) => ({
+                    value: cat,
+                    label: cat,
+                  }))}
+                />
               </div>
-
-              <div className="mt-4 space-y-5 sm:mt-0">
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-neutral-700">
-                    Category
-                  </label>
-                  <Select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    options={categories.map((cat) => ({
-                      value: cat,
-                      label: cat,
-                    }))}
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-neutral-700">
-                    Budget Range
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      type="number"
-                      placeholder="Min"
-                      value={minBudget}
-                      onChange={(e) => setMinBudget(e.target.value)}
-                    />
-                    <span className="text-neutral-400">—</span>
-                    <Input
-                      type="number"
-                      placeholder="Max"
-                      value={maxBudget}
-                      onChange={(e) => setMaxBudget(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-neutral-700">
-                    Skills
-                  </label>
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-neutral-600">
+                  Budget Range
+                </label>
+                <div className="flex items-center gap-2">
                   <Input
-                    placeholder="e.g. React, Solidity"
-                    value={skillsInput}
-                    onChange={(e) => setSkillsInput(e.target.value)}
+                    type="number"
+                    placeholder="Min"
+                    value={minBudget}
+                    onChange={(e) => setMinBudget(e.target.value)}
                   />
-                  <p className="mt-1 text-xs text-neutral-400">
-                    Comma-separated list
-                  </p>
+                  <span className="text-neutral-400">—</span>
+                  <Input
+                    type="number"
+                    placeholder="Max"
+                    value={maxBudget}
+                    onChange={(e) => setMaxBudget(e.target.value)}
+                  />
                 </div>
-
+              </div>
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-neutral-600">
+                  Skills
+                </label>
+                <Input
+                  placeholder="e.g. React, Solidity"
+                  value={skillsInput}
+                  onChange={(e) => setSkillsInput(e.target.value)}
+                />
+              </div>
+              <div className="flex items-end">
                 {hasActiveFilters && (
                   <Button
                     variant="ghost"
@@ -232,28 +206,37 @@ export default function GigDiscoveryPage() {
                     className="w-full"
                   >
                     <X className="h-4 w-4" />
-                    Reset Filters
+                    Reset
                   </Button>
                 )}
               </div>
             </div>
-          </aside>
+          </div>
+        )}
 
-          {/* Gig Grid */}
-          <div className="flex-1">
-            {loading ? (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {Array.from({ length: PAGE_SIZE }).map((_, i) => (
-                  <GigCardSkeleton key={i} />
+        {/* Results count */}
+        {!loading && (
+          <p className="mt-6 text-sm text-neutral-500">
+            {total} {total === 1 ? "gig" : "gigs"} found
+          </p>
+        )}
+
+        {/* Gig Grid — full width, no sidebar stealing space */}
+        <div className="mt-4">
+          {loading ? (
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <GigCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : gigs.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {gigs.map((gig) => (
+                  <GigCard key={gig.id} gig={gig} />
                 ))}
               </div>
-            ) : gigs.length > 0 ? (
-              <>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {gigs.map((gig) => (
-                    <GigCard key={gig.id} gig={gig} />
-                  ))}
-                </div>
+              {totalPages > 1 && (
                 <div className="mt-8 flex justify-center">
                   <Pagination
                     currentPage={page}
@@ -261,21 +244,21 @@ export default function GigDiscoveryPage() {
                     onPageChange={setPage}
                   />
                 </div>
-              </>
-            ) : (
-              <EmptyState
-                icon={Briefcase}
-                title="No gigs found"
-                description={
-                  hasActiveFilters
-                    ? "Try adjusting your filters or search terms."
-                    : "There are no open gigs at the moment."
-                }
-                actionLabel={hasActiveFilters ? "Reset Filters" : undefined}
-                onAction={hasActiveFilters ? resetFilters : undefined}
-              />
-            )}
-          </div>
+              )}
+            </>
+          ) : (
+            <EmptyState
+              icon={Briefcase}
+              title="No gigs found"
+              description={
+                hasActiveFilters
+                  ? "Try adjusting your filters or search terms."
+                  : "There are no open gigs at the moment."
+              }
+              actionLabel={hasActiveFilters ? "Reset Filters" : undefined}
+              onAction={hasActiveFilters ? resetFilters : undefined}
+            />
+          )}
         </div>
       </div>
 
