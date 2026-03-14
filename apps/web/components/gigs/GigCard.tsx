@@ -15,7 +15,7 @@ interface GigCardProps {
 
 export function GigCard({ gig, className }: GigCardProps) {
   const milestoneCount = gig.milestones?.length ?? 0;
-  const skills = skills ?? gig.required_skills ?? [];
+  const skills = gig.skills ?? gig.required_skills ?? [];
   const postedDate = new Date(gig.created_at).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
