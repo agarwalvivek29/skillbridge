@@ -21,6 +21,7 @@ from pydantic import BaseModel, field_validator
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.domain.enums import UserRole
 from src.domain.submission import (
     SubmissionValidationError,
     create_submission,
@@ -45,7 +46,7 @@ logger = logging.getLogger(__name__)
 milestone_router = APIRouter(prefix="/v1/milestones", tags=["submissions"])
 submission_router = APIRouter(prefix="/v1/submissions", tags=["submissions"])
 
-_FREELANCER_ROLE = "USER_ROLE_FREELANCER"
+_FREELANCER_ROLE = UserRole.FREELANCER
 _FILE_KEY_PREFIX = "submissions/"
 
 # ---------------------------------------------------------------------------

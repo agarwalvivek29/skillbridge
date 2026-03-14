@@ -34,6 +34,7 @@ from src.domain.gig import (
     update_gig,
 )
 from src.config import settings
+from src.domain.enums import Currency, GigStatus, UserRole
 from src.infra.database import get_db
 from src.infra.models import EscrowContractModel, GigModel, MilestoneModel, UserModel
 
@@ -41,7 +42,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/v1/gigs", tags=["gigs"])
 
-_CLIENT_ROLE = "USER_ROLE_CLIENT"
+_CLIENT_ROLE = UserRole.CLIENT
 
 # ---------------------------------------------------------------------------
 # Pydantic request / response models
@@ -91,7 +92,7 @@ class CreateGigRequest(BaseModel):
     @field_validator("currency")
     @classmethod
     def validate_currency(cls, v: str) -> str:
-        allowed = {"SOL", "USDC"}
+        allowed = set(Currency)
         if v not in allowed:
             raise ValueError(f"currency must be one of {allowed}")
         return v
@@ -124,7 +125,7 @@ class UpdateGigRequest(BaseModel):
     def validate_currency(cls, v: Optional[str]) -> Optional[str]:
         if v is None:
             return v
-        allowed = {"SOL", "USDC"}
+        allowed = set(Currency)
         if v not in allowed:
             raise ValueError(f"currency must be one of {allowed}")
         return v
@@ -512,7 +513,7 @@ async def get_escrow_tx_endpoint(
     gig_id_compact = gig_id.replace("-", "")
 
     token_mint: str | None = None
-    if gig.currency == "USDC":
+    if gig.currency == Currency.USDC:
         token_mint = gig.token_address or _USDC_TOKEN_MINT
 
     return EscrowTxOut(
@@ -524,7 +525,7 @@ async def get_escrow_tx_endpoint(
     )
 
 
-_FUNDABLE_STATUSES = {"DRAFT", "OPEN"}
+_FUNDABLE_STATUSES = {GigStatus.DRAFT, GigStatus.OPEN}
 
 
 @router.post(
@@ -588,7 +589,7 @@ async def confirm_escrow_endpoint(
 
     # Update gig with escrow_pda and status
     gig.escrow_pda = body.chain_address
-    gig.status = "OPEN"
+    gig.status = GigStatus.OPEN
     await db.flush()
 
     # Re-fetch to get updated state

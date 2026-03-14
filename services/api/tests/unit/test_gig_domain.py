@@ -69,7 +69,7 @@ def _make_input(**overrides: object) -> CreateGigInput:
         title="Build a widget",
         description="Full description here",
         total_amount="1000",
-        currency="ETH",
+        currency="SOL",
         token_address=None,
         tags=["python", "api"],
         required_skills=["Python", "FastAPI"],
@@ -142,12 +142,12 @@ class TestCreateGig:
         assert exc_info.value.code == "TOO_MANY_MILESTONES"
 
     @pytest.mark.asyncio
-    async def test_eth_with_token_address_raises_error(self, db: AsyncSession):
+    async def test_sol_with_token_address_raises_error(self, db: AsyncSession):
         with pytest.raises(GigValidationError) as exc_info:
             await create_gig(
                 db,
                 _TEST_CLIENT_ID,
-                _make_input(currency="ETH", token_address="0x" + "a" * 40),
+                _make_input(currency="SOL", token_address="A" * 44),
             )
         assert exc_info.value.code == "TOKEN_ADDRESS_NOT_ALLOWED"
 
@@ -163,7 +163,7 @@ class TestCreateGig:
 
     @pytest.mark.asyncio
     async def test_usdc_with_valid_token_address(self, db: AsyncSession):
-        usdc_address = "0x" + "b" * 40
+        usdc_address = "B" * 44
         gig = await create_gig(
             db,
             _TEST_CLIENT_ID,

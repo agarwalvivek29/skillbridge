@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from sqlalchemy import Integer, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.domain.enums import GigStatus, MilestoneStatus, ProposalStatus
 from src.infra.database import get_db
 from src.infra.models import (
     EscrowContractModel,
@@ -189,7 +190,12 @@ async def client_dashboard(
     user_id = request.state.user_id
 
     # 1. Active gigs owned by the client (non-terminal statuses)
-    active_statuses = ("DRAFT", "OPEN", "IN_PROGRESS", "DISPUTED")
+    active_statuses = (
+        GigStatus.DRAFT,
+        GigStatus.OPEN,
+        GigStatus.IN_PROGRESS,
+        GigStatus.DISPUTED,
+    )
     gigs_q = (
         select(GigModel)
         .where(GigModel.client_id == user_id, GigModel.status.in_(active_statuses))
@@ -245,7 +251,11 @@ async def client_dashboard(
         # Escrow balance = sum of non-PAID milestone amounts for gigs with escrow
         gig_milestones = milestones_by_gig.get(g.id, [])
         if has_escrow:
-            locked = sum(int(m.amount) for m in gig_milestones if m.status != "PAID")
+            locked = sum(
+                int(m.amount)
+                for m in gig_milestones
+                if m.status != MilestoneStatus.PAID
+            )
             escrow_per_gig.append(
                 EscrowPerGigOut(gig_id=g.id, title=g.title, amount=str(locked))
             )
@@ -301,7 +311,7 @@ async def client_dashboard(
             .join(GigModel, GigModel.id == MilestoneModel.gig_id)
             .where(
                 MilestoneModel.gig_id.in_(gig_ids),
-                MilestoneModel.status == "SUBMITTED",
+                MilestoneModel.status == MilestoneStatus.SUBMITTED,
             )
             .order_by(MilestoneModel.updated_at.desc())
         )
@@ -326,7 +336,7 @@ async def client_dashboard(
             .join(GigModel, GigModel.id == ProposalModel.gig_id)
             .where(
                 ProposalModel.gig_id.in_(gig_ids),
-                ProposalModel.status == "PENDING",
+                ProposalModel.status == ProposalStatus.PENDING,
             )
             .order_by(ProposalModel.created_at.desc())
         )
@@ -375,7 +385,7 @@ async def client_dashboard(
         .where(
             GigModel.client_id == user_id,
             GigModel.freelancer_id.isnot(None),
-            GigModel.status.in_(("IN_PROGRESS", "DISPUTED")),
+            GigModel.status.in_((GigStatus.IN_PROGRESS, GigStatus.DISPUTED)),
         )
     )
     active_freelancers = (await db.execute(active_freelancers_q)).scalar() or 0
@@ -413,7 +423,12 @@ async def freelancer_dashboard(
         .where(
             GigModel.freelancer_id == user_id,
             MilestoneModel.status.in_(
-                ("PENDING", "IN_PROGRESS", "SUBMITTED", "REVISION_REQUESTED")
+                (
+                    MilestoneStatus.PENDING,
+                    MilestoneStatus.IN_PROGRESS,
+                    MilestoneStatus.SUBMITTED,
+                    MilestoneStatus.REVISION_REQUESTED,
+                )
             ),
         )
         .order_by(MilestoneModel.order)
@@ -461,7 +476,7 @@ async def freelancer_dashboard(
         .join(GigModel, GigModel.id == MilestoneModel.gig_id)
         .where(
             GigModel.freelancer_id == user_id,
-            MilestoneModel.status == "PAID",
+            MilestoneModel.status == MilestoneStatus.PAID,
         )
     )
     paid_milestones = (await db.execute(paid_ms_q)).scalars().all()
@@ -474,7 +489,7 @@ async def freelancer_dashboard(
         .join(GigModel, GigModel.id == MilestoneModel.gig_id)
         .where(
             GigModel.freelancer_id == user_id,
-            MilestoneModel.status == "APPROVED",
+            MilestoneModel.status == MilestoneStatus.APPROVED,
         )
     )
     pending_payment = (await db.execute(pending_ms_q)).scalar() or 0

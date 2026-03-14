@@ -40,7 +40,7 @@ def _valid_gig_payload() -> dict:
         "title": "Build a widget",
         "description": "Full widget implementation",
         "total_amount": "1000",
-        "currency": "ETH",
+        "currency": "SOL",
         "required_skills": ["Python"],
         "milestones": [
             {

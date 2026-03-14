@@ -48,7 +48,7 @@ def _valid_gig_payload(total: int = 1000, n_milestones: int = 2) -> dict:
         "title": "Build a widget",
         "description": "Full widget implementation",
         "total_amount": str(total),
-        "currency": "ETH",
+        "currency": "SOL",
         "required_skills": ["Python"],
         "tags": ["python"],
         "milestones": milestones,
@@ -80,7 +80,7 @@ class TestCreateGig:
         assert resp.status_code == 201
         data = resp.json()
         assert data["status"] == "DRAFT"
-        assert data["currency"] == "ETH"
+        assert data["currency"] == "SOL"
         assert len(data["milestones"]) == 2
 
     @pytest.mark.asyncio
@@ -138,11 +138,11 @@ class TestCreateGig:
         assert resp.json()["currency"] == "USDC"
 
     @pytest.mark.asyncio
-    async def test_eth_gig_with_token_address_returns_400(self, client: AsyncClient):
+    async def test_sol_gig_with_token_address_returns_400(self, client: AsyncClient):
         token = await _register_and_get_token(client, _CLIENT_PAYLOAD)
         payload = _valid_gig_payload()
-        payload["currency"] = "ETH"
-        payload["token_address"] = "0x" + "a" * 40
+        payload["currency"] = "SOL"
+        payload["token_address"] = "A" * 44
         resp = await client.post("/v1/gigs", json=payload, headers=_auth_headers(token))
         assert resp.status_code == 400
         assert resp.json()["detail"]["code"] == "TOKEN_ADDRESS_NOT_ALLOWED"

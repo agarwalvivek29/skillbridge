@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import base58
 
 from src.domain import auth as auth_domain
+from src.domain.enums import UserRole
 from src.infra.database import get_db
 from src.infra.models import AuthNonceModel
 
@@ -40,12 +41,12 @@ class EmailRegisterRequest(BaseModel):
     email: EmailStr
     password: str
     name: str
-    role: str = "USER_ROLE_FREELANCER"
+    role: str = UserRole.FREELANCER
 
     @field_validator("role")
     @classmethod
     def validate_role(cls, v: str) -> str:
-        allowed = {"USER_ROLE_FREELANCER", "USER_ROLE_CLIENT"}
+        allowed = {UserRole.FREELANCER, UserRole.CLIENT}
         if v not in allowed:
             raise ValueError(f"role must be one of {allowed}")
         return v

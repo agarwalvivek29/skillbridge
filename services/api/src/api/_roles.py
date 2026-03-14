@@ -5,6 +5,8 @@ These values match the role strings stored in JWT claims and the UserModel.role 
 Import from here rather than hardcoding strings in individual routers.
 """
 
-ROLE_FREELANCER = "USER_ROLE_FREELANCER"
-ROLE_CLIENT = "USER_ROLE_CLIENT"
-ROLE_ADMIN = "USER_ROLE_ADMIN"
+from src.domain.enums import UserRole
+
+ROLE_FREELANCER = UserRole.FREELANCER
+ROLE_CLIENT = UserRole.CLIENT
+ROLE_ADMIN = UserRole.ADMIN

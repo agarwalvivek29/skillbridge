@@ -16,11 +16,12 @@ from typing import Optional
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.domain.enums import GigStatus
 from src.infra.models import GigModel, PortfolioItemModel
 
 logger = logging.getLogger(__name__)
 
-_GIG_COMPLETED_STATUS = "COMPLETED"
+_GIG_COMPLETED_STATUS = GigStatus.COMPLETED
 
 # ---------------------------------------------------------------------------
 # Input DTOs

@@ -29,6 +29,7 @@ from src.domain.proposal import (
     reject_proposal,
     withdraw_proposal,
 )
+from src.domain.enums import UserRole
 from src.infra.database import get_db
 from src.infra.models import ProposalModel
 
@@ -36,8 +37,8 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["proposals"])
 
-_FREELANCER_ROLE = "USER_ROLE_FREELANCER"
-_CLIENT_ROLE = "USER_ROLE_CLIENT"
+_FREELANCER_ROLE = UserRole.FREELANCER
+_CLIENT_ROLE = UserRole.CLIENT
 
 # ---------------------------------------------------------------------------
 # Pydantic request / response models

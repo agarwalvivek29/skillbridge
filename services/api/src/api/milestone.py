@@ -27,6 +27,7 @@ from src.domain.milestone_approval import (
     get_release_tx,
     request_revision,
 )
+from src.domain.enums import Currency, UserRole
 from src.infra.database import get_db
 from src.infra.models import (
     GigModel,
@@ -39,7 +40,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/v1/milestones", tags=["milestones"])
 
-_CLIENT_ROLE = "USER_ROLE_CLIENT"
+_CLIENT_ROLE = UserRole.CLIENT
 
 # ---------------------------------------------------------------------------
 # Pydantic request / response models
@@ -104,7 +105,7 @@ class MilestoneDetailOut(BaseModel):
     description: str
     acceptance_criteria: str
     amount: str
-    currency: str = "ETH"
+    currency: str = Currency.SOL
     order: int
     due_date: Optional[datetime] = None
     status: str

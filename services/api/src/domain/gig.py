@@ -14,6 +14,7 @@ from sqlalchemy import Numeric, Text, cast, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from src.domain.enums import Currency, GigStatus, MilestoneStatus
 from src.infra.models import GigModel, MilestoneModel
 
 logger = logging.getLogger(__name__)
@@ -25,17 +26,17 @@ logger = logging.getLogger(__name__)
 _MAX_MILESTONES = 10
 _MIN_MILESTONES = 1
 
-_EDITABLE_STATUSES = {"DRAFT"}
-_DELETABLE_STATUSES = {"DRAFT"}
+_EDITABLE_STATUSES = {GigStatus.DRAFT}
+_DELETABLE_STATUSES = {GigStatus.DRAFT}
 
-_VALID_CURRENCIES = {"SOL", "USDC"}
+_VALID_CURRENCIES = {Currency.SOL, Currency.USDC}
 _VALID_GIG_STATUSES = {
-    "DRAFT",
-    "OPEN",
-    "IN_PROGRESS",
-    "COMPLETED",
-    "CANCELLED",
-    "DISPUTED",
+    GigStatus.DRAFT,
+    GigStatus.OPEN,
+    GigStatus.IN_PROGRESS,
+    GigStatus.COMPLETED,
+    GigStatus.CANCELLED,
+    GigStatus.DISPUTED,
 }
 
 
@@ -129,12 +130,12 @@ def _validate_currency(currency: str, token_address: Optional[str]) -> None:
             "INVALID_CURRENCY",
             f"currency must be one of {_VALID_CURRENCIES}",
         )
-    if currency == "ETH" and token_address:
+    if currency == Currency.SOL and token_address:
         raise GigValidationError(
             "TOKEN_ADDRESS_NOT_ALLOWED",
-            "token_address must be empty for ETH gigs",
+            "token_address must be empty for SOL gigs",
         )
-    if currency == "USDC" and not token_address:
+    if currency == Currency.USDC and not token_address:
         raise GigValidationError(
             "TOKEN_ADDRESS_REQUIRED",
             "token_address is required for USDC gigs",
@@ -177,7 +178,7 @@ async def create_gig(
         total_amount=data.total_amount,
         currency=data.currency,
         token_address=data.token_address or None,
-        status="DRAFT",
+        status=GigStatus.DRAFT,
         tags=data.tags or [],
         required_skills=data.required_skills,
         deadline=data.deadline,
@@ -194,7 +195,7 @@ async def create_gig(
             amount=m.amount,
             order=m.order,
             due_date=m.due_date,
-            status="PENDING",
+            status=MilestoneStatus.PENDING,
             revision_count=0,
         )
         db.add(milestone)
@@ -248,7 +249,7 @@ async def list_gigs(
     if status and status.upper() != "ALL":
         base_where.append(GigModel.status == status)
     elif not status:
-        base_where.append(GigModel.status == "OPEN")
+        base_where.append(GigModel.status == GigStatus.OPEN)
     if currency:
         base_where.append(GigModel.currency == currency)
     if min_amount is not None:
@@ -367,7 +368,7 @@ async def update_gig(
                 amount=m.amount,
                 order=m.order,
                 due_date=m.due_date,
-                status="PENDING",
+                status=MilestoneStatus.PENDING,
                 revision_count=0,
             )
             db.add(milestone)

@@ -53,7 +53,7 @@ def _make_gig_input() -> CreateGigInput:
         title="Build API",
         description="REST API project",
         total_amount="1000",
-        currency="ETH",
+        currency="SOL",
         required_skills=["Python"],
         milestones=[
             MilestoneInput(

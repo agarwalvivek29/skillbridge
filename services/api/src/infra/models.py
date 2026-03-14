@@ -27,6 +27,15 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from src.domain.enums import (
+    Currency,
+    GigStatus,
+    MilestoneStatus,
+    ProposalStatus,
+    SubmissionStatus,
+    UserRole,
+    UserStatus,
+)
 from src.infra.database import Base
 
 
@@ -41,10 +50,10 @@ class UserModel(Base):
     password_hash: Mapped[str | None] = mapped_column(Text, nullable=True)
     wallet_address: Mapped[str | None] = mapped_column(Text, unique=True, nullable=True)
     role: Mapped[str] = mapped_column(
-        String(32), nullable=False, default="USER_ROLE_FREELANCER"
+        String(32), nullable=False, default=UserRole.FREELANCER
     )
     status: Mapped[str] = mapped_column(
-        String(32), nullable=False, default="USER_STATUS_ACTIVE"
+        String(32), nullable=False, default=UserStatus.ACTIVE
     )
     avatar_url: Mapped[str | None] = mapped_column(Text, nullable=True)
     bio: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -88,12 +97,16 @@ class GigModel(Base):
     description: Mapped[str] = mapped_column(Text, nullable=False)
     # Stored as string (wei for ETH, smallest unit for USDC) to avoid float errors
     total_amount: Mapped[str] = mapped_column(Text, nullable=False)
-    # "ETH" or "USDC" — mirrors Currency proto enum names
-    currency: Mapped[str] = mapped_column(String(16), nullable=False, default="SOL")
+    # "SOL" or "USDC" — mirrors Currency proto enum names
+    currency: Mapped[str] = mapped_column(
+        String(16), nullable=False, default=Currency.SOL
+    )
     token_address: Mapped[str | None] = mapped_column(Text, nullable=True)
     escrow_pda: Mapped[str | None] = mapped_column(Text, nullable=True)
-    # "DRAFT", "OPEN", "IN_PROGRESS", "COMPLETED", "CANCELLED", "DISPUTED"
-    status: Mapped[str] = mapped_column(String(32), nullable=False, default="DRAFT")
+    # GigStatus enum: DRAFT, OPEN, IN_PROGRESS, COMPLETED, CANCELLED, DISPUTED
+    status: Mapped[str] = mapped_column(
+        String(32), nullable=False, default=GigStatus.DRAFT
+    )
     # JSON works in both PostgreSQL and SQLite (test env)
     tags: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     required_skills: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
@@ -138,8 +151,10 @@ class MilestoneModel(Base):
     due_date: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
-    # "PENDING", "IN_PROGRESS", "SUBMITTED", "APPROVED", "DISPUTED", "RESOLVED", "PAID", "REVISION_REQUESTED"
-    status: Mapped[str] = mapped_column(String(32), nullable=False, default="PENDING")
+    # MilestoneStatus enum: PENDING, IN_PROGRESS, SUBMITTED, APPROVED, DISPUTED, RESOLVED, PAID, REVISION_REQUESTED
+    status: Mapped[str] = mapped_column(
+        String(32), nullable=False, default=MilestoneStatus.PENDING
+    )
     revision_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     contract_index: Mapped[int | None] = mapped_column(Integer, nullable=True)
     # tx_hash of the completeMilestone() call after client confirms fund release
@@ -205,8 +220,10 @@ class SubmissionModel(Base):
     # JSON works in both PostgreSQL and SQLite (test env); migration uses TEXT[]
     file_keys: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     notes: Mapped[str] = mapped_column(Text, nullable=False, default="")
-    # "PENDING", "UNDER_REVIEW", "APPROVED", "REJECTED"
-    status: Mapped[str] = mapped_column(String(32), nullable=False, default="PENDING")
+    # SubmissionStatus enum: PENDING, UNDER_REVIEW, APPROVED, REJECTED
+    status: Mapped[str] = mapped_column(
+        String(32), nullable=False, default=SubmissionStatus.PENDING
+    )
     # 1-indexed; increments with each resubmission
     revision_number: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     # Points to the prior submission for resubmissions; null for first submission
@@ -241,8 +258,10 @@ class ProposalModel(Base):
     )
     cover_letter: Mapped[str] = mapped_column(Text, nullable=False)
     estimated_days: Mapped[int] = mapped_column(Integer, nullable=False)
-    # "PENDING", "ACCEPTED", "REJECTED", "WITHDRAWN"
-    status: Mapped[str] = mapped_column(String(32), nullable=False, default="PENDING")
+    # ProposalStatus enum: PENDING, ACCEPTED, REJECTED, WITHDRAWN
+    status: Mapped[str] = mapped_column(
+        String(32), nullable=False, default=ProposalStatus.PENDING
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
