@@ -159,6 +159,13 @@ export interface GigSubmission {
   created_at: string;
 }
 
-export function fetchGigSubmissions(gigId: string): Promise<GigSubmission[]> {
-  return apiGet<GigSubmission[]>(`/v1/gigs/${gigId}/submissions`);
+export async function fetchGigSubmissions(
+  gigId: string,
+): Promise<GigSubmission[]> {
+  // Submissions are per-milestone — fetch via workspace endpoint which aggregates them
+  const workspace = await apiGet<{
+    gig: unknown;
+    submissions: GigSubmission[];
+  }>(`/v1/gigs/${gigId}/workspace`);
+  return workspace.submissions ?? [];
 }

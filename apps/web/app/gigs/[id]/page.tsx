@@ -3,7 +3,15 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Calendar, ArrowLeft, ExternalLink, DollarSign } from "lucide-react";
+import {
+  Calendar,
+  ArrowLeft,
+  ExternalLink,
+  DollarSign,
+  Pencil,
+  Rocket,
+  Wallet,
+} from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -23,6 +31,7 @@ export default function GigDetailPage() {
   const router = useRouter();
   const gigId = params.id as string;
   const token = useAuthStore((s) => s.token);
+  const user = useAuthStore((s) => s.user);
 
   const [gig, setGig] = useState<Gig | null>(null);
   const [loading, setLoading] = useState(true);
@@ -101,6 +110,24 @@ export default function GigDetailPage() {
     (sum, m) => sum + parseFloat(m.amount || "0"),
     0,
   );
+
+  const isOwner = user?.id === gig.client_id;
+  const isDraft = gig.status === "DRAFT";
+
+  // Draft gigs should only be visible to the owner
+  if (isDraft && !isOwner) {
+    return (
+      <div className="mx-auto max-w-[1280px] px-4 py-16 md:px-6">
+        <ErrorState
+          icon={ExternalLink}
+          title="Gig not available"
+          description="This gig is still in draft and not yet published."
+          actionLabel="Browse Gigs"
+          onAction={() => router.push("/gigs")}
+        />
+      </div>
+    );
+  }
 
   const handleApply = () => {
     if (!token) {
@@ -261,7 +288,26 @@ export default function GigDetailPage() {
                 )}
               </div>
 
-              {gig.status === "OPEN" && (
+              {/* Owner actions for draft gigs */}
+              {isOwner && isDraft && (
+                <div className="mt-6 space-y-2">
+                  <Link href={`/gigs/${gigId}/fund`} className="block">
+                    <Button variant="web3" size="lg" className="w-full">
+                      <Wallet className="h-5 w-5" />
+                      Fund Escrow & Publish
+                    </Button>
+                  </Link>
+                  <Link href={`/gigs/${gigId}/edit`} className="block">
+                    <Button variant="outline" size="lg" className="w-full">
+                      <Pencil className="h-4 w-4" />
+                      Edit Gig
+                    </Button>
+                  </Link>
+                </div>
+              )}
+
+              {/* Apply button for non-owners on open gigs */}
+              {!isOwner && gig.status === "OPEN" && (
                 <Button onClick={handleApply} size="lg" className="mt-6 w-full">
                   Submit Proposal
                 </Button>
