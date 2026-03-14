@@ -2,12 +2,12 @@
 # generate.sh — Regenerate all language bindings from proto files
 #
 # Runs: buf lint → buf breaking (vs main) → buf generate
-# Output: generated/{ts,go,python}/
+# Output: generated/{ts,python}/
 # Rust: not generated here — uses prost-build in each service's build.rs
+# Go: removed — no Go services in the project
 #
 # Requirements:
 #   - buf: https://buf.build/docs/installation (brew install bufbuild/buf/buf)
-#   - Go:  protoc-gen-go, protoc-gen-go-grpc (installed below if missing)
 #   - Python: betterproto[compiler] (pip install betterproto[compiler])
 #
 # Usage: ./scripts/generate.sh [--skip-breaking] [--skip-lint]
@@ -18,7 +18,7 @@ SCHEMA_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SKIP_BREAKING=false
 SKIP_LINT=false
 
-# ─── Parse flags ─────────────────────────────────────────��────────────────────
+# ─── Parse flags ─────────────────────────────────────────────────────────────
 for arg in "$@"; do
   case $arg in
     --skip-breaking) SKIP_BREAKING=true ;;
@@ -51,15 +51,18 @@ fi
 
 step "buf version: $(buf --version)"
 
-# ─── Install Go plugins if missing ────────────────────────────────────────────
-if command -v go &> /dev/null; then
-  step "Installing Go protoc plugins..."
-  go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-  go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-  ok "Go plugins installed"
-else
-  warn "Go not found — Go code generation will use buf remote plugins (requires buf login)"
-fi
+# ─── Go generation removed ───────────────────────────────────────────────────
+# Go bindings were removed — no Go services in the project.
+# If Go services are added in the future, uncomment the following:
+#
+# if command -v go &> /dev/null; then
+#   step "Installing Go protoc plugins..."
+#   go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+#   go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+#   ok "Go plugins installed"
+# else
+#   warn "Go not found — Go code generation will use buf remote plugins"
+# fi
 
 # ─── Check Python betterproto ─────────────────────────────────────────────────
 if command -v python3 &> /dev/null; then
@@ -82,7 +85,6 @@ fi
 # ─── Breaking change detection ────────────────────────────────────────────────
 if [ "$SKIP_BREAKING" = false ]; then
   step "Checking for breaking changes vs main..."
-  # Only runs if we're on a branch (not main itself)
   CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
   if [ -n "$CURRENT_BRANCH" ] && [ "$CURRENT_BRANCH" != "main" ]; then
     if git show-ref --verify --quiet refs/heads/main 2>/dev/null || \
@@ -116,11 +118,9 @@ echo -e "${GREEN}${BOLD}✓ Generation complete!${NC}"
 echo ""
 echo "Generated output:"
 echo "  TypeScript: generated/ts/"
-echo "  Go:         generated/go/"
 echo "  Python:     generated/python/"
 echo ""
 echo -e "${YELLOW}Rust:${NC} Generated at build time via prost-build in each service's build.rs"
-echo "  See examples/rust-build.rs for the pattern"
 echo ""
 echo "Next steps:"
 echo "  1. Review the generated files"
