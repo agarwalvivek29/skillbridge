@@ -3,6 +3,13 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useConnection } from "@solana/wallet-adapter-react";
+import {
+  PublicKey,
+  Transaction,
+  SystemProgram,
+  LAMPORTS_PER_SOL,
+} from "@solana/web3.js";
 import { Wallet, ArrowRight, CheckCircle2, Coins } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AuthGuard } from "@/components/layout/AuthGuard";
@@ -31,7 +38,8 @@ function FundFlowContent() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const toast = useToast();
-  const { connected } = useWallet();
+  const { connected, publicKey } = useWallet();
+  const { connection } = useConnection();
   const tx = useTxFlow();
 
   const [gig, setGig] = useState<Gig | null>(null);
@@ -68,12 +76,46 @@ function FundFlowContent() {
   }, [tx.state, step]);
 
   async function handleDeposit() {
+    if (!publicKey) {
+      toast.error("Wallet not connected");
+      return;
+    }
+
     try {
-      const escrowTx = await fetchEscrowTx(params.id);
-      // The API returns a base64-encoded serialized Solana transaction
-      await tx.executeSerialized(escrowTx.serialized_tx);
-    } catch {
-      toast.error("Failed to prepare transaction");
+      const escrowData = await fetchEscrowTx(params.id);
+
+      // Derive the escrow PDA from seeds returned by the API
+      const programId = new PublicKey(escrowData.program_id);
+      const seeds = escrowData.escrow_seeds.map((s: string) => {
+        // First seed is "escrow" (utf8), second is the gig_id hex
+        if (s === "escrow") return new TextEncoder().encode(s);
+        // Hex-encoded gig ID
+        return Uint8Array.from(
+          s.match(/.{1,2}/g)!.map((byte: string) => parseInt(byte, 16)),
+        );
+      });
+      const [escrowPda] = PublicKey.findProgramAddressSync(seeds, programId);
+
+      // Build a SOL transfer to the escrow PDA
+      const amountLamports = BigInt(escrowData.amount);
+      const transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: publicKey,
+          toPubkey: escrowPda,
+          lamports: amountLamports,
+        }),
+      );
+
+      const { blockhash } = await connection.getLatestBlockhash("confirmed");
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = publicKey;
+
+      await tx.executeTransaction(transaction);
+    } catch (err) {
+      console.error("[fund] deposit error:", err);
+      toast.error(
+        err instanceof Error ? err.message : "Failed to prepare transaction",
+      );
     }
   }
 
@@ -108,9 +150,10 @@ function FundFlowContent() {
     );
   }
 
+  const milestones = gig.milestones ?? [];
   // Sum in integer units (x1e8) to avoid floating-point accumulation errors
   const total =
-    gig.milestones.reduce(
+    milestones.reduce(
       (sum, m) => sum + Math.round(parseFloat(m.amount || "0") * 1e8),
       0,
     ) / 1e8;
@@ -163,7 +206,7 @@ function FundFlowContent() {
               {gig.title}
             </h2>
             <div className="mt-4 space-y-2">
-              {gig.milestones.map((m, i) => (
+              {milestones.map((m, i) => (
                 <div
                   key={m.id}
                   className="flex items-center justify-between rounded-md bg-neutral-50 px-3 py-2 text-sm"
