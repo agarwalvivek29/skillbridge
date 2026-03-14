@@ -288,6 +288,8 @@ class EscrowContractModel(Base):
     )
     # On-chain escrow account address (Solana base58 public key)
     contract_address: Mapped[str] = mapped_column(Text, nullable=False)
+    # Solana transaction signature confirming escrow deposit
+    tx_signature: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )

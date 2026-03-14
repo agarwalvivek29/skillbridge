@@ -556,10 +556,12 @@ async def confirm_escrow_endpoint(
         escrow = EscrowContractModel(
             gig_id=gig_id,
             contract_address=body.contract_address,
+            tx_signature=body.tx_signature,
         )
         db.add(escrow)
     else:
         escrow.contract_address = body.contract_address
+        escrow.tx_signature = body.tx_signature
 
     # Update gig with contract_address and status
     gig.contract_address = body.contract_address
