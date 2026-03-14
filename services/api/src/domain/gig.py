@@ -139,12 +139,10 @@ def _validate_currency(currency: str, token_address: Optional[str]) -> None:
             "TOKEN_ADDRESS_REQUIRED",
             "token_address is required for USDC gigs",
         )
-    if token_address and (
-        not token_address.startswith("0x") or len(token_address) != 42
-    ):
+    if token_address and (len(token_address) < 32 or len(token_address) > 44):
         raise GigValidationError(
             "INVALID_TOKEN_ADDRESS",
-            "token_address must be a 42-char hex EVM address starting with 0x",
+            "token_address must be a valid Solana base58 public key (32-44 chars)",
         )
 
 
