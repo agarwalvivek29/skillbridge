@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { WalletReadyState } from "@solana/wallet-adapter-base";
-import { Wallet, ArrowRight, Shield, AlertCircle } from "lucide-react";
+import { Wallet, Shield, AlertCircle, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Spinner } from "@/components/ui/Spinner";
@@ -17,11 +17,12 @@ export default function AuthPage() {
   const router = useRouter();
   const token = useAuthStore((s) => s.token);
   const user = useAuthStore((s) => s.user);
-  const { publicKey, connected, connecting, wallets } = useWallet();
+  const { publicKey, connected, wallets } = useWallet();
   const { setVisible } = useWalletModal();
   const { step, error, isLoading, startSiwe, reset } = useAuth();
 
   const [mounted, setMounted] = useState(false);
+  const autoSignTriggered = useRef(false);
 
   useEffect(() => {
     setMounted(true);
@@ -40,17 +41,29 @@ export default function AuthPage() {
     }
   }, [token, user, router]);
 
-  // Auto-advance to signing when wallet connects
+  // Auto-sign as soon as wallet connects — single step for the user
   useEffect(() => {
-    if (connected && publicKey && step === "connect") {
-      reset();
+    if (
+      connected &&
+      publicKey &&
+      !token &&
+      !isLoading &&
+      !autoSignTriggered.current
+    ) {
+      autoSignTriggered.current = true;
+      startSiwe();
     }
-  }, [connected, publicKey, step, reset]);
+  }, [connected, publicKey, token, isLoading, startSiwe]);
+
+  // Reset the auto-sign guard if there's an error so retry works
+  useEffect(() => {
+    if (error) {
+      autoSignTriggered.current = false;
+    }
+  }, [error]);
 
   const hasWallet =
     mounted && wallets.some((w) => w.readyState === WalletReadyState.Installed);
-
-  const address = publicKey?.toBase58();
 
   return (
     <div className="flex min-h-[calc(100vh-64px)] items-center justify-center px-4 py-16">
@@ -70,7 +83,7 @@ export default function AuthPage() {
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-500 text-white font-medium">
             1
           </span>
-          <span className="font-medium text-primary-500">Connect Wallet</span>
+          <span className="font-medium text-primary-500">Connect & Sign</span>
           <div className="h-px w-8 bg-neutral-300" />
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-neutral-200 text-neutral-500 font-medium">
             2
@@ -94,7 +107,7 @@ export default function AuthPage() {
                 Wallet Sign-In
               </h2>
               <p className="text-sm text-neutral-500">
-                Sign a message to prove wallet ownership
+                One click — connect and verify in a single step
               </p>
             </div>
           </div>
@@ -102,32 +115,18 @@ export default function AuthPage() {
           {!hasWallet ? (
             <InstallWalletPrompt />
           ) : !connected ? (
-            <div className="space-y-3">
-              <Button
-                variant="web3"
-                size="lg"
-                className="w-full"
-                loading={connecting}
-                onClick={() => setVisible(true)}
-              >
-                <Wallet className="h-5 w-5" />
-                Select Wallet
-              </Button>
-            </div>
-          ) : step === "sign" || step === "connect" ? (
+            /* Not connected — show connect button */
             <div className="space-y-4">
               <div className="rounded-lg border border-neutral-200 bg-neutral-50 p-4">
                 <div className="flex items-start gap-3">
                   <Shield className="mt-0.5 h-5 w-5 text-primary-500" />
                   <div>
                     <p className="text-sm font-medium text-neutral-700">
-                      Verify your identity
+                      Secure sign-in
                     </p>
                     <p className="mt-1 text-sm text-neutral-500">
-                      Sign a message with your wallet to prove ownership of{" "}
-                      <span className="font-mono text-xs text-neutral-600">
-                        {address?.slice(0, 4)}...{address?.slice(-4)}
-                      </span>
+                      Select your wallet, then approve a signature to verify
+                      ownership. No funds are transferred.
                     </p>
                   </div>
                 </div>
@@ -136,29 +135,43 @@ export default function AuthPage() {
                 variant="web3"
                 size="lg"
                 className="w-full"
-                loading={isLoading}
-                onClick={startSiwe}
+                onClick={() => setVisible(true)}
               >
-                <ArrowRight className="h-5 w-5" />
-                Sign Message to Continue
+                <Wallet className="h-5 w-5" />
+                Connect Wallet & Sign In
               </Button>
             </div>
-          ) : step === "verify" ? (
-            <div className="flex flex-col items-center gap-3 py-4">
+          ) : isLoading || step === "verify" ? (
+            /* Signing / verifying in progress */
+            <div className="flex flex-col items-center gap-3 py-6">
               <Spinner size="lg" />
               <p className="text-sm text-neutral-500">
-                Verifying your signature...
+                {step === "verify"
+                  ? "Verifying your signature..."
+                  : "Requesting signature from wallet..."}
+              </p>
+            </div>
+          ) : step === "done" ? (
+            /* Authenticated — redirecting */
+            <div className="flex flex-col items-center gap-3 py-6">
+              <CheckCircle className="h-10 w-10 text-green-500" />
+              <p className="text-sm font-medium text-neutral-700">
+                Signed in successfully! Redirecting...
               </p>
             </div>
           ) : null}
 
-          {error && step !== "connect" && (
+          {/* Error state with retry */}
+          {error && (
             <div className="flex items-start gap-2 rounded-md border border-error-500 bg-error-50 p-3">
-              <AlertCircle className="mt-0.5 h-4 w-4 text-error-500" />
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-error-500" />
               <div className="flex-1">
                 <p className="text-sm text-error-500">{error}</p>
                 <button
-                  onClick={reset}
+                  onClick={() => {
+                    reset();
+                    startSiwe();
+                  }}
                   className="mt-1 text-sm font-medium text-error-600 underline hover:no-underline"
                 >
                   Try again
