@@ -29,6 +29,7 @@ Exceptions: bug fixes, typo corrections, dependency updates, and documentation-o
 - ADRs must be referenced in both the spec and the PR
 
 Triggers for an ADR:
+
 - Choosing a new database, queue, or caching layer
 - Changing API protocol (REST → gRPC, etc.)
 - Adding a new shared package or cross-service dependency
@@ -56,6 +57,7 @@ Triggers for an ADR:
 Format: `<type>(<scope>): <description>`
 
 Allowed types:
+
 - `feat` — new feature
 - `fix` — bug fix
 - `docs` — documentation only
@@ -70,6 +72,7 @@ Scope is the service or package name (e.g., `feat(auth-service): add JWT refresh
 This is enforced by the `commit-msg` git hook. Hooks must **never** be skipped (`--no-verify` is forbidden unless explicitly approved in an ADR).
 
 **No AI attribution in commits or PRs:**
+
 - Never add `Co-Authored-By: Claude` or any AI model as a co-author in commit messages
 - Never mention Claude, Anthropic, or any AI tool in PR titles, PR bodies, or commit messages
 - Commits and PRs represent the team's work — AI tooling is an implementation detail, not a contributor
@@ -161,10 +164,12 @@ All inbound requests — whether from the frontend (FE→BE) or from another ser
 Both the JWT secret and API key are shared across all services via environment variables (`JWT_SECRET`, `API_KEY`). This is an acceptable simplification; rotate both via a coordinated config update when needed.
 
 **Exempt paths** (must be explicitly allowlisted in the middleware, not unprotected by default):
+
 - `GET /health` — liveness/readiness probe
 - `GET /metrics` — Prometheus scrape endpoint
 
 **Rules:**
+
 - Every new service starts with the auth middleware applied globally to all routes
 - Middleware must be the **first** middleware in the chain (before logging, before rate limiting)
 - On auth failure → `401 Unauthorized` with `ErrorResponse` body (from `common.v1.ErrorResponse`)
@@ -181,6 +186,7 @@ See `docs/CONVENTIONS.md → Authentication & Middleware` for per-language imple
 **All data types are defined in `packages/schema/proto/` before any service code is written.**
 
 This applies without exception to:
+
 - Database entities (User, Order, Payment…)
 - View models / API response shapes (UserPublic, OrderSummary…)
 - API request bodies (CreateUserRequest, UpdateOrderRequest…)
@@ -189,6 +195,7 @@ This applies without exception to:
 - Internal domain objects used across functions
 
 **Process:**
+
 1. Add or modify the `.proto` file in `packages/schema/proto/[service-name]/v1/`
 2. Run `cd packages/schema && ./scripts/generate.sh`
 3. Commit the updated proto AND generated files together
@@ -209,6 +216,7 @@ See `packages/schema/README.md` for the full guide.
 - Frontend apps (`apps/`) are exempt from this rule
 
 Test frameworks by language:
+
 - TypeScript: **vitest** (unit) + **supertest** (e2e)
 - Python: **pytest** (unit) + **httpx** (e2e)
 - Go: **testing** + **testify** (unit), **testcontainers-go** (e2e)
@@ -225,6 +233,7 @@ CI runs tests and enforces that coverage does not decrease. PRs that add feature
 When a new service, module, route, or model is created (via `scripts/new-service.sh`, a framework generator, or manually), it often contains boilerplate: sample model instances, `hello world` endpoints, demo seed records, or TODO stubs left by the generator. All of this must be deleted before the first commit that contains real feature code.
 
 **Must be removed:**
+
 - Sample model instances left by generators (e.g. `user = User(id=1, name="Alice")`)
 - Demo or scaffold routes (e.g. `GET /example`, `GET /hello`, `POST /demo`)
 - Scaffold comments: `# TODO: replace with your logic`, `// Example usage:`, `/* Remove before shipping */`
@@ -233,17 +242,60 @@ When a new service, module, route, or model is created (via `scripts/new-service
 - Unused imports or variables introduced solely by the scaffold
 
 **Allowed to stay:**
+
 - `.env.example` placeholder values (required by Rule 9)
 - `tests/fixtures/` files used exclusively by automated tests
 - `docs/specs/TEMPLATE.md` and other template/doc files
 
 **When this applies:**
+
 - Creating a new service via `scripts/new-service.sh`
 - Adding a route/module via a framework generator
 - Copying an existing file as a starting point — strip all non-applicable example content first
 - Writing scaffold code before real logic — cleanup must be in the same PR, never deferred
 
 **Agents:** scan the full diff before pushing. If any file in the diff contains example, placeholder, or demo content not covered by real implementation, fix it in the same branch before opening the PR.
+
+---
+
+## 15. Proto Field Name Alignment Across Layers
+
+**Proto defines canonical field names. Every layer must use them consistently.**
+
+- API Pydantic models MUST use the same field names as the proto definitions. Never create alias fields (e.g., `project_url` for `external_url`, or `display_name` for `name`).
+- Frontend TypeScript types MUST match the JSON field names returned by the API.
+- If a frontend API client function needs to map between user-facing form names and API field names (e.g., `skills` → `required_skills`), this mapping must happen exclusively in the API client function (`lib/api/*.ts`), not in components or types.
+- When in doubt, check `packages/schema/proto/` for the canonical name.
+
+---
+
+## 16. Enum Constants — No Raw String Literals
+
+**Never use raw string literals for status, role, or currency values.**
+
+- Backend: import from `services/api/src/domain/enums.py` (or the equivalent enum module for other services). Never write `"OPEN"`, `"CLIENT"`, or `"SOL"` as bare strings in business logic.
+- Frontend: define typed string union types that match proto enum values (e.g., `type GigStatus = "DRAFT" | "OPEN" | "IN_PROGRESS" | ...`). Never use untyped strings for enum-like values.
+- If a new enum value is needed, add it to the proto first, regenerate, then update `domain/enums.py` and frontend types.
+
+---
+
+## 17. Safe Array Access
+
+**Always use null-safe defaults when accessing array fields from API responses.**
+
+- Frontend: use `?? []` when accessing any array field from an API response (e.g., `gig.milestones ?? []`, `gig.skills ?? gig.required_skills ?? []`).
+- Backend: use `or []` in Python when accessing optional list fields from database models or request payloads.
+- This prevents runtime crashes when the API returns `null` or `undefined` for an optional array field.
+
+---
+
+## 18. Amount Formatting
+
+**All monetary amounts are stored and transmitted in smallest unit. Display must use human-readable formatting.**
+
+- Storage and API transport: amounts are always in the smallest unit of the currency (lamports for SOL at 10^9, smallest unit for USDC at 10^6).
+- Frontend display: always use the shared formatting utility (`formatAmountWithCurrency()` from `lib/format.ts`) when rendering amounts to users. Never display raw on-chain amounts.
+- Valid currencies are **SOL** and **USDC**. ETH is not a valid currency in this project (see ADR 0003 — Solana migration).
 
 ---
 
@@ -262,4 +314,8 @@ When a new service, module, route, or model is created (via `scripts/new-service
 - [ ] No secrets committed
 - [ ] No scaffold/example/placeholder code remaining in the diff (Rule 14)
 - [ ] No AI attribution (`Co-Authored-By: Claude`) in any commit message or PR body (Rule 4)
+- [ ] Pydantic/TS field names match proto definitions — no alias fields (Rule 15)
+- [ ] No raw string literals for enum values — import from `domain/enums.py` or typed unions (Rule 16)
+- [ ] Array fields accessed with `?? []` (frontend) or `or []` (backend) fallbacks (Rule 17)
+- [ ] Amounts displayed via `formatAmountWithCurrency()`, not raw values (Rule 18)
 - [ ] `docker compose up` still works

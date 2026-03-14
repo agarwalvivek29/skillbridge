@@ -139,6 +139,26 @@ Never define `class`, `dataclass`, or `TypedDict` for business domain concepts i
 
 ---
 
+## Domain Enums
+
+All status, role, and currency constants are defined in `src/domain/enums.py`. Import from there — never use raw string literals like `"OPEN"`, `"CLIENT"`, or `"SOL"` in business logic or route handlers.
+
+---
+
+## Field Naming Convention
+
+Pydantic request/response models MUST use the same field names as the proto definitions in `packages/schema/proto/api/v1/`. Never create alias fields (e.g., do not use `project_url` when proto calls it `external_url`). If a frontend needs a different name, the mapping happens in the frontend API client, not in the API layer.
+
+---
+
+## Currency and Amounts
+
+- **Valid currencies**: SOL and USDC only. ETH is not supported (Solana migration, ADR 0003).
+- **Amount storage**: all monetary amounts are stored in the smallest unit of the currency — lamports for SOL (10^9), smallest unit for USDC (10^6).
+- API responses transmit raw smallest-unit values. The frontend is responsible for human-readable formatting.
+
+---
+
 ## Forbidden Actions for Agents
 
 - Modifying Alembic migrations after they've been applied
