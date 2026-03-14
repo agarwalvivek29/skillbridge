@@ -85,15 +85,12 @@ function FundFlowContent() {
       const escrowData = await fetchEscrowTx(params.id);
 
       // Derive the escrow PDA from seeds returned by the API
+      // Seeds: ["escrow", gig_id_without_hyphens] — both as UTF-8 bytes
       const programId = new PublicKey(escrowData.program_id);
-      const seeds = escrowData.escrow_seeds.map((s: string) => {
-        // First seed is "escrow" (utf8), second is the gig_id hex
-        if (s === "escrow") return new TextEncoder().encode(s);
-        // Hex-encoded gig ID
-        return Uint8Array.from(
-          s.match(/.{1,2}/g)!.map((byte: string) => parseInt(byte, 16)),
-        );
-      });
+      const encoder = new TextEncoder();
+      const seeds = escrowData.escrow_seeds.map((s: string) =>
+        encoder.encode(s),
+      );
       const [escrowPda] = PublicKey.findProgramAddressSync(seeds, programId);
 
       // Build a SOL transfer to the escrow PDA
